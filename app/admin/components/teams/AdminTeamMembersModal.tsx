@@ -83,6 +83,11 @@ export function AdminTeamMembersModal({
             <h4 className="text-[16px] font-black tracking-[-0.02em] text-[#1f1f2c]">
               {draft.memberId ? "Edit member" : "Add member"}
             </h4>
+            <p className="mt-2 text-[12px] leading-5 text-[#6b7280]">
+              {draft.memberId
+                ? "Phone is the groomer login ID. Leave password blank if you want to keep the current password unchanged."
+                : "Phone and password are required for every new groomer or helper login."}
+            </p>
             <div className="mt-4 space-y-3">
               <input
                 value={draft.name}
@@ -90,19 +95,29 @@ export function AdminTeamMembersModal({
                 placeholder="Full name"
                 className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px] outline-none"
               />
-              <input
-                value={draft.phone}
-                onChange={(event) => onChange({ phone: event.target.value })}
-                placeholder="Phone (login ID)"
-                className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px] outline-none"
-              />
-              <input
-                type="password"
-                value={draft.password}
-                onChange={(event) => onChange({ password: event.target.value })}
-                placeholder={draft.memberId ? "New password (optional)" : "Password"}
-                className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px] outline-none"
-              />
+              <div>
+                <input
+                  value={draft.phone}
+                  onChange={(event) => onChange({ phone: event.target.value })}
+                  placeholder="Phone (login ID)"
+                  className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px] outline-none"
+                />
+                <p className="mt-1 text-[11px] text-[#7c8499]">Use the same phone number the groomer will enter on the login screen.</p>
+              </div>
+              <div>
+                <input
+                  type="password"
+                  value={draft.password}
+                  onChange={(event) => onChange({ password: event.target.value })}
+                  placeholder={draft.memberId ? "New password (optional)" : "Password"}
+                  className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px] outline-none"
+                />
+                <p className="mt-1 text-[11px] text-[#7c8499]">
+                  {draft.memberId
+                    ? "Only fill this if you want to reset the existing password."
+                    : "This password is hashed and saved immediately when the member is created."}
+                </p>
+              </div>
               <select
                 value={draft.role}
                 onChange={(event) => onChange({ role: event.target.value })}

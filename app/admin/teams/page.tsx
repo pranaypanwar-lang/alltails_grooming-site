@@ -181,6 +181,16 @@ export default function AdminTeamsPage() {
 
   const submitMember = async () => {
     if (!membersTeam || !memberDraft.name.trim()) return;
+    if (!memberDraft.memberId) {
+      if (!memberDraft.phone.trim()) {
+        showToast("Phone is required for groomer login.", false);
+        return;
+      }
+      if (!memberDraft.password.trim()) {
+        showToast("Password is required for new team members.", false);
+        return;
+      }
+    }
     try {
       setIsSubmitting(true);
       if (memberDraft.memberId) {

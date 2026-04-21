@@ -15,6 +15,11 @@ function getErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : "Unexpected error";
 }
 
+function isLikelyPhoneNumber(value: string) {
+  const digits = value.replace(/\D/g, "");
+  return digits.length >= 10;
+}
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -27,13 +32,25 @@ export async function POST(
     const body = await request.json().catch(() => ({}));
 
     const name = typeof body.name === "string" ? body.name.trim() : "";
-    const phone = typeof body.phone === "string" ? body.phone.trim() || null : null;
-    const password = typeof body.password === "string" ? body.password : "";
+    const phone = typeof body.phone === "string" ? body.phone.trim() : "";
+    const password = typeof body.password === "string" ? body.password.trim() : "";
     const role = typeof body.role === "string" ? body.role.trim() || "groomer" : "groomer";
     const isActive = body.isActive !== false;
 
     if (!name) {
       return NextResponse.json({ error: "Member name is required" }, { status: 400 });
+    }
+
+    if (!phone) {
+      return NextResponse.json({ error: "Phone is required" }, { status: 400 });
+    }
+
+    if (!isLikelyPhoneNumber(phone)) {
+      return NextResponse.json({ error: "Enter a valid phone number" }, { status: 400 });
+    }
+
+    if (!password) {
+      return NextResponse.json({ error: "Password is required" }, { status: 400 });
     }
 
     const team = await prisma.team.findUnique({ where: { id: teamId }, select: { id: true } });
@@ -46,8 +63,8 @@ export async function POST(
         teamId,
         name,
         phone,
-        passwordHash: password ? hashPassword(password) : null,
-        passwordSetAt: password ? new Date() : null,
+        passwordHash: hashPassword(password),
+        passwordSetAt: new Date(),
         role,
         isActive,
         currentRank: getCurrentRankLabel(role, 0),
@@ -78,9 +95,15 @@ export async function PATCH(
 
     const data: Record<string, unknown> = {};
     if (typeof body.name === "string") data.name = body.name.trim();
-    if (typeof body.phone === "string" || body.phone === null) data.phone = body.phone?.trim() || null;
-    if (typeof body.password === "string" && body.password) {
-      data.passwordHash = hashPassword(body.password);
+    if (typeof body.phone === "string" || body.phone === null) {
+      const phone = body.phone?.trim() || null;
+      if (phone && !isLikelyPhoneNumber(phone)) {
+        return NextResponse.json({ error: "Enter a valid phone number" }, { status: 400 });
+      }
+      data.phone = phone;
+    }
+    if (typeof body.password === "string" && body.password.trim()) {
+      data.passwordHash = hashPassword(body.password.trim());
       data.passwordSetAt = new Date();
     }
     if (typeof body.role === "string") data.role = body.role.trim() || "groomer";
