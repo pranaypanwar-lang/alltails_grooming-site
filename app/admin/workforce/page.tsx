@@ -783,6 +783,20 @@ export default function AdminWorkforcePage() {
                 <p><span className="font-semibold text-[#2a2346]">Cash amount:</span> Optional offline incentive or recovery note. It does not change XP/trust/performance by itself.</p>
               </div>
             </div>
+            <div className="grid gap-2 md:grid-cols-2">
+              <div className="rounded-[14px] border border-[#e8e3fb] bg-white p-3">
+                <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#6d5bd0]">When to use reward</div>
+                <p className="mt-1 text-[12px] leading-[1.6] text-[#6b7280]">
+                  Use for punctuality, customer praise, upsell contribution, clean SOP execution, or training completion.
+                </p>
+              </div>
+              <div className="rounded-[14px] border border-[#fde2e2] bg-[#fff8f8] p-3">
+                <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#b42318]">When to use penalty</div>
+                <p className="mt-1 text-[12px] leading-[1.6] text-[#6b7280]">
+                  Use for missed SOPs, lateness, customer complaints, misconduct, or avoidable operational mistakes.
+                </p>
+              </div>
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <label className="space-y-1.5">
                 <div className="text-[12px] font-semibold text-[#4b5563]">Adjustment type</div>
@@ -790,28 +804,38 @@ export default function AdminWorkforcePage() {
                   <option value="reward">Reward</option>
                   <option value="penalty">Penalty</option>
                 </select>
+                <div className="text-[11px] leading-[1.5] text-[#8a90a6]">
+                  Pick <span className="font-semibold text-[#2a2346]">Reward</span> to add value or <span className="font-semibold text-[#2a2346]">Penalty</span> to deduct value.
+                </div>
               </label>
               <label className="space-y-1.5">
                 <div className="text-[12px] font-semibold text-[#4b5563]">Short summary</div>
                 <input value={adjustmentState.summary} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, summary: event.target.value } : prev)} placeholder="Example: 5-star customer feedback" className="h-11 w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
+                <div className="text-[11px] leading-[1.5] text-[#8a90a6]">
+                  This becomes the visible title in the member history, so keep it short and clear.
+                </div>
               </label>
             </div>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               <label className="space-y-1.5">
                 <div className="text-[12px] font-semibold text-[#4b5563]">XP change</div>
                 <input type="number" value={adjustmentState.xpAwarded} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, xpAwarded: Number(event.target.value) } : prev)} placeholder="0" className="h-11 w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
+                <div className="text-[11px] leading-[1.5] text-[#8a90a6]">Changes level progression and salary-hike readiness.</div>
               </label>
               <label className="space-y-1.5">
                 <div className="text-[12px] font-semibold text-[#4b5563]">Reward points</div>
                 <input type="number" value={adjustmentState.rewardPointsAwarded} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, rewardPointsAwarded: Number(event.target.value) } : prev)} placeholder="0" className="h-11 w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
+                <div className="text-[11px] leading-[1.5] text-[#8a90a6]">Use for redeemable perks or internal reward-store balance.</div>
               </label>
               <label className="space-y-1.5">
                 <div className="text-[12px] font-semibold text-[#4b5563]">Trust score change</div>
                 <input type="number" value={adjustmentState.trustDelta} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, trustDelta: Number(event.target.value) } : prev)} placeholder="0" className="h-11 w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
+                <div className="text-[11px] leading-[1.5] text-[#8a90a6]">Use for discipline, attendance, honesty, and reliability signals.</div>
               </label>
               <label className="space-y-1.5">
                 <div className="text-[12px] font-semibold text-[#4b5563]">Performance score change</div>
                 <input type="number" value={adjustmentState.performanceDelta} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, performanceDelta: Number(event.target.value) } : prev)} placeholder="0" className="h-11 w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
+                <div className="text-[11px] leading-[1.5] text-[#8a90a6]">Use for service quality, grooming outcome, and SOP execution quality.</div>
               </label>
             </div>
             <label className="space-y-1.5">
@@ -822,6 +846,9 @@ export default function AdminWorkforcePage() {
             <label className="space-y-1.5">
               <div className="text-[12px] font-semibold text-[#4b5563]">Notes for record</div>
               <textarea value={adjustmentState.notes} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, notes: event.target.value } : prev)} placeholder="Explain why this reward or penalty is being applied." className="min-h-[100px] w-full rounded-[14px] border border-[#ddd1fb] px-4 py-3 text-[13px]" />
+              <div className="text-[11px] leading-[1.5] text-[#8a90a6]">
+                Add enough detail that another manager can understand and defend this decision later.
+              </div>
             </label>
             <div className="flex justify-end gap-2">
               <button type="button" onClick={() => setAdjustmentState(null)} className="rounded-[12px] border border-[#ece8f5] px-4 py-2 text-[13px] font-semibold text-[#2a2346]">Cancel</button>
