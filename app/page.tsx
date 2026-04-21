@@ -41,6 +41,11 @@ type BookingCreateResponse = {
   paymentMethod: "pay_now" | "pay_after_service";
   originalAmount: number;
   finalAmount: number;
+  serviceAddress: string;
+  serviceLandmark: string;
+  servicePincode: string;
+  serviceLocationUrl: string;
+  addressStatus: "missing" | "partial" | "complete";
   selectedDate: string;
   bookingWindowId: string;
   paymentOrder?: {
@@ -1237,9 +1242,17 @@ setIsSlotsModalOpen(true);
     servicePincode: "",
     serviceLocationUrl: "",
   });
-  const [confirmedAddressSaving, setConfirmedAddressSaving] = useState(false);
+const [confirmedAddressSaving, setConfirmedAddressSaving] = useState(false);
   const [confirmedAddressError, setConfirmedAddressError] = useState("");
   const [confirmedAddressSuccess, setConfirmedAddressSuccess] = useState("");
+  const mobileBookingModalRef = useRef<HTMLDivElement | null>(null);
+  const desktopBookingBodyRef = useRef<HTMLElement | null>(null);
+
+  const scrollBookingFlowToTop = (behavior: ScrollBehavior = "auto") => {
+    mobileBookingModalRef.current?.scrollTo({ top: 0, behavior });
+    desktopBookingBodyRef.current?.scrollTo({ top: 0, behavior });
+    window.scrollTo({ top: 0, behavior });
+  };
 
 const handleRetryPayment = async (bookingId: string, accessToken: string | null) => {
   try {
@@ -1706,7 +1719,17 @@ const handlePaymentMethodChange = (method: "pay_now" | "pay_after_service") => {
   } finally {
     setSavedPetsLoading(false);
   }
-};
+  };
+
+useEffect(() => {
+  if (!isSlotsModalOpen) return;
+
+  const frame = window.requestAnimationFrame(() => {
+    scrollBookingFlowToTop();
+  });
+
+  return () => window.cancelAnimationFrame(frame);
+}, [confirmedBooking?.bookingId, isSlotsModalOpen, mobileBookingStep]);
 
 const handleToggleSavedPet = (savedPet: SavedPetLookupItem) => {
   const alreadySelected = selectedSavedPetIds.includes(savedPet.petId);
@@ -2190,17 +2213,17 @@ const getSavedPetAvatar = (pet: { imageUrl: string | null; species: "dog" | "cat
             petCount: pets.length,
             bookingWindowLabel: selectedBookingWindow ? getBookingWindowLabel(selectedBookingWindow) : "",
             loyaltyRewardApplied: false,
-            serviceAddress: "",
-            serviceLandmark: "",
-            servicePincode: "",
-            serviceLocationUrl: "",
-            addressStatus: "missing",
+            serviceAddress: verifyData.serviceAddress ?? "",
+            serviceLandmark: verifyData.serviceLandmark ?? "",
+            servicePincode: verifyData.servicePincode ?? "",
+            serviceLocationUrl: verifyData.serviceLocationUrl ?? "",
+            addressStatus: verifyData.addressStatus ?? "missing",
           });
           setConfirmedAddressDraft({
-            serviceAddress: "",
-            serviceLandmark: "",
-            servicePincode: "",
-            serviceLocationUrl: "",
+            serviceAddress: verifyData.serviceAddress ?? "",
+            serviceLandmark: verifyData.serviceLandmark ?? "",
+            servicePincode: verifyData.servicePincode ?? "",
+            serviceLocationUrl: verifyData.serviceLocationUrl ?? "",
           });
           setConfirmedAddressError("");
           setConfirmedAddressSuccess("");
@@ -2865,6 +2888,7 @@ const closeRescheduleFlow = () => {
           data.addressInfo?.serviceLocationUrl ?? confirmedAddressDraft.serviceLocationUrl,
       });
       setConfirmedAddressSuccess("Address saved. Our team can now reach you smoothly.");
+      scrollBookingFlowToTop();
     } catch (error) {
       setConfirmedAddressError(
         error instanceof Error ? error.message : "Could not save address details."
@@ -3206,17 +3230,17 @@ const uploadBookingAsset = async (
         petCount: pets.length,
         bookingWindowLabel: getBookingWindowLabel(selectedBookingWindow),
         loyaltyRewardApplied: bookingData.loyalty?.rewardApplied ?? false,
-        serviceAddress: "",
-        serviceLandmark: "",
-        servicePincode: "",
-        serviceLocationUrl: "",
-        addressStatus: "missing",
+        serviceAddress: bookingData.serviceAddress ?? "",
+        serviceLandmark: bookingData.serviceLandmark ?? "",
+        servicePincode: bookingData.servicePincode ?? "",
+        serviceLocationUrl: bookingData.serviceLocationUrl ?? "",
+        addressStatus: bookingData.addressStatus ?? "missing",
       });
       setConfirmedAddressDraft({
-        serviceAddress: "",
-        serviceLandmark: "",
-        servicePincode: "",
-        serviceLocationUrl: "",
+        serviceAddress: bookingData.serviceAddress ?? "",
+        serviceLandmark: bookingData.serviceLandmark ?? "",
+        servicePincode: bookingData.servicePincode ?? "",
+        serviceLocationUrl: bookingData.serviceLocationUrl ?? "",
       });
       setConfirmedAddressError("");
       setConfirmedAddressSuccess("");
@@ -3280,17 +3304,17 @@ const uploadBookingAsset = async (
             petCount: pets.length,
             bookingWindowLabel: getBookingWindowLabel(selectedBookingWindow),
             loyaltyRewardApplied: bookingData.loyalty?.rewardApplied ?? false,
-            serviceAddress: "",
-            serviceLandmark: "",
-            servicePincode: "",
-            serviceLocationUrl: "",
-            addressStatus: "missing",
+            serviceAddress: bookingData.serviceAddress ?? "",
+            serviceLandmark: bookingData.serviceLandmark ?? "",
+            servicePincode: bookingData.servicePincode ?? "",
+            serviceLocationUrl: bookingData.serviceLocationUrl ?? "",
+            addressStatus: bookingData.addressStatus ?? "missing",
           });
           setConfirmedAddressDraft({
-            serviceAddress: "",
-            serviceLandmark: "",
-            servicePincode: "",
-            serviceLocationUrl: "",
+            serviceAddress: bookingData.serviceAddress ?? "",
+            serviceLandmark: bookingData.serviceLandmark ?? "",
+            servicePincode: bookingData.servicePincode ?? "",
+            serviceLocationUrl: bookingData.serviceLocationUrl ?? "",
           });
           setConfirmedAddressError("");
           setConfirmedAddressSuccess("");
@@ -3373,14 +3397,14 @@ const uploadBookingAsset = async (
   /* =========================================================
      12. RENDER
   ========================================================= */
-const hasConfirmedAddressMinimum =
-  !confirmedBooking ||
+const canSaveConfirmedAddressDraft =
   Boolean(
     confirmedAddressDraft.serviceAddress.trim() &&
       confirmedAddressDraft.serviceLandmark.trim() &&
       confirmedAddressDraft.servicePincode.trim()
   );
-const isAddressCaptureRequired = Boolean(confirmedBooking && !hasConfirmedAddressMinimum);
+const hasSavedConfirmedAddress = !confirmedBooking || confirmedBooking.addressStatus === "complete";
+const isAddressCaptureRequired = Boolean(confirmedBooking && !hasSavedConfirmedAddress);
 const isCompactTrackEntry = trackedBookings.length === 0;
   return (
   <main className="min-h-screen bg-white pb-[88px] text-slate-900 lg:pb-0">
@@ -3426,7 +3450,7 @@ const isCompactTrackEntry = trackedBookings.length === 0;
 ===================================================== */}
 {isSlotsModalOpen ? (
   <div className="fixed inset-0 z-[100] bg-[rgba(17,12,33,0.58)] backdrop-blur-[3px] lg:flex lg:items-center lg:justify-center lg:px-4 lg:py-6">
-    <div className="fixed inset-x-0 bottom-0 top-0 w-full overflow-y-auto bg-[linear-gradient(180deg,#ffffff_0%,#fcfbff_48%,#fbf8ff_100%)] pt-[max(16px,env(safe-area-inset-top))] pb-[max(20px,env(safe-area-inset-bottom))] lg:relative lg:inset-auto lg:flex lg:h-[min(920px,92vh)] lg:w-[min(1120px,96vw)] lg:flex-col lg:overflow-hidden lg:rounded-[36px] lg:border lg:border-[#e9e0fb] lg:bg-white lg:shadow-[0_30px_80px_rgba(29,16,70,0.18)]">
+    <div ref={mobileBookingModalRef} className="fixed inset-x-0 bottom-0 top-0 w-full overflow-y-auto bg-[linear-gradient(180deg,#ffffff_0%,#fcfbff_48%,#fbf8ff_100%)] pt-[max(16px,env(safe-area-inset-top))] pb-[max(20px,env(safe-area-inset-bottom))] lg:relative lg:inset-auto lg:flex lg:h-[min(920px,92vh)] lg:w-[min(1120px,96vw)] lg:flex-col lg:overflow-hidden lg:rounded-[36px] lg:border lg:border-[#e9e0fb] lg:bg-white lg:shadow-[0_30px_80px_rgba(29,16,70,0.18)]">
       <div className="pointer-events-none absolute inset-0 rounded-[36px] ring-1 ring-[#f3ecff] lg:hidden" />
 
       {/* ── MOBILE STEP FLOW ── */}
@@ -3436,7 +3460,7 @@ const isCompactTrackEntry = trackedBookings.length === 0;
           <button
             type="button"
 onClick={() => {
-  if (confirmedBooking && !hasConfirmedAddressMinimum) return;
+  if (confirmedBooking && !hasSavedConfirmedAddress) return;
   if (confirmedBooking) {
     closeSlotsModal();
   } else if (mobileBookingStep === "setup") {
@@ -3451,7 +3475,7 @@ onClick={() => {
     setMobileBookingStep("pets");
   }
 }}
-            disabled={!!confirmedBooking && !hasConfirmedAddressMinimum}
+            disabled={!!confirmedBooking && !hasSavedConfirmedAddress}
             className="flex h-9 w-9 items-center justify-center rounded-full border border-[#ece8f5] bg-white text-[#2a2346] disabled:cursor-not-allowed disabled:opacity-45"
           >
             {confirmedBooking ? (
@@ -3475,10 +3499,10 @@ onClick={() => {
           <button
             type="button"
             onClick={() => {
-              if (!hasConfirmedAddressMinimum) return;
+              if (!hasSavedConfirmedAddress) return;
               closeSlotsModal();
             }}
-            disabled={!!confirmedBooking && !hasConfirmedAddressMinimum}
+            disabled={!!confirmedBooking && !hasSavedConfirmedAddress}
             className="flex h-9 w-9 items-center justify-center rounded-full border border-[#ece8f5] bg-white text-[#2a2346] disabled:cursor-not-allowed disabled:opacity-45"
           >
             <X className="h-4 w-4" />
@@ -3626,9 +3650,9 @@ onClick={() => {
                 <button
                   type="button"
                   onClick={handleSaveConfirmedAddress}
-                  disabled={confirmedAddressSaving}
-                  className="mt-4 flex h-[46px] w-full items-center justify-center rounded-[16px] bg-[#6d5bd0] text-[13px] font-semibold text-white disabled:opacity-60"
-                >
+                disabled={confirmedAddressSaving || !canSaveConfirmedAddressDraft}
+                className="mt-4 flex h-[46px] w-full items-center justify-center rounded-[16px] bg-[#6d5bd0] text-[13px] font-semibold text-white disabled:opacity-60"
+              >
                   {confirmedAddressSaving ? "Saving..." : "Save address details"}
                 </button>
               </div>
@@ -3750,9 +3774,9 @@ onClick={() => {
                   <button
                     type="button"
                     onClick={handleSaveConfirmedAddress}
-                    disabled={confirmedAddressSaving}
-                    className="mt-4 flex h-[46px] w-full items-center justify-center rounded-[16px] bg-[#6d5bd0] text-[13px] font-semibold text-white disabled:opacity-60"
-                  >
+                  disabled={confirmedAddressSaving || !canSaveConfirmedAddressDraft}
+                  className="mt-4 flex h-[46px] w-full items-center justify-center rounded-[16px] bg-[#6d5bd0] text-[13px] font-semibold text-white disabled:opacity-60"
+                >
                     {confirmedAddressSaving ? "Saving..." : "Save address details"}
                   </button>
                 </div>
@@ -3764,10 +3788,10 @@ onClick={() => {
               <button
                 type="button"
                 onClick={() => {
-                  if (!hasConfirmedAddressMinimum) return;
+                  if (!hasSavedConfirmedAddress) return;
                   closeSlotsModal();
                 }}
-                disabled={!hasConfirmedAddressMinimum}
+                disabled={!hasSavedConfirmedAddress}
                 className="h-[52px] rounded-[16px] border border-[#d9dbe7] bg-white text-[15px] font-semibold text-[#2a2745] disabled:cursor-not-allowed disabled:opacity-45"
               >
                 Back to home
@@ -3775,11 +3799,11 @@ onClick={() => {
               <button
                 type="button"
                 onClick={() => {
-                  if (!hasConfirmedAddressMinimum) return;
+                  if (!hasSavedConfirmedAddress) return;
                   closeSlotsModal();
                   openTrackBookingModal();
                 }}
-                disabled={!hasConfirmedAddressMinimum}
+                disabled={!hasSavedConfirmedAddress}
                 className="h-[52px] rounded-[16px] bg-[#6d5bd0] text-[15px] font-semibold text-white shadow-[0_12px_24px_rgba(109,91,208,0.22)] disabled:cursor-not-allowed disabled:opacity-45"
               >
                 My bookings
@@ -4491,7 +4515,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
         )}
 
         {/* ── Desktop Main (scrollable) ── */}
-        <main className="flex-1 overflow-y-auto px-10 py-8">
+        <main ref={desktopBookingBodyRef} className="flex-1 overflow-y-auto px-10 py-8">
 
         {/* ── DESKTOP CONFIRMATION ── */}
         {confirmedBooking ? (
@@ -4566,7 +4590,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                 <button
                   type="button"
                   onClick={handleSaveConfirmedAddress}
-                  disabled={confirmedAddressSaving}
+                  disabled={confirmedAddressSaving || !canSaveConfirmedAddressDraft}
                   className="mt-5 inline-flex h-[52px] items-center justify-center rounded-[18px] bg-[#6d5bd0] px-8 text-[15px] font-semibold text-white shadow-[0_14px_30px_rgba(109,91,208,0.20)] disabled:opacity-60"
                 >
                   {confirmedAddressSaving ? "Saving..." : "Save address details"}
@@ -4580,10 +4604,10 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
               <button
                 type="button"
                 onClick={() => {
-                  if (!hasConfirmedAddressMinimum) return;
+                  if (!hasSavedConfirmedAddress) return;
                   closeSlotsModal();
                 }}
-                disabled={!hasConfirmedAddressMinimum}
+                disabled={!hasSavedConfirmedAddress}
                 className="flex h-12 w-12 items-center justify-center rounded-full border border-[#e3dcf7] bg-white text-[#2a2745] transition hover:bg-[#faf8ff] disabled:cursor-not-allowed disabled:opacity-45"
               >
                 <X className="h-5 w-5" />
@@ -4731,7 +4755,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
               <button
                 type="button"
                 onClick={handleSaveConfirmedAddress}
-                disabled={confirmedAddressSaving}
+                disabled={confirmedAddressSaving || !canSaveConfirmedAddressDraft}
                 className="mt-5 inline-flex h-[52px] items-center justify-center rounded-[18px] bg-[#6d5bd0] px-8 text-[15px] font-semibold text-white shadow-[0_14px_30px_rgba(109,91,208,0.20)] disabled:opacity-60"
               >
                 {confirmedAddressSaving ? "Saving..." : "Save address details"}
@@ -4742,11 +4766,11 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
               <button
                 type="button"
                 onClick={() => {
-                  if (!hasConfirmedAddressMinimum) return;
+                  if (!hasSavedConfirmedAddress) return;
                   closeSlotsModal();
                   openTrackBookingModal();
                 }}
-                disabled={!hasConfirmedAddressMinimum}
+                disabled={!hasSavedConfirmedAddress}
                 className="inline-flex h-[54px] items-center justify-center rounded-[18px] border border-[#d9dbe7] bg-white px-8 text-[15px] font-semibold text-[#2a2745] transition hover:bg-[#faf9ff] disabled:cursor-not-allowed disabled:opacity-45"
               >
                 Track Booking
@@ -4754,10 +4778,10 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
               <button
                 type="button"
                 onClick={() => {
-                  if (!hasConfirmedAddressMinimum) return;
+                  if (!hasSavedConfirmedAddress) return;
                   closeSlotsModal();
                 }}
-                disabled={!hasConfirmedAddressMinimum}
+                disabled={!hasSavedConfirmedAddress}
                 className="inline-flex h-[54px] items-center justify-center rounded-[18px] bg-[#6d5bd0] px-8 text-[15px] font-semibold text-white shadow-[0_14px_30px_rgba(109,91,208,0.20)] transition hover:bg-[#5f4fc2] disabled:cursor-not-allowed disabled:opacity-45"
               >
                 Close

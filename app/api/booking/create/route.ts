@@ -8,6 +8,7 @@ import {
   createBookingWithBusinessRules,
   type BookingCreatePetInput,
 } from "../../../../lib/booking/createBooking";
+import { getAddressReadinessSummary } from "../../../../lib/booking/addressCapture";
 import { prepareCustomerMessageForBooking } from "../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../lib/customerMessaging/provider";
 
@@ -100,10 +101,49 @@ export async function POST(request: Request) {
       bookingSource: "website",
     });
 
-    const shouldSendImmediateConfirmation = result.booking.status === "confirmed";
+    const latestSavedAddress = await prisma.booking.findFirst({
+      where: {
+        userId: result.user.id,
+        id: { not: result.booking.id },
+        serviceAddress: { not: null },
+        serviceLandmark: { not: null },
+        servicePincode: { not: null },
+      },
+      orderBy: [{ addressUpdatedAt: "desc" }, { createdAt: "desc" }],
+      select: {
+        serviceAddress: true,
+        serviceLandmark: true,
+        servicePincode: true,
+        serviceLocationUrl: true,
+        addressUpdatedAt: true,
+      },
+    });
+
+    let bookingWithAddress = result.booking;
+
+    if (
+      latestSavedAddress?.serviceAddress?.trim() &&
+      latestSavedAddress.serviceLandmark?.trim() &&
+      latestSavedAddress.servicePincode?.trim()
+    ) {
+      bookingWithAddress = await prisma.booking.update({
+        where: { id: result.booking.id },
+        data: {
+          serviceAddress: latestSavedAddress.serviceAddress.trim(),
+          serviceLandmark: latestSavedAddress.serviceLandmark.trim(),
+          servicePincode: latestSavedAddress.servicePincode.trim(),
+          serviceLocationUrl: latestSavedAddress.serviceLocationUrl?.trim() || null,
+          addressUpdatedAt: latestSavedAddress.addressUpdatedAt ?? new Date(),
+        },
+      });
+    }
+
+    const addressInfo = getAddressReadinessSummary(bookingWithAddress);
+
+    const shouldSendImmediateConfirmation = bookingWithAddress.status === "confirmed";
 
     if (shouldSendImmediateConfirmation) {
-      await prepareCustomerMessageForBooking(prisma, result.booking.id, "booking_confirmation", {
+      await prepareCustomerMessageForBooking(prisma, bookingWithAddress.id, "booking_confirmation", {
         skipIfPreparedAfter: new Date(Date.now() - 5 * 60 * 1000),
         deliveryStatus: "queued",
       });
@@ -113,8 +153,8 @@ export async function POST(request: Request) {
     let paymentOrder: { orderId: string; amount: number; currency: string } | null = null;
 
     if (
-      result.booking.paymentMethod === "pay_now" &&
-      result.booking.finalAmount > 0
+      bookingWithAddress.paymentMethod === "pay_now" &&
+      bookingWithAddress.finalAmount > 0
     ) {
       if (!razorpay) {
         return NextResponse.json(
@@ -124,16 +164,16 @@ export async function POST(request: Request) {
       }
 
       const order = await razorpay.orders.create({
-        amount: Math.round(result.booking.finalAmount * 100),
+        amount: Math.round(bookingWithAddress.finalAmount * 100),
         currency: "INR",
-        receipt: result.booking.id.slice(0, 40),
+        receipt: bookingWithAddress.id.slice(0, 40),
         notes: {
-          bookingId: result.booking.id,
+          bookingId: bookingWithAddress.id,
         },
       });
 
       await prisma.booking.update({
-        where: { id: result.booking.id },
+        where: { id: bookingWithAddress.id },
         data: {
           razorpayOrderId: order.id,
         },
@@ -146,7 +186,7 @@ export async function POST(request: Request) {
 };
     }
 
-    const accessToken = createBookingAccessToken(result.booking.id, result.user.phone);
+    const accessToken = createBookingAccessToken(bookingWithAddress.id, result.user.phone);
     if (!accessToken) {
       return NextResponse.json(
         { error: "Booking access token configuration is missing." },
@@ -156,18 +196,23 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      bookingId: result.booking.id,
+      bookingId: bookingWithAddress.id,
       accessToken,
       selectedDate,
       bookingWindowId,
       paymentMethod,
-      paymentStatus: result.booking.paymentStatus,
-      status: result.booking.status,
+      paymentStatus: bookingWithAddress.paymentStatus,
+      status: bookingWithAddress.status,
       originalAmount: result.service.price,
-      finalAmount: result.booking.finalAmount,
+      finalAmount: bookingWithAddress.finalAmount,
       couponCode: result.normalizedCouponCode,
       paymentOrder,
-      paymentExpiresAt: result.booking.paymentExpiresAt,
+      paymentExpiresAt: bookingWithAddress.paymentExpiresAt,
+      serviceAddress: bookingWithAddress.serviceAddress ?? "",
+      serviceLandmark: bookingWithAddress.serviceLandmark ?? "",
+      servicePincode: bookingWithAddress.servicePincode ?? "",
+      serviceLocationUrl: bookingWithAddress.serviceLocationUrl ?? "",
+      addressStatus: addressInfo.status,
       loyalty: result.loyalty,
     });
   } catch (error) {

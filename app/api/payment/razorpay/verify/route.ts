@@ -7,6 +7,7 @@ import {
   hasValidRazorpaySignature,
   validateBookingPaymentVerification,
 } from "../../../../../lib/payment/razorpayVerification";
+import { getAddressReadinessSummary } from "../../../../../lib/booking/addressCapture";
 import { prepareCustomerMessageForBooking } from "../../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../../lib/customerMessaging/provider";
 
@@ -135,6 +136,8 @@ export async function POST(request: Request) {
     });
     await processQueuedCustomerMessages(prisma, { limit: 10 });
 
+    const addressInfo = getAddressReadinessSummary(updatedBooking);
+
     return NextResponse.json({
       success: true,
       bookingId: updatedBooking.id,
@@ -142,6 +145,11 @@ export async function POST(request: Request) {
       status: updatedBooking.status,
       finalAmount: updatedBooking.finalAmount,
       originalAmount: updatedBooking.originalAmount,
+      serviceAddress: updatedBooking.serviceAddress ?? "",
+      serviceLandmark: updatedBooking.serviceLandmark ?? "",
+      servicePincode: updatedBooking.servicePincode ?? "",
+      serviceLocationUrl: updatedBooking.serviceLocationUrl ?? "",
+      addressStatus: addressInfo.status,
     });
   } catch (error) {
     if (error instanceof Error && "httpStatus" in error) {

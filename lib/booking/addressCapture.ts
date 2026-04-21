@@ -26,14 +26,16 @@ export function normalizePincode(value: unknown) {
 
 export function getBookingAddressStatus(input: BookingAddressInput): BookingAddressStatus {
   const addressReceived = hasValue(input.serviceAddress);
+  const landmarkReceived = hasValue(input.serviceLandmark);
+  const pincodeReceived = hasValue(input.servicePincode);
   const locationReceived = hasValue(input.serviceLocationUrl);
   const hasAnyAddressData =
     addressReceived ||
-    locationReceived ||
-    hasValue(input.serviceLandmark) ||
-    hasValue(input.servicePincode);
+    landmarkReceived ||
+    pincodeReceived ||
+    locationReceived;
 
-  if (addressReceived && locationReceived) return "complete";
+  if (addressReceived && landmarkReceived && pincodeReceived) return "complete";
   if (hasAnyAddressData) return "partial";
   return "missing";
 }
@@ -46,6 +48,8 @@ export function getBookingAddressStatusLabel(status: BookingAddressStatus) {
 
 export function getAddressReadinessSummary(input: BookingAddressInput) {
   const addressReceived = hasValue(input.serviceAddress);
+  const landmarkReceived = hasValue(input.serviceLandmark);
+  const pincodeReceived = hasValue(input.servicePincode);
   const locationReceived = hasValue(input.serviceLocationUrl);
   const status = getBookingAddressStatus(input);
 
@@ -53,6 +57,8 @@ export function getAddressReadinessSummary(input: BookingAddressInput) {
     status,
     statusLabel: getBookingAddressStatusLabel(status),
     addressReceived,
+    landmarkReceived,
+    pincodeReceived,
     locationReceived,
   };
 }
