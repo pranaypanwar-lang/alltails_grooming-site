@@ -4,6 +4,8 @@ import { LegalPageShell } from "@/components/legal/LegalPageShell";
 import { renderSimpleContentBlocks } from "@/lib/content/markdown";
 import { getLegalDocumentBySlug } from "@/lib/content/server";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Cancellation Policy | All Tails",
   description: "All Tails cancellation and rescheduling expectations for customers.",

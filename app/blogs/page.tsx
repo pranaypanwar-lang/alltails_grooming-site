@@ -3,6 +3,8 @@ import Image from "next/image";
 
 import { getPublishedBlogPosts } from "@/lib/content/server";
 
+export const dynamic = "force-dynamic";
+
 export default async function BlogsPage() {
   const posts = await getPublishedBlogPosts();
 
