@@ -1158,7 +1158,10 @@ setIsSlotsModalOpen(true);
   const scrollToSection = (sectionId: string) => {
     const el = document.getElementById(sectionId);
     if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      el.scrollIntoView({
+        behavior: "smooth",
+        block: sectionId === "add-ons-section" ? "center" : "start",
+      });
     }
   };
 
@@ -7489,7 +7492,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
     </div>
   </div>
 
-  <div id="add-ons-section" className="mx-auto mt-5 max-w-[560px] rounded-[20px] border border-[#ece5ff] bg-white p-4 shadow-[0_8px_20px_rgba(109,91,208,0.04)]">
+  <div id="add-ons-section" className="mx-auto mt-5 max-w-[560px] scroll-mt-24 rounded-[20px] border border-[#ece5ff] bg-white p-4 shadow-[0_8px_20px_rgba(109,91,208,0.04)]">
     <div className="text-[13px] font-bold text-[#2a2346]">Optional add-ons</div>
     <p className="mt-0.5 text-[11px] leading-[1.7] text-[#8b90a0]">Available during booking</p>
     <div className="mt-3 flex flex-wrap gap-2">
