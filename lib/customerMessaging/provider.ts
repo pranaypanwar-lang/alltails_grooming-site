@@ -82,6 +82,62 @@ function getCombirdsUserName() {
   return process.env.WHATSAPP_COMBIRDS_USERNAME?.trim() || "";
 }
 
+function getPublicAppUrl() {
+  return process.env.NEXT_PUBLIC_APP_URL?.trim().replace(/\/+$/, "") || "";
+}
+
+function getCombirdsMediaForMessageType(messageType: string) {
+  const explicitUrl = process.env.WHATSAPP_COMBIRDS_MEDIA_URL?.trim();
+  const explicitFilename =
+    process.env.WHATSAPP_COMBIRDS_MEDIA_FILENAME?.trim() || "alltails_media";
+
+  if (explicitUrl) {
+    return {
+      url: explicitUrl,
+      filename: explicitFilename,
+    };
+  }
+
+  const appUrl = getPublicAppUrl();
+  if (!appUrl) return null;
+
+  const mediaMap: Record<string, { path: string; filename: string }> = {
+    booking_confirmation: {
+      path: "/whatsapp/booking-confirmation.jpg",
+      filename: "booking_confirmation",
+    },
+    night_before_reminder: {
+      path: "/whatsapp/night-before-reminder.jpg",
+      filename: "night_before_reminder",
+    },
+    post_groom_care: {
+      path: "/whatsapp/post-groom-care.jpg",
+      filename: "post_groom_care",
+    },
+    review_request: {
+      path: "/whatsapp/review-request.jpg",
+      filename: "review_request",
+    },
+    rebooking_reminder: {
+      path: "/whatsapp/rebooking-reminder.jpeg",
+      filename: "rebooking_reminder",
+    },
+  };
+
+  const mapped = mediaMap[messageType];
+  if (mapped) {
+    return {
+      url: `${appUrl}${mapped.path}`,
+      filename: mapped.filename,
+    };
+  }
+
+  return {
+    url: `${appUrl}/icon.png`,
+    filename: "alltails_icon",
+  };
+}
+
 function formatTime(value: Date) {
   return value.toLocaleTimeString("en-IN", {
     hour: "numeric",
@@ -237,6 +293,7 @@ function getCombirdsTemplatePayload(
       userName: getCombirdsUserName(),
       templateParams,
       source: booking.bookingSource || "website",
+      media: getCombirdsMediaForMessageType(message.messageType) ?? {},
       buttons: [],
       carouselCards: [],
       location: {},
