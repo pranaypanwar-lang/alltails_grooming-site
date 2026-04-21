@@ -4,6 +4,7 @@ import { getGroomerJobUrl } from "../../../../../lib/groomerAccess";
 import { sendAdminTelegramMessage, sendTelegramMessage } from "../../../../../lib/telegram/send";
 import { createAutomatedSupportCase } from "../../../../../lib/supportCases/service";
 import { queueGroomerDelayUpdateMessage } from "../../../../../lib/customerMessaging/automation";
+import { processQueuedCustomerMessages } from "../../../../../lib/customerMessaging/provider";
 
 export const runtime = "nodejs";
 
@@ -197,6 +198,7 @@ export async function GET(request: Request) {
 
         const customerMessage = await queueGroomerDelayUpdateMessage(adminPrisma, booking.id);
         if (customerMessage.created) {
+          await processQueuedCustomerMessages(adminPrisma, { limit: 10 });
           await logAdminBookingEvent({
             bookingId: booking.id,
             type: "customer_message_prepared",

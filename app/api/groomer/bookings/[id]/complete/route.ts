@@ -3,6 +3,7 @@ import { adminPrisma, logBookingEvent } from "../../../../admin/_lib/bookingAdmi
 import { assertGroomerAccess } from "../../../_lib/assertGroomerAccess";
 import { completeBookingLifecycle } from "../../../../../../lib/booking/completeBookingLifecycle";
 import { queuePostCompletionCustomerJourney } from "../../../../../../lib/customerMessaging/automation";
+import { processQueuedCustomerMessages } from "../../../../../../lib/customerMessaging/provider";
 import { awardCompletionRewards } from "../../../../../../lib/groomerRewards";
 
 export const runtime = "nodejs";
@@ -35,6 +36,7 @@ export async function POST(
     if (!result.alreadyCompleted) {
       rewardResult = await awardCompletionRewards(adminPrisma, result.bookingId);
       const followUps = await queuePostCompletionCustomerJourney(adminPrisma, result.bookingId);
+      await processQueuedCustomerMessages(adminPrisma, { limit: 10 });
       for (const entry of followUps) {
         if (!entry.created) continue;
         await logBookingEvent({

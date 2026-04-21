@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { adminPrisma, ensureBookingSopSteps, logBookingEvent } from "../../../../admin/_lib/bookingAdmin";
 import { assertGroomerAccess } from "../../../_lib/assertGroomerAccess";
 import { queueTeamOnTheWayMessage } from "../../../../../../lib/customerMessaging/automation";
+import { processQueuedCustomerMessages } from "../../../../../../lib/customerMessaging/provider";
 import { awardGroomerXp, getBookingRewardSummary } from "../../../../../../lib/groomerRewards";
 
 export const runtime = "nodejs";
@@ -89,6 +90,7 @@ export async function POST(
     if (dispatchState === "en_route") {
       const prepared = await queueTeamOnTheWayMessage(adminPrisma, bookingId);
       if (prepared.created) {
+        await processQueuedCustomerMessages(adminPrisma, { limit: 10 });
         await logBookingEvent({
           bookingId,
           actor: "system",

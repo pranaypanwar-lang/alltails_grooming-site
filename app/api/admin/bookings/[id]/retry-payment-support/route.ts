@@ -8,6 +8,7 @@ import {
   logAdminBookingEvent,
 } from "../../../_lib/bookingAdmin";
 import { prepareCustomerMessageForBooking } from "../../../../../../lib/customerMessaging/service";
+import { processQueuedCustomerMessages } from "../../../../../../lib/customerMessaging/provider";
 
 export const runtime = "nodejs";
 
@@ -86,6 +87,7 @@ export async function POST(
         actionUrl: paymentLinkUrl ?? null,
       }
     );
+    await processQueuedCustomerMessages(adminPrisma, { limit: 10 });
 
     return NextResponse.json({
       success: true,

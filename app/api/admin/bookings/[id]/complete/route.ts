@@ -6,6 +6,7 @@ import { assertAdminSession } from "../../../_lib/assertAdmin";
 import { logAdminBookingEvent } from "../../../_lib/bookingAdmin";
 import { completeBookingLifecycle } from "../../../../../../lib/booking/completeBookingLifecycle";
 import { queuePostCompletionCustomerJourney } from "../../../../../../lib/customerMessaging/automation";
+import { processQueuedCustomerMessages } from "../../../../../../lib/customerMessaging/provider";
 import { awardCompletionRewards } from "../../../../../../lib/groomerRewards";
 
 export const runtime = "nodejs";
@@ -36,6 +37,7 @@ export async function POST(
     if (!result.alreadyCompleted) {
       rewardResult = await awardCompletionRewards(prisma, result.bookingId);
       const followUps = await queuePostCompletionCustomerJourney(prisma, result.bookingId);
+      await processQueuedCustomerMessages(prisma, { limit: 10 });
       for (const entry of followUps) {
         if (!entry.created) continue;
         await logAdminBookingEvent({

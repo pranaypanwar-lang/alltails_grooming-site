@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { assertAdminSession } from "../../../_lib/assertAdmin";
 import { adminPrisma, logAdminBookingEvent } from "../../../_lib/bookingAdmin";
 import { queueTeamOnTheWayMessage } from "../../../../../../lib/customerMessaging/automation";
+import { processQueuedCustomerMessages } from "../../../../../../lib/customerMessaging/provider";
 
 export const runtime = "nodejs";
 
@@ -53,6 +54,7 @@ export async function POST(
     if (dispatchState === "en_route") {
       const prepared = await queueTeamOnTheWayMessage(adminPrisma, bookingId);
       if (prepared.created) {
+        await processQueuedCustomerMessages(adminPrisma, { limit: 10 });
         await logAdminBookingEvent({
           bookingId,
           type: "customer_message_prepared",
