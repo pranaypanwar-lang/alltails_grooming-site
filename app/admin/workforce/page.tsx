@@ -772,21 +772,57 @@ export default function AdminWorkforcePage() {
       {adjustmentState ? (
         <ModalShell title="Reward or penalty" subtitle={adjustmentState.memberName} onClose={() => setAdjustmentState(null)}>
           <div className="mt-4 space-y-3">
+            <div className="rounded-[16px] border border-[#ece5ff] bg-[#faf7ff] p-4">
+              <div className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#6d5bd0]">How this works</div>
+              <div className="mt-2 space-y-1.5 text-[12px] leading-[1.6] text-[#5d5670]">
+                <p><span className="font-semibold text-[#2a2346]">Mode:</span> Choose <span className="font-semibold">Reward</span> to add points and scores, or <span className="font-semibold">Penalty</span> to reduce them. You can enter positive numbers only; the system flips them negative automatically for penalties.</p>
+                <p><span className="font-semibold text-[#2a2346]">XP:</span> Impacts level and salary-hike progress.</p>
+                <p><span className="font-semibold text-[#2a2346]">Reward points:</span> Affects redeemable reward-store balance only.</p>
+                <p><span className="font-semibold text-[#2a2346]">Trust:</span> Reflects discipline and reliability.</p>
+                <p><span className="font-semibold text-[#2a2346]">Performance:</span> Reflects service quality and execution.</p>
+                <p><span className="font-semibold text-[#2a2346]">Cash amount:</span> Optional offline incentive or recovery note. It does not change XP/trust/performance by itself.</p>
+              </div>
+            </div>
             <div className="grid grid-cols-2 gap-3">
-              <select value={adjustmentState.mode} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, mode: event.target.value as "reward" | "penalty" } : prev)} className="h-11 rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]">
-                <option value="reward">Reward</option>
-                <option value="penalty">Penalty</option>
-              </select>
-              <input value={adjustmentState.summary} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, summary: event.target.value } : prev)} placeholder="Summary" className="h-11 rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
+              <label className="space-y-1.5">
+                <div className="text-[12px] font-semibold text-[#4b5563]">Adjustment type</div>
+                <select value={adjustmentState.mode} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, mode: event.target.value as "reward" | "penalty" } : prev)} className="h-11 w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]">
+                  <option value="reward">Reward</option>
+                  <option value="penalty">Penalty</option>
+                </select>
+              </label>
+              <label className="space-y-1.5">
+                <div className="text-[12px] font-semibold text-[#4b5563]">Short summary</div>
+                <input value={adjustmentState.summary} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, summary: event.target.value } : prev)} placeholder="Example: 5-star customer feedback" className="h-11 w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
+              </label>
             </div>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-              <input type="number" value={adjustmentState.xpAwarded} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, xpAwarded: Number(event.target.value) } : prev)} placeholder="XP" className="h-11 rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
-              <input type="number" value={adjustmentState.rewardPointsAwarded} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, rewardPointsAwarded: Number(event.target.value) } : prev)} placeholder="Reward pts" className="h-11 rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
-              <input type="number" value={adjustmentState.trustDelta} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, trustDelta: Number(event.target.value) } : prev)} placeholder="Trust" className="h-11 rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
-              <input type="number" value={adjustmentState.performanceDelta} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, performanceDelta: Number(event.target.value) } : prev)} placeholder="Perf" className="h-11 rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
+              <label className="space-y-1.5">
+                <div className="text-[12px] font-semibold text-[#4b5563]">XP change</div>
+                <input type="number" value={adjustmentState.xpAwarded} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, xpAwarded: Number(event.target.value) } : prev)} placeholder="0" className="h-11 w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
+              </label>
+              <label className="space-y-1.5">
+                <div className="text-[12px] font-semibold text-[#4b5563]">Reward points</div>
+                <input type="number" value={adjustmentState.rewardPointsAwarded} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, rewardPointsAwarded: Number(event.target.value) } : prev)} placeholder="0" className="h-11 w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
+              </label>
+              <label className="space-y-1.5">
+                <div className="text-[12px] font-semibold text-[#4b5563]">Trust score change</div>
+                <input type="number" value={adjustmentState.trustDelta} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, trustDelta: Number(event.target.value) } : prev)} placeholder="0" className="h-11 w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
+              </label>
+              <label className="space-y-1.5">
+                <div className="text-[12px] font-semibold text-[#4b5563]">Performance score change</div>
+                <input type="number" value={adjustmentState.performanceDelta} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, performanceDelta: Number(event.target.value) } : prev)} placeholder="0" className="h-11 w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
+              </label>
             </div>
-            <input type="number" value={adjustmentState.cashAmount} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, cashAmount: Number(event.target.value) } : prev)} placeholder="Cash amount (optional)" className="h-11 w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
-            <textarea value={adjustmentState.notes} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, notes: event.target.value } : prev)} placeholder="Notes" className="min-h-[100px] w-full rounded-[14px] border border-[#ddd1fb] px-4 py-3 text-[13px]" />
+            <label className="space-y-1.5">
+              <div className="text-[12px] font-semibold text-[#4b5563]">Cash amount (optional)</div>
+              <input type="number" value={adjustmentState.cashAmount} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, cashAmount: Number(event.target.value) } : prev)} placeholder="0" className="h-11 w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[13px]" />
+              <div className="text-[11px] text-[#8a90a6]">Use only if this decision includes an offline payout, deduction, or cash-linked note.</div>
+            </label>
+            <label className="space-y-1.5">
+              <div className="text-[12px] font-semibold text-[#4b5563]">Notes for record</div>
+              <textarea value={adjustmentState.notes} onChange={(event) => setAdjustmentState((prev) => prev ? { ...prev, notes: event.target.value } : prev)} placeholder="Explain why this reward or penalty is being applied." className="min-h-[100px] w-full rounded-[14px] border border-[#ddd1fb] px-4 py-3 text-[13px]" />
+            </label>
             <div className="flex justify-end gap-2">
               <button type="button" onClick={() => setAdjustmentState(null)} className="rounded-[12px] border border-[#ece8f5] px-4 py-2 text-[13px] font-semibold text-[#2a2346]">Cancel</button>
               <button type="button" disabled={actionLoading} onClick={() => void handleAdjustmentSubmit()} className="rounded-[12px] bg-[#6d5bd0] px-4 py-2 text-[13px] font-semibold text-white disabled:opacity-60">{actionLoading ? "Saving…" : "Save adjustment"}</button>
