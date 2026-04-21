@@ -8,6 +8,8 @@ import {
   createBookingWithBusinessRules,
   type BookingCreatePetInput,
 } from "../../../../lib/booking/createBooking";
+import { prepareCustomerMessageForBooking } from "../../../../lib/customerMessaging/service";
+import { processQueuedCustomerMessages } from "../../../../lib/customerMessaging/provider";
 
 export const runtime = "nodejs";
 const adapter = new PrismaPg({
@@ -97,6 +99,16 @@ export async function POST(request: Request) {
       couponCode,
       bookingSource: "website",
     });
+
+    const shouldSendImmediateConfirmation = result.booking.status === "confirmed";
+
+    if (shouldSendImmediateConfirmation) {
+      await prepareCustomerMessageForBooking(prisma, result.booking.id, "booking_confirmation", {
+        skipIfPreparedAfter: new Date(Date.now() - 5 * 60 * 1000),
+        deliveryStatus: "queued",
+      });
+      await processQueuedCustomerMessages(prisma, { limit: 10 });
+    }
 
     let paymentOrder: { orderId: string; amount: number; currency: string } | null = null;
 

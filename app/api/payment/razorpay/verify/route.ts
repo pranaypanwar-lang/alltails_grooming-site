@@ -7,6 +7,8 @@ import {
   hasValidRazorpaySignature,
   validateBookingPaymentVerification,
 } from "../../../../../lib/payment/razorpayVerification";
+import { prepareCustomerMessageForBooking } from "../../../../../lib/customerMessaging/service";
+import { processQueuedCustomerMessages } from "../../../../../lib/customerMessaging/provider";
 
 export const runtime = "nodejs";
 
@@ -126,6 +128,12 @@ export async function POST(request: Request) {
 
       return updated;
     });
+
+    await prepareCustomerMessageForBooking(prisma, updatedBooking.id, "booking_confirmation", {
+      skipIfPreparedAfter: new Date(Date.now() - 5 * 60 * 1000),
+      deliveryStatus: "queued",
+    });
+    await processQueuedCustomerMessages(prisma, { limit: 10 });
 
     return NextResponse.json({
       success: true,
