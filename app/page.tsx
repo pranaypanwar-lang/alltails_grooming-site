@@ -1246,10 +1246,12 @@ const [confirmedAddressSaving, setConfirmedAddressSaving] = useState(false);
   const [confirmedAddressError, setConfirmedAddressError] = useState("");
   const [confirmedAddressSuccess, setConfirmedAddressSuccess] = useState("");
   const mobileBookingModalRef = useRef<HTMLDivElement | null>(null);
+  const mobileConfirmationBodyRef = useRef<HTMLDivElement | null>(null);
   const desktopBookingBodyRef = useRef<HTMLElement | null>(null);
 
   const scrollBookingFlowToTop = (behavior: ScrollBehavior = "auto") => {
     mobileBookingModalRef.current?.scrollTo({ top: 0, behavior });
+    mobileConfirmationBodyRef.current?.scrollTo({ top: 0, behavior });
     desktopBookingBodyRef.current?.scrollTo({ top: 0, behavior });
     window.scrollTo({ top: 0, behavior });
   };
@@ -3513,7 +3515,7 @@ onClick={() => {
         {confirmedBooking ? (
           <div className="relative flex flex-col" style={{ height: "calc(100% - 57px)" }}>
             {/* Scrollable body */}
-            <div className="flex-1 overflow-y-auto px-4 pb-6 pt-7">
+            <div ref={mobileConfirmationBodyRef} className="flex-1 overflow-y-auto px-4 pb-6 pt-7">
               <div className={isAddressCaptureRequired ? "pointer-events-none select-none opacity-45 blur-[2px]" : ""}>
 
               {/* Success hero */}
@@ -3704,7 +3706,7 @@ onClick={() => {
             </div>
 
             {isAddressCaptureRequired ? (
-              <div className="absolute inset-0 z-20 flex items-center justify-center bg-[rgba(255,255,255,0.18)] px-4 py-6 backdrop-blur-[3px]">
+              <div className="fixed inset-0 z-[120] flex items-center justify-center bg-[rgba(255,255,255,0.18)] px-4 py-6 backdrop-blur-[3px]">
                 <div className="w-full max-w-[420px] rounded-[24px] border border-[#d9d2f3] bg-white p-5 shadow-[0_20px_48px_rgba(109,91,208,0.12)]">
                   <div className="flex items-start justify-between gap-3">
                     <div>
