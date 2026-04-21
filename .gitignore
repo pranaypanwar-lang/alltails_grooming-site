@@ -32,9 +32,18 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+.env
 
 # vercel
 .vercel
+
+# local handoff / backups / generated artifacts
+/backups/
+/public/booking-sop/
+/public/booking-assets/
+/grooming-site*.zip
+/grooming-site@0.1.0
+/grooming-site
 
 # typescript
 *.tsbuildinfo
