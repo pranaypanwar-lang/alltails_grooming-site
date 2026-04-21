@@ -7487,7 +7487,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
     </div>
   </div>
 
-  <div className="mx-auto mt-5 max-w-[560px] rounded-[20px] border border-[#ece5ff] bg-white p-4 shadow-[0_8px_20px_rgba(109,91,208,0.04)]">
+  <div id="add-ons-section" className="mx-auto mt-5 max-w-[560px] rounded-[20px] border border-[#ece5ff] bg-white p-4 shadow-[0_8px_20px_rgba(109,91,208,0.04)]">
     <div className="text-[13px] font-bold text-[#2a2346]">Optional add-ons</div>
     <p className="mt-0.5 text-[11px] leading-[1.7] text-[#8b90a0]">Available during booking</p>
     <div className="mt-3 flex flex-wrap gap-2">
@@ -9276,7 +9276,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           >
             Request style mockup
           </button>
-          <span className="text-[11px] text-white/40">Complete Pampering only</span>
+          <span className="text-[11px] text-white/40">Book Complete Pampring to get your mock up</span>
         </div>
       </div>
 
@@ -10277,7 +10277,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           <button type="button" onClick={() => scrollToSection("packages-section")} className="text-left text-[14px] text-white/72">Basic Grooming</button>
           <button type="button" onClick={() => scrollToSection("packages-section")} className="text-left text-[14px] text-white/72">Hygiene Grooming</button>
           <button type="button" onClick={() => scrollToSection("packages-section")} className="text-left text-[14px] text-white/72">Luxury Grooming</button>
-          <button type="button" onClick={() => scrollToSection("packages-section")} className="text-left text-[14px] text-white/72">Add-ons</button>
+          <button type="button" onClick={() => scrollToSection("add-ons-section")} className="text-left text-[14px] text-white/72">Add-ons</button>
         </div>
       </details>
 
@@ -10466,7 +10466,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                 </button>
                 <button
                   type="button"
-                  onClick={() => scrollToSection("packages-section")}
+                  onClick={() => scrollToSection("add-ons-section")}
                   className="block text-left text-[16px] text-white/82 transition duration-300 hover:translate-x-[2px] hover:text-white/95"
                 >
                   Add-ons
