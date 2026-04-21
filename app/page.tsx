@@ -3484,87 +3484,9 @@ onClick={() => {
 
         {/* Mobile confirmation */}
         {confirmedBooking ? (
-          <div className="flex flex-col" style={{ height: "calc(100% - 57px)" }}>
+          <div className="relative flex flex-col" style={{ height: "calc(100% - 57px)" }}>
             {/* Scrollable body */}
             <div className="flex-1 overflow-y-auto px-4 pb-6 pt-7">
-              {isAddressCaptureRequired ? (
-                <div className="rounded-[24px] border border-[#d9d2f3] bg-white p-5 shadow-[0_14px_36px_rgba(109,91,208,0.08)]">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className="text-[13px] font-bold uppercase tracking-[0.14em] text-[#6d5bd0]">
-                        Save service address
-                      </div>
-                      <p className="mt-1 text-[12px] leading-[1.6] text-[#6b7280]">
-                        Save your full visit address first. The rest of the booking confirmation will unlock right after this.
-                      </p>
-                    </div>
-                    <div className="rounded-full bg-[#f4efff] px-3 py-1 text-[11px] font-semibold text-[#6d5bd0]">
-                      Required
-                    </div>
-                  </div>
-
-                  <div className="mt-4 space-y-3">
-                    <textarea
-                      value={confirmedAddressDraft.serviceAddress}
-                      onChange={(event) =>
-                        setConfirmedAddressDraft((prev) => ({ ...prev, serviceAddress: event.target.value }))
-                      }
-                      placeholder="Full address"
-                      rows={3}
-                      className="w-full rounded-[16px] border border-[#e4dcf8] px-4 py-3 text-[13px] outline-none focus:border-[#6d5bd0]"
-                    />
-                    <input
-                      type="text"
-                      value={confirmedAddressDraft.serviceLandmark}
-                      onChange={(event) =>
-                        setConfirmedAddressDraft((prev) => ({ ...prev, serviceLandmark: event.target.value }))
-                      }
-                      placeholder="Nearby landmark"
-                      className="h-[46px] w-full rounded-[16px] border border-[#e4dcf8] px-4 text-[13px] outline-none focus:border-[#6d5bd0]"
-                    />
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      value={confirmedAddressDraft.servicePincode}
-                      onChange={(event) =>
-                        setConfirmedAddressDraft((prev) => ({ ...prev, servicePincode: event.target.value }))
-                      }
-                      placeholder="Pin code"
-                      className="h-[46px] w-full rounded-[16px] border border-[#e4dcf8] px-4 text-[13px] outline-none focus:border-[#6d5bd0]"
-                    />
-                    <input
-                      type="url"
-                      value={confirmedAddressDraft.serviceLocationUrl}
-                      onChange={(event) =>
-                        setConfirmedAddressDraft((prev) => ({ ...prev, serviceLocationUrl: event.target.value }))
-                      }
-                      placeholder="Google Maps link (optional)"
-                      className="h-[46px] w-full rounded-[16px] border border-[#e4dcf8] px-4 text-[13px] outline-none focus:border-[#6d5bd0]"
-                    />
-                  </div>
-
-                  {confirmedAddressError ? (
-                    <div className="mt-3 rounded-[14px] border border-[#fecdd3] bg-[#fff1f2] px-4 py-3 text-[12px] text-[#be123c]">
-                      {confirmedAddressError}
-                    </div>
-                  ) : null}
-                  {confirmedAddressSuccess ? (
-                    <div className="mt-3 rounded-[14px] border border-[#bbf7d0] bg-[#f0fdf4] px-4 py-3 text-[12px] text-[#15803d]">
-                      {confirmedAddressSuccess}
-                    </div>
-                  ) : null}
-
-                  <button
-                    type="button"
-                    onClick={handleSaveConfirmedAddress}
-                    disabled={confirmedAddressSaving}
-                    className="mt-4 flex h-[46px] w-full items-center justify-center rounded-[16px] bg-[#6d5bd0] text-[13px] font-semibold text-white disabled:opacity-60"
-                  >
-                    {confirmedAddressSaving ? "Saving..." : "Save address details"}
-                  </button>
-                </div>
-              ) : null}
-
               <div className={isAddressCaptureRequired ? "pointer-events-none select-none opacity-45 blur-[2px]" : ""}>
 
               {/* Success hero */}
@@ -3753,6 +3675,86 @@ onClick={() => {
               </div>
 
             </div>
+
+            {isAddressCaptureRequired ? (
+              <div className="absolute inset-0 z-20 flex items-center justify-center bg-[rgba(255,255,255,0.18)] px-4 py-6 backdrop-blur-[3px]">
+                <div className="w-full max-w-[420px] rounded-[24px] border border-[#d9d2f3] bg-white p-5 shadow-[0_20px_48px_rgba(109,91,208,0.12)]">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-[13px] font-bold uppercase tracking-[0.14em] text-[#6d5bd0]">
+                        Save service address
+                      </div>
+                      <p className="mt-1 text-[12px] leading-[1.6] text-[#6b7280]">
+                        Save your full visit address first. The booking confirmation below will unlock right after this.
+                      </p>
+                    </div>
+                    <div className="rounded-full bg-[#f4efff] px-3 py-1 text-[11px] font-semibold text-[#6d5bd0]">
+                      Required
+                    </div>
+                  </div>
+
+                  <div className="mt-4 space-y-3">
+                    <textarea
+                      value={confirmedAddressDraft.serviceAddress}
+                      onChange={(event) =>
+                        setConfirmedAddressDraft((prev) => ({ ...prev, serviceAddress: event.target.value }))
+                      }
+                      placeholder="Full address"
+                      rows={3}
+                      className="w-full rounded-[16px] border border-[#e4dcf8] px-4 py-3 text-[13px] outline-none focus:border-[#6d5bd0]"
+                    />
+                    <input
+                      type="text"
+                      value={confirmedAddressDraft.serviceLandmark}
+                      onChange={(event) =>
+                        setConfirmedAddressDraft((prev) => ({ ...prev, serviceLandmark: event.target.value }))
+                      }
+                      placeholder="Nearby landmark"
+                      className="h-[46px] w-full rounded-[16px] border border-[#e4dcf8] px-4 text-[13px] outline-none focus:border-[#6d5bd0]"
+                    />
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={confirmedAddressDraft.servicePincode}
+                      onChange={(event) =>
+                        setConfirmedAddressDraft((prev) => ({ ...prev, servicePincode: event.target.value }))
+                      }
+                      placeholder="Pin code"
+                      className="h-[46px] w-full rounded-[16px] border border-[#e4dcf8] px-4 text-[13px] outline-none focus:border-[#6d5bd0]"
+                    />
+                    <input
+                      type="url"
+                      value={confirmedAddressDraft.serviceLocationUrl}
+                      onChange={(event) =>
+                        setConfirmedAddressDraft((prev) => ({ ...prev, serviceLocationUrl: event.target.value }))
+                      }
+                      placeholder="Google Maps link (optional)"
+                      className="h-[46px] w-full rounded-[16px] border border-[#e4dcf8] px-4 text-[13px] outline-none focus:border-[#6d5bd0]"
+                    />
+                  </div>
+
+                  {confirmedAddressError ? (
+                    <div className="mt-3 rounded-[14px] border border-[#fecdd3] bg-[#fff1f2] px-4 py-3 text-[12px] text-[#be123c]">
+                      {confirmedAddressError}
+                    </div>
+                  ) : null}
+                  {confirmedAddressSuccess ? (
+                    <div className="mt-3 rounded-[14px] border border-[#bbf7d0] bg-[#f0fdf4] px-4 py-3 text-[12px] text-[#15803d]">
+                      {confirmedAddressSuccess}
+                    </div>
+                  ) : null}
+
+                  <button
+                    type="button"
+                    onClick={handleSaveConfirmedAddress}
+                    disabled={confirmedAddressSaving}
+                    className="mt-4 flex h-[46px] w-full items-center justify-center rounded-[16px] bg-[#6d5bd0] text-[13px] font-semibold text-white disabled:opacity-60"
+                  >
+                    {confirmedAddressSaving ? "Saving..." : "Save address details"}
+                  </button>
+                </div>
+              </div>
+            ) : null}
 
             {/* Sticky footer CTA */}
             <div className="shrink-0 grid grid-cols-2 gap-3 border-t border-[#efe9ff] bg-white/95 px-4 pb-[env(safe-area-inset-bottom,12px)] pt-3 backdrop-blur">

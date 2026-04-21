@@ -20,7 +20,11 @@ type DerivedPaymentStatus = "unpaid" | "paid" | "pending_cash_collection" | "cov
 type QaStatus = "not_started" | "in_progress" | "complete" | "issue";
 
 function formatTime(value: Date) {
-  return value.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
+  return value.toLocaleTimeString("en-IN", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Asia/Kolkata",
+  });
 }
 
 function getDerivedStatus(

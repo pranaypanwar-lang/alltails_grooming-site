@@ -185,7 +185,7 @@ export async function scanAutomatedSupportSignals(prisma: DbClient) {
       priority: "urgent",
       summary: "Same-day groomer delay risk",
       details: slotStart
-        ? `The assigned booking is within 25 minutes of the service window (${slotStart.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" })}) and is still not marked en route.`
+        ? `The assigned booking is within 25 minutes of the service window (${slotStart.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit", timeZone: "Asia/Kolkata" })}) and is still not marked en route.`
         : "The assigned booking appears at risk and should be checked immediately.",
     });
     results.push({ bookingId: booking.id, category: "groomer_delay", created: outcome.created });

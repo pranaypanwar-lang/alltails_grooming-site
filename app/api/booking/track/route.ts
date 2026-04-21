@@ -26,7 +26,11 @@ type DerivedPaymentStatus =
   | "expired";
 
 function formatTime(value: Date) {
-  return value.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
+  return value.toLocaleTimeString("en-IN", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Asia/Kolkata",
+  });
 }
 
 function getDerivedStatus(

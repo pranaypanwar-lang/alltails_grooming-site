@@ -19,7 +19,11 @@ const maskPhone = (phone: string) => {
 };
 
 function formatTime(value: Date) {
-  return value.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
+  return value.toLocaleTimeString("en-IN", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Asia/Kolkata",
+  });
 }
 
 type DerivedBookingStatus = "pending_payment" | "confirmed" | "completed" | "cancelled" | "payment_expired";

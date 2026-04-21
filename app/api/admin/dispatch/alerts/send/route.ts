@@ -18,7 +18,11 @@ function maskPhone(phone: string) {
 }
 
 function formatTime(d: Date) {
-  return d.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
+  return d.toLocaleTimeString("en-IN", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Asia/Kolkata",
+  });
 }
 
 export async function POST(request: Request) {

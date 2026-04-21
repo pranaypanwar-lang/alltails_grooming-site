@@ -13,7 +13,11 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
 
 function formatTime(value: Date) {
-  return value.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
+  return value.toLocaleTimeString("en-IN", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Asia/Kolkata",
+  });
 }
 
 function getErrorMessage(error: unknown, fallback: string) {

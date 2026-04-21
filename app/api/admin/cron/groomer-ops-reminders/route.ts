@@ -8,7 +8,11 @@ import { queueGroomerDelayUpdateMessage } from "../../../../../lib/customerMessa
 export const runtime = "nodejs";
 
 function formatTime(value: Date) {
-  return value.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
+  return value.toLocaleTimeString("en-IN", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Asia/Kolkata",
+  });
 }
 
 function getTodayDate() {
