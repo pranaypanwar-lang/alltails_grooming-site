@@ -1,0 +1,704 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Users / Pets ─────────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String
+  city      String
+  createdAt DateTime @default(now())
+
+  // Loyalty programme
+  loyaltyCompletedCount Int       @default(0)
+  loyaltyFreeUnlocked   Boolean   @default(false)
+  loyaltyUnlockedAt     DateTime?
+  loyaltyLastRedeemedAt DateTime?
+
+  bookings Booking[]
+  pets     Pet[]
+}
+
+model Pet {
+  id     String  @id @default(uuid())
+  name   String?
+  breed  String
+  userId String
+  user   User    @relation(fields: [userId], references: [id])
+
+  species              String  @default("unknown")
+  avatarUrl            String?
+  defaultGroomingNotes String?
+  defaultStylingNotes  String?
+  isArchived           Boolean @default(false)
+  lastBookedAt         DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  bookings BookingPet[]
+  assets   PetAsset[]
+}
+
+model PetAsset {
+  id           String   @id @default(uuid())
+  petId        String
+  pet          Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
+  kind         String
+  storageKey   String
+  publicUrl    String
+  originalName String
+  createdAt    DateTime @default(now())
+}
+
+// ─── Services ─────────────────────────────────────────────────────────────────
+
+model Service {
+  id    String @id @default(uuid())
+  name  String
+  price Int
+
+  bookings Booking[]
+}
+
+// ─── Geography ────────────────────────────────────────────────────────────────
+
+model ServiceArea {
+  id       String  @id @default(uuid())
+  name     String  @unique
+  slug     String  @unique
+  isActive Boolean @default(true)
+
+  coverageAreas TeamCoverageArea[]
+}
+
+// ─── Teams & Coverage Rules ───────────────────────────────────────────────────
+
+model Team {
+  id       String  @id @default(uuid())
+  name     String
+  isActive Boolean @default(true)
+
+  // Ops contact
+  opsLeadName  String?
+  opsLeadPhone String?
+
+  // Telegram
+  telegramChatId      String?
+  telegramAlertsEnabled Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  slots            Slot[]
+  coverageRules    TeamCoverageRule[]
+  assignedBookings Booking[]
+  relayCalls       RelayCallSession[]
+  dispatchAlerts   DispatchAlert[]
+  members          TeamMember[]
+  leaderboardSnapshots TeamLeaderboardSnapshot[]
+}
+
+model TeamCoverageRule {
+  id           String  @id @default(uuid())
+  teamId       String
+  team         Team    @relation(fields: [teamId], references: [id])
+  weekday      Int
+  coverageType String
+  isActive     Boolean @default(true)
+
+  areas TeamCoverageArea[]
+
+  @@unique([teamId, weekday])
+}
+
+model TeamCoverageArea {
+  id             String           @id @default(uuid())
+  coverageRuleId String
+  coverageRule   TeamCoverageRule @relation(fields: [coverageRuleId], references: [id])
+  serviceAreaId  String
+  serviceArea    ServiceArea      @relation(fields: [serviceAreaId], references: [id])
+
+  @@unique([coverageRuleId, serviceAreaId])
+}
+
+// ─── Slots ────────────────────────────────────────────────────────────────────
+
+model Slot {
+  id        String   @id @default(uuid())
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id])
+  startTime DateTime
+  endTime   DateTime
+  isBooked      Boolean  @default(false)
+  isBlocked     Boolean  @default(false)
+  isHeld        Boolean  @default(false)
+  holdExpiresAt DateTime?
+
+  // Block audit
+  blockedReason      String?
+  blockedAt          DateTime?
+  blockedByAdminUser String?
+
+  bookings BookingSlot[]
+
+  @@unique([teamId, startTime])
+  @@index([teamId, startTime])
+  @@index([isBooked, isBlocked, isHeld])
+}
+
+// ─── Bookings ─────────────────────────────────────────────────────────────────
+
+model Booking {
+  id        String  @id @default(uuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+
+  status         String  @default("pending_payment")
+  paymentMethod  String?
+  paymentStatus  String  @default("unpaid")
+  couponCode     String?
+  originalAmount Int
+  finalAmount    Int
+
+  // Payment audit
+  razorpayOrderId      String?
+  razorpayPaymentId    String?
+  paymentPendingReason String?
+  paymentGatewayError  String?
+  paymentExpiresAt     DateTime?
+  paymentFailedAt      DateTime?
+  paymentExpiredAt     DateTime?
+
+  // Booking metadata
+  selectedDate    String?
+  bookingWindowId String?
+  bookingSource   String  @default("website")
+  serviceAddress  String?
+  serviceLandmark String?
+  servicePincode  String?
+  serviceLocationUrl String?
+  addressUpdatedAt DateTime?
+
+  // Dispatch
+  assignedTeamId String?
+  assignedTeam   Team?   @relation(fields: [assignedTeamId], references: [id])
+  groomerMemberId String?
+  groomerMember   TeamMember? @relation(fields: [groomerMemberId], references: [id])
+  dispatchState  String  @default("unassigned")
+  adminNote      String?
+
+  // Loyalty snapshot fields
+  loyaltyEligible             Boolean   @default(false)
+  loyaltyCompletedCountBefore Int?
+  loyaltyCompletedCountAfter  Int?
+  loyaltyRewardApplied        Boolean   @default(false)
+  loyaltyRewardLabel          String?
+  loyaltyCountedAt            DateTime?
+  loyaltyRewardRestored       Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  pets           BookingPet[]
+  slots          BookingSlot[]
+  relayCalls     RelayCallSession[]
+  dispatchAlerts DispatchAlert[]
+  customerMessages BookingCustomerMessage[]
+  supportCases   BookingSupportCase[]
+  events         BookingEvent[]
+  sopSteps       BookingSopStep[]
+  sopProofs      BookingSopProof[]
+  paymentCollection BookingPaymentCollection?
+  groomerRewardEvents GroomerRewardEvent[]
+
+  @@index([selectedDate, status])
+  @@index([assignedTeamId])
+  @@index([groomerMemberId])
+  @@index([userId])
+}
+
+model TeamMember {
+  id        String   @id @default(uuid())
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  name      String
+  phone     String?
+  passwordHash String?
+  passwordSetAt DateTime?
+  role      String   @default("groomer")
+  isActive  Boolean  @default(true)
+  joinedAt  DateTime @default(now())
+
+  currentXp       Int    @default(0)
+  lifetimeXp      Int    @default(0)
+  rewardPoints    Int    @default(0)
+  trustScore      Int    @default(100)
+  performanceScore Int   @default(100)
+  currentLevel    Int    @default(1)
+  currentRank     String @default("Starter")
+  salaryHikeStage Int    @default(0)
+  completedCount  Int    @default(0)
+  onTimeCount     Int    @default(0)
+  reviewCount     Int    @default(0)
+  highestReviewStreak Int @default(0)
+  punctualityStreak Int  @default(0)
+  reviewStreak    Int    @default(0)
+  noLeaveStreakDays Int  @default(0)
+  lastCompletedAt DateTime?
+  lastReviewAt    DateTime?
+  lastOnTimeAt    DateTime?
+
+  aadhaarNumber          String?
+  aadhaarImageUrl        String?
+  panNumber              String?
+  panImageUrl            String?
+  bankAccountName        String?
+  bankAccountNumber      String?
+  bankIfsc               String?
+  bankName               String?
+  upiId                  String?
+  emergencyContactName   String?
+  emergencyContactPhone  String?
+  yearsExperience        Int?
+  experienceNotes        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  bookings     Booking[]
+  rewardEvents GroomerRewardEvent[]
+  leaderboardSnapshots TeamLeaderboardSnapshot[]
+  leaveRequests WorkforceLeaveRequest[]
+  salaryAdvanceRequests WorkforceSalaryAdvanceRequest[]
+  referralsMade WorkforceReferralRecord[] @relation("ReferralReferrer")
+  trainingCompletions TrainingCompletion[]
+  trainingInterests WorkforceTrainingInterest[]
+  rewardRedemptionRequests WorkforceRewardRedemptionRequest[]
+
+  @@index([teamId, isActive])
+}
+
+model TeamLeaderboardSnapshot {
+  id           String     @id @default(uuid())
+  teamId       String
+  team         Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamMemberId String
+  teamMember   TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+
+  snapshotDate DateTime
+  position     Int
+  currentXp    Int
+  performanceScore Int
+  trustScore   Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([teamMemberId, snapshotDate])
+  @@index([teamId, snapshotDate, position])
+  @@index([teamMemberId, snapshotDate])
+}
+
+model GroomerRewardEvent {
+  id           String      @id @default(uuid())
+  teamMemberId String
+  teamMember   TeamMember  @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+  bookingId     String?
+  booking       Booking?    @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  eventType  String
+  summary    String
+  xpAwarded  Int
+  rewardPointsAwarded Int @default(0)
+  trustDelta Int @default(0)
+  performanceDelta Int @default(0)
+  metadataJson String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([teamMemberId, bookingId, eventType])
+  @@index([teamMemberId, createdAt])
+}
+
+model WorkforceLeaveRequest {
+  id           String     @id @default(uuid())
+  teamMemberId String
+  teamMember   TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+
+  leaveType    String
+  status       String     @default("pending")
+  emergencyFlag Boolean   @default(false)
+  startDate    DateTime
+  endDate      DateTime
+  reason       String
+  reviewNote   String?
+  requestedBy  String?
+  reviewedBy   String?
+  requestedAt  DateTime   @default(now())
+  reviewedAt   DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
+
+  @@index([teamMemberId, status, startDate])
+}
+
+model WorkforceSalaryAdvanceRequest {
+  id                  String     @id @default(uuid())
+  teamMemberId        String
+  teamMember          TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+
+  status              String     @default("pending")
+  amount              Int
+  reason              String
+  eligibilitySnapshot Boolean    @default(false)
+  tenureMonthsSnapshot Int       @default(0)
+  trustScoreSnapshot  Int        @default(0)
+  performanceSnapshot Int        @default(0)
+  nextEligibleAt      DateTime?
+  reviewNote          String?
+  requestedBy         String?
+  reviewedBy          String?
+  requestedAt         DateTime   @default(now())
+  reviewedAt          DateTime?
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @default(now()) @updatedAt
+
+  @@index([teamMemberId, status, requestedAt])
+}
+
+model WorkforceReferralRecord {
+  id               String      @id @default(uuid())
+  referrerMemberId String
+  referrerMember   TeamMember  @relation("ReferralReferrer", fields: [referrerMemberId], references: [id], onDelete: Cascade)
+
+  candidateName    String
+  candidatePhone   String?
+  role             String      @default("groomer")
+  status           String      @default("referred")
+  notes            String?
+  joinedAt         DateTime?
+  probationPassedAt DateTime?
+  rewardIssuedAt   DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @default(now()) @updatedAt
+
+  @@index([referrerMemberId, status, createdAt])
+}
+
+model TrainingModule {
+  id                String   @id @default(uuid())
+  title             String
+  category          String
+  description       String?
+  xpReward          Int      @default(30)
+  rewardPointsReward Int     @default(10)
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now()) @updatedAt
+
+  completions TrainingCompletion[]
+  interests   WorkforceTrainingInterest[]
+}
+
+model WorkforceTrainingInterest {
+  id           String     @id @default(uuid())
+  teamMemberId String
+  teamMember   TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+  moduleId     String
+  module       TrainingModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  status      String   @default("interested")
+  note        String?
+  requestedAt DateTime @default(now())
+  reviewedAt  DateTime?
+  reviewNote  String?
+
+  @@unique([teamMemberId, moduleId])
+  @@index([teamMemberId, status, requestedAt])
+}
+
+model WorkforceRewardRedemptionRequest {
+  id           String     @id @default(uuid())
+  teamMemberId String
+  teamMember   TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+
+  rewardKey    String
+  rewardTitle  String
+  creditsCost  Int
+  status       String     @default("pending")
+  note         String?
+  requestedAt  DateTime   @default(now())
+  reviewedAt   DateTime?
+  reviewNote   String?
+
+  @@index([teamMemberId, status, requestedAt])
+}
+
+model TrainingCompletion {
+  id           String      @id @default(uuid())
+  moduleId     String
+  module       TrainingModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  teamMemberId String
+  teamMember   TeamMember  @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+
+  status       String      @default("completed")
+  score        Int?
+  notes        String?
+  completedAt  DateTime    @default(now())
+  completedBy  String?
+  createdAt    DateTime    @default(now())
+
+  @@unique([moduleId, teamMemberId])
+  @@index([teamMemberId, completedAt])
+}
+
+model BlogPost {
+  id             String   @id @default(uuid())
+  slug           String   @unique
+  title          String
+  excerpt        String
+  body           String
+  category       String?
+  coverImageUrl  String?
+  readTimeMinutes Int     @default(5)
+  isPublished    Boolean  @default(false)
+  publishedAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+
+  @@index([isPublished, publishedAt])
+  @@index([slug])
+}
+
+model LegalDocument {
+  id            String   @id @default(uuid())
+  slug          String   @unique
+  title         String
+  summary       String
+  effectiveDate String
+  body          String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+
+  @@index([slug])
+}
+
+model BookingEvent {
+  id        String  @id @default(uuid())
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  type         String
+  actor        String?
+  summary      String
+  metadataJson String?
+
+  createdAt DateTime @default(now())
+
+  @@index([bookingId, createdAt])
+}
+
+model BookingSopStep {
+  id        String  @id @default(uuid())
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  stepKey     String
+  status      String   @default("pending")
+  notes       String?
+  completedAt DateTime?
+  completedBy String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  proofs BookingSopProof[]
+
+  @@unique([bookingId, stepKey])
+  @@index([bookingId, status])
+}
+
+model BookingSopProof {
+  id        String  @id @default(uuid())
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  bookingSopStepId String?
+  sopStep          BookingSopStep? @relation(fields: [bookingSopStepId], references: [id], onDelete: SetNull)
+
+  stepKey      String
+  proofType    String
+  storageKey   String
+  publicUrl    String
+  originalName String
+  mimeType     String
+  sizeBytes    Int
+
+  createdAt DateTime @default(now())
+
+  @@index([bookingId, stepKey, createdAt])
+}
+
+model BookingPaymentCollection {
+  id        String  @id @default(uuid())
+  bookingId String  @unique
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  collectionMode String
+  collectedAmount Int
+  expectedAmount  Int
+  mismatchFlag    Boolean @default(false)
+  notes           String?
+  recordedAt      DateTime @default(now())
+  recordedBy      String?
+
+  @@index([mismatchFlag, recordedAt])
+}
+
+model BookingPet {
+  id        String  @id @default(uuid())
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id])
+  petId     String
+  pet       Pet     @relation(fields: [petId], references: [id])
+
+  sourcePetId    String?
+  isSavedProfile Boolean @default(false)
+
+  stylingNotes  String?
+  groomingNotes String?
+
+  assets BookingPetAsset[]
+}
+
+model BookingSlot {
+  id        String  @id @default(uuid())
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id])
+  slotId    String
+  slot      Slot    @relation(fields: [slotId], references: [id])
+
+  // hold | confirmed | released
+  status    String  @default("confirmed")
+}
+
+model BookingPetAsset {
+  id           String     @id @default(uuid())
+  bookingPetId String
+  bookingPet   BookingPet @relation(fields: [bookingPetId], references: [id], onDelete: Cascade)
+
+  kind         String
+  storageKey   String
+  publicUrl    String
+  originalName String
+
+  createdAt DateTime @default(now())
+}
+
+model BookingDraftAsset {
+  id             String @id @default(uuid())
+  bookingDraftId String
+  kind           String
+  storageKey     String
+  publicUrl      String
+  originalName   String
+  petIndex       Int
+
+  createdAt DateTime @default(now())
+}
+
+// ─── Relay Calls ──────────────────────────────────────────────────────────────
+
+model RelayCallSession {
+  id        String   @id @default(uuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id])
+
+  initiatedAt  DateTime  @default(now())
+  connectedAt  DateTime?
+  endedAt      DateTime?
+  durationSecs Int?
+  outcome      String?   // connected | no_answer | failed
+
+  @@index([bookingId])
+}
+
+// ─── Dispatch Alerts ──────────────────────────────────────────────────────────
+
+model DispatchAlert {
+  id        String   @id @default(uuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id])
+
+  alertType  String   // daily_digest | same_day | manual
+  sentAt     DateTime @default(now())
+  telegramMessageId String?
+  success    Boolean  @default(false)
+  errorMsg   String?
+
+  @@index([bookingId])
+  @@index([teamId, sentAt])
+}
+
+model BookingCustomerMessage {
+  id        String   @id @default(uuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  channel      String
+  messageType  String
+  language     String   @default("en_hi")
+  status       String   @default("prepared")
+  recipient    String
+  content      String
+  actionUrl    String?
+  providerRef  String?
+  errorMsg     String?
+  preparedAt   DateTime @default(now())
+  sentAt       DateTime?
+
+  @@index([bookingId, preparedAt])
+}
+
+model BookingSupportCase {
+  id        String   @id @default(uuid())
+  bookingId String?
+  booking   Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  category     String
+  status       String   @default("open")
+  priority     String   @default("medium")
+  source       String   @default("admin")
+  summary      String
+  details      String?
+  resolution   String?
+
+  customerName  String?
+  customerPhone String?
+  city          String?
+
+  openedBy   String?
+  resolvedBy String?
+  openedAt   DateTime @default(now())
+  resolvedAt DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@index([bookingId, openedAt])
+  @@index([category, status, priority])
+}

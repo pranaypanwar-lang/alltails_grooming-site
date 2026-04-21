@@ -1,0 +1,792 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft, Loader2, Plus, Search, Sparkles, Trash2 } from "lucide-react";
+import { getBreedSuggestions, normalizeBreedName } from "../../../../lib/pets/breeds";
+import {
+  createAdminManualBooking,
+  fetchAdminBookingCreateMeta,
+  fetchAdminSavedPetsByPhone,
+} from "../../lib/api";
+import type {
+  AdminBookingCreateMetaResponse,
+  AdminManualBookingPayload,
+  AdminManualBookingResponse,
+  AdminManualBookingSource,
+  AdminSavedPet,
+} from "../../types";
+import { AdminPageHeader } from "../../components/common/AdminPageHeader";
+import { useAdminToast } from "../../components/common/AdminToastProvider";
+
+type BookingWindowOption = {
+  bookingWindowId: string;
+  teamId: string;
+  teamName: string;
+  petCount: number;
+  startTime: string;
+  endTime: string;
+  slotLabels: string[];
+  slotIds: string[];
+  displayLabel: string;
+};
+
+type ManualPetDraft = {
+  id: string;
+  sourcePetId?: string;
+  name: string;
+  breed: string;
+  groomingNotes: string;
+  stylingNotes: string;
+};
+
+const SOURCE_OPTIONS: Array<{ value: AdminManualBookingSource; label: string }> = [
+  { value: "call", label: "Call" },
+  { value: "instagram_dm", label: "Instagram DM" },
+  { value: "whatsapp", label: "WhatsApp" },
+  { value: "manual_internal", label: "Manual internal" },
+];
+
+function makePetDraft(seed?: Partial<ManualPetDraft>): ManualPetDraft {
+  return {
+    id: Math.random().toString(36).slice(2, 10),
+    sourcePetId: seed?.sourcePetId,
+    name: seed?.name ?? "",
+    breed: seed?.breed ?? "",
+    groomingNotes: seed?.groomingNotes ?? "",
+    stylingNotes: seed?.stylingNotes ?? "",
+  };
+}
+
+export default function AdminNewBookingPage() {
+  const { showToast } = useAdminToast();
+  const [meta, setMeta] = useState<AdminBookingCreateMetaResponse | null>(null);
+  const [metaLoading, setMetaLoading] = useState(true);
+  const [metaError, setMetaError] = useState("");
+
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
+  const [serviceAreaSlug, setServiceAreaSlug] = useState("");
+  const [serviceName, setServiceName] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"pay_now" | "pay_after_service">(
+    "pay_now"
+  );
+  const [couponCode, setCouponCode] = useState("");
+  const [source, setSource] = useState<AdminManualBookingSource>("call");
+  const [adminNote, setAdminNote] = useState("");
+  const [pets, setPets] = useState<ManualPetDraft[]>([makePetDraft()]);
+  const [activeBreedPetId, setActiveBreedPetId] = useState<string | null>(null);
+
+  const [savedPets, setSavedPets] = useState<AdminSavedPet[]>([]);
+  const [savedPetsLoading, setSavedPetsLoading] = useState(false);
+  const [savedPetsError, setSavedPetsError] = useState("");
+  const [savedPetsLookupPhone, setSavedPetsLookupPhone] = useState("");
+
+  const [availabilityLoading, setAvailabilityLoading] = useState(false);
+  const [availabilityError, setAvailabilityError] = useState("");
+  const [bookingWindows, setBookingWindows] = useState<BookingWindowOption[]>([]);
+  const [selectedBookingWindowId, setSelectedBookingWindowId] = useState("");
+
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [success, setSuccess] = useState<AdminManualBookingResponse | null>(null);
+
+  useEffect(() => {
+    const loadMeta = async () => {
+      setMetaLoading(true);
+      setMetaError("");
+      try {
+        const data = await fetchAdminBookingCreateMeta();
+        setMeta(data);
+      } catch (error) {
+        setMetaError(error instanceof Error ? error.message : "Failed to load booking options");
+      } finally {
+        setMetaLoading(false);
+      }
+    };
+
+    void loadMeta();
+  }, []);
+
+  const selectedWindow = useMemo(
+    () => bookingWindows.find((window) => window.bookingWindowId === selectedBookingWindowId) ?? null,
+    [bookingWindows, selectedBookingWindowId]
+  );
+
+  const canLookupSavedPets = phone.replace(/\D/g, "").length >= 10;
+  const canLoadAvailability =
+    !!serviceAreaSlug &&
+    !!selectedDate &&
+    pets.length > 0 &&
+    pets.every((pet) => pet.breed.trim());
+  const canSubmit =
+    !!name.trim() &&
+    !!phone.trim() &&
+    !!city &&
+    !!serviceName &&
+    !!selectedDate &&
+    !!selectedWindow &&
+    pets.length > 0 &&
+    pets.every((pet) => pet.breed.trim()) &&
+    !submitLoading;
+
+  const resetBookingState = () => {
+    setName("");
+    setPhone("");
+    setCity("");
+    setServiceAreaSlug("");
+    setServiceName("");
+    setSelectedDate("");
+    setPaymentMethod("pay_now");
+    setCouponCode("");
+    setSource("call");
+    setAdminNote("");
+    setPets([makePetDraft()]);
+    setSavedPets([]);
+    setSavedPetsError("");
+    setSavedPetsLookupPhone("");
+    setAvailabilityError("");
+    setBookingWindows([]);
+    setSelectedBookingWindowId("");
+    setSuccess(null);
+  };
+
+  const updatePet = (id: string, patch: Partial<ManualPetDraft>) => {
+    setPets((current) =>
+      current.map((pet) => (pet.id === id ? { ...pet, ...patch } : pet))
+    );
+    setSelectedBookingWindowId("");
+  };
+
+  const handlePetBreedInputChange = (id: string, value: string) => {
+    setActiveBreedPetId(id);
+    updatePet(id, { breed: value });
+  };
+
+  const handleSelectBreedSuggestion = (id: string, breed: string) => {
+    updatePet(id, { breed: normalizeBreedName(breed) });
+    setActiveBreedPetId(null);
+  };
+
+  const handlePetBreedBlur = (id: string) => {
+    window.setTimeout(() => {
+      setPets((current) =>
+        current.map((pet) =>
+          pet.id === id ? { ...pet, breed: normalizeBreedName(pet.breed) } : pet
+        )
+      );
+      setActiveBreedPetId((current) => (current === id ? null : current));
+    }, 120);
+  };
+
+  const removePet = (id: string) => {
+    setPets((current) => {
+      const next = current.filter((pet) => pet.id !== id);
+      return next.length ? next : [makePetDraft()];
+    });
+    setSelectedBookingWindowId("");
+  };
+
+  const addBlankPet = () => {
+    setPets((current) => [...current, makePetDraft()]);
+    setSelectedBookingWindowId("");
+  };
+
+  const isSavedPetSelected = (petId: string) =>
+    pets.some((pet) => pet.sourcePetId === petId);
+
+  const toggleSavedPet = (savedPet: AdminSavedPet) => {
+    setPets((current) => {
+      const existingIndex = current.findIndex((pet) => pet.sourcePetId === savedPet.petId);
+      if (existingIndex >= 0) {
+        const next = current.filter((pet) => pet.sourcePetId !== savedPet.petId);
+        return next.length ? next : [makePetDraft()];
+      }
+
+      return [
+        ...current,
+        makePetDraft({
+          sourcePetId: savedPet.petId,
+          name: savedPet.name ?? "",
+          breed: savedPet.breed,
+          groomingNotes: savedPet.defaultGroomingNotes ?? "",
+          stylingNotes: savedPet.defaultStylingNotes ?? "",
+        }),
+      ];
+    });
+    setSelectedBookingWindowId("");
+  };
+
+  const lookupSavedPets = async () => {
+    if (!canLookupSavedPets) {
+      setSavedPets([]);
+      setSavedPetsError("Enter a valid 10-digit phone number first.");
+      return;
+    }
+
+    setSavedPetsLoading(true);
+    setSavedPetsError("");
+    try {
+      const data = await fetchAdminSavedPetsByPhone(phone);
+      setSavedPets(data.pets);
+      setSavedPetsLookupPhone(phone);
+      if (!data.found || data.pets.length === 0) {
+        setSavedPetsError("No saved companions found for this phone number.");
+      }
+    } catch (error) {
+      setSavedPetsError(error instanceof Error ? error.message : "Failed to load saved pets.");
+    } finally {
+      setSavedPetsLoading(false);
+    }
+  };
+
+  const loadAvailability = async () => {
+    if (!canLoadAvailability) {
+      setAvailabilityError("Select a city, date, and valid pet details first.");
+      return;
+    }
+
+    setAvailabilityLoading(true);
+    setAvailabilityError("");
+    setSelectedBookingWindowId("");
+    try {
+      const res = await fetch("/api/booking/availability", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          city: serviceAreaSlug,
+          startDate: selectedDate,
+          days: 1,
+          petCount: pets.length,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.error ?? "Failed to load availability");
+      }
+
+      const windows = (data?.dates?.[0]?.bookingWindows ?? []) as BookingWindowOption[];
+      setBookingWindows(windows);
+      if (windows.length === 0) {
+        setAvailabilityError("No booking windows are available for this date and service area.");
+      }
+    } catch (error) {
+      setAvailabilityError(error instanceof Error ? error.message : "Failed to load availability");
+      setBookingWindows([]);
+    } finally {
+      setAvailabilityLoading(false);
+    }
+  };
+
+  const submit = async () => {
+    if (!selectedWindow) return;
+
+    const payload: AdminManualBookingPayload = {
+      name: name.trim(),
+      phone: phone.trim(),
+      city,
+      serviceName,
+      selectedDate,
+      bookingWindowId: selectedWindow.bookingWindowId,
+      slotIds: selectedWindow.slotIds,
+      paymentMethod,
+      couponCode: paymentMethod === "pay_now" ? couponCode.trim().toUpperCase() : "",
+      source,
+      adminNote: adminNote.trim(),
+      pets: pets.map((pet) => ({
+        sourcePetId: pet.sourcePetId,
+        isSavedProfile: !!pet.sourcePetId,
+        name: pet.name.trim(),
+        breed: pet.breed.trim(),
+        groomingNotes: pet.groomingNotes.trim(),
+        stylingNotes: pet.stylingNotes.trim(),
+      })),
+    };
+
+    setSubmitLoading(true);
+    try {
+      const data = await createAdminManualBooking(payload);
+      setSuccess(data);
+      showToast("Manual booking created.", true);
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Failed to create booking.", false);
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  if (success) {
+    return (
+      <div className="min-h-screen bg-[#f7f7fb]">
+        <div className="mx-auto max-w-[1080px] px-4 py-6 md:px-6 lg:px-8">
+          <AdminPageHeader
+            title="Booking created"
+            subtitle="The booking has been created inside the admin console."
+            rightSlot={
+              <Link
+                href="/admin/bookings"
+                className="inline-flex h-[42px] items-center gap-2 rounded-[14px] border border-[#ddd1fb] bg-white px-4 text-[13px] font-semibold text-[#6d5bd0] transition-colors hover:bg-[#f6f4fd]"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Back to bookings
+              </Link>
+            }
+          />
+
+          <div className="rounded-[28px] border border-[#ece5ff] bg-white p-6 shadow-[0_18px_48px_rgba(73,44,120,0.08)]">
+            <div className="inline-flex rounded-full bg-[#f4efff] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-[#6d5bd0]">
+              Success
+            </div>
+            <h2 className="mt-4 text-[28px] font-black tracking-[-0.03em] text-[#1f1f2c]">
+              Booking {success.bookingId.slice(0, 8)} is ready
+            </h2>
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <div className="rounded-[20px] border border-[#ece5ff] bg-[#fcfbff] p-4">
+                <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Status</div>
+                <div className="mt-2 text-[14px] text-[#2a2346]">
+                  Payment: <span className="font-semibold">{success.paymentStatus}</span>
+                </div>
+                <div className="mt-1 text-[14px] text-[#2a2346]">
+                  Booking: <span className="font-semibold">{success.status}</span>
+                </div>
+                <div className="mt-1 text-[14px] text-[#2a2346]">
+                  Final amount: <span className="font-semibold">₹{success.finalAmount.toLocaleString("en-IN")}</span>
+                </div>
+              </div>
+              <div className="rounded-[20px] border border-[#ece5ff] bg-[#fcfbff] p-4">
+                <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Window</div>
+                <div className="mt-2 text-[14px] text-[#2a2346]">{success.selectedDate}</div>
+                <div className="mt-1 text-[14px] text-[#2a2346]">{success.bookingWindowId}</div>
+                {success.paymentOrder ? (
+                  <div className="mt-3 rounded-[14px] bg-[#fff8eb] px-3 py-2 text-[12px] text-[#9a6700]">
+                    Razorpay order created: <span className="font-mono">{success.paymentOrder.orderId}</span>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={resetBookingState}
+                className="inline-flex h-[44px] items-center gap-2 rounded-[14px] bg-[#6d5bd0] px-5 text-[13px] font-semibold text-white transition-colors hover:bg-[#5b4ab5]"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Create another booking
+              </button>
+              <Link
+                href="/admin/bookings"
+                className="inline-flex h-[44px] items-center rounded-[14px] border border-[#ddd1fb] bg-white px-5 text-[13px] font-semibold text-[#6d5bd0] transition-colors hover:bg-[#f6f4fd]"
+              >
+                Return to bookings list
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#f7f7fb]">
+      <div className="mx-auto max-w-[1080px] px-4 py-6 md:px-6 lg:px-8">
+        <AdminPageHeader
+          title="Create booking"
+          subtitle="Capture phone-call, DM, WhatsApp, and internal bookings without leaving the ops console."
+          rightSlot={
+            <Link
+              href="/admin/bookings"
+              className="inline-flex h-[42px] items-center gap-2 rounded-[14px] border border-[#ddd1fb] bg-white px-4 text-[13px] font-semibold text-[#6d5bd0] transition-colors hover:bg-[#f6f4fd]"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Back to bookings
+            </Link>
+          }
+        />
+
+        {metaError ? (
+          <div className="mb-4 rounded-[18px] border border-[#f7d7d7] bg-[#fff8f8] px-4 py-3 text-[13px] text-[#b42318]">
+            {metaError}
+          </div>
+        ) : null}
+
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
+          <div className="space-y-5">
+            <section className="rounded-[28px] border border-[#ece5ff] bg-white p-5 shadow-[0_18px_48px_rgba(73,44,120,0.06)]">
+              <div className="text-[18px] font-black tracking-[-0.02em] text-[#1f1f2c]">Customer</div>
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
+                <label className="block">
+                  <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Customer name</div>
+                  <input
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                    placeholder="Pet parent name"
+                  />
+                </label>
+                <label className="block">
+                  <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Phone</div>
+                  <div className="flex gap-2">
+                    <input
+                      value={phone}
+                      onChange={(event) => setPhone(event.target.value)}
+                      className="h-[46px] min-w-0 flex-1 rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                      placeholder="9876543210"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => void lookupSavedPets()}
+                      disabled={!canLookupSavedPets || savedPetsLoading}
+                      className="inline-flex h-[46px] items-center gap-2 rounded-[14px] border border-[#ddd1fb] bg-white px-4 text-[13px] font-semibold text-[#6d5bd0] transition-colors hover:bg-[#f6f4fd] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {savedPetsLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Search className="h-3.5 w-3.5" />}
+                      Saved pets
+                    </button>
+                  </div>
+                </label>
+                <label className="block">
+                  <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">City</div>
+                  <select
+                    value={serviceAreaSlug}
+                    onChange={(event) => {
+                      const area = meta?.serviceAreas.find((item) => item.slug === event.target.value) ?? null;
+                      setCity(area?.name ?? "");
+                      setServiceAreaSlug(area?.slug ?? "");
+                      setBookingWindows([]);
+                      setAvailabilityError("");
+                      setSelectedBookingWindowId("");
+                    }}
+                    className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] bg-white px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                    disabled={metaLoading}
+                  >
+                    <option value="">Select city</option>
+                    {meta?.serviceAreas.map((area) => (
+                      <option key={area.id} value={area.slug}>
+                        {area.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block">
+                  <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Service</div>
+                  <select
+                    value={serviceName}
+                    onChange={(event) => setServiceName(event.target.value)}
+                    className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] bg-white px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                    disabled={metaLoading}
+                  >
+                    <option value="">Select service</option>
+                    {meta?.services.map((service) => (
+                      <option key={service.id} value={service.name}>
+                        {service.name} · ₹{service.price.toLocaleString("en-IN")}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              {savedPetsError ? (
+                <div className="mt-3 rounded-[14px] border border-[#f3e4bf] bg-[#fffaf0] px-4 py-3 text-[12px] text-[#9a6700]">
+                  {savedPetsError}
+                </div>
+              ) : null}
+
+              {savedPets.length > 0 ? (
+                <div className="mt-4">
+                  <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">
+                    Saved companions {savedPetsLookupPhone ? `for ${savedPetsLookupPhone}` : ""}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {savedPets.map((pet) => {
+                      const selected = isSavedPetSelected(pet.petId);
+                      return (
+                        <button
+                          key={pet.petId}
+                          type="button"
+                          onClick={() => toggleSavedPet(pet)}
+                          className={`rounded-[14px] border px-3 py-2 text-left transition-colors ${
+                            selected
+                              ? "border-[#6d5bd0] bg-[#f6f3ff] text-[#4c3ca1]"
+                              : "border-[#ece5ff] bg-white text-[#2a2346] hover:bg-[#f9f7ff]"
+                          }`}
+                        >
+                          <div className="text-[13px] font-semibold">{pet.name || "Unnamed pet"}</div>
+                          <div className="text-[12px] text-[#7c8499]">{pet.breed}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
+            </section>
+
+            <section className="rounded-[28px] border border-[#ece5ff] bg-white p-5 shadow-[0_18px_48px_rgba(73,44,120,0.06)]">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <div className="text-[18px] font-black tracking-[-0.02em] text-[#1f1f2c]">Pets</div>
+                  <div className="mt-1 text-[13px] text-[#7c8499]">Saved profiles and manual pet details both work here.</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={addBlankPet}
+                  className="inline-flex h-[40px] items-center gap-2 rounded-[14px] border border-[#ddd1fb] bg-white px-4 text-[13px] font-semibold text-[#6d5bd0] transition-colors hover:bg-[#f6f4fd]"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  Add pet
+                </button>
+              </div>
+
+              <div className="mt-4 space-y-4">
+                {pets.map((pet, index) => (
+                  <div key={pet.id} className="rounded-[22px] border border-[#ece5ff] bg-[#fcfbff] p-4">
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <div className="text-[14px] font-bold text-[#2a2346]">
+                        Pet {index + 1}
+                        {pet.sourcePetId ? (
+                          <span className="ml-2 rounded-full bg-[#f4efff] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[#6d5bd0]">
+                            saved profile
+                          </span>
+                        ) : null}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removePet(pet.id)}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#f0e2e2] text-[#c24134] transition-colors hover:bg-[#fff4f4]"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <label className="block">
+                        <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Name</div>
+                        <input
+                          value={pet.name}
+                          onChange={(event) => updatePet(pet.id, { name: event.target.value })}
+                          className="h-[44px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                          placeholder="Pet name"
+                        />
+                      </label>
+                      <label className="block">
+                        <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Breed</div>
+                        <div className="relative">
+                          <input
+                            value={pet.breed}
+                            onChange={(event) => handlePetBreedInputChange(pet.id, event.target.value)}
+                            onFocus={() => setActiveBreedPetId(pet.id)}
+                            onBlur={() => handlePetBreedBlur(pet.id)}
+                            className="h-[44px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                            placeholder="Breed"
+                          />
+                          {activeBreedPetId === pet.id && getBreedSuggestions(pet.breed).length > 0 ? (
+                            <div className="absolute left-0 right-0 top-[52px] z-20 overflow-hidden rounded-[18px] border border-[#ece5ff] bg-white shadow-[0_16px_36px_rgba(73,44,120,0.12)]">
+                              {getBreedSuggestions(pet.breed).map((breed) => (
+                                <button
+                                  key={breed}
+                                  type="button"
+                                  onMouseDown={(event) => event.preventDefault()}
+                                  onClick={() => handleSelectBreedSuggestion(pet.id, breed)}
+                                  className="flex w-full items-center justify-between px-5 py-3 text-left text-[14px] text-[#2a2346] hover:bg-[#faf8ff]"
+                                >
+                                  <span>{breed}</span>
+                                  <span className="text-[12px] text-[#8a90a6]">Select</span>
+                                </button>
+                              ))}
+                              <div className="border-t border-[#f2edff] bg-[#fcfbff] px-5 py-2.5 text-[11px] text-[#6b7280]">
+                                Can&apos;t find the breed? Continue typing.
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+                      </label>
+                      <label className="block">
+                        <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Grooming notes</div>
+                        <textarea
+                          value={pet.groomingNotes}
+                          onChange={(event) => updatePet(pet.id, { groomingNotes: event.target.value })}
+                          rows={3}
+                          className="w-full rounded-[14px] border border-[#ddd1fb] px-4 py-3 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                          placeholder="Skin sensitivity, handling note, etc."
+                        />
+                      </label>
+                      <label className="block">
+                        <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Styling notes</div>
+                        <textarea
+                          value={pet.stylingNotes}
+                          onChange={(event) => updatePet(pet.id, { stylingNotes: event.target.value })}
+                          rows={3}
+                          className="w-full rounded-[14px] border border-[#ddd1fb] px-4 py-3 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                          placeholder="Trim style, coat finish, haircut preference."
+                        />
+                      </label>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="rounded-[28px] border border-[#ece5ff] bg-white p-5 shadow-[0_18px_48px_rgba(73,44,120,0.06)]">
+              <div className="text-[18px] font-black tracking-[-0.02em] text-[#1f1f2c]">Date & slot</div>
+              <div className="mt-4 grid gap-4 md:grid-cols-[220px_minmax(0,1fr)]">
+                <label className="block">
+                  <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Date</div>
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(event) => {
+                      setSelectedDate(event.target.value);
+                      setBookingWindows([]);
+                      setAvailabilityError("");
+                      setSelectedBookingWindowId("");
+                    }}
+                    className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                  />
+                </label>
+                <div className="flex items-end">
+                  <button
+                    type="button"
+                    onClick={() => void loadAvailability()}
+                    disabled={!canLoadAvailability || availabilityLoading}
+                    className="inline-flex h-[46px] items-center gap-2 rounded-[14px] bg-[#6d5bd0] px-5 text-[13px] font-semibold text-white transition-colors hover:bg-[#5b4ab5] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {availabilityLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Search className="h-3.5 w-3.5" />}
+                    Load available windows
+                  </button>
+                </div>
+              </div>
+
+              {availabilityError ? (
+                <div className="mt-3 rounded-[14px] border border-[#f3e4bf] bg-[#fffaf0] px-4 py-3 text-[12px] text-[#9a6700]">
+                  {availabilityError}
+                </div>
+              ) : null}
+
+              {bookingWindows.length > 0 ? (
+                <div className="mt-4 grid gap-3 md:grid-cols-2">
+                  {bookingWindows.map((window) => {
+                    const selected = window.bookingWindowId === selectedBookingWindowId;
+                    return (
+                      <button
+                        key={window.bookingWindowId}
+                        type="button"
+                        onClick={() => setSelectedBookingWindowId(window.bookingWindowId)}
+                        className={`rounded-[20px] border p-4 text-left transition-colors ${
+                          selected
+                            ? "border-[#6d5bd0] bg-[#f6f3ff]"
+                            : "border-[#ece5ff] bg-white hover:bg-[#fcfbff]"
+                        }`}
+                      >
+                        <div className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">{window.teamName}</div>
+                        <div className="mt-2 text-[16px] font-bold text-[#2a2346]">{window.displayLabel}</div>
+                        <div className="mt-1 text-[13px] text-[#7c8499]">{window.slotLabels.join(" · ")}</div>
+                        <div className="mt-3 text-[12px] text-[#6d5bd0]">Covers {window.petCount} pet{window.petCount > 1 ? "s" : ""}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null}
+            </section>
+          </div>
+
+          <aside className="space-y-5">
+            <section className="rounded-[28px] border border-[#ece5ff] bg-white p-5 shadow-[0_18px_48px_rgba(73,44,120,0.06)]">
+              <div className="text-[18px] font-black tracking-[-0.02em] text-[#1f1f2c]">Ops metadata</div>
+              <div className="mt-4 space-y-4">
+                <label className="block">
+                  <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Source</div>
+                  <select
+                    value={source}
+                    onChange={(event) => setSource(event.target.value as AdminManualBookingSource)}
+                    className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] bg-white px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                  >
+                    {SOURCE_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="block">
+                  <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Payment method</div>
+                  <select
+                    value={paymentMethod}
+                    onChange={(event) =>
+                      setPaymentMethod(event.target.value as "pay_now" | "pay_after_service")
+                    }
+                    className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] bg-white px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                  >
+                    <option value="pay_now">Pay now</option>
+                    <option value="pay_after_service">Pay after service</option>
+                  </select>
+                </label>
+
+                <label className="block">
+                  <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Coupon</div>
+                  <input
+                    value={couponCode}
+                    onChange={(event) => setCouponCode(event.target.value.toUpperCase())}
+                    disabled={paymentMethod !== "pay_now"}
+                    className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0] disabled:cursor-not-allowed disabled:bg-[#f7f7fb]"
+                    placeholder="WELCOME10"
+                  />
+                </label>
+
+                <label className="block">
+                  <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Ops note</div>
+                  <textarea
+                    value={adminNote}
+                    onChange={(event) => setAdminNote(event.target.value)}
+                    rows={5}
+                    className="w-full rounded-[14px] border border-[#ddd1fb] px-4 py-3 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                    placeholder="DM follow-up needed, late-arrival risk, anxious pet, customer requested callback..."
+                  />
+                </label>
+              </div>
+            </section>
+
+            <section className="rounded-[28px] border border-[#ece5ff] bg-white p-5 shadow-[0_18px_48px_rgba(73,44,120,0.06)]">
+              <div className="text-[18px] font-black tracking-[-0.02em] text-[#1f1f2c]">Summary</div>
+              <div className="mt-4 space-y-2 text-[13px] text-[#6b7280]">
+                <div className="flex items-center justify-between gap-3">
+                  <span>Pets</span>
+                  <span className="font-semibold text-[#2a2346]">{pets.length}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span>Window</span>
+                  <span className="text-right font-semibold text-[#2a2346]">{selectedWindow?.displayLabel ?? "Not selected"}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span>Team</span>
+                  <span className="text-right font-semibold text-[#2a2346]">{selectedWindow?.teamName ?? "TBD"}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span>Payment</span>
+                  <span className="font-semibold text-[#2a2346]">{paymentMethod === "pay_now" ? "Pay now" : "Pay after service"}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span>Source</span>
+                  <span className="font-semibold text-[#2a2346]">
+                    {SOURCE_OPTIONS.find((option) => option.value === source)?.label}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => void submit()}
+                disabled={!canSubmit}
+                className="mt-5 inline-flex h-[48px] w-full items-center justify-center gap-2 rounded-[16px] bg-[#6d5bd0] px-5 text-[14px] font-semibold text-white transition-colors hover:bg-[#5b4ab5] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {submitLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                Create booking
+              </button>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </div>
+  );
+}
