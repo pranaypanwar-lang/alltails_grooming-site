@@ -215,48 +215,20 @@ export async function createBookingWithBusinessRules(
     const isPrepaidHold = input.paymentMethod === "pay_now" && finalAmount > 0;
     const paymentExpiresAt = isPrepaidHold ? getPaymentExpiry() : null;
 
-    if (isPrepaidHold) {
-      const slots = await tx.slot.findMany({
-        where: { id: { in: input.slotIds } },
-        include: { team: true },
+    const lockResult = await validateAndLockSlots(tx, input.slotIds, {
+      mode: isPrepaidHold ? "held" : "booked",
+      holdExpiresAt: isPrepaidHold ? paymentExpiresAt : null,
+    });
+    if (!lockResult.ok) {
+      const statusMap: Record<string, number> = {
+        SLOTS_NOT_FOUND: 404,
+        MIXED_TEAMS: 400,
+        NOT_CONSECUTIVE: 400,
+        SLOTS_UNAVAILABLE: 409,
+      };
+      throw Object.assign(new Error(lockResult.error.message), {
+        httpStatus: statusMap[lockResult.error.code] ?? 400,
       });
-
-      if (slots.length !== input.slotIds.length) {
-        throw Object.assign(
-          new Error("One or more selected slots were not found"),
-          { httpStatus: 404 }
-        );
-      }
-
-      const teamIds = [...new Set(slots.map((slot) => slot.teamId))];
-      if (teamIds.length > 1) {
-        throw Object.assign(new Error("All slots must belong to the same team"), {
-          httpStatus: 400,
-        });
-      }
-
-      const unavailable = slots.find(
-        (slot) => slot.isBooked || slot.isBlocked || slot.isHeld
-      );
-      if (unavailable) {
-        throw Object.assign(
-          new Error("One or more selected slots are no longer available"),
-          { httpStatus: 409 }
-        );
-      }
-    } else {
-      const lockResult = await validateAndLockSlots(tx, input.slotIds);
-      if (!lockResult.ok) {
-        const statusMap: Record<string, number> = {
-          SLOTS_NOT_FOUND: 404,
-          MIXED_TEAMS: 400,
-          NOT_CONSECUTIVE: 400,
-          SLOTS_UNAVAILABLE: 409,
-        };
-        throw Object.assign(new Error(lockResult.error.message), {
-          httpStatus: statusMap[lockResult.error.code] ?? 400,
-        });
-      }
     }
 
     const booking = await tx.booking.create({
@@ -372,13 +344,6 @@ export async function createBookingWithBusinessRules(
           status: isPrepaidHold ? "hold" : "confirmed",
         },
       });
-
-      if (isPrepaidHold) {
-        await tx.slot.update({
-          where: { id: slotId },
-          data: { isHeld: true, holdExpiresAt: paymentExpiresAt },
-        });
-      }
     }
 
     await tx.bookingEvent.create({
