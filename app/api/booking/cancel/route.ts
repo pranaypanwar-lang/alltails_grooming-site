@@ -4,6 +4,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../lib/generated/prisma";
 import { assertBookingAccessToken, bookingAccessMatchesPhone } from "../_lib/assertBookingAccess";
 import { prepareCustomerMessageForBooking } from "../../../../lib/customerMessaging/service";
+import { processQueuedCustomerMessages } from "../../../../lib/customerMessaging/provider";
 
 export const runtime = "nodejs";
 
@@ -110,6 +111,7 @@ export async function POST(request: Request) {
       deliveryStatus: "queued",
       skipIfPreparedAfter: new Date(Date.now() - 5 * 60 * 1000),
     });
+    await processQueuedCustomerMessages(prisma, { limit: 10 });
 
     return NextResponse.json({
       success: true,
