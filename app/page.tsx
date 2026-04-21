@@ -3737,53 +3737,44 @@ onClick={() => {
               </div>
 
               <div className="relative">
-  <label className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.14em] text-[#8f85c7]">
-    Visit Date
-  </label>
+                <label
+                  htmlFor="mobile-booking-date-input"
+                  className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.14em] text-[#8f85c7]"
+                >
+                  Visit Date
+                </label>
 
-  <button
-    type="button"
-    onClick={() => {
-  const input = document.getElementById("mobile-booking-date-input") as HTMLInputElement | null;
-  if (!input) return;
+                <div className="relative">
+                  <div className="pointer-events-none flex h-[58px] w-full items-center justify-between rounded-[20px] border border-[#d9d2f3] bg-white px-5 text-left shadow-[0_8px_24px_rgba(109,91,208,0.06)]">
+                    <div className="min-w-0">
+                      <div className="text-[11px] font-[700] uppercase tracking-[0.18em] text-[#9a8fc8]">
+                        Select date
+                      </div>
+                      <div
+                        className={`mt-1 truncate text-[17px] font-[600] leading-none ${
+                          selectedDateLabel ? "text-[#2c234d]" : "text-[#9aa1b2]"
+                        }`}
+                      >
+                        {selectedDateLabel || "Choose your visit date"}
+                      </div>
+                    </div>
 
-  const pickerInput = input as HTMLInputElement & {
-    showPicker?: () => void;
-  };
+                    <div className="ml-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#ebe5fb] bg-[#faf8ff]">
+                      <CalendarDays className="h-5 w-5 text-[#6d5bd0]" />
+                    </div>
+                  </div>
 
-  if (typeof pickerInput.showPicker === "function") {
-    pickerInput.showPicker();
-  } else {
-    input.click();
-  }
-}}
-    className="flex h-[58px] w-full items-center justify-between rounded-[20px] border border-[#d9d2f3] bg-white px-5 text-left shadow-[0_8px_24px_rgba(109,91,208,0.06)] transition active:scale-[0.995]"
-  >
-    <div className="min-w-0">
-      <div className="text-[11px] font-[700] uppercase tracking-[0.18em] text-[#9a8fc8]">
-        Select date
-      </div>
-      <div className={`mt-1 truncate text-[17px] font-[600] leading-none ${selectedDateLabel ? "text-[#2c234d]" : "text-[#9aa1b2]"}`}>
-        {selectedDateLabel || "Choose your visit date"}
-      </div>
-    </div>
-
-    <div className="ml-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#ebe5fb] bg-[#faf8ff]">
-      <CalendarDays className="h-5 w-5 text-[#6d5bd0]" />
-    </div>
-  </button>
-
-  <input
-    id="mobile-booking-date-input"
-    name="requiredDate"
-    type="date"
-    value={heroForm.requiredDate}
-    onChange={handleHeroInputChange}
-    className="absolute inset-0 pointer-events-none opacity-0"
-    tabIndex={-1}
-    aria-hidden="true"
-  />
-</div>
+                  <input
+                    id="mobile-booking-date-input"
+                    name="requiredDate"
+                    type="date"
+                    value={heroForm.requiredDate}
+                    onChange={handleHeroInputChange}
+                    className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
+                    aria-label="Select visit date"
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="mt-6 h-px w-full bg-[#eee7fb]" />
