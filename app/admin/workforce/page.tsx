@@ -45,16 +45,18 @@ function ModalShell({
   subtitle,
   onClose,
   children,
+  sizeClass,
 }: {
   title: string;
   subtitle?: string;
   onClose: () => void;
   children: React.ReactNode;
+  sizeClass?: string;
 }) {
   return (
-    <div className="fixed inset-0 z-[360] flex items-center justify-center px-4">
+    <div className="fixed inset-0 z-[360] flex items-center justify-center px-4 py-6">
       <div className="absolute inset-0 bg-[rgba(17,12,33,0.45)]" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-[560px] rounded-[24px] border border-[#ece5ff] bg-white p-5 shadow-[0_20px_60px_rgba(17,12,33,0.18)]">
+      <div className={`relative z-10 w-full max-h-[92vh] overflow-y-auto rounded-[24px] border border-[#ece5ff] bg-white p-5 shadow-[0_20px_60px_rgba(17,12,33,0.18)] ${sizeClass ?? "max-w-[560px]"}`}>
         <div className="text-[20px] font-black tracking-[-0.03em] text-[#1f1f2c]">{title}</div>
         {subtitle ? <div className="mt-1 text-[13px] text-[#7c8499]">{subtitle}</div> : null}
         {children}
@@ -770,7 +772,7 @@ export default function AdminWorkforcePage() {
       </div>
 
       {adjustmentState ? (
-        <ModalShell title="Reward or penalty" subtitle={adjustmentState.memberName} onClose={() => setAdjustmentState(null)}>
+        <ModalShell title="Reward or penalty" subtitle={adjustmentState.memberName} onClose={() => setAdjustmentState(null)} sizeClass="max-w-[860px]">
           <div className="mt-4 space-y-4">
             <div className="rounded-[18px] border border-[#ece5ff] bg-[linear-gradient(180deg,#faf7ff_0%,#ffffff_100%)] p-4">
               <div className="flex flex-wrap items-center gap-2">
