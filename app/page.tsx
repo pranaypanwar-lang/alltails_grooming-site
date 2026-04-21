@@ -3038,6 +3038,15 @@ setIsCalendarOpen(false);
       (window) => window.bookingWindowId === selectedBookingWindowId
     ) || null;
 
+  useEffect(() => {
+    if (!isSlotsModalOpen || confirmedBooking) return;
+    if (!["details", "pets", "payment"].includes(mobileBookingStep)) return;
+    if (selectedBookingWindowId) return;
+
+    setBookingCreateError("Please select a booking window first.");
+    setMobileBookingStep("slot");
+  }, [confirmedBooking, isSlotsModalOpen, mobileBookingStep, selectedBookingWindowId]);
+
   const canContinueBooking =
     !!selectedBookingWindowId && pets.every((pet) => pet.breed.trim().length > 0);
 
@@ -3947,6 +3956,12 @@ onClick={() => {
               <button
                 type="button"
                 onClick={async () => {
+                  if (!selectedBookingWindowId) {
+                    setBookingCreateError("Please select a booking window first.");
+                    setMobileBookingStep("slot");
+                    return;
+                  }
+
                   if (!heroForm.name.trim() || !heroForm.phone.trim()) {
                     setBookingCreateError("Please fill your name and phone.");
                     return;
@@ -4238,6 +4253,12 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
               <button
                 type="button"
                 onClick={() => {
+                  if (!selectedBookingWindowId) {
+                    setBookingCreateError("Please select a booking window first.");
+                    setMobileBookingStep("slot");
+                    return;
+                  }
+
                   if (!pets.every((p) => p.breed.trim())) {
                     setBookingCreateError("Please enter the breed for each pet.");
                     return;

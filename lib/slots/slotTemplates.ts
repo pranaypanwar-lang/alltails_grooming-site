@@ -1,4 +1,4 @@
-export type SlotLabel = "9-11" | "12-2" | "3-5" | "6-8";
+export type SlotLabel = "9AM-11AM" | "12PM-2PM" | "3PM-5PM" | "6PM-8PM";
 
 export interface SlotTemplate {
   label: SlotLabel;
@@ -8,10 +8,10 @@ export interface SlotTemplate {
 
 /** Canonical four daily slot windows. All times are IST. */
 export const SLOT_TEMPLATES: SlotTemplate[] = [
-  { label: "9-11",  startHour: 9,  endHour: 11 },
-  { label: "12-2",  startHour: 12, endHour: 14 },
-  { label: "3-5",   startHour: 15, endHour: 17 },
-  { label: "6-8",   startHour: 18, endHour: 20 },
+  { label: "9AM-11AM",  startHour: 9,  endHour: 11 },
+  { label: "12PM-2PM",  startHour: 12, endHour: 14 },
+  { label: "3PM-5PM",   startHour: 15, endHour: 17 },
+  { label: "6PM-8PM",   startHour: 18, endHour: 20 },
 ];
 
 export const SLOT_ORDER: SlotLabel[] = SLOT_TEMPLATES.map((t) => t.label);
