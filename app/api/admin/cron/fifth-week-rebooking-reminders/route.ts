@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { adminPrisma, logAdminBookingEvent } from "../../_lib/bookingAdmin";
 import { prepareCustomerMessageForBooking } from "../../../../../lib/customerMessaging/service";
+import { processQueuedCustomerMessages } from "../../../../../lib/customerMessaging/provider";
 
 export const runtime = "nodejs";
 
@@ -79,11 +80,17 @@ export async function GET(request: Request) {
       }
     }
 
+    const dispatchResult = await processQueuedCustomerMessages(adminPrisma, {
+      limit: Math.max(10, completedBookings.length),
+    });
+
     return NextResponse.json({
       targetDate,
       totalBookings: completedBookings.length,
       preparedCount: results.filter((item) => item.created).length,
       skippedCount: results.filter((item) => !item.created).length,
+      dispatchedCount: dispatchResult.acceptedCount,
+      dispatchFailedCount: dispatchResult.failedCount,
       results,
     });
   } catch (error) {

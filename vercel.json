@@ -1,0 +1,16 @@
+{
+  "crons": [
+    {
+      "path": "/api/admin/cron/customer-message-queue",
+      "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/admin/cron/night-before-customer-reminders",
+      "schedule": "30 14 * * *"
+    },
+    {
+      "path": "/api/admin/cron/fifth-week-rebooking-reminders",
+      "schedule": "30 4 * * *"
+    }
+  ]
+}
