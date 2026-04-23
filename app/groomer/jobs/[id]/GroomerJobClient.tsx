@@ -75,6 +75,27 @@ function formatDate(value: string | null, mode: LanguageMode) {
   });
 }
 
+function normalizePhoneHref(phone: string) {
+  const digits = phone.replace(/[^\d+]/g, "");
+  return digits ? `tel:${digits}` : null;
+}
+
+function buildMapsHref(booking: GroomerBookingView) {
+  if (booking.addressInfo.serviceLocationUrl) {
+    return booking.addressInfo.serviceLocationUrl;
+  }
+
+  const queryParts = [
+    booking.addressInfo.serviceAddress,
+    booking.addressInfo.serviceLandmark,
+    booking.addressInfo.servicePincode,
+    booking.customer.city,
+  ].filter(Boolean);
+
+  if (!queryParts.length) return null;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryParts.join(", "))}`;
+}
+
 function formatTimer(seconds: number) {
   const safe = Math.max(0, seconds);
   const hours = Math.floor(safe / 3600);
@@ -418,6 +439,8 @@ export function GroomerJobClient({
   const [paymentMode, setPaymentMode] = useState<"cash" | "online" | "waived">(
     (booking.payment.collection?.collectionMode as "cash" | "online" | "waived") ?? "cash"
   );
+  const customerCallHref = useMemo(() => normalizePhoneHref(booking.customer.phone), [booking.customer.phone]);
+  const mapsHref = useMemo(() => buildMapsHref(booking), [booking]);
   const [paymentAmount, setPaymentAmount] = useState(
     String(booking.payment.collection?.collectedAmount ?? booking.payment.finalAmount)
   );
@@ -633,7 +656,16 @@ export function GroomerJobClient({
                   {languageMode === "simple" ? "Pet parent" : "पेट पैरेंट"}
                 </div>
                 <div className="mt-1 text-[14px] font-semibold">{booking.customer.name}</div>
-                <div className="text-[13px] text-white/80">{booking.customer.phone}</div>
+                {customerCallHref ? (
+                  <a
+                    href={customerCallHref}
+                    className="mt-1 inline-flex items-center rounded-[12px] border border-white/20 bg-white/10 px-2.5 py-1.5 text-[13px] font-semibold text-white/95 underline-offset-2 hover:bg-white/16 hover:underline"
+                  >
+                    {booking.customer.phone}
+                  </a>
+                ) : (
+                  <div className="text-[13px] text-white/80">{booking.customer.phone}</div>
+                )}
               </div>
               <div className="rounded-[18px] bg-white/12 px-3 py-3">
                 <div className="text-[11px] uppercase tracking-[0.08em] text-white/70">
@@ -843,9 +875,9 @@ export function GroomerJobClient({
           <div className="mt-3 rounded-[22px] border border-[#ebe5fb] bg-[#fcfbff] p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="text-[15px] font-semibold text-[#2a2346]">{booking.addressInfo.statusLabel}</div>
-              {booking.addressInfo.serviceLocationUrl ? (
+              {mapsHref ? (
                 <a
-                  href={booking.addressInfo.serviceLocationUrl}
+                  href={mapsHref}
                   target="_blank"
                   rel="noreferrer"
                   className="rounded-[14px] border border-[#ddd1fb] px-3 py-2 text-[13px] font-semibold text-[#6d5bd0]"
@@ -855,11 +887,27 @@ export function GroomerJobClient({
                 </a>
               ) : null}
             </div>
-            <div className="mt-3 space-y-1 text-[14px] leading-[1.7] text-[#4b5563]">
-              <div>{booking.addressInfo.serviceAddress ?? (languageMode === "simple" ? "Address abhi add nahi hua." : "एड्रेस अभी जोड़ा नहीं गया।")}</div>
-              {booking.addressInfo.serviceLandmark ? <div>{languageMode === "simple" ? "Landmark" : "लैंडमार्क"}: {booking.addressInfo.serviceLandmark}</div> : null}
-              {booking.addressInfo.servicePincode ? <div>{languageMode === "simple" ? "Pin code" : "पिन कोड"}: {booking.addressInfo.servicePincode}</div> : null}
-            </div>
+            {mapsHref ? (
+              <a
+                href={mapsHref}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 block rounded-[18px] border border-[#ece5ff] bg-white px-3 py-3 text-[14px] leading-[1.7] text-[#4b5563] transition-colors hover:bg-[#f8f5ff]"
+              >
+                <div>{booking.addressInfo.serviceAddress ?? (languageMode === "simple" ? "Address abhi add nahi hua." : "एड्रेस अभी जोड़ा नहीं गया।")}</div>
+                {booking.addressInfo.serviceLandmark ? <div>{languageMode === "simple" ? "Landmark" : "लैंडमार्क"}: {booking.addressInfo.serviceLandmark}</div> : null}
+                {booking.addressInfo.servicePincode ? <div>{languageMode === "simple" ? "Pin code" : "पिन कोड"}: {booking.addressInfo.servicePincode}</div> : null}
+                <div className="mt-2 text-[12px] font-semibold text-[#6d5bd0]">
+                  {languageMode === "simple" ? "Tap karke Google Maps kholo" : "टैप करके गूगल मैप्स खोलें"}
+                </div>
+              </a>
+            ) : (
+              <div className="mt-3 space-y-1 text-[14px] leading-[1.7] text-[#4b5563]">
+                <div>{booking.addressInfo.serviceAddress ?? (languageMode === "simple" ? "Address abhi add nahi hua." : "एड्रेस अभी जोड़ा नहीं गया।")}</div>
+                {booking.addressInfo.serviceLandmark ? <div>{languageMode === "simple" ? "Landmark" : "लैंडमार्क"}: {booking.addressInfo.serviceLandmark}</div> : null}
+                {booking.addressInfo.servicePincode ? <div>{languageMode === "simple" ? "Pin code" : "पिन कोड"}: {booking.addressInfo.servicePincode}</div> : null}
+              </div>
+            )}
           </div>
         </div>
 
