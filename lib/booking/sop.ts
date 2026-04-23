@@ -22,6 +22,12 @@ export type BookingSopStepDefinition = {
   requiredForCompletion: boolean;
 };
 
+export type BookingSopEvidenceStep = {
+  stepKey: string;
+  status?: string | null;
+  proofs?: Array<unknown> | null;
+};
+
 export const BOOKING_SOP_STEPS: BookingSopStepDefinition[] = [
   {
     key: "en_route",
@@ -150,4 +156,43 @@ export function getMissingRequiredSopLabels(completedKeys: Iterable<string>) {
   return BOOKING_SOP_STEPS
     .filter((step) => step.requiredForCompletion && !completedSet.has(step.key))
     .map((step) => step.label);
+}
+
+export function hasRequiredSopEvidence(
+  definition: BookingSopStepDefinition,
+  step: BookingSopEvidenceStep | null | undefined,
+  options?: { hasPaymentCollection?: boolean }
+) {
+  if (!definition.requiredForCompletion || definition.proofType === "manual") return true;
+  if (!step || step.status !== "completed") return false;
+
+  if (definition.key === "payment_proof") {
+    return ((step.proofs?.length ?? 0) > 0) || !!options?.hasPaymentCollection;
+  }
+
+  return (step.proofs?.length ?? 0) > 0;
+}
+
+export function countRequiredSopEvidenceCompleted(
+  steps: BookingSopEvidenceStep[],
+  options?: { hasPaymentCollection?: boolean }
+) {
+  return BOOKING_SOP_STEPS.filter((definition) => {
+    if (!definition.requiredForCompletion || definition.proofType === "manual") return false;
+    const step = steps.find((item) => item.stepKey === definition.key);
+    return hasRequiredSopEvidence(definition, step, options);
+  }).length;
+}
+
+export function getMissingRequiredSopEvidenceLabels(
+  steps: BookingSopEvidenceStep[],
+  options?: { hasPaymentCollection?: boolean }
+) {
+  return BOOKING_SOP_STEPS
+    .filter((definition) => definition.requiredForCompletion && definition.proofType !== "manual")
+    .filter((definition) => {
+      const step = steps.find((item) => item.stepKey === definition.key);
+      return !hasRequiredSopEvidence(definition, step, options);
+    })
+    .map((definition) => definition.label);
 }

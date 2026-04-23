@@ -256,6 +256,16 @@ export type AdminBookingSopStep = {
   proofs: AdminBookingSopProof[];
 };
 
+export type AdminBookingQaReview = {
+  status: AdminQaStatus;
+  label: string;
+  notes: string | null;
+  reviewedAt: string;
+  reviewedBy: string | null;
+  completedWithoutProof: boolean;
+  completedBooking: boolean;
+};
+
 export type AdminBookingListItem = {
   id: string;
   status: AdminBookingStatus;
@@ -327,6 +337,7 @@ export type AdminBookingDetail = {
   dispatchAlerts: AdminBookingDispatchAlert[];
   customerMessages: AdminBookingCustomerMessage[];
   sopSteps: AdminBookingSopStep[];
+  qaReview: AdminBookingQaReview | null;
   timeline: AdminBookingTimelineItem[];
   availableActions: AdminBookingActionId[];
 };
@@ -508,11 +519,23 @@ export type AdminQaRow = {
   dispatchState: AdminDispatchState;
   qaStatus: AdminQaStatus;
   qaStatusLabel: string;
+  qaReviewStatusLabel: string | null;
+  qaCompletedWithoutProof: boolean;
   requiredCompletedCount: number;
   requiredTotalCount: number;
+  requiredProofCompletedCount: number;
+  requiredProofTotalCount: number;
   totalCompletedCount: number;
   totalStepCount: number;
   missingStepLabels: string[];
+  missingProofLabels: string[];
+  totalProofCount: number;
+  recentProofs: Array<{
+    id: string;
+    stepKey: string;
+    publicUrl: string;
+    mimeType: string;
+  }>;
   paymentMismatchFlag: boolean;
   paymentMethodLabel: string | null;
 };
@@ -537,6 +560,14 @@ export type AdminQaFilters = {
 export type AdminQaResponse = {
   summary: AdminQaSummary;
   bookings: AdminQaRow[];
+};
+
+export type AdminBookingQaReviewResponse = {
+  success: true;
+  bookingId: string;
+  qaStatus: Exclude<AdminQaStatus, "not_started">;
+  notes: string | null;
+  completion: (AdminCompleteBookingResponse & { rewardSuppressedReason?: string | null }) | null;
 };
 
 export type AdminDigestHistoryEntry = {

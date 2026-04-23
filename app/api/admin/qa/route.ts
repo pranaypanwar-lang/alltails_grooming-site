@@ -3,7 +3,12 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../lib/generated/prisma";
 import { assertAdminSession } from "../_lib/assertAdmin";
-import { BOOKING_SOP_STEPS } from "../../../../lib/booking/sop";
+import {
+  BOOKING_SOP_STEPS,
+  countRequiredSopEvidenceCompleted,
+  getMissingRequiredSopEvidenceLabels,
+} from "../../../../lib/booking/sop";
+import { getLatestQaReview } from "../../../../lib/booking/qaReview";
 
 export const runtime = "nodejs";
 
@@ -70,7 +75,7 @@ function getPaymentMethodLabel(method: string | null) {
   return null;
 }
 
-function getQaStatus(input: {
+function getDerivedQaStatus(input: {
   requiredCompletedCount: number;
   requiredTotalCount: number;
   paymentMismatchFlag: boolean;
@@ -120,12 +125,16 @@ export async function GET(req: NextRequest) {
         service: true,
         assignedTeam: true,
         slots: { include: { slot: { include: { team: true } } } },
-        sopSteps: true,
+        sopSteps: { include: { proofs: true } },
         paymentCollection: true,
+        events: true,
       },
     });
 
     const requiredStepDefinitions = BOOKING_SOP_STEPS.filter((step) => step.requiredForCompletion);
+    const requiredProofStepDefinitions = BOOKING_SOP_STEPS.filter(
+      (step) => step.requiredForCompletion && step.proofType !== "manual"
+    );
 
     const rows = bookings
       .map((booking) => {
@@ -145,12 +154,33 @@ export async function GET(req: NextRequest) {
         const missingStepLabels = requiredStepDefinitions
           .filter((step) => !completedStepKeys.has(step.key))
           .map((step) => step.label);
+        const requiredProofCompletedCount = countRequiredSopEvidenceCompleted(booking.sopSteps, {
+          hasPaymentCollection: !!booking.paymentCollection,
+        });
+        const missingProofLabels = getMissingRequiredSopEvidenceLabels(booking.sopSteps, {
+          hasPaymentCollection: !!booking.paymentCollection,
+        });
         const paymentMismatchFlag = !!booking.paymentCollection?.mismatchFlag;
-        const qaState = getQaStatus({
+        const latestQaReview = getLatestQaReview(booking.events);
+        const qaState = latestQaReview
+          ? { qaStatus: latestQaReview.status, qaStatusLabel: latestQaReview.label }
+          : getDerivedQaStatus({
           requiredCompletedCount,
           requiredTotalCount: requiredStepDefinitions.length,
           paymentMismatchFlag,
         });
+        const recentProofs = booking.sopSteps
+          .flatMap((step) =>
+            step.proofs.map((proof) => ({
+              id: proof.id,
+              stepKey: proof.stepKey,
+              publicUrl: proof.publicUrl,
+              mimeType: proof.mimeType,
+              createdAt: proof.createdAt,
+            }))
+          )
+          .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+          .slice(-3);
 
         return {
           bookingId: booking.id,
@@ -178,11 +208,18 @@ export async function GET(req: NextRequest) {
             | "issue",
           qaStatus: qaState.qaStatus,
           qaStatusLabel: qaState.qaStatusLabel,
+          qaReviewStatusLabel: latestQaReview?.label ?? null,
+          qaCompletedWithoutProof: latestQaReview?.completedWithoutProof ?? false,
           requiredCompletedCount,
           requiredTotalCount: requiredStepDefinitions.length,
+          requiredProofCompletedCount,
+          requiredProofTotalCount: requiredProofStepDefinitions.length,
           totalCompletedCount: booking.sopSteps.filter((step) => step.status === "completed").length,
           totalStepCount: BOOKING_SOP_STEPS.length,
           missingStepLabels,
+          missingProofLabels,
+          totalProofCount: booking.sopSteps.reduce((count, step) => count + step.proofs.length, 0),
+          recentProofs,
           paymentMismatchFlag,
           paymentMethodLabel: getPaymentMethodLabel(booking.paymentMethod),
           _sortStart: firstSlot?.slot.startTime.toISOString() ?? "",

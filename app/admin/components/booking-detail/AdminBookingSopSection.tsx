@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import type { AdminBookingPaymentCollection, AdminBookingSopStep } from "../../types";
 import { recordAdminBookingPaymentProof, updateAdminBookingSopStep, uploadAdminBookingSopProof } from "../../lib/api";
 import { useAdminToast } from "../common/AdminToastProvider";
@@ -288,11 +289,38 @@ export function AdminBookingSopSection({
                       key={proof.id}
                       className="flex flex-wrap items-center justify-between gap-2 rounded-[12px] border border-[#ece5ff] bg-white px-3 py-2 text-[12px]"
                     >
-                      <div>
+                      <div className="flex items-center gap-3">
+                        {proof.mimeType.startsWith("image/") ? (
+                          <a
+                            href={proof.publicUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="relative block h-14 w-14 overflow-hidden rounded-[10px] border border-[#ece5ff]"
+                          >
+                            <Image
+                              src={proof.publicUrl}
+                              alt={proof.originalName}
+                              fill
+                              unoptimized
+                              loader={({ src }) => src}
+                              className="object-cover"
+                              sizes="56px"
+                            />
+                          </a>
+                        ) : proof.mimeType.startsWith("video/") ? (
+                          <video
+                            src={proof.publicUrl}
+                            controls
+                            preload="metadata"
+                            className="h-14 w-20 rounded-[10px] border border-[#ece5ff] bg-black object-cover"
+                          />
+                        ) : null}
+                        <div>
                         <div className="font-medium text-[#2a2346]">{proof.originalName}</div>
                         <div className="text-[#8a90a6]">
                           {proof.proofType} · {(proof.sizeBytes / (1024 * 1024)).toFixed(1)} MB ·{" "}
                           {new Date(proof.createdAt).toLocaleString("en-IN")}
+                        </div>
                         </div>
                       </div>
                       <a

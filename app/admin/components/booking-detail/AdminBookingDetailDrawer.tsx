@@ -69,9 +69,24 @@ type Props = {
   onClose: () => void;
   onAction: (action: AdminBookingActionId) => void;
   onRefreshBooking: () => Promise<void> | void;
+  qaControls?: {
+    isBusy: boolean;
+    onMarkQaComplete: () => void;
+    onFlagQaIssue: () => void;
+    onForceCompleteWithoutProof: () => void;
+  };
 };
 
-export function AdminBookingDetailDrawer({ isOpen, booking, isLoading, error, onClose, onAction, onRefreshBooking }: Props) {
+export function AdminBookingDetailDrawer({
+  isOpen,
+  booking,
+  isLoading,
+  error,
+  onClose,
+  onAction,
+  onRefreshBooking,
+  qaControls,
+}: Props) {
   if (!isOpen) return null;
 
   return (
@@ -248,6 +263,72 @@ export function AdminBookingDetailDrawer({ isOpen, booking, isLoading, error, on
                   )}
                 </div>
               </Section>
+
+              {booking.qaReview || qaControls ? (
+                <Section title="QA review">
+                  {booking.qaReview ? (
+                    <div className="mb-3 rounded-[14px] border border-[#ece5ff] bg-[#faf9fd] p-3">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Badge
+                          text={booking.qaReview.label}
+                          cls={
+                            booking.qaReview.status === "complete"
+                              ? "bg-[#effaf3] text-[#15803d]"
+                              : booking.qaReview.status === "issue"
+                                ? "bg-[#fff1f2] text-[#be123c]"
+                                : "bg-[#fff8eb] text-[#b45309]"
+                          }
+                        />
+                        {booking.qaReview.completedWithoutProof ? (
+                          <Badge text="Completed without proof" cls="bg-[#fff8eb] text-[#b45309]" />
+                        ) : null}
+                      </div>
+                      <div className="mt-2 text-[12px] text-[#6b7280]">
+                        Reviewed {new Date(booking.qaReview.reviewedAt).toLocaleString("en-IN")}
+                        {booking.qaReview.reviewedBy ? ` by ${booking.qaReview.reviewedBy}` : ""}
+                      </div>
+                      {booking.qaReview.notes ? (
+                        <p className="mt-2 text-[13px] text-[#2a2346]">{booking.qaReview.notes}</p>
+                      ) : null}
+                    </div>
+                  ) : (
+                    <p className="mb-3 text-[13px] text-[#6b7280]">
+                      No QA decision recorded yet. Review the uploaded proof and close or flag the case from here.
+                    </p>
+                  )}
+
+                  {qaControls ? (
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={qaControls.onMarkQaComplete}
+                        disabled={qaControls.isBusy}
+                        className="rounded-[12px] border border-[#d4f0db] bg-[#effaf3] px-4 py-2 text-[12px] font-semibold text-[#15803d] hover:bg-[#e3f5e8] disabled:opacity-50"
+                      >
+                        {qaControls.isBusy ? "Saving…" : "Mark QA complete"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={qaControls.onFlagQaIssue}
+                        disabled={qaControls.isBusy}
+                        className="rounded-[12px] border border-[#f3d6d6] bg-[#fffafa] px-4 py-2 text-[12px] font-semibold text-[#c24134] hover:bg-[#fff1f2] disabled:opacity-50"
+                      >
+                        {qaControls.isBusy ? "Saving…" : "Flag QA issue"}
+                      </button>
+                      {booking.status === "confirmed" ? (
+                        <button
+                          type="button"
+                          onClick={qaControls.onForceCompleteWithoutProof}
+                          disabled={qaControls.isBusy}
+                          className="rounded-[12px] border border-[#fde7b0] bg-[#fffaf0] px-4 py-2 text-[12px] font-semibold text-[#b45309] hover:bg-[#fff8eb] disabled:opacity-50"
+                        >
+                          {qaControls.isBusy ? "Working…" : "Complete without proof (no XP)"}
+                        </button>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </Section>
+              ) : null}
 
               <Section title="Assignment">
                 <Row label="Team" value={booking.bookingWindow?.team?.name ?? "—"} />

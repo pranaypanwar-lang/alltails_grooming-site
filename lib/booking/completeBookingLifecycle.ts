@@ -1,5 +1,9 @@
 import type { Prisma, PrismaClient } from "../generated/prisma";
-import { BOOKING_SOP_STEPS, getMissingRequiredSopLabels } from "./sop";
+import {
+  BOOKING_SOP_STEPS,
+  getMissingRequiredSopEvidenceLabels,
+  getMissingRequiredSopLabels,
+} from "./sop";
 
 type DbClient = PrismaClient | Prisma.TransactionClient;
 
@@ -20,7 +24,8 @@ async function ensureBookingSopSteps(
 
 export async function completeBookingLifecycle(
   prisma: DbClient,
-  bookingId: string
+  bookingId: string,
+  options?: { allowMissingRequiredSteps?: boolean }
 ) {
   return prisma.$transaction(async (tx) => {
     await ensureBookingSopSteps(tx, bookingId);
@@ -55,7 +60,8 @@ export async function completeBookingLifecycle(
     const missingSopSteps = getMissingRequiredSopLabels(
       booking.sopSteps.filter((step) => step.status === "completed").map((step) => step.stepKey)
     );
-    if (missingSopSteps.length > 0) {
+    let hasPaymentCollection = false;
+    if (missingSopSteps.length > 0 && !options?.allowMissingRequiredSteps) {
       throw Object.assign(
         new Error(`Complete required SOP steps first: ${missingSopSteps.join(", ")}`),
         { httpStatus: 409 }
@@ -67,13 +73,18 @@ export async function completeBookingLifecycle(
         where: { bookingId },
         select: { id: true },
       });
-      if (!paymentCollection) {
+      hasPaymentCollection = !!paymentCollection;
+      if (!paymentCollection && !options?.allowMissingRequiredSteps) {
         throw Object.assign(
           new Error("Record payment proof before completing pay-after-service bookings"),
           { httpStatus: 409 }
         );
       }
     }
+
+    const missingProofSteps = getMissingRequiredSopEvidenceLabels(booking.sopSteps, {
+      hasPaymentCollection,
+    });
 
     let completedCountAfter = booking.user.loyaltyCompletedCount;
     let freeUnlockedAfter = booking.user.loyaltyFreeUnlocked;
@@ -113,6 +124,9 @@ export async function completeBookingLifecycle(
       success: true,
       bookingId: booking.id,
       status: "completed",
+      completedWithQaOverride: !!options?.allowMissingRequiredSteps && (missingSopSteps.length > 0 || missingProofSteps.length > 0),
+      missingRequiredStepLabels: missingSopSteps,
+      missingRequiredProofLabels: missingProofSteps,
       loyalty: {
         counted: shouldCountLoyalty,
         completedCountBefore: booking.loyaltyCompletedCountBefore ?? booking.user.loyaltyCompletedCount,

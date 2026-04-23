@@ -24,6 +24,7 @@ import type {
   AdminBookingSopUpdateResponse,
   AdminBookingSopProofUploadResponse,
   AdminBookingPaymentCollectionResponse,
+  AdminBookingQaReviewResponse,
   AdminQaFilters,
   AdminQaResponse,
   AdminCustomerMessagesFilters,
@@ -287,17 +288,41 @@ export async function scanAdminSupportSignals(): Promise<AdminSupportSignalScanR
   return data;
 }
 
-export async function completeAdminBooking(bookingId: string): Promise<AdminCompleteBookingResponse> {
+export async function completeAdminBooking(
+  bookingId: string,
+  options?: { allowMissingRequiredSteps?: boolean }
+): Promise<AdminCompleteBookingResponse> {
   const res = await fetch(`/api/admin/bookings/${bookingId}/complete`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({}),
+    body: JSON.stringify({
+      allowMissingRequiredSteps: options?.allowMissingRequiredSteps === true,
+    }),
   });
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
     throw new Error(getApiErrorMessage(data, "Failed to complete booking"));
   }
   return res.json();
+}
+
+export async function updateAdminBookingQaReview(
+  bookingId: string,
+  payload: {
+    qaStatus: "in_progress" | "complete" | "issue";
+    notes?: string;
+    completeBooking?: boolean;
+    allowMissingRequiredSteps?: boolean;
+  }
+): Promise<AdminBookingQaReviewResponse> {
+  const res = await fetch(`/api/admin/bookings/${bookingId}/qa-review`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(getApiErrorMessage(data, "Failed to update QA review"));
+  return data;
 }
 
 export async function cancelAdminBooking(bookingId: string, reason?: string): Promise<AdminCancelBookingResponse> {

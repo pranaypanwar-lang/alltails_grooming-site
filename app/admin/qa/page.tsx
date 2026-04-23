@@ -2,11 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
+  completeAdminBooking,
   fetchAdminBookingDetail,
   fetchAdminQa,
   fetchAdminTeams,
   type AdminTeamRow,
+  updateAdminBookingQaReview,
 } from "../lib/api";
 import type {
   AdminBookingDetail,
@@ -18,6 +21,7 @@ import type {
 import { AdminPageHeader } from "../components/common/AdminPageHeader";
 import { AdminSummaryCard } from "../components/common/AdminSummaryCard";
 import { AdminBookingDetailDrawer } from "../components/booking-detail/AdminBookingDetailDrawer";
+import { useAdminToast } from "../components/common/AdminToastProvider";
 
 const DEFAULT_FILTERS: AdminQaFilters = {
   search: "",
@@ -140,7 +144,7 @@ function QaTable({
       <table className="min-w-[1520px] w-full">
         <thead className="bg-[#faf9fd]">
           <tr className="text-left">
-            {["Date", "Window", "Pet parent", "Contact", "Service", "Team", "Booking", "Dispatch", "QA", "SOP progress", "Missing", "Payment", "Actions"].map((label) => (
+            {["Date", "Window", "Pet parent", "Contact", "Service", "Team", "Booking", "Dispatch", "QA", "SOP progress", "Proofs", "Missing", "Payment", "Actions"].map((label) => (
               <th key={label} className="px-4 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6] whitespace-nowrap">
                 {label}
               </th>
@@ -173,6 +177,9 @@ function QaTable({
                 <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold whitespace-nowrap ${QA_STATUS_CLS[row.qaStatus]}`}>
                   {row.qaStatusLabel}
                 </span>
+                {row.qaCompletedWithoutProof ? (
+                  <div className="mt-1 text-[11px] font-medium text-[#b45309]">Closed without proof</div>
+                ) : null}
               </td>
               <td className="px-4 py-3.5 text-[12px] text-[#4b5563] whitespace-nowrap">
                 {row.requiredCompletedCount}/{row.requiredTotalCount} required
@@ -180,9 +187,58 @@ function QaTable({
                   {row.totalCompletedCount}/{row.totalStepCount} total
                 </div>
               </td>
+              <td className="px-4 py-3.5 text-[12px] text-[#4b5563] whitespace-nowrap">
+                {row.requiredProofCompletedCount}/{row.requiredProofTotalCount} proof-backed
+                <div className="mt-1 text-[11px] text-[#8a90a6]">
+                  {row.totalProofCount} upload{row.totalProofCount !== 1 ? "s" : ""}
+                </div>
+                {row.recentProofs.length > 0 ? (
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    {row.recentProofs.slice(0, 2).map((proof) => (
+                      <a
+                        key={proof.id}
+                        href={proof.publicUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="group flex items-center gap-2 rounded-[10px] border border-[#ece5ff] bg-[#fcfbff] px-2 py-1.5 hover:bg-[#f6f4fd] transition-colors"
+                        title={`Open ${proof.stepKey.replace(/_/g, " ")}`}
+                      >
+                        {proof.mimeType?.startsWith("image/") ? (
+                          <span className="relative h-9 w-9 overflow-hidden rounded-[8px] border border-[#ece5ff] bg-white">
+                            <Image
+                              src={proof.publicUrl}
+                              alt={proof.stepKey.replace(/_/g, " ")}
+                              fill
+                              unoptimized
+                              loader={({ src }) => src}
+                              className="object-cover"
+                              sizes="36px"
+                            />
+                          </span>
+                        ) : (
+                          <span className="inline-flex h-9 min-w-9 items-center justify-center rounded-[8px] border border-[#ece5ff] bg-white px-2 text-[10px] font-bold uppercase tracking-[0.08em] text-[#6d5bd0]">
+                            Video
+                          </span>
+                        )}
+                        <span className="max-w-[92px] truncate text-[10px] font-semibold uppercase tracking-[0.06em] text-[#6d5bd0] group-hover:text-[#5a47c7]">
+                          {proof.stepKey.replace(/_/g, " ")}
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
+              </td>
               <td className="px-4 py-3.5 text-[12px] text-[#4b5563] max-w-[260px]">
-                {row.missingStepLabels.length ? row.missingStepLabels.slice(0, 3).join(", ") : "All critical steps done"}
-                {row.missingStepLabels.length > 3 ? ` +${row.missingStepLabels.length - 3}` : ""}
+                {row.missingProofLabels.length
+                  ? row.missingProofLabels.slice(0, 2).join(", ")
+                  : row.missingStepLabels.length
+                    ? row.missingStepLabels.slice(0, 2).join(", ")
+                    : "All critical checks done"}
+                {row.missingProofLabels.length > 2
+                  ? ` +${row.missingProofLabels.length - 2}`
+                  : row.missingStepLabels.length > 2
+                    ? ` +${row.missingStepLabels.length - 2}`
+                    : ""}
               </td>
               <td className="px-4 py-3.5 text-[12px] whitespace-nowrap">
                 {row.paymentMismatchFlag ? (
@@ -211,6 +267,7 @@ function QaTable({
 }
 
 export default function AdminQaPage() {
+  const { showToast } = useAdminToast();
   const [filters, setFilters] = useState<AdminQaFilters>(DEFAULT_FILTERS);
   const [quickTab, setQuickTab] = useState<QuickTabId>("all");
   const [refreshCadence, setRefreshCadence] = useState<RefreshCadence>("off");
@@ -227,6 +284,7 @@ export default function AdminQaPage() {
   const [drawerBooking, setDrawerBooking] = useState<AdminBookingDetail | null>(null);
   const [drawerLoading, setDrawerLoading] = useState(false);
   const [drawerError, setDrawerError] = useState("");
+  const [qaActionBusy, setQaActionBusy] = useState(false);
 
   const load = useCallback(async (nextFilters: AdminQaFilters, silent = false) => {
     if (silent) setIsRefreshing(true);
@@ -287,6 +345,51 @@ export default function AdminQaPage() {
       openDrawer(drawerBooking.id),
     ]);
   }, [drawerBooking, filters, load, openDrawer]);
+
+  const handleDrawerAction = useCallback(async (action: string) => {
+    if (!drawerBooking) return;
+
+    try {
+      if (action === "mark_completed") {
+        setQaActionBusy(true);
+        await completeAdminBooking(drawerBooking.id);
+        showToast("Booking marked completed.", true);
+        await refreshDrawerBooking();
+      }
+    } catch (actionError) {
+      showToast(actionError instanceof Error ? actionError.message : "Action failed.", false);
+    } finally {
+      setQaActionBusy(false);
+    }
+  }, [drawerBooking, refreshDrawerBooking, showToast]);
+
+  const submitQaReview = useCallback(async (input: {
+    qaStatus: "in_progress" | "complete" | "issue";
+    completeBooking?: boolean;
+    allowMissingRequiredSteps?: boolean;
+  }) => {
+    if (!drawerBooking) return;
+
+    try {
+      setQaActionBusy(true);
+      const response = await updateAdminBookingQaReview(drawerBooking.id, input);
+      showToast(
+        input.completeBooking
+          ? response.completion?.rewardSuppressedReason
+            ? "Booking completed from QA. XP was withheld because proof was missing."
+            : "Booking completed from QA."
+          : input.qaStatus === "issue"
+            ? "QA issue flagged."
+            : "QA marked complete.",
+        true
+      );
+      await refreshDrawerBooking();
+    } catch (reviewError) {
+      showToast(reviewError instanceof Error ? reviewError.message : "Failed to update QA review.", false);
+    } finally {
+      setQaActionBusy(false);
+    }
+  }, [drawerBooking, refreshDrawerBooking, showToast]);
 
   const applyFilters = (patch: Partial<AdminQaFilters>) => {
     setFilters((prev) => ({ ...prev, ...patch }));
@@ -512,15 +615,37 @@ export default function AdminQaPage() {
 
       <AdminBookingDetailDrawer
         isOpen={drawerOpen}
-        booking={drawerBooking ? { ...drawerBooking, availableActions: [] } : null}
+        booking={
+          drawerBooking
+            ? {
+                ...drawerBooking,
+                availableActions: drawerBooking.availableActions.filter((action) => action === "mark_completed"),
+              }
+            : null
+        }
         isLoading={drawerLoading}
         error={drawerError}
         onClose={() => {
           setDrawerOpen(false);
           setDrawerBooking(null);
         }}
-        onAction={() => {}}
+        onAction={(action) => void handleDrawerAction(action)}
         onRefreshBooking={refreshDrawerBooking}
+        qaControls={
+          drawerBooking
+            ? {
+                isBusy: qaActionBusy,
+                onMarkQaComplete: () => void submitQaReview({ qaStatus: "complete" }),
+                onFlagQaIssue: () => void submitQaReview({ qaStatus: "issue" }),
+                onForceCompleteWithoutProof: () =>
+                  void submitQaReview({
+                    qaStatus: "complete",
+                    completeBooking: true,
+                    allowMissingRequiredSteps: true,
+                  }),
+              }
+            : undefined
+        }
       />
     </div>
   );

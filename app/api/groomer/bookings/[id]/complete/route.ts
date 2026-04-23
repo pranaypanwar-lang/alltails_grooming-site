@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminPrisma, logBookingEvent } from "../../../../admin/_lib/bookingAdmin";
 import { assertGroomerAccess } from "../../../_lib/assertGroomerAccess";
-import { completeBookingLifecycle } from "../../../../../../lib/booking/completeBookingLifecycle";
-import { queuePostCompletionCustomerJourney } from "../../../../../../lib/customerMessaging/automation";
-import { processQueuedCustomerMessages } from "../../../../../../lib/customerMessaging/provider";
-import { awardCompletionRewards } from "../../../../../../lib/groomerRewards";
+import { finalizeBookingCompletion } from "../../../../../../lib/booking/finalizeBookingCompletion";
 
 export const runtime = "nodejs";
 
@@ -18,7 +15,7 @@ export async function POST(
     const access = await assertGroomerAccess(bookingId, token);
     if (access.error) return access.error;
 
-    const result = await completeBookingLifecycle(adminPrisma, bookingId);
+    const { result, rewardResult, followUps } = await finalizeBookingCompletion(adminPrisma, bookingId);
 
     await logBookingEvent({
       bookingId: result.bookingId,
@@ -30,27 +27,19 @@ export async function POST(
         source: "groomer_portal",
       },
     });
-
-    let rewardResult = null;
-
-    if (!result.alreadyCompleted) {
-      rewardResult = await awardCompletionRewards(adminPrisma, result.bookingId);
-      const followUps = await queuePostCompletionCustomerJourney(adminPrisma, result.bookingId);
-      await processQueuedCustomerMessages(adminPrisma, { limit: 10 });
-      for (const entry of followUps) {
-        if (!entry.created) continue;
-        await logBookingEvent({
-          bookingId: result.bookingId,
-          actor: "system",
-          type: "customer_message_prepared",
-          summary: `${entry.messageType.replace(/_/g, " ")} queued for customer`,
-          metadata: {
-            messageType: entry.messageType,
-            status: "queued",
-            source: "groomer_portal",
-          },
-        });
-      }
+    for (const entry of followUps) {
+      if (!entry.created) continue;
+      await logBookingEvent({
+        bookingId: result.bookingId,
+        actor: "system",
+        type: "customer_message_prepared",
+        summary: `${entry.messageType.replace(/_/g, " ")} queued for customer`,
+        metadata: {
+          messageType: entry.messageType,
+          status: "queued",
+          source: "groomer_portal",
+        },
+      });
     }
 
     return NextResponse.json({

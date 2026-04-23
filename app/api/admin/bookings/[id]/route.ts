@@ -7,6 +7,7 @@ import { ensureBookingSopSteps } from "../../_lib/bookingAdmin";
 import { BOOKING_SOP_STEPS } from "../../../../../lib/booking/sop";
 import { getAddressReadinessSummary } from "../../../../../lib/booking/addressCapture";
 import { getGamificationSnapshot } from "../../../../../lib/groomerRewards";
+import { getLatestQaReview } from "../../../../../lib/booking/qaReview";
 
 export const runtime = "nodejs";
 
@@ -243,6 +244,7 @@ export async function GET(
           noLeaveStreakDays: booking.groomerMember.noLeaveStreakDays,
         })
       : null;
+    const qaReview = getLatestQaReview(booking.events);
 
     const detail = {
       id: booking.id,
@@ -438,6 +440,7 @@ export async function GET(
           })),
         };
       }),
+      qaReview,
       timeline: buildTimeline(booking, derivedStatus, derivedPaymentStatus),
       availableActions: getAvailableActions(derivedStatus, team?.id ?? null, booking.dispatchState, booking.groomerMemberId ?? null),
     };

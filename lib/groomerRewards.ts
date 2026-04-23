@@ -1,5 +1,5 @@
 import type { Prisma, PrismaClient } from "./generated/prisma";
-import { BOOKING_SOP_STEPS } from "./booking/sop";
+import { BOOKING_SOP_STEPS, getMissingRequiredSopEvidenceLabels } from "./booking/sop";
 import { getServiceSlaMinutes } from "./serviceSla";
 
 type DbTx = Prisma.TransactionClient;
@@ -622,7 +622,7 @@ export async function awardCompletionRewards(prisma: DbClient, bookingId: string
         slots: { include: { slot: true } },
         paymentCollection: true,
         groomerMember: true,
-        sopSteps: true,
+        sopSteps: { include: { proofs: true } },
         service: true,
       },
     });
@@ -631,6 +631,20 @@ export async function awardCompletionRewards(prisma: DbClient, bookingId: string
     }
 
     const grants: GroomerRewardGrant[] = [];
+    const missingRequiredEvidenceLabels = getMissingRequiredSopEvidenceLabels(booking.sopSteps, {
+      hasPaymentCollection: !!booking.paymentCollection,
+    });
+
+    if (missingRequiredEvidenceLabels.length > 0) {
+      const rewardSummary = await getBookingRewardSummary(tx, bookingId);
+      return rewardSummary
+        ? {
+            rewardSummary,
+            rewardsDelta: grants,
+            rewardSuppressedReason: `XP withheld because required QA evidence was missing: ${missingRequiredEvidenceLabels.join(", ")}`,
+          }
+        : null;
+    }
 
     const completionGrant = await awardGroomerXp({
       tx,

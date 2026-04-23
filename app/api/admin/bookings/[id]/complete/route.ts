@@ -4,10 +4,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../../../lib/generated/prisma";
 import { assertAdminSession } from "../../../_lib/assertAdmin";
 import { logAdminBookingEvent } from "../../../_lib/bookingAdmin";
-import { completeBookingLifecycle } from "../../../../../../lib/booking/completeBookingLifecycle";
-import { queuePostCompletionCustomerJourney } from "../../../../../../lib/customerMessaging/automation";
-import { processQueuedCustomerMessages } from "../../../../../../lib/customerMessaging/provider";
-import { awardCompletionRewards } from "../../../../../../lib/groomerRewards";
+import { finalizeBookingCompletion } from "../../../../../../lib/booking/finalizeBookingCompletion";
 
 export const runtime = "nodejs";
 
@@ -22,7 +19,10 @@ export async function POST(
   if (authErr) return authErr;
   try {
     const { id: bookingId } = await params;
-    const result = await completeBookingLifecycle(prisma, bookingId);
+    const body = await request.json().catch(() => ({}));
+    const { result, rewardResult, followUps } = await finalizeBookingCompletion(prisma, bookingId, {
+      allowMissingRequiredSteps: body?.allowMissingRequiredSteps === true,
+    });
 
     await logAdminBookingEvent({
       bookingId: result.bookingId,
@@ -32,24 +32,17 @@ export async function POST(
         loyaltyCounted: result.loyalty.counted,
       },
     });
-
-    let rewardResult = null;
-    if (!result.alreadyCompleted) {
-      rewardResult = await awardCompletionRewards(prisma, result.bookingId);
-      const followUps = await queuePostCompletionCustomerJourney(prisma, result.bookingId);
-      await processQueuedCustomerMessages(prisma, { limit: 10 });
-      for (const entry of followUps) {
-        if (!entry.created) continue;
-        await logAdminBookingEvent({
-          bookingId: result.bookingId,
-          type: "customer_message_prepared",
-          summary: `${entry.messageType.replace(/_/g, " ")} queued for customer`,
-          metadata: {
-            messageType: entry.messageType,
-            status: "queued",
-          },
-        });
-      }
+    for (const entry of followUps) {
+      if (!entry.created) continue;
+      await logAdminBookingEvent({
+        bookingId: result.bookingId,
+        type: "customer_message_prepared",
+        summary: `${entry.messageType.replace(/_/g, " ")} queued for customer`,
+        metadata: {
+          messageType: entry.messageType,
+          status: "queued",
+        },
+      });
     }
 
     return NextResponse.json({
