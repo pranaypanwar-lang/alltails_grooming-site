@@ -196,6 +196,8 @@ export type AdminBookingPaymentCollection = {
   collectedAmount: number;
   expectedAmount: number;
   mismatchFlag: boolean;
+  serviceAmountUpdated: boolean;
+  serviceAmountDirection: "upsell" | "downgrade" | null;
   notes: string | null;
   recordedAt: string;
   recordedBy: string | null;
@@ -362,6 +364,7 @@ export type AdminBookingPaymentCollectionResponse = {
   success: true;
   bookingId: string;
   paymentCollection: AdminBookingPaymentCollection;
+  finalAmount: number;
 };
 
 export type AdminBookingCreateMetaResponse = {

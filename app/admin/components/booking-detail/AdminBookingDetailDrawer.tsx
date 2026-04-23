@@ -502,12 +502,23 @@ export function AdminBookingDetailDrawer({
                       />
                       <Row
                         label="Mismatch flag"
-                        value={booking.paymentCollection.mismatchFlag ? (
+                        value={booking.paymentCollection.serviceAmountUpdated ? (
+                          <Badge
+                            text={booking.paymentCollection.serviceAmountDirection === "upsell" ? "Upsell applied" : "Downgrade applied"}
+                            cls="bg-[#eefaf1] text-[#15803d]"
+                          />
+                        ) : booking.paymentCollection.mismatchFlag ? (
                           <Badge text="Mismatch" cls="bg-[#fff1f2] text-[#be123c]" />
                         ) : (
                           <Badge text="Matched" cls="bg-[#effaf3] text-[#15803d]" />
                         )}
                       />
+                      {booking.paymentCollection.serviceAmountUpdated ? (
+                        <Row
+                          label="Quoted vs final"
+                          value={`₹${booking.paymentCollection.expectedAmount.toLocaleString("en-IN")} -> ₹${booking.paymentCollection.collectedAmount.toLocaleString("en-IN")}`}
+                        />
+                      ) : null}
                       {booking.paymentCollection.notes ? (
                         <Row label="Collection notes" value={booking.paymentCollection.notes} />
                       ) : null}

@@ -19,6 +19,7 @@ export async function POST(
     const collectionMode = typeof body.collectionMode === "string" ? body.collectionMode.trim() : "";
     const collectedAmount = Number(body.collectedAmount);
     const notes = typeof body.notes === "string" ? body.notes.trim() : "";
+    const applyServiceAmountChange = body.applyServiceAmountChange === true;
 
     if (!COLLECTION_MODES.has(collectionMode)) {
       return NextResponse.json({ error: "Invalid collection mode" }, { status: 400 });
@@ -40,7 +41,17 @@ export async function POST(
       await ensureBookingSopSteps(tx, bookingId);
 
       const expectedAmount = booking.finalAmount;
-      const mismatchFlag = collectionMode !== "waived" && collectedAmount !== expectedAmount;
+      if (applyServiceAmountChange && booking.paymentMethod !== "pay_after_service") {
+        throw Object.assign(new Error("Service amount changes are only allowed for pay-after-service bookings"), { httpStatus: 400 });
+      }
+      if (applyServiceAmountChange && !notes) {
+        throw Object.assign(new Error("Add a note explaining the plan change"), { httpStatus: 400 });
+      }
+
+      const mismatchFlag =
+        collectionMode !== "waived" &&
+        collectedAmount !== expectedAmount &&
+        !applyServiceAmountChange;
 
       const paymentCollection = await tx.bookingPaymentCollection.upsert({
         where: { bookingId },
@@ -64,6 +75,15 @@ export async function POST(
         },
       });
 
+      if (applyServiceAmountChange && booking.finalAmount !== collectedAmount) {
+        await tx.booking.update({
+          where: { id: bookingId },
+          data: {
+            finalAmount: collectedAmount,
+          },
+        });
+      }
+
       await tx.bookingSopStep.update({
         where: { bookingId_stepKey: { bookingId, stepKey: "payment_proof" } },
         data: {
@@ -79,13 +99,16 @@ export async function POST(
 
     await logAdminBookingEvent({
       bookingId,
-      type: "payment_collection_recorded",
-      summary: result.mismatchFlag ? "Payment proof recorded with mismatch" : "Payment proof recorded",
+      type: applyServiceAmountChange ? "service_amount_updated" : "payment_collection_recorded",
+      summary: applyServiceAmountChange
+        ? (collectedAmount > result.expectedAmount ? "Service amount updated for upsell" : "Service amount updated for downgrade")
+        : result.mismatchFlag ? "Payment proof recorded with mismatch" : "Payment proof recorded",
       metadata: {
         collectionMode: result.collectionMode,
         collectedAmount: result.collectedAmount,
         expectedAmount: result.expectedAmount,
         mismatchFlag: result.mismatchFlag,
+        applyServiceAmountChange,
         notes: result.notes ?? null,
       },
     });
@@ -98,10 +121,18 @@ export async function POST(
         collectedAmount: result.collectedAmount,
         expectedAmount: result.expectedAmount,
         mismatchFlag: result.mismatchFlag,
+        serviceAmountUpdated: !result.mismatchFlag && result.collectedAmount !== result.expectedAmount,
+        serviceAmountDirection:
+          !result.mismatchFlag && result.collectedAmount !== result.expectedAmount
+            ? result.collectedAmount > result.expectedAmount
+              ? "upsell"
+              : "downgrade"
+            : null,
         notes: result.notes ?? null,
         recordedAt: result.recordedAt.toISOString(),
         recordedBy: result.recordedBy ?? null,
       },
+      finalAmount: applyServiceAmountChange ? collectedAmount : result.expectedAmount === collectedAmount && !result.mismatchFlag ? collectedAmount : result.expectedAmount,
     });
   } catch (error) {
     if (error instanceof Error && "httpStatus" in error) {

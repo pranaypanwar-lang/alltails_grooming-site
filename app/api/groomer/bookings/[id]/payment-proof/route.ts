@@ -20,6 +20,7 @@ export async function POST(
     let collectionMode = "";
     let notes: string | null = null;
     let collectedAmount = Number.NaN;
+    let applyServiceAmountChange = false;
     let file: File | null = null;
 
     if (contentType.includes("multipart/form-data")) {
@@ -27,12 +28,14 @@ export async function POST(
       collectionMode = typeof formData.get("collectionMode") === "string" ? String(formData.get("collectionMode")).trim() : "";
       notes = typeof formData.get("notes") === "string" ? String(formData.get("notes")).trim() || null : null;
       collectedAmount = Number(formData.get("collectedAmount"));
+      applyServiceAmountChange = formData.get("applyServiceAmountChange") === "true";
       file = formData.get("file") instanceof File ? (formData.get("file") as File) : null;
     } else {
       const body = await request.json().catch(() => ({}));
       collectionMode = typeof body.collectionMode === "string" ? body.collectionMode.trim() : "";
       notes = typeof body.notes === "string" ? body.notes.trim() || null : null;
       collectedAmount = Number(body.collectedAmount);
+      applyServiceAmountChange = body.applyServiceAmountChange === true;
     }
 
     if (!["cash", "online", "waived"].includes(collectionMode)) {
@@ -83,7 +86,23 @@ export async function POST(
       await ensureBookingSopSteps(tx, bookingId);
 
       const expectedAmount = booking.finalAmount;
-      const mismatchFlag = collectionMode !== "waived" && collectedAmount !== expectedAmount;
+      if (applyServiceAmountChange && notes == null) {
+        throw Object.assign(new Error("Plan change note is required when updating the service amount"), { httpStatus: 400 });
+      }
+      if (applyServiceAmountChange) {
+        const paymentMethod = await tx.booking.findUnique({
+          where: { id: bookingId },
+          select: { paymentMethod: true },
+        });
+        if (paymentMethod?.paymentMethod !== "pay_after_service") {
+          throw Object.assign(new Error("Service amount changes are only allowed for pay-after-service bookings"), { httpStatus: 400 });
+        }
+      }
+
+      const mismatchFlag =
+        collectionMode !== "waived" &&
+        collectedAmount !== expectedAmount &&
+        !applyServiceAmountChange;
 
       const record = await tx.bookingPaymentCollection.upsert({
         where: { bookingId },
@@ -106,6 +125,15 @@ export async function POST(
           recordedAt: new Date(),
         },
       });
+
+      if (applyServiceAmountChange && booking.finalAmount !== collectedAmount) {
+        await tx.booking.update({
+          where: { id: bookingId },
+          data: {
+            finalAmount: collectedAmount,
+          },
+        });
+      }
 
       await tx.bookingSopStep.update({
         where: { bookingId_stepKey: { bookingId, stepKey: "payment_proof" } },
@@ -145,13 +173,16 @@ export async function POST(
     await logBookingEvent({
       bookingId,
       actor: "groomer",
-      type: "payment_recorded",
-      summary: `Payment update saved via ${collectionMode}`,
+      type: applyServiceAmountChange ? "service_amount_updated" : "payment_recorded",
+      summary: applyServiceAmountChange
+        ? (collectedAmount > paymentCollection.expectedAmount ? "Service amount updated for upsell" : "Service amount updated for downgrade")
+        : `Payment update saved via ${collectionMode}`,
       metadata: {
         collectionMode,
         collectedAmount,
         expectedAmount: paymentCollection.expectedAmount,
         mismatchFlag: paymentCollection.mismatchFlag,
+        applyServiceAmountChange,
         paymentImageUploaded: !!uploadedPaymentImage,
         source: "groomer_portal",
       },
@@ -165,10 +196,18 @@ export async function POST(
         collectedAmount: paymentCollection.collectedAmount,
         expectedAmount: paymentCollection.expectedAmount,
         mismatchFlag: paymentCollection.mismatchFlag,
+        serviceAmountUpdated: !paymentCollection.mismatchFlag && paymentCollection.collectedAmount !== paymentCollection.expectedAmount,
+        serviceAmountDirection:
+          !paymentCollection.mismatchFlag && paymentCollection.collectedAmount !== paymentCollection.expectedAmount
+            ? paymentCollection.collectedAmount > paymentCollection.expectedAmount
+              ? "upsell"
+              : "downgrade"
+            : null,
         notes: paymentCollection.notes ?? null,
         recordedAt: paymentCollection.recordedAt.toISOString(),
         recordedBy: paymentCollection.recordedBy ?? null,
       },
+      finalAmount: applyServiceAmountChange ? collectedAmount : booking.finalAmount,
       paymentImage: uploadedPaymentImage
         ? {
             publicUrl: uploadedPaymentImage.publicUrl,

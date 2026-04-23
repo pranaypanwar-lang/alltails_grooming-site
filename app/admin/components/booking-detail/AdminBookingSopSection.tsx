@@ -37,12 +37,14 @@ export function AdminBookingSopSection({
     paymentCollection ? String(paymentCollection.collectedAmount) : String(expectedAmount)
   );
   const [paymentNotes, setPaymentNotes] = useState(paymentCollection?.notes ?? "");
+  const [applyServiceAmountChange, setApplyServiceAmountChange] = useState(paymentCollection?.serviceAmountUpdated ?? false);
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   useEffect(() => {
     setPaymentMode(paymentCollection?.collectionMode ?? "cash");
     setPaymentAmount(paymentCollection ? String(paymentCollection.collectedAmount) : String(expectedAmount));
     setPaymentNotes(paymentCollection?.notes ?? "");
+    setApplyServiceAmountChange(paymentCollection?.serviceAmountUpdated ?? false);
   }, [expectedAmount, paymentCollection]);
 
   const handleStatusUpdate = async (stepKey: string, status: "pending" | "completed") => {
@@ -85,6 +87,10 @@ export function AdminBookingSopSection({
       showToast("Enter a valid collected amount.", false);
       return;
     }
+    if (applyServiceAmountChange && !paymentNotes.trim()) {
+      showToast("Add a note explaining the upgrade or downgrade.", false);
+      return;
+    }
 
     try {
       setBusyStepKey("payment_proof");
@@ -92,6 +98,7 @@ export function AdminBookingSopSection({
         collectionMode: paymentMode,
         collectedAmount,
         notes: paymentNotes.trim(),
+        applyServiceAmountChange,
       });
       showToast("Payment proof recorded.", true);
       await onRefresh();
@@ -255,6 +262,23 @@ export function AdminBookingSopSection({
                     />
                   </label>
 
+                  <label className="mt-3 block rounded-[10px] border border-[#ece5ff] bg-[#fcfbff] px-3 py-3 text-[12px] text-[#4b5563]">
+                    <span className="flex items-start gap-3">
+                      <input
+                        type="checkbox"
+                        checked={applyServiceAmountChange}
+                        onChange={(event) => setApplyServiceAmountChange(event.target.checked)}
+                        className="mt-0.5 h-4 w-4 rounded border-[#d8cff8] text-[#6d5bd0] focus:ring-[#c4b5fd]"
+                      />
+                      <span>
+                        <span className="block font-semibold text-[#2a2346]">Apply as service amount change</span>
+                        <span className="mt-1 block text-[11px] leading-[1.5] text-[#8a90a6]">
+                          Use this when the customer upgraded or downgraded the plan during service. The collected amount will become the new booking final amount.
+                        </span>
+                      </span>
+                    </span>
+                  </label>
+
                   {paymentCollection ? (
                     <div
                       className={`mt-3 rounded-[10px] px-3 py-2 text-[12px] ${
@@ -263,7 +287,9 @@ export function AdminBookingSopSection({
                           : "bg-[#effaf3] text-[#15803d]"
                       }`}
                     >
-                      {paymentCollection.mismatchFlag
+                      {paymentCollection.serviceAmountUpdated
+                        ? `Service amount updated ${paymentCollection.serviceAmountDirection === "upsell" ? "for upsell" : "for downgrade"}: ₹${paymentCollection.expectedAmount.toLocaleString("en-IN")} → ₹${paymentCollection.collectedAmount.toLocaleString("en-IN")}.`
+                        : paymentCollection.mismatchFlag
                         ? `Mismatch flagged: collected ₹${paymentCollection.collectedAmount.toLocaleString("en-IN")} vs expected ₹${paymentCollection.expectedAmount.toLocaleString("en-IN")}.`
                         : `Recorded ₹${paymentCollection.collectedAmount.toLocaleString("en-IN")} via ${paymentCollection.collectionMode}.`}
                     </div>

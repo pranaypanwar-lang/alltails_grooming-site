@@ -445,10 +445,20 @@ export function GroomerJobClient({
     String(booking.payment.collection?.collectedAmount ?? booking.payment.finalAmount)
   );
   const [paymentNotes, setPaymentNotes] = useState(booking.payment.collection?.notes ?? "");
+  const [applyServiceAmountChange, setApplyServiceAmountChange] = useState(
+    booking.payment.collection?.serviceAmountUpdated ?? false
+  );
   const [paymentImage, setPaymentImage] = useState<File | null>(null);
   const [now, setNow] = useState(() => Date.now());
   const [momentToast, setMomentToast] = useState<MomentToast>(null);
   const tokenQuery = token ? `?token=${encodeURIComponent(token)}` : "";
+
+  useEffect(() => {
+    setPaymentMode((booking.payment.collection?.collectionMode as "cash" | "online" | "waived") ?? "cash");
+    setPaymentAmount(String(booking.payment.collection?.collectedAmount ?? booking.payment.finalAmount));
+    setPaymentNotes(booking.payment.collection?.notes ?? "");
+    setApplyServiceAmountChange(booking.payment.collection?.serviceAmountUpdated ?? false);
+  }, [booking.payment.collection, booking.payment.finalAmount]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
@@ -576,6 +586,19 @@ export function GroomerJobClient({
   };
 
   const savePayment = async () => {
+    const normalizedAmount = Number(paymentAmount);
+    if (!Number.isFinite(normalizedAmount) || normalizedAmount < 0) {
+      throw new Error(languageMode === "simple"
+        ? "Valid amount daaliye."
+        : "सही अमाउंट डालिए।");
+    }
+
+    if (applyServiceAmountChange && !paymentNotes.trim()) {
+      throw new Error(languageMode === "simple"
+        ? "Upgrade ya downgrade ka short note likhna zaroori hai."
+        : "अपग्रेड या डाउनग्रेड का छोटा नोट लिखना ज़रूरी है।");
+    }
+
     if (paymentMode !== "waived" && !paymentImage) {
       throw new Error(languageMode === "simple"
         ? "Payment ke saath photo ya screenshot zaroor add karein."
@@ -588,8 +611,9 @@ export function GroomerJobClient({
 
     const formData = new FormData();
     formData.set("collectionMode", paymentMode);
-    formData.set("collectedAmount", String(Number(paymentAmount)));
+    formData.set("collectedAmount", String(normalizedAmount));
     formData.set("notes", paymentNotes);
+    formData.set("applyServiceAmountChange", String(applyServiceAmountChange));
     if (paymentImage) {
       formData.set("file", paymentImage);
     }
@@ -1126,6 +1150,27 @@ export function GroomerJobClient({
               placeholder={languageMode === "simple" ? "Chhota note likhein" : "छोटा नोट लिखिए"}
             />
 
+            <label className="rounded-[18px] border border-[#ebe5fb] bg-[#fcfbff] px-4 py-3 text-[14px] text-[#4b5563]">
+              <span className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={applyServiceAmountChange}
+                  onChange={(event) => setApplyServiceAmountChange(event.target.checked)}
+                  className="mt-1 h-4 w-4 rounded border-[#d8cff8] text-[#6d5bd0] focus:ring-[#c4b5fd]"
+                />
+                <span>
+                  <span className="block font-semibold text-[#2a2346]">
+                    {languageMode === "simple" ? "Customer ne plan change kiya?" : "कस्टमर ने प्लान बदला?"}
+                  </span>
+                  <span className="mt-1 block text-[12px] leading-[1.6] text-[#6b7280]">
+                    {languageMode === "simple"
+                      ? "Isko on karein jab service upgrade ya downgrade final ho gaya ho. Is amount ko booking ka naya final amount maana jayega."
+                      : "इसे ऑन करें जब सर्विस अपग्रेड या डाउनग्रेड फाइनल हो गया हो। यह अमाउंट बुकिंग का नया फाइनल अमाउंट माना जाएगा।"}
+                  </span>
+                </span>
+              </span>
+            </label>
+
             {paymentMode !== "waived" ? (
               <StepCard
                 title={languageMode === "simple" ? "Payment image" : "पेमेंट इमेज"}
@@ -1170,7 +1215,11 @@ export function GroomerJobClient({
 
             {booking.payment.collection ? (
               <div className={`rounded-[18px] px-4 py-3 text-[14px] leading-[1.7] ${booking.payment.collection.mismatchFlag ? "bg-[#fff1f2] text-[#be123c]" : "bg-[#effaf3] text-[#15803d]"}`}>
-                {booking.payment.collection.mismatchFlag
+                {booking.payment.collection.serviceAmountUpdated
+                  ? (languageMode === "simple"
+                    ? `${booking.payment.collection.serviceAmountDirection === "upsell" ? "Upsell" : "Downgrade"} save ho gaya: ₹${booking.payment.collection.expectedAmount} se ₹${booking.payment.collection.collectedAmount}.`
+                    : `${booking.payment.collection.serviceAmountDirection === "upsell" ? "अपसेल" : "डाउनग्रेड"} सेव हो गया: ₹${booking.payment.collection.expectedAmount} से ₹${booking.payment.collection.collectedAmount}।`)
+                  : booking.payment.collection.mismatchFlag
                   ? (languageMode === "simple"
                     ? `Mismatch hai: ₹${booking.payment.collection.collectedAmount} mila, expected ₹${booking.payment.collection.expectedAmount}.`
                     : `मिसमैच है: ₹${booking.payment.collection.collectedAmount} मिला, एक्सपेक्टेड ₹${booking.payment.collection.expectedAmount}।`)

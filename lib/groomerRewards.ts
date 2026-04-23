@@ -710,6 +710,26 @@ export async function awardCompletionRewards(prisma: DbClient, bookingId: string
       if (cleanPaymentGrant.reward) grants.push(cleanPaymentGrant.reward);
     }
 
+    if (
+      booking.paymentCollection &&
+      !booking.paymentCollection.mismatchFlag &&
+      booking.paymentCollection.collectedAmount > booking.paymentCollection.expectedAmount
+    ) {
+      const upsellDelta = booking.paymentCollection.collectedAmount - booking.paymentCollection.expectedAmount;
+      const upsellGrant = await awardGroomerXp({
+        tx,
+        teamMemberId: booking.groomerMemberId,
+        bookingId,
+        eventType: "service_upsell",
+        summary: `Customer upgraded service (+₹${upsellDelta})`,
+        xpAwarded: 12,
+        rewardPointsAwarded: 8,
+        trustDelta: 1,
+        performanceDelta: 3,
+      });
+      if (upsellGrant.reward) grants.push(upsellGrant.reward);
+    }
+
     const firstSlot = [...booking.slots].sort(
       (a, b) => a.slot.startTime.getTime() - b.slot.startTime.getTime()
     )[0]?.slot;

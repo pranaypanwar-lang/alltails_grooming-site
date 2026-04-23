@@ -139,6 +139,16 @@ export async function serializeGroomerBooking(prisma: DbClient, booking: Groomer
             collectedAmount: booking.paymentCollection.collectedAmount,
             expectedAmount: booking.paymentCollection.expectedAmount,
             mismatchFlag: booking.paymentCollection.mismatchFlag,
+            serviceAmountUpdated:
+              !booking.paymentCollection.mismatchFlag &&
+              booking.paymentCollection.collectedAmount !== booking.paymentCollection.expectedAmount,
+            serviceAmountDirection:
+              !booking.paymentCollection.mismatchFlag &&
+              booking.paymentCollection.collectedAmount !== booking.paymentCollection.expectedAmount
+                ? booking.paymentCollection.collectedAmount > booking.paymentCollection.expectedAmount
+                  ? "upsell"
+                  : "downgrade"
+                : null,
             notes: booking.paymentCollection.notes ?? null,
             recordedAt: booking.paymentCollection.recordedAt.toISOString(),
           }

@@ -452,7 +452,12 @@ export async function uploadAdminBookingSopProof(
 
 export async function recordAdminBookingPaymentProof(
   bookingId: string,
-  payload: { collectionMode: "cash" | "online" | "waived"; collectedAmount: number; notes?: string }
+  payload: {
+    collectionMode: "cash" | "online" | "waived";
+    collectedAmount: number;
+    notes?: string;
+    applyServiceAmountChange?: boolean;
+  }
 ): Promise<AdminBookingPaymentCollectionResponse> {
   const res = await fetch(`/api/admin/bookings/${bookingId}/sop/payment-proof`, {
     method: "POST",
