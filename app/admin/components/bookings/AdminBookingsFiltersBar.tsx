@@ -6,14 +6,11 @@ import type { AdminBookingsFilters, AdminBookingStatus, AdminPaymentStatus, Admi
 import type { AdminTeamRow } from "../../lib/api";
 
 const TABS: { id: AdminBookingsFilters["tab"]; label: string }[] = [
-  { id: "all", label: "All" },
+  { id: "active", label: "Active" },
   { id: "today", label: "Today" },
-  { id: "tomorrow", label: "Tomorrow" },
-  { id: "pending_payment", label: "Pending payment" },
-  { id: "confirmed", label: "Confirmed" },
-  { id: "completed", label: "Completed" },
-  { id: "cancelled", label: "Cancelled" },
-  { id: "payment_expired", label: "Expired" },
+  { id: "upcoming", label: "Upcoming" },
+  { id: "past", label: "Past" },
+  { id: "cancelled_expired", label: "Cancelled / expired" },
 ];
 
 type Props = {
@@ -241,10 +238,21 @@ export function AdminBookingsFiltersBar({ filters, teams, onChange, onReset }: P
               }}
               className="h-[44px] rounded-[14px] border border-[#ddd1fb] px-4 text-[13px] outline-none"
             >
-              <option value="selectedDate__asc">Booking date</option>
-              <option value="createdAt__desc">Created time</option>
-              <option value="city__asc">City</option>
-              <option value="status__asc">Status</option>
+              <option value="createdAt__desc">Booking made: newest first</option>
+              <option value="createdAt__asc">Booking made: oldest first</option>
+              <option value="serviceDate__asc">Service date: earliest first</option>
+              <option value="serviceDate__desc">Service date: latest first</option>
+              <option value="updatedAt__desc">Recently updated first</option>
+              <option value="team__asc">Team: A-Z</option>
+              <option value="team__desc">Team: Z-A</option>
+              <option value="city__asc">City: A-Z</option>
+              <option value="city__desc">City: Z-A</option>
+              <option value="finalAmount__desc">Amount: high to low</option>
+              <option value="finalAmount__asc">Amount: low to high</option>
+              <option value="customerName__asc">Customer name: A-Z</option>
+              <option value="customerName__desc">Customer name: Z-A</option>
+              <option value="paymentPriority__desc">Payment priority</option>
+              <option value="assignmentPriority__desc">Unassigned first</option>
             </select>
           </label>
 

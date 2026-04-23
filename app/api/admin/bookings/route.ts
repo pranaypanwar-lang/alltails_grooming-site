@@ -138,6 +138,7 @@ function buildListItem(booking: BookingListRecord, now: Date, includeFullPhone =
     paymentMethodLabel: getPaymentMethodLabel(booking.paymentMethod),
     selectedDate: booking.selectedDate ?? null,
     createdAt: booking.createdAt.toISOString(),
+    updatedAt: booking.updatedAt.toISOString(),
     city: booking.user.city ?? null,
     service: { id: booking.service.id, name: booking.service.name },
     customer,
@@ -194,6 +195,24 @@ function compareValues(a: string | number, b: string | number, sortOrder: "asc" 
   return 0;
 }
 
+function getServiceDateSortValue(item: ReturnType<typeof buildListItem>) {
+  return `${item.selectedDate ?? "9999-12-31"}|${item.bookingWindow?.startTime ?? "23:59:59.999Z"}|${item.createdAt}`;
+}
+
+function getPaymentPriority(item: ReturnType<typeof buildListItem>) {
+  if (item.status === "payment_expired") return 0;
+  if (item.paymentStatus === "unpaid") return 1;
+  if (item.paymentStatus === "pending_cash_collection") return 2;
+  if (item.paymentStatus === "covered_by_loyalty") return 3;
+  return 4;
+}
+
+function getAssignmentPriority(item: ReturnType<typeof buildListItem>) {
+  if (item.urgency.needsAssignment) return 2;
+  if (!item.groomerMember) return 1;
+  return 0;
+}
+
 export async function GET(req: NextRequest) {
   const authErr = await assertAdminSession();
   if (authErr) return authErr;
@@ -217,7 +236,8 @@ export async function GET(req: NextRequest) {
     const paymentExpiringSoon = q.get("paymentExpiringSoon") === "true";
     const tomorrowOnly = q.get("tomorrowOnly") === "true";
     const search = q.get("search")?.trim() ?? undefined;
-    const sortBy = q.get("sortBy") ?? "selectedDate";
+    const tab = q.get("tab") ?? "active";
+    const sortBy = q.get("sortBy") ?? "createdAt";
     const sortOrder = (q.get("sortOrder") ?? "desc") as "asc" | "desc";
 
     const now = new Date();
@@ -265,6 +285,17 @@ export async function GET(req: NextRequest) {
     const filteredItems = bookings
       .map((booking) => buildListItem(booking, now, true))
       .filter((item) => {
+        const hasPastServiceDate = !!item.selectedDate && item.selectedDate < todayStr;
+        const isCancelledExpired = item.status === "cancelled" || item.status === "payment_expired";
+        const isPast = item.status === "completed" || (hasPastServiceDate && !isCancelledExpired);
+        const isActive = !isCancelledExpired && !isPast;
+
+        if (tab === "active" && !isActive) return false;
+        if (tab === "today" && (!isActive || item.selectedDate !== todayStr)) return false;
+        if (tab === "upcoming" && (!isActive || !item.selectedDate || item.selectedDate <= todayStr)) return false;
+        if (tab === "past" && !isPast) return false;
+        if (tab === "cancelled_expired" && !isCancelledExpired) return false;
+
         if (teamId === "unassigned" && item.team) return false;
         if (teamId && teamId !== "unassigned" && item.team?.id !== teamId) return false;
         if (bookingStatus && item.status !== bookingStatus) return false;
@@ -274,17 +305,29 @@ export async function GET(req: NextRequest) {
         return true;
       })
       .sort((a, b) => {
-        if (sortBy === "selectedDate") {
-          return compareValues(a.selectedDate ?? "", b.selectedDate ?? "", sortOrder);
+        if (sortBy === "serviceDate") {
+          return compareValues(getServiceDateSortValue(a), getServiceDateSortValue(b), sortOrder);
         }
-        if (sortBy === "startTime") {
-          return compareValues(a.bookingWindow?.startTime ?? "", b.bookingWindow?.startTime ?? "", sortOrder);
+        if (sortBy === "updatedAt") {
+          return compareValues(a.updatedAt, b.updatedAt, sortOrder);
+        }
+        if (sortBy === "team") {
+          return compareValues(a.team?.name ?? "zzzz", b.team?.name ?? "zzzz", sortOrder);
         }
         if (sortBy === "city") {
           return compareValues(a.city ?? "", b.city ?? "", sortOrder);
         }
-        if (sortBy === "status") {
-          return compareValues(a.statusLabel, b.statusLabel, sortOrder);
+        if (sortBy === "finalAmount") {
+          return compareValues(a.financials.finalAmount, b.financials.finalAmount, sortOrder);
+        }
+        if (sortBy === "customerName") {
+          return compareValues(a.customer.name, b.customer.name, sortOrder);
+        }
+        if (sortBy === "paymentPriority") {
+          return compareValues(getPaymentPriority(a), getPaymentPriority(b), sortOrder);
+        }
+        if (sortBy === "assignmentPriority") {
+          return compareValues(getAssignmentPriority(a), getAssignmentPriority(b), sortOrder);
         }
         return compareValues(a.createdAt, b.createdAt, sortOrder);
       });

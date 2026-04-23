@@ -70,27 +70,17 @@ export async function fetchAdminBookings(params: {
 }): Promise<AdminBookingsResponse> {
   const { filters, page, pageSize } = params;
 
-  // Resolve tab into filter params
-  const today = new Date().toISOString().slice(0, 10);
-  const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
-
   const resolved = {
     page,
     pageSize,
+    tab: filters.tab,
     search: filters.search.trim(),
-    date:
-      filters.tab === "today"
-        ? today
-        : filters.tab === "tomorrow"
-          ? tomorrow
-          : filters.date,
+    date: filters.date,
     dateFrom: filters.date ? "" : filters.dateFrom,
     dateTo: filters.date ? "" : filters.dateTo,
     city: filters.city,
     teamId: filters.teamId,
-    bookingStatus: filters.tab === "all" || filters.tab === "today" || filters.tab === "tomorrow"
-      ? filters.bookingStatus
-      : filters.tab,
+    bookingStatus: filters.bookingStatus,
     paymentStatus: filters.paymentStatus,
     loyaltyState: filters.loyaltyState,
     serviceName: filters.serviceName,
