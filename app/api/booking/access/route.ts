@@ -2,19 +2,12 @@ import { NextResponse } from "next/server";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../lib/generated/prisma";
 import { assertBookingAccessToken, bookingAccessMatchesPhone } from "../_lib/assertBookingAccess";
+import { getBookingWindowDisplay } from "../../../../lib/booking/window";
 
 export const runtime = "nodejs";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
-
-function formatTime(value: Date) {
-  return value.toLocaleTimeString("en-IN", {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone: "Asia/Kolkata",
-  });
-}
 
 export async function POST(request: Request) {
   try {
@@ -43,8 +36,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Booking access does not match this booking" }, { status: 403 });
     }
 
-    const firstSlot = booking.slots[0]?.slot;
-    const lastSlot = booking.slots[booking.slots.length - 1]?.slot;
+    const bookingWindowDisplay = getBookingWindowDisplay({
+      bookingWindowId: booking.bookingWindowId,
+      selectedDate: booking.selectedDate,
+      slots: booking.slots.map((item) => item.slot),
+    });
 
     return NextResponse.json({
       booking: {
@@ -52,10 +48,7 @@ export async function POST(request: Request) {
         customerName: booking.user.name,
         serviceName: booking.service.name,
         selectedDate: booking.selectedDate,
-        displayLabel:
-          firstSlot && lastSlot
-            ? `${formatTime(firstSlot.startTime)} – ${formatTime(lastSlot.endTime)}`
-            : null,
+        displayLabel: bookingWindowDisplay?.displayLabel ?? null,
         paymentMethod: booking.paymentMethod,
         paymentStatus: booking.paymentStatus,
         finalAmount: booking.finalAmount,

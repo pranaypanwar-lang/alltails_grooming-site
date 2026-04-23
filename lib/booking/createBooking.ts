@@ -48,6 +48,11 @@ export type CreateBookingInput = {
   couponCode?: string;
   adminNote?: string | null;
   bookingSource?: string;
+  overrideFinalAmount?: number | null;
+  serviceAddress?: string | null;
+  serviceLandmark?: string | null;
+  servicePincode?: string | null;
+  serviceLocationUrl?: string | null;
 };
 
 function applyCoupon(
@@ -167,10 +172,12 @@ export async function createBookingWithBusinessRules(
 
   const couponEligibleCode =
     input.paymentMethod === "pay_now" ? input.couponCode : undefined;
-  const { finalAmount: couponFinalAmount, normalizedCouponCode } = applyCoupon(
+  const { finalAmount: couponFinalAmount, normalizedCouponCode: couponCode } = applyCoupon(
     service.price,
     couponEligibleCode
   );
+  const normalizedCouponCode =
+    typeof input.overrideFinalAmount === "number" ? null : couponCode;
 
   const result = await prisma.$transaction(async (tx) => {
     const resolvedUser = await resolveCanonicalUser(tx, input);
@@ -198,7 +205,10 @@ export async function createBookingWithBusinessRules(
       ? 0
       : LOYALTY_CYCLE - sessionsInCurrentCycleAfter;
 
-    let finalAmount = couponFinalAmount;
+    let finalAmount =
+      typeof input.overrideFinalAmount === "number"
+        ? Math.max(0, Math.round(input.overrideFinalAmount))
+        : couponFinalAmount;
     let paymentStatus =
       input.paymentMethod === "pay_now" ? "unpaid" : "pending_cash_collection";
     let bookingStatus =
@@ -210,6 +220,11 @@ export async function createBookingWithBusinessRules(
       paymentStatus = "covered_by_loyalty";
       bookingStatus = "confirmed";
       loyaltyRewardLabel = "Free session — loyalty reward";
+    }
+
+    if (!loyaltyRewardApplied && input.paymentMethod === "pay_now" && finalAmount <= 0) {
+      paymentStatus = "paid";
+      bookingStatus = "confirmed";
     }
 
     const isPrepaidHold = input.paymentMethod === "pay_now" && finalAmount > 0;
@@ -244,6 +259,17 @@ export async function createBookingWithBusinessRules(
         selectedDate: input.selectedDate,
         bookingWindowId: input.bookingWindowId,
         bookingSource: input.bookingSource?.trim() || "website",
+        serviceAddress: input.serviceAddress?.trim() || null,
+        serviceLandmark: input.serviceLandmark?.trim() || null,
+        servicePincode: input.servicePincode?.trim() || null,
+        serviceLocationUrl: input.serviceLocationUrl?.trim() || null,
+        addressUpdatedAt:
+          input.serviceAddress?.trim() ||
+          input.serviceLandmark?.trim() ||
+          input.servicePincode?.trim() ||
+          input.serviceLocationUrl?.trim()
+            ? new Date()
+            : null,
         loyaltyEligible,
         loyaltyCompletedCountBefore: completedCountBefore,
         loyaltyRewardApplied,

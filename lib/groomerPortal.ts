@@ -1,18 +1,11 @@
 import type { Prisma, PrismaClient } from "./generated/prisma";
 import { BOOKING_SOP_STEPS } from "./booking/sop";
 import { getAddressReadinessSummary } from "./booking/addressCapture";
+import { getBookingWindowDisplay } from "./booking/window";
 import { getBookingRewardSummary, getGamificationSnapshot } from "./groomerRewards";
 import { getServiceSlaSummary } from "./serviceSla";
 
 type DbClient = PrismaClient | Prisma.TransactionClient;
-
-function formatTime(value: Date) {
-  return value.toLocaleTimeString("en-IN", {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone: "Asia/Kolkata",
-  });
-}
 
 type GroomerBookingRecord = Prisma.BookingGetPayload<{
   include: {
@@ -35,7 +28,11 @@ export async function serializeGroomerBooking(prisma: DbClient, booking: Groomer
     (a, b) => new Date(a.slot.startTime).getTime() - new Date(b.slot.startTime).getTime()
   );
   const firstSlot = sortedSlots[0]?.slot ?? null;
-  const lastSlot = sortedSlots[sortedSlots.length - 1]?.slot ?? null;
+  const bookingWindowDisplay = getBookingWindowDisplay({
+    bookingWindowId: booking.bookingWindowId,
+    selectedDate: booking.selectedDate,
+    slots: sortedSlots.map((item) => item.slot),
+  });
   const addressInfo = getAddressReadinessSummary(booking);
   const serviceSla = getServiceSlaSummary(booking.service.name);
   const groomerGamification = booking.groomerMember
@@ -97,11 +94,11 @@ export async function serializeGroomerBooking(prisma: DbClient, booking: Groomer
       currentRank: member.currentRank,
       currentXp: member.currentXp,
     })),
-    bookingWindow: firstSlot && lastSlot
+    bookingWindow: bookingWindowDisplay
       ? {
-          startTime: firstSlot.startTime.toISOString(),
-          endTime: lastSlot.endTime.toISOString(),
-          label: `${formatTime(firstSlot.startTime)} – ${formatTime(lastSlot.endTime)}`,
+          startTime: bookingWindowDisplay.startTime,
+          endTime: bookingWindowDisplay.endTime,
+          label: bookingWindowDisplay.displayLabel,
         }
       : null,
     addressInfo: {

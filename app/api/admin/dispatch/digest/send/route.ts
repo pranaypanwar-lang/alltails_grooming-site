@@ -5,20 +5,13 @@ import { PrismaClient } from "../../../../../../lib/generated/prisma";
 import { assertAdminSession } from "../../../_lib/assertAdmin";
 import { getPublicAppUrl } from "../../../_lib/bookingAdmin";
 import { getGroomerJobUrl } from "../../../../../../lib/groomerAccess";
+import { getBookingWindowDisplay } from "../../../../../../lib/booking/window";
 import { sendTelegramMessage } from "../../../../../../lib/telegram/send";
 
 export const runtime = "nodejs";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
-
-function formatTime(value: Date) {
-  return value.toLocaleTimeString("en-IN", {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone: "Asia/Kolkata",
-  });
-}
 
 function getErrorMessage(error: unknown, fallback: string) {
   return error instanceof Error ? error.message : fallback;
@@ -67,14 +60,15 @@ export async function runDigestSend(date: string, baseUrl?: string) {
       .sort((a, b) => new Date(a.slot.startTime).getTime() - new Date(b.slot.startTime).getTime());
 
     const firstSlot = sortedSlots[0]?.slot ?? null;
-    const lastSlot = sortedSlots[sortedSlots.length - 1]?.slot ?? null;
     const team = firstSlot?.team ?? null;
     if (!team) continue;
 
     const timeWindow =
-      firstSlot && lastSlot
-        ? `${formatTime(firstSlot.startTime)} – ${formatTime(lastSlot.endTime)}`
-        : "TBD";
+      getBookingWindowDisplay({
+        bookingWindowId: booking.bookingWindowId,
+        selectedDate: booking.selectedDate,
+        slots: sortedSlots.map((item) => item.slot),
+      })?.displayLabel ?? "TBD";
 
     const petSummary = booking.pets
       .map((bp) => bp.pet.name ? `${bp.pet.name} (${bp.pet.breed})` : bp.pet.breed)

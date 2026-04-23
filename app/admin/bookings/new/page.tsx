@@ -2,8 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Loader2, Plus, Search, Sparkles, Trash2 } from "lucide-react";
+import { ArrowLeft, Loader2, Plus, Search, Sparkles, Trash2, Upload, X } from "lucide-react";
 import { getBreedSuggestions, normalizeBreedName } from "../../../../lib/pets/breeds";
+import {
+  formatBookingWindowLabel,
+  localIstDateTimeToUtc,
+} from "../../../../lib/booking/window";
 import {
   createAdminManualBooking,
   fetchAdminBookingCreateMeta,
@@ -31,6 +35,13 @@ type BookingWindowOption = {
   displayLabel: string;
 };
 
+type UploadedBookingAsset = {
+  id: string;
+  storageKey: string;
+  publicUrl: string;
+  originalName: string;
+};
+
 type ManualPetDraft = {
   id: string;
   sourcePetId?: string;
@@ -38,6 +49,10 @@ type ManualPetDraft = {
   breed: string;
   groomingNotes: string;
   stylingNotes: string;
+  concernAssets: UploadedBookingAsset[];
+  stylingAssets: UploadedBookingAsset[];
+  uploadingConcern: boolean;
+  uploadingStyling: boolean;
 };
 
 const SOURCE_OPTIONS: Array<{ value: AdminManualBookingSource; label: string }> = [
@@ -55,6 +70,10 @@ function makePetDraft(seed?: Partial<ManualPetDraft>): ManualPetDraft {
     breed: seed?.breed ?? "",
     groomingNotes: seed?.groomingNotes ?? "",
     stylingNotes: seed?.stylingNotes ?? "",
+    concernAssets: [],
+    stylingAssets: [],
+    uploadingConcern: false,
+    uploadingStyling: false,
   };
 }
 
@@ -73,7 +92,13 @@ export default function AdminNewBookingPage() {
   const [paymentMethod, setPaymentMethod] = useState<"pay_now" | "pay_after_service">(
     "pay_now"
   );
+  const [serviceAddress, setServiceAddress] = useState("");
+  const [serviceLandmark, setServiceLandmark] = useState("");
+  const [servicePincode, setServicePincode] = useState("");
+  const [serviceLocationUrl, setServiceLocationUrl] = useState("");
   const [couponCode, setCouponCode] = useState("");
+  const [customAmount, setCustomAmount] = useState("");
+  const [customStartTime, setCustomStartTime] = useState("");
   const [source, setSource] = useState<AdminManualBookingSource>("call");
   const [adminNote, setAdminNote] = useState("");
   const [pets, setPets] = useState<ManualPetDraft[]>([makePetDraft()]);
@@ -114,6 +139,20 @@ export default function AdminNewBookingPage() {
     [bookingWindows, selectedBookingWindowId]
   );
 
+  const selectedWindowDurationMs = useMemo(() => {
+    if (!selectedWindow) return 0;
+    return new Date(selectedWindow.endTime).getTime() - new Date(selectedWindow.startTime).getTime();
+  }, [selectedWindow]);
+
+  const effectiveWindowLabel = useMemo(() => {
+    if (!selectedWindow) return "Not selected";
+    if (!customStartTime || !selectedDate) return selectedWindow.displayLabel;
+
+    const customStartAt = localIstDateTimeToUtc(selectedDate, customStartTime);
+    const customEndAt = new Date(customStartAt.getTime() + selectedWindowDurationMs);
+    return formatBookingWindowLabel(customStartAt, customEndAt);
+  }, [customStartTime, selectedDate, selectedWindow, selectedWindowDurationMs]);
+
   const canLookupSavedPets = phone.replace(/\D/g, "").length >= 10;
   const canLoadAvailability =
     !!serviceAreaSlug &&
@@ -139,7 +178,13 @@ export default function AdminNewBookingPage() {
     setServiceName("");
     setSelectedDate("");
     setPaymentMethod("pay_now");
+    setServiceAddress("");
+    setServiceLandmark("");
+    setServicePincode("");
+    setServiceLocationUrl("");
     setCouponCode("");
+    setCustomAmount("");
+    setCustomStartTime("");
     setSource("call");
     setAdminNote("");
     setPets([makePetDraft()]);
@@ -157,6 +202,87 @@ export default function AdminNewBookingPage() {
       current.map((pet) => (pet.id === id ? { ...pet, ...patch } : pet))
     );
     setSelectedBookingWindowId("");
+  };
+
+  const uploadPetAssets = async (
+    petId: string,
+    kind: "styling_reference" | "concern_photo",
+    files: FileList | null
+  ) => {
+    if (!files?.length) return;
+
+    updatePet(
+      petId,
+      kind === "styling_reference" ? { uploadingStyling: true } : { uploadingConcern: true }
+    );
+
+    try {
+      const petIndex = pets.findIndex((pet) => pet.id === petId);
+      const uploadedAssets = await Promise.all(
+        Array.from(files).map(async (file) => {
+          const formData = new FormData();
+          formData.set("file", file);
+          formData.set("kind", kind);
+          formData.set("petIndex", String(Math.max(0, petIndex)));
+
+          const response = await fetch("/api/uploads/booking-asset", {
+            method: "POST",
+            body: formData,
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            throw new Error(data?.error ?? "Failed to upload images");
+          }
+
+          return data.asset as UploadedBookingAsset;
+        })
+      );
+
+      setPets((current) =>
+        current.map((pet) => {
+          if (pet.id !== petId) return pet;
+          return kind === "styling_reference"
+            ? {
+                ...pet,
+                stylingAssets: [...pet.stylingAssets, ...uploadedAssets],
+                uploadingStyling: false,
+              }
+            : {
+                ...pet,
+                concernAssets: [...pet.concernAssets, ...uploadedAssets],
+                uploadingConcern: false,
+              };
+        })
+      );
+      showToast("Images uploaded.", true);
+    } catch (error) {
+      updatePet(
+        petId,
+        kind === "styling_reference" ? { uploadingStyling: false } : { uploadingConcern: false }
+      );
+      showToast(error instanceof Error ? error.message : "Failed to upload images.", false);
+    }
+  };
+
+  const removePetAsset = (
+    petId: string,
+    kind: "styling_reference" | "concern_photo",
+    assetId: string
+  ) => {
+    setPets((current) =>
+      current.map((pet) => {
+        if (pet.id !== petId) return pet;
+        return kind === "styling_reference"
+          ? {
+              ...pet,
+              stylingAssets: pet.stylingAssets.filter((asset) => asset.id !== assetId),
+            }
+          : {
+              ...pet,
+              concernAssets: pet.concernAssets.filter((asset) => asset.id !== assetId),
+            };
+      })
+    );
   };
 
   const handlePetBreedInputChange = (id: string, value: string) => {
@@ -291,6 +417,12 @@ export default function AdminNewBookingPage() {
       selectedDate,
       bookingWindowId: selectedWindow.bookingWindowId,
       slotIds: selectedWindow.slotIds,
+      customStartTime: customStartTime.trim() || undefined,
+      customAmount: customAmount.trim() ? Number(customAmount) : undefined,
+      serviceAddress: serviceAddress.trim(),
+      serviceLandmark: serviceLandmark.trim(),
+      servicePincode: servicePincode.trim(),
+      serviceLocationUrl: serviceLocationUrl.trim(),
       paymentMethod,
       couponCode: paymentMethod === "pay_now" ? couponCode.trim().toUpperCase() : "",
       source,
@@ -302,6 +434,8 @@ export default function AdminNewBookingPage() {
         breed: pet.breed.trim(),
         groomingNotes: pet.groomingNotes.trim(),
         stylingNotes: pet.stylingNotes.trim(),
+        stylingAssets: pet.stylingAssets,
+        concernAssets: pet.concernAssets,
       })),
     };
 
@@ -358,7 +492,7 @@ export default function AdminNewBookingPage() {
               <div className="rounded-[20px] border border-[#ece5ff] bg-[#fcfbff] p-4">
                 <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Window</div>
                 <div className="mt-2 text-[14px] text-[#2a2346]">{success.selectedDate}</div>
-                <div className="mt-1 text-[14px] text-[#2a2346]">{success.bookingWindowId}</div>
+                <div className="mt-1 text-[14px] text-[#2a2346]">{success.bookingWindowLabel}</div>
                 {success.paymentOrder ? (
                   <div className="mt-3 rounded-[14px] bg-[#fff8eb] px-3 py-2 text-[12px] text-[#9a6700]">
                     Razorpay order created: <span className="font-mono">{success.paymentOrder.orderId}</span>
@@ -485,6 +619,53 @@ export default function AdminNewBookingPage() {
                     ))}
                   </select>
                 </label>
+              </div>
+
+              <div className="mt-5 rounded-[22px] border border-[#ece5ff] bg-[#fcfbff] p-4">
+                <div className="text-[14px] font-bold text-[#2a2346]">Service address</div>
+                <div className="mt-3 grid gap-4">
+                  <label className="block">
+                    <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Address</div>
+                    <textarea
+                      value={serviceAddress}
+                      onChange={(event) => setServiceAddress(event.target.value)}
+                      rows={3}
+                      className="w-full rounded-[14px] border border-[#ddd1fb] px-4 py-3 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                      placeholder="House / flat, street, area"
+                    />
+                  </label>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <label className="block">
+                      <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Landmark</div>
+                      <input
+                        value={serviceLandmark}
+                        onChange={(event) => setServiceLandmark(event.target.value)}
+                        className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                        placeholder="Nearby landmark"
+                      />
+                    </label>
+                    <label className="block">
+                      <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Pin code</div>
+                      <input
+                        value={servicePincode}
+                        onChange={(event) => setServicePincode(event.target.value)}
+                        className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                        placeholder="201014"
+                      />
+                    </label>
+                  </div>
+
+                  <label className="block">
+                    <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Google Maps link</div>
+                    <input
+                      value={serviceLocationUrl}
+                      onChange={(event) => setServiceLocationUrl(event.target.value)}
+                      className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                      placeholder="https://maps.google.com/..."
+                    />
+                  </label>
+                </div>
               </div>
 
               {savedPetsError ? (
@@ -622,6 +803,116 @@ export default function AdminNewBookingPage() {
                         />
                       </label>
                     </div>
+
+                    <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                      <div className="rounded-[18px] border border-[#ece5ff] bg-white p-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <div>
+                            <div className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">
+                              Pet current photos
+                            </div>
+                            <div className="mt-1 text-[12px] text-[#7c8499]">
+                              These help the groomer assess current coat condition before the visit.
+                            </div>
+                          </div>
+                          <label className="inline-flex cursor-pointer items-center gap-2 rounded-[12px] border border-[#ddd1fb] bg-[#faf9fd] px-3 py-2 text-[12px] font-semibold text-[#6d5bd0]">
+                            {pet.uploadingConcern ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            ) : (
+                              <Upload className="h-3.5 w-3.5" />
+                            )}
+                            Upload
+                            <input
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              className="hidden"
+                              onChange={(event) => {
+                                void uploadPetAssets(pet.id, "concern_photo", event.target.files);
+                                event.target.value = "";
+                              }}
+                            />
+                          </label>
+                        </div>
+
+                        {pet.concernAssets.length > 0 ? (
+                          <div className="mt-3 grid grid-cols-2 gap-3">
+                            {pet.concernAssets.map((asset) => (
+                              <div key={asset.id} className="relative overflow-hidden rounded-[14px] border border-[#ece5ff] bg-[#fcfbff]">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src={asset.publicUrl} alt={asset.originalName} className="h-28 w-full object-cover" />
+                                <button
+                                  type="button"
+                                  onClick={() => removePetAsset(pet.id, "concern_photo", asset.id)}
+                                  className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white"
+                                >
+                                  <X className="h-3.5 w-3.5" />
+                                </button>
+                                <div className="truncate px-3 py-2 text-[11px] text-[#6b7280]">{asset.originalName}</div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="mt-3 rounded-[14px] border border-dashed border-[#ddd1fb] px-4 py-5 text-[12px] text-[#8a90a6]">
+                            No current pet photos uploaded yet.
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="rounded-[18px] border border-[#ece5ff] bg-white p-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <div>
+                            <div className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">
+                              Style reference photos
+                            </div>
+                            <div className="mt-1 text-[12px] text-[#7c8499]">
+                              These are the exact styling references that the groomer will see in the job flow.
+                            </div>
+                          </div>
+                          <label className="inline-flex cursor-pointer items-center gap-2 rounded-[12px] border border-[#ddd1fb] bg-[#faf9fd] px-3 py-2 text-[12px] font-semibold text-[#6d5bd0]">
+                            {pet.uploadingStyling ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            ) : (
+                              <Upload className="h-3.5 w-3.5" />
+                            )}
+                            Upload
+                            <input
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              className="hidden"
+                              onChange={(event) => {
+                                void uploadPetAssets(pet.id, "styling_reference", event.target.files);
+                                event.target.value = "";
+                              }}
+                            />
+                          </label>
+                        </div>
+
+                        {pet.stylingAssets.length > 0 ? (
+                          <div className="mt-3 grid grid-cols-2 gap-3">
+                            {pet.stylingAssets.map((asset) => (
+                              <div key={asset.id} className="relative overflow-hidden rounded-[14px] border border-[#ece5ff] bg-[#fcfbff]">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src={asset.publicUrl} alt={asset.originalName} className="h-28 w-full object-cover" />
+                                <button
+                                  type="button"
+                                  onClick={() => removePetAsset(pet.id, "styling_reference", asset.id)}
+                                  className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white"
+                                >
+                                  <X className="h-3.5 w-3.5" />
+                                </button>
+                                <div className="truncate px-3 py-2 text-[11px] text-[#6b7280]">{asset.originalName}</div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="mt-3 rounded-[14px] border border-dashed border-[#ddd1fb] px-4 py-5 text-[12px] text-[#8a90a6]">
+                            No styling reference photos uploaded yet.
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -654,6 +945,37 @@ export default function AdminNewBookingPage() {
                     {availabilityLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Search className="h-3.5 w-3.5" />}
                     Load available windows
                   </button>
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-[22px] border border-[#ece5ff] bg-[#fcfbff] p-4">
+                <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <div className="text-[14px] font-bold text-[#2a2346]">Custom start time</div>
+                    <div className="mt-1 text-[12px] text-[#7c8499]">
+                      For manual exceptions, you can start between standard windows. We&apos;ll block any overlapping online slots automatically.
+                    </div>
+                  </div>
+                  <label className="block md:w-[220px]">
+                    <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Manual start time</div>
+                    <input
+                      type="time"
+                      value={customStartTime}
+                      onChange={(event) => setCustomStartTime(event.target.value)}
+                      disabled={!selectedWindow || !selectedDate}
+                      className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0] disabled:cursor-not-allowed disabled:bg-[#f7f7fb]"
+                    />
+                  </label>
+                </div>
+
+                <div className="mt-3 rounded-[16px] border border-dashed border-[#d7cdf8] bg-white px-4 py-3">
+                  <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Promised window</div>
+                  <div className="mt-1 text-[15px] font-semibold text-[#2a2346]">{effectiveWindowLabel}</div>
+                  {customStartTime && selectedWindow ? (
+                    <div className="mt-1 text-[12px] text-[#7c8499]">
+                      Base slot capacity stays the same, but overlapping standard windows will be blocked for online bookings.
+                    </div>
+                  ) : null}
                 </div>
               </div>
 
@@ -735,6 +1057,20 @@ export default function AdminNewBookingPage() {
                 </label>
 
                 <label className="block">
+                  <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Manual final amount</div>
+                  <input
+                    inputMode="decimal"
+                    value={customAmount}
+                    onChange={(event) => setCustomAmount(event.target.value)}
+                    className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                    placeholder="Leave blank to use standard service price"
+                  />
+                  <div className="mt-1 text-[12px] text-[#7c8499]">
+                    Use this only for manual exceptions. Online bookings will still follow standardized service pricing.
+                  </div>
+                </label>
+
+                <label className="block">
                   <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Ops note</div>
                   <textarea
                     value={adminNote}
@@ -756,11 +1092,22 @@ export default function AdminNewBookingPage() {
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <span>Window</span>
-                  <span className="text-right font-semibold text-[#2a2346]">{selectedWindow?.displayLabel ?? "Not selected"}</span>
+                  <span className="text-right font-semibold text-[#2a2346]">{effectiveWindowLabel}</span>
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <span>Team</span>
                   <span className="text-right font-semibold text-[#2a2346]">{selectedWindow?.teamName ?? "TBD"}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span>Amount</span>
+                  <span className="text-right font-semibold text-[#2a2346]">
+                    ₹
+                    {(
+                      customAmount.trim()
+                        ? Number(customAmount)
+                        : meta?.services.find((service) => service.name === serviceName)?.price ?? 0
+                    ).toLocaleString("en-IN")}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <span>Payment</span>

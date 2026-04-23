@@ -1,16 +1,9 @@
 import type { Prisma, PrismaClient } from "../generated/prisma";
+import { getBookingWindowDisplay } from "../booking/window";
 import {
   buildCustomerMessage,
   type ExtendedCustomerMessageType,
 } from "./templates";
-
-function formatTime(value: Date) {
-  return value.toLocaleTimeString("en-IN", {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone: "Asia/Kolkata",
-  });
-}
 
 type DbClient = PrismaClient | Prisma.TransactionClient;
 
@@ -57,12 +50,11 @@ export async function prepareCustomerMessageForBooking(
     throw Object.assign(new Error("Booking not found"), { httpStatus: 404 });
   }
 
-  const firstSlot = booking.slots[0]?.slot ?? null;
-  const lastSlot = booking.slots[booking.slots.length - 1]?.slot ?? null;
-  const windowLabel =
-    firstSlot && lastSlot
-      ? `${formatTime(firstSlot.startTime)} – ${formatTime(lastSlot.endTime)}`
-      : null;
+  const windowLabel = getBookingWindowDisplay({
+    bookingWindowId: booking.bookingWindowId,
+    selectedDate: booking.selectedDate,
+    slots: booking.slots.map((item) => item.slot),
+  })?.displayLabel ?? null;
 
   const paymentStatusLabel =
     booking.paymentStatus === "paid"

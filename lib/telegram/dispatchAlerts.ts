@@ -1,18 +1,11 @@
 import { PrismaClient } from "../generated/prisma";
 import { getGroomerJobUrl } from "../groomerAccess";
+import { getBookingWindowDisplay } from "../booking/window";
 import { sendTelegramMessage } from "./send";
 
 function maskPhone(phone: string) {
   if (phone.length <= 4) return "****";
   return phone.slice(0, 2) + "xxxxxx" + phone.slice(-2);
-}
-
-function formatTime(value: Date) {
-  return value.toLocaleTimeString("en-IN", {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone: "Asia/Kolkata",
-  });
 }
 
 export async function sendBookingDispatchAlert({
@@ -61,11 +54,12 @@ export async function sendBookingDispatchAlert({
     throw Object.assign(new Error("Telegram alerts disabled for this team"), { httpStatus: 400 });
   }
 
-  const firstSlot = booking.slots[0]?.slot;
-  const lastSlot = booking.slots[booking.slots.length - 1]?.slot;
-  const timeRange = firstSlot && lastSlot
-    ? `${formatTime(firstSlot.startTime)} - ${formatTime(lastSlot.endTime)}`
-    : "TBD";
+  const timeRange =
+    getBookingWindowDisplay({
+      bookingWindowId: booking.bookingWindowId,
+      selectedDate: booking.selectedDate,
+      slots: booking.slots.map((item) => item.slot),
+    })?.displayLabel ?? "TBD";
 
   const petSummary = booking.pets.map((bp) => `${bp.pet.name ?? "Unnamed"} (${bp.pet.breed})`).join(", ");
   const groomerJobUrl = getGroomerJobUrl({

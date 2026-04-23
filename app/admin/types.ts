@@ -399,6 +399,12 @@ export type AdminManualBookingPayload = {
   selectedDate: string;
   bookingWindowId: string;
   slotIds: string[];
+  customStartTime?: string;
+  customAmount?: number;
+  serviceAddress?: string;
+  serviceLandmark?: string;
+  servicePincode?: string;
+  serviceLocationUrl?: string;
   pets: Array<{
     sourcePetId?: string;
     isSavedProfile?: boolean;
@@ -406,6 +412,16 @@ export type AdminManualBookingPayload = {
     breed: string;
     stylingNotes?: string;
     groomingNotes?: string;
+    stylingAssets?: Array<{
+      storageKey: string;
+      publicUrl: string;
+      originalName: string;
+    }>;
+    concernAssets?: Array<{
+      storageKey: string;
+      publicUrl: string;
+      originalName: string;
+    }>;
   }>;
   paymentMethod: "pay_now" | "pay_after_service";
   couponCode?: string;
@@ -419,6 +435,7 @@ export type AdminManualBookingResponse = {
   accessToken: string | null;
   selectedDate: string;
   bookingWindowId: string;
+  bookingWindowLabel: string;
   paymentMethod: "pay_now" | "pay_after_service";
   paymentStatus: string;
   status: string;

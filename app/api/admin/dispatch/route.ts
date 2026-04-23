@@ -6,6 +6,7 @@ import type { Prisma } from "../../../../lib/generated/prisma";
 import { assertAdminSession } from "../_lib/assertAdmin";
 import { getAddressReadinessSummary } from "../../../../lib/booking/addressCapture";
 import { getGamificationSnapshot } from "../../../../lib/groomerRewards";
+import { getBookingWindowDisplay } from "../../../../lib/booking/window";
 
 export const runtime = "nodejs";
 
@@ -16,14 +17,6 @@ const maskPhone = (phone: string) => {
   if (phone.length <= 4) return "****";
   return phone.slice(0, 2) + "xxxxxx" + phone.slice(-2);
 };
-
-function formatTime(value: Date) {
-  return value.toLocaleTimeString("en-IN", {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone: "Asia/Kolkata",
-  });
-}
 
 type DerivedBookingStatus = "pending_payment" | "confirmed" | "completed" | "cancelled" | "payment_expired";
 
@@ -79,6 +72,7 @@ function buildDispatchCard(
     paymentStatus: string;
     paymentExpiresAt: Date | null;
     selectedDate: string | null;
+    bookingWindowId: string | null;
     dispatchState: string;
     assignedTeamId: string | null;
     assignedTeam: { id: string; name: string } | null;
@@ -117,8 +111,12 @@ function buildDispatchCard(
     .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
 
   const firstSlot = sortedSlots[0] ?? null;
-  const lastSlot = sortedSlots[sortedSlots.length - 1] ?? null;
   const team = booking.assignedTeam ?? firstSlot?.team ?? null;
+  const bookingWindowDisplay = getBookingWindowDisplay({
+    bookingWindowId: booking.bookingWindowId,
+    selectedDate: booking.selectedDate,
+    slots: sortedSlots,
+  });
 
   const derivedStatus = getDerivedStatus(booking, now);
   const hasTeam = !!team;
@@ -183,10 +181,10 @@ function buildDispatchCard(
       count: booking.pets.length,
       summary: petSummary || `${booking.pets.length} pet(s)`,
     },
-    bookingWindow: firstSlot && lastSlot ? {
-      startTime: firstSlot.startTime.toISOString(),
-      endTime: lastSlot.endTime.toISOString(),
-      displayLabel: `${formatTime(firstSlot.startTime)} – ${formatTime(lastSlot.endTime)}`,
+    bookingWindow: bookingWindowDisplay ? {
+      startTime: bookingWindowDisplay.startTime,
+      endTime: bookingWindowDisplay.endTime,
+      displayLabel: bookingWindowDisplay.displayLabel,
     } : null,
     loyalty: {
       rewardApplied: !!booking.loyaltyRewardApplied,

@@ -8,6 +8,7 @@ import { BOOKING_SOP_STEPS } from "../../../../../lib/booking/sop";
 import { getAddressReadinessSummary } from "../../../../../lib/booking/addressCapture";
 import { getGamificationSnapshot } from "../../../../../lib/groomerRewards";
 import { getLatestQaReview } from "../../../../../lib/booking/qaReview";
+import { getBookingWindowDisplay } from "../../../../../lib/booking/window";
 
 export const runtime = "nodejs";
 
@@ -18,14 +19,6 @@ const maskPhone = (phone: string) => {
   if (phone.length <= 4) return "****";
   return phone.slice(0, 2) + "xxxxxx" + phone.slice(-2);
 };
-
-function formatTime(value: Date) {
-  return value.toLocaleTimeString("en-IN", {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone: "Asia/Kolkata",
-  });
-}
 
 type DerivedBookingStatus = "pending_payment" | "confirmed" | "completed" | "cancelled" | "payment_expired";
 type DerivedPaymentStatus = "unpaid" | "paid" | "pending_cash_collection" | "covered_by_loyalty" | "expired";
@@ -222,8 +215,12 @@ export async function GET(
       (a, b) => new Date(a.slot.startTime).getTime() - new Date(b.slot.startTime).getTime()
     );
     const firstSlot = sortedBookingSlots[0] ?? null;
-    const lastSlot = sortedBookingSlots[sortedBookingSlots.length - 1] ?? null;
     const team = booking.assignedTeam ?? firstSlot?.slot.team ?? null;
+    const bookingWindowDisplay = getBookingWindowDisplay({
+      bookingWindowId: booking.bookingWindowId,
+      selectedDate: booking.selectedDate,
+      slots: sortedBookingSlots.map((item) => item.slot),
+    });
 
     const derivedStatus = getDerivedStatus(booking, now);
     const derivedPaymentStatus = getDerivedPaymentStatus(booking.paymentStatus, derivedStatus);
@@ -304,11 +301,11 @@ export async function GET(
         currency: "INR" as const,
       },
 
-      bookingWindow: firstSlot && lastSlot ? {
+      bookingWindow: bookingWindowDisplay ? {
         bookingWindowId: booking.bookingWindowId ?? null,
-        startTime: firstSlot.slot.startTime.toISOString(),
-        endTime: lastSlot.slot.endTime.toISOString(),
-        displayLabel: `${formatTime(firstSlot.slot.startTime)} – ${formatTime(lastSlot.slot.endTime)}`,
+        startTime: bookingWindowDisplay.startTime,
+        endTime: bookingWindowDisplay.endTime,
+        displayLabel: bookingWindowDisplay.displayLabel,
         team: team ? { id: team.id, name: team.name } : null,
         slots: sortedBookingSlots.map((bs) => ({
           bookingSlotId: bs.id,

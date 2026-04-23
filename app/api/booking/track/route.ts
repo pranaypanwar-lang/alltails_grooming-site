@@ -3,6 +3,7 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../lib/generated/prisma";
 import { createBookingAccessToken } from "../../../../lib/auth/bookingAccess";
+import { getBookingWindowDisplay } from "../../../../lib/booking/window";
 
 export const runtime = "nodejs";
 
@@ -24,14 +25,6 @@ type DerivedPaymentStatus =
   | "pending_cash_collection"
   | "covered_by_loyalty"
   | "expired";
-
-function formatTime(value: Date) {
-  return value.toLocaleTimeString("en-IN", {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone: "Asia/Kolkata",
-  });
-}
 
 function getDerivedStatus(
   booking: {
@@ -205,7 +198,6 @@ export async function POST(request: Request) {
         .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
 
       const firstSlot = sortedSlots[0] ?? null;
-      const lastSlot = sortedSlots[sortedSlots.length - 1] ?? null;
 
       const derivedStatus = getDerivedStatus(booking, now);
       const derivedPaymentStatus = getDerivedPaymentStatus(booking.paymentStatus, derivedStatus);
@@ -230,10 +222,11 @@ export async function POST(request: Request) {
 
       const loyaltyCompletedBefore = booking.loyaltyCompletedCountBefore ?? 0;
 
-      const displayLabel =
-        firstSlot && lastSlot
-          ? `${formatTime(firstSlot.startTime)} – ${formatTime(lastSlot.endTime)}`
-          : "";
+      const bookingWindowDisplay = getBookingWindowDisplay({
+        bookingWindowId: booking.bookingWindowId,
+        selectedDate: booking.selectedDate,
+        slots: sortedSlots,
+      });
 
       const timeline = buildTimeline({
         createdAt: booking.createdAt,
@@ -271,13 +264,13 @@ export async function POST(request: Request) {
         updatedAt: null,
 
         bookingWindow:
-          firstSlot && lastSlot
+          bookingWindowDisplay
             ? {
                 bookingWindowId: booking.bookingWindowId ?? null,
-                startTime: firstSlot.startTime.toISOString(),
-                endTime: lastSlot.endTime.toISOString(),
-                displayLabel,
-                teamName: firstSlot.team.name,
+                startTime: bookingWindowDisplay.startTime,
+                endTime: bookingWindowDisplay.endTime,
+                displayLabel: bookingWindowDisplay.displayLabel,
+                teamName: firstSlot?.team.name ?? null,
               }
             : null,
 

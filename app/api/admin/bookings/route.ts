@@ -4,6 +4,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { Prisma, PrismaClient } from "../../../../lib/generated/prisma";
 import { assertAdminSession } from "../_lib/assertAdmin";
 import { getGamificationSnapshot } from "../../../../lib/groomerRewards";
+import { getBookingWindowDisplay } from "../../../../lib/booking/window";
 
 export const runtime = "nodejs";
 
@@ -25,14 +26,6 @@ const maskPhone = (phone: string) => {
   if (phone.length <= 4) return "****";
   return phone.slice(0, 2) + "xxxxxx" + phone.slice(-2);
 };
-
-function formatTime(value: Date) {
-  return value.toLocaleTimeString("en-IN", {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone: "Asia/Kolkata",
-  });
-}
 
 type DerivedBookingStatus = "pending_payment" | "confirmed" | "completed" | "cancelled" | "payment_expired";
 type DerivedPaymentStatus = "unpaid" | "paid" | "pending_cash_collection" | "covered_by_loyalty" | "expired";
@@ -91,8 +84,12 @@ function buildListItem(booking: BookingListRecord, now: Date, includeFullPhone =
     .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
 
   const firstSlot = sortedSlots[0] ?? null;
-  const lastSlot = sortedSlots[sortedSlots.length - 1] ?? null;
   const team = booking.assignedTeam ?? firstSlot?.team ?? null;
+  const bookingWindowDisplay = getBookingWindowDisplay({
+    bookingWindowId: booking.bookingWindowId,
+    selectedDate: booking.selectedDate,
+    slots: sortedSlots,
+  });
 
   const derivedStatus = getDerivedStatus(booking, now);
   const derivedPaymentStatus = getDerivedPaymentStatus(booking.paymentStatus, derivedStatus);
@@ -154,11 +151,11 @@ function buildListItem(booking: BookingListRecord, now: Date, includeFullPhone =
           currentXp: booking.groomerMember.currentXp,
         }
       : null,
-    bookingWindow: firstSlot && lastSlot ? {
+    bookingWindow: bookingWindowDisplay ? {
       bookingWindowId: booking.bookingWindowId ?? null,
-      startTime: firstSlot.startTime.toISOString(),
-      endTime: lastSlot.endTime.toISOString(),
-      displayLabel: `${formatTime(firstSlot.startTime)} – ${formatTime(lastSlot.endTime)}`,
+      startTime: bookingWindowDisplay.startTime,
+      endTime: bookingWindowDisplay.endTime,
+      displayLabel: bookingWindowDisplay.displayLabel,
       slotIds: booking.slots.map((bookingSlot) => bookingSlot.slotId),
     } : null,
     pets: {

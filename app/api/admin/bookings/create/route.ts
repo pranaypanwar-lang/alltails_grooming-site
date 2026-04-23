@@ -4,9 +4,17 @@ import {
   createBookingWithBusinessRules,
   type BookingCreatePetInput,
 } from "../../../../../lib/booking/createBooking";
+import {
+  buildManualBookingWindowId,
+  formatBookingWindowLabel,
+  getIstTimeInputValue,
+  localIstDateTimeToUtc,
+} from "../../../../../lib/booking/window";
 import { assertAdminSession } from "../../_lib/assertAdmin";
 import { adminPrisma, adminRazorpay, getPublicAppUrl, logAdminBookingEvent } from "../../_lib/bookingAdmin";
 import { sendBookingDispatchAlert } from "../../../../../lib/telegram/dispatchAlerts";
+import { prepareCustomerMessageForBooking } from "../../../../../lib/customerMessaging/service";
+import { processQueuedCustomerMessages } from "../../../../../lib/customerMessaging/provider";
 
 export const runtime = "nodejs";
 
@@ -39,6 +47,12 @@ export async function POST(request: Request) {
       selectedDate,
       bookingWindowId,
       slotIds,
+      customStartTime,
+      customAmount,
+      serviceAddress,
+      serviceLandmark,
+      servicePincode,
+      serviceLocationUrl,
       pets,
       paymentMethod,
       couponCode,
@@ -52,6 +66,12 @@ export async function POST(request: Request) {
       selectedDate?: string;
       bookingWindowId?: string;
       slotIds?: string[];
+      customStartTime?: string;
+      customAmount?: number;
+      serviceAddress?: string;
+      serviceLandmark?: string;
+      servicePincode?: string;
+      serviceLocationUrl?: string;
       pets?: BookingCreatePetInput[];
       paymentMethod?: "pay_now" | "pay_after_service";
       couponCode?: string;
@@ -85,20 +105,93 @@ export async function POST(request: Request) {
       );
     }
 
+    let effectiveBookingWindowId = bookingWindowId;
+    let effectiveSlotIds = slotIds;
+    let bookingWindowLabel: string | null = null;
+
+    if (customStartTime?.trim()) {
+      const baseSlots = await adminPrisma.slot.findMany({
+        where: { id: { in: slotIds } },
+        include: { team: true },
+        orderBy: { startTime: "asc" },
+      });
+
+      if (baseSlots.length !== slotIds.length) {
+        return NextResponse.json({ error: "Selected booking window is no longer valid" }, { status: 409 });
+      }
+
+      const teamIds = [...new Set(baseSlots.map((slot) => slot.teamId))];
+      if (teamIds.length !== 1) {
+        return NextResponse.json({ error: "Selected booking window must belong to exactly one team" }, { status: 400 });
+      }
+
+      const firstBaseSlot = baseSlots[0];
+      const lastBaseSlot = baseSlots[baseSlots.length - 1];
+      const durationMs = lastBaseSlot.endTime.getTime() - firstBaseSlot.startTime.getTime();
+      const customStartAt = localIstDateTimeToUtc(selectedDate, customStartTime.trim());
+      const customEndAt = new Date(customStartAt.getTime() + durationMs);
+
+      const overlappingSlots = await adminPrisma.slot.findMany({
+        where: {
+          teamId: teamIds[0],
+          startTime: { lt: customEndAt },
+          endTime: { gt: customStartAt },
+        },
+        orderBy: { startTime: "asc" },
+      });
+
+      if (!overlappingSlots.length) {
+        return NextResponse.json(
+          { error: "No overlapping operational slots exist for that custom start time" },
+          { status: 400 }
+        );
+      }
+
+      effectiveSlotIds = overlappingSlots.map((slot) => slot.id);
+      effectiveBookingWindowId = buildManualBookingWindowId({
+        teamId: teamIds[0],
+        selectedDate,
+        startTime: getIstTimeInputValue(customStartAt),
+        endTime: getIstTimeInputValue(customEndAt),
+      });
+      bookingWindowLabel = formatBookingWindowLabel(customStartAt, customEndAt);
+    }
+
     const result = await createBookingWithBusinessRules(adminPrisma, {
       name,
       phone,
       city,
       serviceName,
       selectedDate,
-      bookingWindowId,
-      slotIds,
+      bookingWindowId: effectiveBookingWindowId,
+      slotIds: effectiveSlotIds,
       pets,
       paymentMethod,
       couponCode,
       adminNote: adminNote?.trim() || null,
       bookingSource: source,
+      overrideFinalAmount:
+        typeof customAmount === "number" && Number.isFinite(customAmount)
+          ? customAmount
+          : null,
+      serviceAddress: serviceAddress?.trim() || null,
+      serviceLandmark: serviceLandmark?.trim() || null,
+      servicePincode: servicePincode?.trim() || null,
+      serviceLocationUrl: serviceLocationUrl?.trim() || null,
     });
+
+    if (!bookingWindowLabel) {
+      const effectiveSlots = await adminPrisma.slot.findMany({
+        where: { id: { in: effectiveSlotIds } },
+        orderBy: { startTime: "asc" },
+      });
+      const firstSlot = effectiveSlots[0];
+      const lastSlot = effectiveSlots[effectiveSlots.length - 1];
+      bookingWindowLabel =
+        firstSlot && lastSlot
+          ? formatBookingWindowLabel(firstSlot.startTime, lastSlot.endTime)
+          : "TBD";
+    }
 
     let paymentOrder: { orderId: string; amount: number; currency: string } | null =
       null;
@@ -135,6 +228,14 @@ export async function POST(request: Request) {
 
     const accessToken = createBookingAccessToken(result.booking.id, result.user.phone);
 
+    if (result.booking.status === "confirmed") {
+      await prepareCustomerMessageForBooking(adminPrisma, result.booking.id, "booking_confirmation", {
+        skipIfPreparedAfter: new Date(Date.now() - 5 * 60 * 1000),
+        deliveryStatus: "queued",
+      });
+      await processQueuedCustomerMessages(adminPrisma, { limit: 10 });
+    }
+
     if (selectedDate === getTodayInIst()) {
       try {
         const dispatchResult = await sendBookingDispatchAlert({
@@ -168,7 +269,8 @@ export async function POST(request: Request) {
       bookingId: result.booking.id,
       accessToken,
       selectedDate,
-      bookingWindowId,
+      bookingWindowId: effectiveBookingWindowId,
+      bookingWindowLabel: bookingWindowLabel ?? "TBD",
       paymentMethod,
       paymentStatus: result.booking.paymentStatus,
       status: result.booking.status,
