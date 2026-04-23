@@ -25,6 +25,9 @@ import type {
   AdminBookingSopProofUploadResponse,
   AdminBookingPaymentCollectionResponse,
   AdminBookingQaReviewResponse,
+  AdminCouponListResponse,
+  AdminCouponMutationResponse,
+  AdminCouponPayload,
   AdminQaFilters,
   AdminQaResponse,
   AdminCustomerMessagesFilters,
@@ -107,6 +110,40 @@ export async function fetchAdminBookingCreateMeta(): Promise<AdminBookingCreateM
   const res = await fetch("/api/admin/bookings/create/meta", { cache: "no-store" });
   const data = await res.json();
   if (!res.ok) throw new Error(data?.error ?? "Failed to load booking options");
+  return data;
+}
+
+export async function fetchAdminCoupons(): Promise<AdminCouponListResponse> {
+  const res = await fetch("/api/admin/coupons", { cache: "no-store" });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(getApiErrorMessage(data, "Failed to load coupons"));
+  return data;
+}
+
+export async function createAdminCoupon(
+  payload: AdminCouponPayload
+): Promise<AdminCouponMutationResponse> {
+  const res = await fetch("/api/admin/coupons", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(getApiErrorMessage(data, "Failed to create coupon"));
+  return data;
+}
+
+export async function updateAdminCoupon(
+  couponId: string,
+  payload: AdminCouponPayload
+): Promise<AdminCouponMutationResponse> {
+  const res = await fetch(`/api/admin/coupons/${couponId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(getApiErrorMessage(data, "Failed to update coupon"));
   return data;
 }
 

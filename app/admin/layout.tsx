@@ -36,6 +36,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               <Link href="/admin/campaigns" className="text-gray-600 hover:text-gray-900 transition-colors">
                 Campaigns
               </Link>
+              <Link href="/admin/coupons" className="text-gray-600 hover:text-gray-900 transition-colors">
+                Coupons
+              </Link>
               <Link href="/admin/support" className="text-gray-600 hover:text-gray-900 transition-colors">
                 Support
               </Link>

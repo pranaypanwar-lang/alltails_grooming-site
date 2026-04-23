@@ -34,6 +34,16 @@ export type PetAsset = $Result.DefaultSelection<Prisma.$PetAssetPayload>
  */
 export type Service = $Result.DefaultSelection<Prisma.$ServicePayload>
 /**
+ * Model Coupon
+ * 
+ */
+export type Coupon = $Result.DefaultSelection<Prisma.$CouponPayload>
+/**
+ * Model CouponRedemption
+ * 
+ */
+export type CouponRedemption = $Result.DefaultSelection<Prisma.$CouponRedemptionPayload>
+/**
  * Model ServiceArea
  * 
  */
@@ -344,6 +354,26 @@ export class PrismaClient<
     * ```
     */
   get service(): Prisma.ServiceDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.coupon`: Exposes CRUD operations for the **Coupon** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Coupons
+    * const coupons = await prisma.coupon.findMany()
+    * ```
+    */
+  get coupon(): Prisma.CouponDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.couponRedemption`: Exposes CRUD operations for the **CouponRedemption** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CouponRedemptions
+    * const couponRedemptions = await prisma.couponRedemption.findMany()
+    * ```
+    */
+  get couponRedemption(): Prisma.CouponRedemptionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.serviceArea`: Exposes CRUD operations for the **ServiceArea** model.
@@ -1082,6 +1112,8 @@ export namespace Prisma {
     Pet: 'Pet',
     PetAsset: 'PetAsset',
     Service: 'Service',
+    Coupon: 'Coupon',
+    CouponRedemption: 'CouponRedemption',
     ServiceArea: 'ServiceArea',
     Team: 'Team',
     TeamCoverageRule: 'TeamCoverageRule',
@@ -1127,7 +1159,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "pet" | "petAsset" | "service" | "serviceArea" | "team" | "teamCoverageRule" | "teamCoverageArea" | "slot" | "booking" | "teamMember" | "teamLeaderboardSnapshot" | "groomerRewardEvent" | "workforceLeaveRequest" | "workforceSalaryAdvanceRequest" | "workforceReferralRecord" | "trainingModule" | "workforceTrainingInterest" | "workforceRewardRedemptionRequest" | "trainingCompletion" | "blogPost" | "legalDocument" | "bookingEvent" | "bookingSopStep" | "bookingSopProof" | "bookingPaymentCollection" | "bookingPet" | "bookingSlot" | "bookingPetAsset" | "bookingDraftAsset" | "relayCallSession" | "dispatchAlert" | "bookingCustomerMessage" | "bookingSupportCase"
+      modelProps: "user" | "pet" | "petAsset" | "service" | "coupon" | "couponRedemption" | "serviceArea" | "team" | "teamCoverageRule" | "teamCoverageArea" | "slot" | "booking" | "teamMember" | "teamLeaderboardSnapshot" | "groomerRewardEvent" | "workforceLeaveRequest" | "workforceSalaryAdvanceRequest" | "workforceReferralRecord" | "trainingModule" | "workforceTrainingInterest" | "workforceRewardRedemptionRequest" | "trainingCompletion" | "blogPost" | "legalDocument" | "bookingEvent" | "bookingSopStep" | "bookingSopProof" | "bookingPaymentCollection" | "bookingPet" | "bookingSlot" | "bookingPetAsset" | "bookingDraftAsset" | "relayCallSession" | "dispatchAlert" | "bookingCustomerMessage" | "bookingSupportCase"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1424,6 +1456,154 @@ export namespace Prisma {
           count: {
             args: Prisma.ServiceCountArgs<ExtArgs>
             result: $Utils.Optional<ServiceCountAggregateOutputType> | number
+          }
+        }
+      }
+      Coupon: {
+        payload: Prisma.$CouponPayload<ExtArgs>
+        fields: Prisma.CouponFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CouponFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CouponFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponPayload>
+          }
+          findFirst: {
+            args: Prisma.CouponFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CouponFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponPayload>
+          }
+          findMany: {
+            args: Prisma.CouponFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponPayload>[]
+          }
+          create: {
+            args: Prisma.CouponCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponPayload>
+          }
+          createMany: {
+            args: Prisma.CouponCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CouponCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponPayload>[]
+          }
+          delete: {
+            args: Prisma.CouponDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponPayload>
+          }
+          update: {
+            args: Prisma.CouponUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponPayload>
+          }
+          deleteMany: {
+            args: Prisma.CouponDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CouponUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CouponUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponPayload>[]
+          }
+          upsert: {
+            args: Prisma.CouponUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponPayload>
+          }
+          aggregate: {
+            args: Prisma.CouponAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCoupon>
+          }
+          groupBy: {
+            args: Prisma.CouponGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CouponGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CouponCountArgs<ExtArgs>
+            result: $Utils.Optional<CouponCountAggregateOutputType> | number
+          }
+        }
+      }
+      CouponRedemption: {
+        payload: Prisma.$CouponRedemptionPayload<ExtArgs>
+        fields: Prisma.CouponRedemptionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CouponRedemptionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponRedemptionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CouponRedemptionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponRedemptionPayload>
+          }
+          findFirst: {
+            args: Prisma.CouponRedemptionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponRedemptionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CouponRedemptionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponRedemptionPayload>
+          }
+          findMany: {
+            args: Prisma.CouponRedemptionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponRedemptionPayload>[]
+          }
+          create: {
+            args: Prisma.CouponRedemptionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponRedemptionPayload>
+          }
+          createMany: {
+            args: Prisma.CouponRedemptionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CouponRedemptionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponRedemptionPayload>[]
+          }
+          delete: {
+            args: Prisma.CouponRedemptionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponRedemptionPayload>
+          }
+          update: {
+            args: Prisma.CouponRedemptionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponRedemptionPayload>
+          }
+          deleteMany: {
+            args: Prisma.CouponRedemptionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CouponRedemptionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CouponRedemptionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponRedemptionPayload>[]
+          }
+          upsert: {
+            args: Prisma.CouponRedemptionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CouponRedemptionPayload>
+          }
+          aggregate: {
+            args: Prisma.CouponRedemptionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCouponRedemption>
+          }
+          groupBy: {
+            args: Prisma.CouponRedemptionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CouponRedemptionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CouponRedemptionCountArgs<ExtArgs>
+            result: $Utils.Optional<CouponRedemptionCountAggregateOutputType> | number
           }
         }
       }
@@ -3759,6 +3939,8 @@ export namespace Prisma {
     pet?: PetOmit
     petAsset?: PetAssetOmit
     service?: ServiceOmit
+    coupon?: CouponOmit
+    couponRedemption?: CouponRedemptionOmit
     serviceArea?: ServiceAreaOmit
     team?: TeamOmit
     teamCoverageRule?: TeamCoverageRuleOmit
@@ -3871,11 +4053,13 @@ export namespace Prisma {
   export type UserCountOutputType = {
     bookings: number
     pets: number
+    couponRedemptions: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bookings?: boolean | UserCountOutputTypeCountBookingsArgs
     pets?: boolean | UserCountOutputTypeCountPetsArgs
+    couponRedemptions?: boolean | UserCountOutputTypeCountCouponRedemptionsArgs
   }
 
   // Custom InputTypes
@@ -3901,6 +4085,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountPetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PetWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCouponRedemptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CouponRedemptionWhereInput
   }
 
 
@@ -3972,6 +4163,37 @@ export namespace Prisma {
    */
   export type ServiceCountOutputTypeCountBookingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: BookingWhereInput
+  }
+
+
+  /**
+   * Count Type CouponCountOutputType
+   */
+
+  export type CouponCountOutputType = {
+    redemptions: number
+  }
+
+  export type CouponCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    redemptions?: boolean | CouponCountOutputTypeCountRedemptionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CouponCountOutputType without action
+   */
+  export type CouponCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponCountOutputType
+     */
+    select?: CouponCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CouponCountOutputType without action
+   */
+  export type CouponCountOutputTypeCountRedemptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CouponRedemptionWhereInput
   }
 
 
@@ -4168,6 +4390,7 @@ export namespace Prisma {
     sopSteps: number
     sopProofs: number
     groomerRewardEvents: number
+    couponRedemptions: number
   }
 
   export type BookingCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4181,6 +4404,7 @@ export namespace Prisma {
     sopSteps?: boolean | BookingCountOutputTypeCountSopStepsArgs
     sopProofs?: boolean | BookingCountOutputTypeCountSopProofsArgs
     groomerRewardEvents?: boolean | BookingCountOutputTypeCountGroomerRewardEventsArgs
+    couponRedemptions?: boolean | BookingCountOutputTypeCountCouponRedemptionsArgs
   }
 
   // Custom InputTypes
@@ -4262,6 +4486,13 @@ export namespace Prisma {
    */
   export type BookingCountOutputTypeCountGroomerRewardEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: GroomerRewardEventWhereInput
+  }
+
+  /**
+   * BookingCountOutputType without action
+   */
+  export type BookingCountOutputTypeCountCouponRedemptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CouponRedemptionWhereInput
   }
 
 
@@ -4706,6 +4937,7 @@ export namespace Prisma {
     loyaltyLastRedeemedAt?: boolean
     bookings?: boolean | User$bookingsArgs<ExtArgs>
     pets?: boolean | User$petsArgs<ExtArgs>
+    couponRedemptions?: boolean | User$couponRedemptionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -4749,6 +4981,7 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bookings?: boolean | User$bookingsArgs<ExtArgs>
     pets?: boolean | User$petsArgs<ExtArgs>
+    couponRedemptions?: boolean | User$couponRedemptionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4759,6 +4992,7 @@ export namespace Prisma {
     objects: {
       bookings: Prisma.$BookingPayload<ExtArgs>[]
       pets: Prisma.$PetPayload<ExtArgs>[]
+      couponRedemptions: Prisma.$CouponRedemptionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5166,6 +5400,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     bookings<T extends User$bookingsArgs<ExtArgs> = {}>(args?: Subset<T, User$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     pets<T extends User$petsArgs<ExtArgs> = {}>(args?: Subset<T, User$petsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    couponRedemptions<T extends User$couponRedemptionsArgs<ExtArgs> = {}>(args?: Subset<T, User$couponRedemptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5642,6 +5877,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PetScalarFieldEnum | PetScalarFieldEnum[]
+  }
+
+  /**
+   * User.couponRedemptions
+   */
+  export type User$couponRedemptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponRedemption
+     */
+    select?: CouponRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CouponRedemption
+     */
+    omit?: CouponRedemptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponRedemptionInclude<ExtArgs> | null
+    where?: CouponRedemptionWhereInput
+    orderBy?: CouponRedemptionOrderByWithRelationInput | CouponRedemptionOrderByWithRelationInput[]
+    cursor?: CouponRedemptionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CouponRedemptionScalarFieldEnum | CouponRedemptionScalarFieldEnum[]
   }
 
   /**
@@ -9044,6 +9303,2389 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ServiceInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Coupon
+   */
+
+  export type AggregateCoupon = {
+    _count: CouponCountAggregateOutputType | null
+    _avg: CouponAvgAggregateOutputType | null
+    _sum: CouponSumAggregateOutputType | null
+    _min: CouponMinAggregateOutputType | null
+    _max: CouponMaxAggregateOutputType | null
+  }
+
+  export type CouponAvgAggregateOutputType = {
+    discountValue: number | null
+    maxDiscountAmount: number | null
+  }
+
+  export type CouponSumAggregateOutputType = {
+    discountValue: number | null
+    maxDiscountAmount: number | null
+  }
+
+  export type CouponMinAggregateOutputType = {
+    id: string | null
+    code: string | null
+    title: string | null
+    description: string | null
+    isActive: boolean | null
+    discountType: string | null
+    discountValue: number | null
+    maxDiscountAmount: number | null
+    stackable: boolean | null
+    firstBookingOnly: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CouponMaxAggregateOutputType = {
+    id: string | null
+    code: string | null
+    title: string | null
+    description: string | null
+    isActive: boolean | null
+    discountType: string | null
+    discountValue: number | null
+    maxDiscountAmount: number | null
+    stackable: boolean | null
+    firstBookingOnly: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CouponCountAggregateOutputType = {
+    id: number
+    code: number
+    title: number
+    description: number
+    isActive: number
+    discountType: number
+    discountValue: number
+    maxDiscountAmount: number
+    stackable: number
+    firstBookingOnly: number
+    applicableServiceNames: number
+    applicableCities: number
+    paymentMethods: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CouponAvgAggregateInputType = {
+    discountValue?: true
+    maxDiscountAmount?: true
+  }
+
+  export type CouponSumAggregateInputType = {
+    discountValue?: true
+    maxDiscountAmount?: true
+  }
+
+  export type CouponMinAggregateInputType = {
+    id?: true
+    code?: true
+    title?: true
+    description?: true
+    isActive?: true
+    discountType?: true
+    discountValue?: true
+    maxDiscountAmount?: true
+    stackable?: true
+    firstBookingOnly?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CouponMaxAggregateInputType = {
+    id?: true
+    code?: true
+    title?: true
+    description?: true
+    isActive?: true
+    discountType?: true
+    discountValue?: true
+    maxDiscountAmount?: true
+    stackable?: true
+    firstBookingOnly?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CouponCountAggregateInputType = {
+    id?: true
+    code?: true
+    title?: true
+    description?: true
+    isActive?: true
+    discountType?: true
+    discountValue?: true
+    maxDiscountAmount?: true
+    stackable?: true
+    firstBookingOnly?: true
+    applicableServiceNames?: true
+    applicableCities?: true
+    paymentMethods?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CouponAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Coupon to aggregate.
+     */
+    where?: CouponWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Coupons to fetch.
+     */
+    orderBy?: CouponOrderByWithRelationInput | CouponOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CouponWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Coupons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Coupons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Coupons
+    **/
+    _count?: true | CouponCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CouponAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CouponSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CouponMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CouponMaxAggregateInputType
+  }
+
+  export type GetCouponAggregateType<T extends CouponAggregateArgs> = {
+        [P in keyof T & keyof AggregateCoupon]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCoupon[P]>
+      : GetScalarType<T[P], AggregateCoupon[P]>
+  }
+
+
+
+
+  export type CouponGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CouponWhereInput
+    orderBy?: CouponOrderByWithAggregationInput | CouponOrderByWithAggregationInput[]
+    by: CouponScalarFieldEnum[] | CouponScalarFieldEnum
+    having?: CouponScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CouponCountAggregateInputType | true
+    _avg?: CouponAvgAggregateInputType
+    _sum?: CouponSumAggregateInputType
+    _min?: CouponMinAggregateInputType
+    _max?: CouponMaxAggregateInputType
+  }
+
+  export type CouponGroupByOutputType = {
+    id: string
+    code: string
+    title: string
+    description: string | null
+    isActive: boolean
+    discountType: string
+    discountValue: number
+    maxDiscountAmount: number | null
+    stackable: boolean
+    firstBookingOnly: boolean
+    applicableServiceNames: string[]
+    applicableCities: string[]
+    paymentMethods: string[]
+    createdAt: Date
+    updatedAt: Date
+    _count: CouponCountAggregateOutputType | null
+    _avg: CouponAvgAggregateOutputType | null
+    _sum: CouponSumAggregateOutputType | null
+    _min: CouponMinAggregateOutputType | null
+    _max: CouponMaxAggregateOutputType | null
+  }
+
+  type GetCouponGroupByPayload<T extends CouponGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CouponGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CouponGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CouponGroupByOutputType[P]>
+            : GetScalarType<T[P], CouponGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CouponSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    title?: boolean
+    description?: boolean
+    isActive?: boolean
+    discountType?: boolean
+    discountValue?: boolean
+    maxDiscountAmount?: boolean
+    stackable?: boolean
+    firstBookingOnly?: boolean
+    applicableServiceNames?: boolean
+    applicableCities?: boolean
+    paymentMethods?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    redemptions?: boolean | Coupon$redemptionsArgs<ExtArgs>
+    _count?: boolean | CouponCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["coupon"]>
+
+  export type CouponSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    title?: boolean
+    description?: boolean
+    isActive?: boolean
+    discountType?: boolean
+    discountValue?: boolean
+    maxDiscountAmount?: boolean
+    stackable?: boolean
+    firstBookingOnly?: boolean
+    applicableServiceNames?: boolean
+    applicableCities?: boolean
+    paymentMethods?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["coupon"]>
+
+  export type CouponSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    title?: boolean
+    description?: boolean
+    isActive?: boolean
+    discountType?: boolean
+    discountValue?: boolean
+    maxDiscountAmount?: boolean
+    stackable?: boolean
+    firstBookingOnly?: boolean
+    applicableServiceNames?: boolean
+    applicableCities?: boolean
+    paymentMethods?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["coupon"]>
+
+  export type CouponSelectScalar = {
+    id?: boolean
+    code?: boolean
+    title?: boolean
+    description?: boolean
+    isActive?: boolean
+    discountType?: boolean
+    discountValue?: boolean
+    maxDiscountAmount?: boolean
+    stackable?: boolean
+    firstBookingOnly?: boolean
+    applicableServiceNames?: boolean
+    applicableCities?: boolean
+    paymentMethods?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CouponOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "title" | "description" | "isActive" | "discountType" | "discountValue" | "maxDiscountAmount" | "stackable" | "firstBookingOnly" | "applicableServiceNames" | "applicableCities" | "paymentMethods" | "createdAt" | "updatedAt", ExtArgs["result"]["coupon"]>
+  export type CouponInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    redemptions?: boolean | Coupon$redemptionsArgs<ExtArgs>
+    _count?: boolean | CouponCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type CouponIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type CouponIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $CouponPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Coupon"
+    objects: {
+      redemptions: Prisma.$CouponRedemptionPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      code: string
+      title: string
+      description: string | null
+      isActive: boolean
+      discountType: string
+      discountValue: number
+      maxDiscountAmount: number | null
+      stackable: boolean
+      firstBookingOnly: boolean
+      applicableServiceNames: string[]
+      applicableCities: string[]
+      paymentMethods: string[]
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["coupon"]>
+    composites: {}
+  }
+
+  type CouponGetPayload<S extends boolean | null | undefined | CouponDefaultArgs> = $Result.GetResult<Prisma.$CouponPayload, S>
+
+  type CouponCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CouponFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CouponCountAggregateInputType | true
+    }
+
+  export interface CouponDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Coupon'], meta: { name: 'Coupon' } }
+    /**
+     * Find zero or one Coupon that matches the filter.
+     * @param {CouponFindUniqueArgs} args - Arguments to find a Coupon
+     * @example
+     * // Get one Coupon
+     * const coupon = await prisma.coupon.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CouponFindUniqueArgs>(args: SelectSubset<T, CouponFindUniqueArgs<ExtArgs>>): Prisma__CouponClient<$Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Coupon that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CouponFindUniqueOrThrowArgs} args - Arguments to find a Coupon
+     * @example
+     * // Get one Coupon
+     * const coupon = await prisma.coupon.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CouponFindUniqueOrThrowArgs>(args: SelectSubset<T, CouponFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CouponClient<$Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Coupon that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CouponFindFirstArgs} args - Arguments to find a Coupon
+     * @example
+     * // Get one Coupon
+     * const coupon = await prisma.coupon.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CouponFindFirstArgs>(args?: SelectSubset<T, CouponFindFirstArgs<ExtArgs>>): Prisma__CouponClient<$Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Coupon that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CouponFindFirstOrThrowArgs} args - Arguments to find a Coupon
+     * @example
+     * // Get one Coupon
+     * const coupon = await prisma.coupon.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CouponFindFirstOrThrowArgs>(args?: SelectSubset<T, CouponFindFirstOrThrowArgs<ExtArgs>>): Prisma__CouponClient<$Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Coupons that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CouponFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Coupons
+     * const coupons = await prisma.coupon.findMany()
+     * 
+     * // Get first 10 Coupons
+     * const coupons = await prisma.coupon.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const couponWithIdOnly = await prisma.coupon.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CouponFindManyArgs>(args?: SelectSubset<T, CouponFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Coupon.
+     * @param {CouponCreateArgs} args - Arguments to create a Coupon.
+     * @example
+     * // Create one Coupon
+     * const Coupon = await prisma.coupon.create({
+     *   data: {
+     *     // ... data to create a Coupon
+     *   }
+     * })
+     * 
+     */
+    create<T extends CouponCreateArgs>(args: SelectSubset<T, CouponCreateArgs<ExtArgs>>): Prisma__CouponClient<$Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Coupons.
+     * @param {CouponCreateManyArgs} args - Arguments to create many Coupons.
+     * @example
+     * // Create many Coupons
+     * const coupon = await prisma.coupon.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CouponCreateManyArgs>(args?: SelectSubset<T, CouponCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Coupons and returns the data saved in the database.
+     * @param {CouponCreateManyAndReturnArgs} args - Arguments to create many Coupons.
+     * @example
+     * // Create many Coupons
+     * const coupon = await prisma.coupon.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Coupons and only return the `id`
+     * const couponWithIdOnly = await prisma.coupon.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CouponCreateManyAndReturnArgs>(args?: SelectSubset<T, CouponCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Coupon.
+     * @param {CouponDeleteArgs} args - Arguments to delete one Coupon.
+     * @example
+     * // Delete one Coupon
+     * const Coupon = await prisma.coupon.delete({
+     *   where: {
+     *     // ... filter to delete one Coupon
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CouponDeleteArgs>(args: SelectSubset<T, CouponDeleteArgs<ExtArgs>>): Prisma__CouponClient<$Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Coupon.
+     * @param {CouponUpdateArgs} args - Arguments to update one Coupon.
+     * @example
+     * // Update one Coupon
+     * const coupon = await prisma.coupon.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CouponUpdateArgs>(args: SelectSubset<T, CouponUpdateArgs<ExtArgs>>): Prisma__CouponClient<$Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Coupons.
+     * @param {CouponDeleteManyArgs} args - Arguments to filter Coupons to delete.
+     * @example
+     * // Delete a few Coupons
+     * const { count } = await prisma.coupon.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CouponDeleteManyArgs>(args?: SelectSubset<T, CouponDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Coupons.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CouponUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Coupons
+     * const coupon = await prisma.coupon.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CouponUpdateManyArgs>(args: SelectSubset<T, CouponUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Coupons and returns the data updated in the database.
+     * @param {CouponUpdateManyAndReturnArgs} args - Arguments to update many Coupons.
+     * @example
+     * // Update many Coupons
+     * const coupon = await prisma.coupon.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Coupons and only return the `id`
+     * const couponWithIdOnly = await prisma.coupon.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CouponUpdateManyAndReturnArgs>(args: SelectSubset<T, CouponUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Coupon.
+     * @param {CouponUpsertArgs} args - Arguments to update or create a Coupon.
+     * @example
+     * // Update or create a Coupon
+     * const coupon = await prisma.coupon.upsert({
+     *   create: {
+     *     // ... data to create a Coupon
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Coupon we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CouponUpsertArgs>(args: SelectSubset<T, CouponUpsertArgs<ExtArgs>>): Prisma__CouponClient<$Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Coupons.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CouponCountArgs} args - Arguments to filter Coupons to count.
+     * @example
+     * // Count the number of Coupons
+     * const count = await prisma.coupon.count({
+     *   where: {
+     *     // ... the filter for the Coupons we want to count
+     *   }
+     * })
+    **/
+    count<T extends CouponCountArgs>(
+      args?: Subset<T, CouponCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CouponCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Coupon.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CouponAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CouponAggregateArgs>(args: Subset<T, CouponAggregateArgs>): Prisma.PrismaPromise<GetCouponAggregateType<T>>
+
+    /**
+     * Group by Coupon.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CouponGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CouponGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CouponGroupByArgs['orderBy'] }
+        : { orderBy?: CouponGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CouponGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCouponGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Coupon model
+   */
+  readonly fields: CouponFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Coupon.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CouponClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    redemptions<T extends Coupon$redemptionsArgs<ExtArgs> = {}>(args?: Subset<T, Coupon$redemptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Coupon model
+   */
+  interface CouponFieldRefs {
+    readonly id: FieldRef<"Coupon", 'String'>
+    readonly code: FieldRef<"Coupon", 'String'>
+    readonly title: FieldRef<"Coupon", 'String'>
+    readonly description: FieldRef<"Coupon", 'String'>
+    readonly isActive: FieldRef<"Coupon", 'Boolean'>
+    readonly discountType: FieldRef<"Coupon", 'String'>
+    readonly discountValue: FieldRef<"Coupon", 'Int'>
+    readonly maxDiscountAmount: FieldRef<"Coupon", 'Int'>
+    readonly stackable: FieldRef<"Coupon", 'Boolean'>
+    readonly firstBookingOnly: FieldRef<"Coupon", 'Boolean'>
+    readonly applicableServiceNames: FieldRef<"Coupon", 'String[]'>
+    readonly applicableCities: FieldRef<"Coupon", 'String[]'>
+    readonly paymentMethods: FieldRef<"Coupon", 'String[]'>
+    readonly createdAt: FieldRef<"Coupon", 'DateTime'>
+    readonly updatedAt: FieldRef<"Coupon", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Coupon findUnique
+   */
+  export type CouponFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Coupon
+     */
+    select?: CouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Coupon
+     */
+    omit?: CouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponInclude<ExtArgs> | null
+    /**
+     * Filter, which Coupon to fetch.
+     */
+    where: CouponWhereUniqueInput
+  }
+
+  /**
+   * Coupon findUniqueOrThrow
+   */
+  export type CouponFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Coupon
+     */
+    select?: CouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Coupon
+     */
+    omit?: CouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponInclude<ExtArgs> | null
+    /**
+     * Filter, which Coupon to fetch.
+     */
+    where: CouponWhereUniqueInput
+  }
+
+  /**
+   * Coupon findFirst
+   */
+  export type CouponFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Coupon
+     */
+    select?: CouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Coupon
+     */
+    omit?: CouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponInclude<ExtArgs> | null
+    /**
+     * Filter, which Coupon to fetch.
+     */
+    where?: CouponWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Coupons to fetch.
+     */
+    orderBy?: CouponOrderByWithRelationInput | CouponOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Coupons.
+     */
+    cursor?: CouponWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Coupons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Coupons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Coupons.
+     */
+    distinct?: CouponScalarFieldEnum | CouponScalarFieldEnum[]
+  }
+
+  /**
+   * Coupon findFirstOrThrow
+   */
+  export type CouponFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Coupon
+     */
+    select?: CouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Coupon
+     */
+    omit?: CouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponInclude<ExtArgs> | null
+    /**
+     * Filter, which Coupon to fetch.
+     */
+    where?: CouponWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Coupons to fetch.
+     */
+    orderBy?: CouponOrderByWithRelationInput | CouponOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Coupons.
+     */
+    cursor?: CouponWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Coupons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Coupons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Coupons.
+     */
+    distinct?: CouponScalarFieldEnum | CouponScalarFieldEnum[]
+  }
+
+  /**
+   * Coupon findMany
+   */
+  export type CouponFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Coupon
+     */
+    select?: CouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Coupon
+     */
+    omit?: CouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponInclude<ExtArgs> | null
+    /**
+     * Filter, which Coupons to fetch.
+     */
+    where?: CouponWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Coupons to fetch.
+     */
+    orderBy?: CouponOrderByWithRelationInput | CouponOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Coupons.
+     */
+    cursor?: CouponWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Coupons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Coupons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Coupons.
+     */
+    distinct?: CouponScalarFieldEnum | CouponScalarFieldEnum[]
+  }
+
+  /**
+   * Coupon create
+   */
+  export type CouponCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Coupon
+     */
+    select?: CouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Coupon
+     */
+    omit?: CouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Coupon.
+     */
+    data: XOR<CouponCreateInput, CouponUncheckedCreateInput>
+  }
+
+  /**
+   * Coupon createMany
+   */
+  export type CouponCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Coupons.
+     */
+    data: CouponCreateManyInput | CouponCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Coupon createManyAndReturn
+   */
+  export type CouponCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Coupon
+     */
+    select?: CouponSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Coupon
+     */
+    omit?: CouponOmit<ExtArgs> | null
+    /**
+     * The data used to create many Coupons.
+     */
+    data: CouponCreateManyInput | CouponCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Coupon update
+   */
+  export type CouponUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Coupon
+     */
+    select?: CouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Coupon
+     */
+    omit?: CouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Coupon.
+     */
+    data: XOR<CouponUpdateInput, CouponUncheckedUpdateInput>
+    /**
+     * Choose, which Coupon to update.
+     */
+    where: CouponWhereUniqueInput
+  }
+
+  /**
+   * Coupon updateMany
+   */
+  export type CouponUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Coupons.
+     */
+    data: XOR<CouponUpdateManyMutationInput, CouponUncheckedUpdateManyInput>
+    /**
+     * Filter which Coupons to update
+     */
+    where?: CouponWhereInput
+    /**
+     * Limit how many Coupons to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Coupon updateManyAndReturn
+   */
+  export type CouponUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Coupon
+     */
+    select?: CouponSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Coupon
+     */
+    omit?: CouponOmit<ExtArgs> | null
+    /**
+     * The data used to update Coupons.
+     */
+    data: XOR<CouponUpdateManyMutationInput, CouponUncheckedUpdateManyInput>
+    /**
+     * Filter which Coupons to update
+     */
+    where?: CouponWhereInput
+    /**
+     * Limit how many Coupons to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Coupon upsert
+   */
+  export type CouponUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Coupon
+     */
+    select?: CouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Coupon
+     */
+    omit?: CouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Coupon to update in case it exists.
+     */
+    where: CouponWhereUniqueInput
+    /**
+     * In case the Coupon found by the `where` argument doesn't exist, create a new Coupon with this data.
+     */
+    create: XOR<CouponCreateInput, CouponUncheckedCreateInput>
+    /**
+     * In case the Coupon was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CouponUpdateInput, CouponUncheckedUpdateInput>
+  }
+
+  /**
+   * Coupon delete
+   */
+  export type CouponDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Coupon
+     */
+    select?: CouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Coupon
+     */
+    omit?: CouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponInclude<ExtArgs> | null
+    /**
+     * Filter which Coupon to delete.
+     */
+    where: CouponWhereUniqueInput
+  }
+
+  /**
+   * Coupon deleteMany
+   */
+  export type CouponDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Coupons to delete
+     */
+    where?: CouponWhereInput
+    /**
+     * Limit how many Coupons to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Coupon.redemptions
+   */
+  export type Coupon$redemptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponRedemption
+     */
+    select?: CouponRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CouponRedemption
+     */
+    omit?: CouponRedemptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponRedemptionInclude<ExtArgs> | null
+    where?: CouponRedemptionWhereInput
+    orderBy?: CouponRedemptionOrderByWithRelationInput | CouponRedemptionOrderByWithRelationInput[]
+    cursor?: CouponRedemptionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CouponRedemptionScalarFieldEnum | CouponRedemptionScalarFieldEnum[]
+  }
+
+  /**
+   * Coupon without action
+   */
+  export type CouponDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Coupon
+     */
+    select?: CouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Coupon
+     */
+    omit?: CouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CouponRedemption
+   */
+
+  export type AggregateCouponRedemption = {
+    _count: CouponRedemptionCountAggregateOutputType | null
+    _avg: CouponRedemptionAvgAggregateOutputType | null
+    _sum: CouponRedemptionSumAggregateOutputType | null
+    _min: CouponRedemptionMinAggregateOutputType | null
+    _max: CouponRedemptionMaxAggregateOutputType | null
+  }
+
+  export type CouponRedemptionAvgAggregateOutputType = {
+    discountAmount: number | null
+  }
+
+  export type CouponRedemptionSumAggregateOutputType = {
+    discountAmount: number | null
+  }
+
+  export type CouponRedemptionMinAggregateOutputType = {
+    id: string | null
+    couponId: string | null
+    bookingId: string | null
+    userId: string | null
+    codeSnapshot: string | null
+    titleSnapshot: string | null
+    discountAmount: number | null
+    createdAt: Date | null
+  }
+
+  export type CouponRedemptionMaxAggregateOutputType = {
+    id: string | null
+    couponId: string | null
+    bookingId: string | null
+    userId: string | null
+    codeSnapshot: string | null
+    titleSnapshot: string | null
+    discountAmount: number | null
+    createdAt: Date | null
+  }
+
+  export type CouponRedemptionCountAggregateOutputType = {
+    id: number
+    couponId: number
+    bookingId: number
+    userId: number
+    codeSnapshot: number
+    titleSnapshot: number
+    discountAmount: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type CouponRedemptionAvgAggregateInputType = {
+    discountAmount?: true
+  }
+
+  export type CouponRedemptionSumAggregateInputType = {
+    discountAmount?: true
+  }
+
+  export type CouponRedemptionMinAggregateInputType = {
+    id?: true
+    couponId?: true
+    bookingId?: true
+    userId?: true
+    codeSnapshot?: true
+    titleSnapshot?: true
+    discountAmount?: true
+    createdAt?: true
+  }
+
+  export type CouponRedemptionMaxAggregateInputType = {
+    id?: true
+    couponId?: true
+    bookingId?: true
+    userId?: true
+    codeSnapshot?: true
+    titleSnapshot?: true
+    discountAmount?: true
+    createdAt?: true
+  }
+
+  export type CouponRedemptionCountAggregateInputType = {
+    id?: true
+    couponId?: true
+    bookingId?: true
+    userId?: true
+    codeSnapshot?: true
+    titleSnapshot?: true
+    discountAmount?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type CouponRedemptionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CouponRedemption to aggregate.
+     */
+    where?: CouponRedemptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CouponRedemptions to fetch.
+     */
+    orderBy?: CouponRedemptionOrderByWithRelationInput | CouponRedemptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CouponRedemptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CouponRedemptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CouponRedemptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CouponRedemptions
+    **/
+    _count?: true | CouponRedemptionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CouponRedemptionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CouponRedemptionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CouponRedemptionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CouponRedemptionMaxAggregateInputType
+  }
+
+  export type GetCouponRedemptionAggregateType<T extends CouponRedemptionAggregateArgs> = {
+        [P in keyof T & keyof AggregateCouponRedemption]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCouponRedemption[P]>
+      : GetScalarType<T[P], AggregateCouponRedemption[P]>
+  }
+
+
+
+
+  export type CouponRedemptionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CouponRedemptionWhereInput
+    orderBy?: CouponRedemptionOrderByWithAggregationInput | CouponRedemptionOrderByWithAggregationInput[]
+    by: CouponRedemptionScalarFieldEnum[] | CouponRedemptionScalarFieldEnum
+    having?: CouponRedemptionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CouponRedemptionCountAggregateInputType | true
+    _avg?: CouponRedemptionAvgAggregateInputType
+    _sum?: CouponRedemptionSumAggregateInputType
+    _min?: CouponRedemptionMinAggregateInputType
+    _max?: CouponRedemptionMaxAggregateInputType
+  }
+
+  export type CouponRedemptionGroupByOutputType = {
+    id: string
+    couponId: string
+    bookingId: string
+    userId: string
+    codeSnapshot: string
+    titleSnapshot: string
+    discountAmount: number
+    createdAt: Date
+    _count: CouponRedemptionCountAggregateOutputType | null
+    _avg: CouponRedemptionAvgAggregateOutputType | null
+    _sum: CouponRedemptionSumAggregateOutputType | null
+    _min: CouponRedemptionMinAggregateOutputType | null
+    _max: CouponRedemptionMaxAggregateOutputType | null
+  }
+
+  type GetCouponRedemptionGroupByPayload<T extends CouponRedemptionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CouponRedemptionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CouponRedemptionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CouponRedemptionGroupByOutputType[P]>
+            : GetScalarType<T[P], CouponRedemptionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CouponRedemptionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    couponId?: boolean
+    bookingId?: boolean
+    userId?: boolean
+    codeSnapshot?: boolean
+    titleSnapshot?: boolean
+    discountAmount?: boolean
+    createdAt?: boolean
+    coupon?: boolean | CouponDefaultArgs<ExtArgs>
+    booking?: boolean | BookingDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["couponRedemption"]>
+
+  export type CouponRedemptionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    couponId?: boolean
+    bookingId?: boolean
+    userId?: boolean
+    codeSnapshot?: boolean
+    titleSnapshot?: boolean
+    discountAmount?: boolean
+    createdAt?: boolean
+    coupon?: boolean | CouponDefaultArgs<ExtArgs>
+    booking?: boolean | BookingDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["couponRedemption"]>
+
+  export type CouponRedemptionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    couponId?: boolean
+    bookingId?: boolean
+    userId?: boolean
+    codeSnapshot?: boolean
+    titleSnapshot?: boolean
+    discountAmount?: boolean
+    createdAt?: boolean
+    coupon?: boolean | CouponDefaultArgs<ExtArgs>
+    booking?: boolean | BookingDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["couponRedemption"]>
+
+  export type CouponRedemptionSelectScalar = {
+    id?: boolean
+    couponId?: boolean
+    bookingId?: boolean
+    userId?: boolean
+    codeSnapshot?: boolean
+    titleSnapshot?: boolean
+    discountAmount?: boolean
+    createdAt?: boolean
+  }
+
+  export type CouponRedemptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "couponId" | "bookingId" | "userId" | "codeSnapshot" | "titleSnapshot" | "discountAmount" | "createdAt", ExtArgs["result"]["couponRedemption"]>
+  export type CouponRedemptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    coupon?: boolean | CouponDefaultArgs<ExtArgs>
+    booking?: boolean | BookingDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CouponRedemptionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    coupon?: boolean | CouponDefaultArgs<ExtArgs>
+    booking?: boolean | BookingDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CouponRedemptionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    coupon?: boolean | CouponDefaultArgs<ExtArgs>
+    booking?: boolean | BookingDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $CouponRedemptionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CouponRedemption"
+    objects: {
+      coupon: Prisma.$CouponPayload<ExtArgs>
+      booking: Prisma.$BookingPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      couponId: string
+      bookingId: string
+      userId: string
+      codeSnapshot: string
+      titleSnapshot: string
+      discountAmount: number
+      createdAt: Date
+    }, ExtArgs["result"]["couponRedemption"]>
+    composites: {}
+  }
+
+  type CouponRedemptionGetPayload<S extends boolean | null | undefined | CouponRedemptionDefaultArgs> = $Result.GetResult<Prisma.$CouponRedemptionPayload, S>
+
+  type CouponRedemptionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CouponRedemptionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CouponRedemptionCountAggregateInputType | true
+    }
+
+  export interface CouponRedemptionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CouponRedemption'], meta: { name: 'CouponRedemption' } }
+    /**
+     * Find zero or one CouponRedemption that matches the filter.
+     * @param {CouponRedemptionFindUniqueArgs} args - Arguments to find a CouponRedemption
+     * @example
+     * // Get one CouponRedemption
+     * const couponRedemption = await prisma.couponRedemption.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CouponRedemptionFindUniqueArgs>(args: SelectSubset<T, CouponRedemptionFindUniqueArgs<ExtArgs>>): Prisma__CouponRedemptionClient<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CouponRedemption that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CouponRedemptionFindUniqueOrThrowArgs} args - Arguments to find a CouponRedemption
+     * @example
+     * // Get one CouponRedemption
+     * const couponRedemption = await prisma.couponRedemption.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CouponRedemptionFindUniqueOrThrowArgs>(args: SelectSubset<T, CouponRedemptionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CouponRedemptionClient<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CouponRedemption that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CouponRedemptionFindFirstArgs} args - Arguments to find a CouponRedemption
+     * @example
+     * // Get one CouponRedemption
+     * const couponRedemption = await prisma.couponRedemption.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CouponRedemptionFindFirstArgs>(args?: SelectSubset<T, CouponRedemptionFindFirstArgs<ExtArgs>>): Prisma__CouponRedemptionClient<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CouponRedemption that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CouponRedemptionFindFirstOrThrowArgs} args - Arguments to find a CouponRedemption
+     * @example
+     * // Get one CouponRedemption
+     * const couponRedemption = await prisma.couponRedemption.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CouponRedemptionFindFirstOrThrowArgs>(args?: SelectSubset<T, CouponRedemptionFindFirstOrThrowArgs<ExtArgs>>): Prisma__CouponRedemptionClient<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CouponRedemptions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CouponRedemptionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CouponRedemptions
+     * const couponRedemptions = await prisma.couponRedemption.findMany()
+     * 
+     * // Get first 10 CouponRedemptions
+     * const couponRedemptions = await prisma.couponRedemption.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const couponRedemptionWithIdOnly = await prisma.couponRedemption.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CouponRedemptionFindManyArgs>(args?: SelectSubset<T, CouponRedemptionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CouponRedemption.
+     * @param {CouponRedemptionCreateArgs} args - Arguments to create a CouponRedemption.
+     * @example
+     * // Create one CouponRedemption
+     * const CouponRedemption = await prisma.couponRedemption.create({
+     *   data: {
+     *     // ... data to create a CouponRedemption
+     *   }
+     * })
+     * 
+     */
+    create<T extends CouponRedemptionCreateArgs>(args: SelectSubset<T, CouponRedemptionCreateArgs<ExtArgs>>): Prisma__CouponRedemptionClient<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CouponRedemptions.
+     * @param {CouponRedemptionCreateManyArgs} args - Arguments to create many CouponRedemptions.
+     * @example
+     * // Create many CouponRedemptions
+     * const couponRedemption = await prisma.couponRedemption.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CouponRedemptionCreateManyArgs>(args?: SelectSubset<T, CouponRedemptionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CouponRedemptions and returns the data saved in the database.
+     * @param {CouponRedemptionCreateManyAndReturnArgs} args - Arguments to create many CouponRedemptions.
+     * @example
+     * // Create many CouponRedemptions
+     * const couponRedemption = await prisma.couponRedemption.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CouponRedemptions and only return the `id`
+     * const couponRedemptionWithIdOnly = await prisma.couponRedemption.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CouponRedemptionCreateManyAndReturnArgs>(args?: SelectSubset<T, CouponRedemptionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CouponRedemption.
+     * @param {CouponRedemptionDeleteArgs} args - Arguments to delete one CouponRedemption.
+     * @example
+     * // Delete one CouponRedemption
+     * const CouponRedemption = await prisma.couponRedemption.delete({
+     *   where: {
+     *     // ... filter to delete one CouponRedemption
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CouponRedemptionDeleteArgs>(args: SelectSubset<T, CouponRedemptionDeleteArgs<ExtArgs>>): Prisma__CouponRedemptionClient<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CouponRedemption.
+     * @param {CouponRedemptionUpdateArgs} args - Arguments to update one CouponRedemption.
+     * @example
+     * // Update one CouponRedemption
+     * const couponRedemption = await prisma.couponRedemption.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CouponRedemptionUpdateArgs>(args: SelectSubset<T, CouponRedemptionUpdateArgs<ExtArgs>>): Prisma__CouponRedemptionClient<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CouponRedemptions.
+     * @param {CouponRedemptionDeleteManyArgs} args - Arguments to filter CouponRedemptions to delete.
+     * @example
+     * // Delete a few CouponRedemptions
+     * const { count } = await prisma.couponRedemption.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CouponRedemptionDeleteManyArgs>(args?: SelectSubset<T, CouponRedemptionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CouponRedemptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CouponRedemptionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CouponRedemptions
+     * const couponRedemption = await prisma.couponRedemption.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CouponRedemptionUpdateManyArgs>(args: SelectSubset<T, CouponRedemptionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CouponRedemptions and returns the data updated in the database.
+     * @param {CouponRedemptionUpdateManyAndReturnArgs} args - Arguments to update many CouponRedemptions.
+     * @example
+     * // Update many CouponRedemptions
+     * const couponRedemption = await prisma.couponRedemption.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CouponRedemptions and only return the `id`
+     * const couponRedemptionWithIdOnly = await prisma.couponRedemption.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CouponRedemptionUpdateManyAndReturnArgs>(args: SelectSubset<T, CouponRedemptionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CouponRedemption.
+     * @param {CouponRedemptionUpsertArgs} args - Arguments to update or create a CouponRedemption.
+     * @example
+     * // Update or create a CouponRedemption
+     * const couponRedemption = await prisma.couponRedemption.upsert({
+     *   create: {
+     *     // ... data to create a CouponRedemption
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CouponRedemption we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CouponRedemptionUpsertArgs>(args: SelectSubset<T, CouponRedemptionUpsertArgs<ExtArgs>>): Prisma__CouponRedemptionClient<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CouponRedemptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CouponRedemptionCountArgs} args - Arguments to filter CouponRedemptions to count.
+     * @example
+     * // Count the number of CouponRedemptions
+     * const count = await prisma.couponRedemption.count({
+     *   where: {
+     *     // ... the filter for the CouponRedemptions we want to count
+     *   }
+     * })
+    **/
+    count<T extends CouponRedemptionCountArgs>(
+      args?: Subset<T, CouponRedemptionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CouponRedemptionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CouponRedemption.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CouponRedemptionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CouponRedemptionAggregateArgs>(args: Subset<T, CouponRedemptionAggregateArgs>): Prisma.PrismaPromise<GetCouponRedemptionAggregateType<T>>
+
+    /**
+     * Group by CouponRedemption.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CouponRedemptionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CouponRedemptionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CouponRedemptionGroupByArgs['orderBy'] }
+        : { orderBy?: CouponRedemptionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CouponRedemptionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCouponRedemptionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CouponRedemption model
+   */
+  readonly fields: CouponRedemptionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CouponRedemption.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CouponRedemptionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    coupon<T extends CouponDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CouponDefaultArgs<ExtArgs>>): Prisma__CouponClient<$Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    booking<T extends BookingDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BookingDefaultArgs<ExtArgs>>): Prisma__BookingClient<$Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CouponRedemption model
+   */
+  interface CouponRedemptionFieldRefs {
+    readonly id: FieldRef<"CouponRedemption", 'String'>
+    readonly couponId: FieldRef<"CouponRedemption", 'String'>
+    readonly bookingId: FieldRef<"CouponRedemption", 'String'>
+    readonly userId: FieldRef<"CouponRedemption", 'String'>
+    readonly codeSnapshot: FieldRef<"CouponRedemption", 'String'>
+    readonly titleSnapshot: FieldRef<"CouponRedemption", 'String'>
+    readonly discountAmount: FieldRef<"CouponRedemption", 'Int'>
+    readonly createdAt: FieldRef<"CouponRedemption", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CouponRedemption findUnique
+   */
+  export type CouponRedemptionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponRedemption
+     */
+    select?: CouponRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CouponRedemption
+     */
+    omit?: CouponRedemptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponRedemptionInclude<ExtArgs> | null
+    /**
+     * Filter, which CouponRedemption to fetch.
+     */
+    where: CouponRedemptionWhereUniqueInput
+  }
+
+  /**
+   * CouponRedemption findUniqueOrThrow
+   */
+  export type CouponRedemptionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponRedemption
+     */
+    select?: CouponRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CouponRedemption
+     */
+    omit?: CouponRedemptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponRedemptionInclude<ExtArgs> | null
+    /**
+     * Filter, which CouponRedemption to fetch.
+     */
+    where: CouponRedemptionWhereUniqueInput
+  }
+
+  /**
+   * CouponRedemption findFirst
+   */
+  export type CouponRedemptionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponRedemption
+     */
+    select?: CouponRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CouponRedemption
+     */
+    omit?: CouponRedemptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponRedemptionInclude<ExtArgs> | null
+    /**
+     * Filter, which CouponRedemption to fetch.
+     */
+    where?: CouponRedemptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CouponRedemptions to fetch.
+     */
+    orderBy?: CouponRedemptionOrderByWithRelationInput | CouponRedemptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CouponRedemptions.
+     */
+    cursor?: CouponRedemptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CouponRedemptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CouponRedemptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CouponRedemptions.
+     */
+    distinct?: CouponRedemptionScalarFieldEnum | CouponRedemptionScalarFieldEnum[]
+  }
+
+  /**
+   * CouponRedemption findFirstOrThrow
+   */
+  export type CouponRedemptionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponRedemption
+     */
+    select?: CouponRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CouponRedemption
+     */
+    omit?: CouponRedemptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponRedemptionInclude<ExtArgs> | null
+    /**
+     * Filter, which CouponRedemption to fetch.
+     */
+    where?: CouponRedemptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CouponRedemptions to fetch.
+     */
+    orderBy?: CouponRedemptionOrderByWithRelationInput | CouponRedemptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CouponRedemptions.
+     */
+    cursor?: CouponRedemptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CouponRedemptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CouponRedemptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CouponRedemptions.
+     */
+    distinct?: CouponRedemptionScalarFieldEnum | CouponRedemptionScalarFieldEnum[]
+  }
+
+  /**
+   * CouponRedemption findMany
+   */
+  export type CouponRedemptionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponRedemption
+     */
+    select?: CouponRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CouponRedemption
+     */
+    omit?: CouponRedemptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponRedemptionInclude<ExtArgs> | null
+    /**
+     * Filter, which CouponRedemptions to fetch.
+     */
+    where?: CouponRedemptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CouponRedemptions to fetch.
+     */
+    orderBy?: CouponRedemptionOrderByWithRelationInput | CouponRedemptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CouponRedemptions.
+     */
+    cursor?: CouponRedemptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CouponRedemptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CouponRedemptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CouponRedemptions.
+     */
+    distinct?: CouponRedemptionScalarFieldEnum | CouponRedemptionScalarFieldEnum[]
+  }
+
+  /**
+   * CouponRedemption create
+   */
+  export type CouponRedemptionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponRedemption
+     */
+    select?: CouponRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CouponRedemption
+     */
+    omit?: CouponRedemptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponRedemptionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CouponRedemption.
+     */
+    data: XOR<CouponRedemptionCreateInput, CouponRedemptionUncheckedCreateInput>
+  }
+
+  /**
+   * CouponRedemption createMany
+   */
+  export type CouponRedemptionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CouponRedemptions.
+     */
+    data: CouponRedemptionCreateManyInput | CouponRedemptionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CouponRedemption createManyAndReturn
+   */
+  export type CouponRedemptionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponRedemption
+     */
+    select?: CouponRedemptionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CouponRedemption
+     */
+    omit?: CouponRedemptionOmit<ExtArgs> | null
+    /**
+     * The data used to create many CouponRedemptions.
+     */
+    data: CouponRedemptionCreateManyInput | CouponRedemptionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponRedemptionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CouponRedemption update
+   */
+  export type CouponRedemptionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponRedemption
+     */
+    select?: CouponRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CouponRedemption
+     */
+    omit?: CouponRedemptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponRedemptionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CouponRedemption.
+     */
+    data: XOR<CouponRedemptionUpdateInput, CouponRedemptionUncheckedUpdateInput>
+    /**
+     * Choose, which CouponRedemption to update.
+     */
+    where: CouponRedemptionWhereUniqueInput
+  }
+
+  /**
+   * CouponRedemption updateMany
+   */
+  export type CouponRedemptionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CouponRedemptions.
+     */
+    data: XOR<CouponRedemptionUpdateManyMutationInput, CouponRedemptionUncheckedUpdateManyInput>
+    /**
+     * Filter which CouponRedemptions to update
+     */
+    where?: CouponRedemptionWhereInput
+    /**
+     * Limit how many CouponRedemptions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CouponRedemption updateManyAndReturn
+   */
+  export type CouponRedemptionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponRedemption
+     */
+    select?: CouponRedemptionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CouponRedemption
+     */
+    omit?: CouponRedemptionOmit<ExtArgs> | null
+    /**
+     * The data used to update CouponRedemptions.
+     */
+    data: XOR<CouponRedemptionUpdateManyMutationInput, CouponRedemptionUncheckedUpdateManyInput>
+    /**
+     * Filter which CouponRedemptions to update
+     */
+    where?: CouponRedemptionWhereInput
+    /**
+     * Limit how many CouponRedemptions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponRedemptionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CouponRedemption upsert
+   */
+  export type CouponRedemptionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponRedemption
+     */
+    select?: CouponRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CouponRedemption
+     */
+    omit?: CouponRedemptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponRedemptionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CouponRedemption to update in case it exists.
+     */
+    where: CouponRedemptionWhereUniqueInput
+    /**
+     * In case the CouponRedemption found by the `where` argument doesn't exist, create a new CouponRedemption with this data.
+     */
+    create: XOR<CouponRedemptionCreateInput, CouponRedemptionUncheckedCreateInput>
+    /**
+     * In case the CouponRedemption was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CouponRedemptionUpdateInput, CouponRedemptionUncheckedUpdateInput>
+  }
+
+  /**
+   * CouponRedemption delete
+   */
+  export type CouponRedemptionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponRedemption
+     */
+    select?: CouponRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CouponRedemption
+     */
+    omit?: CouponRedemptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponRedemptionInclude<ExtArgs> | null
+    /**
+     * Filter which CouponRedemption to delete.
+     */
+    where: CouponRedemptionWhereUniqueInput
+  }
+
+  /**
+   * CouponRedemption deleteMany
+   */
+  export type CouponRedemptionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CouponRedemptions to delete
+     */
+    where?: CouponRedemptionWhereInput
+    /**
+     * Limit how many CouponRedemptions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CouponRedemption without action
+   */
+  export type CouponRedemptionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponRedemption
+     */
+    select?: CouponRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CouponRedemption
+     */
+    omit?: CouponRedemptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponRedemptionInclude<ExtArgs> | null
   }
 
 
@@ -15228,6 +17870,7 @@ export namespace Prisma {
     sopProofs?: boolean | Booking$sopProofsArgs<ExtArgs>
     paymentCollection?: boolean | Booking$paymentCollectionArgs<ExtArgs>
     groomerRewardEvents?: boolean | Booking$groomerRewardEventsArgs<ExtArgs>
+    couponRedemptions?: boolean | Booking$couponRedemptionsArgs<ExtArgs>
     _count?: boolean | BookingCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["booking"]>
 
@@ -15376,6 +18019,7 @@ export namespace Prisma {
     sopProofs?: boolean | Booking$sopProofsArgs<ExtArgs>
     paymentCollection?: boolean | Booking$paymentCollectionArgs<ExtArgs>
     groomerRewardEvents?: boolean | Booking$groomerRewardEventsArgs<ExtArgs>
+    couponRedemptions?: boolean | Booking$couponRedemptionsArgs<ExtArgs>
     _count?: boolean | BookingCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type BookingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -15409,6 +18053,7 @@ export namespace Prisma {
       sopProofs: Prisma.$BookingSopProofPayload<ExtArgs>[]
       paymentCollection: Prisma.$BookingPaymentCollectionPayload<ExtArgs> | null
       groomerRewardEvents: Prisma.$GroomerRewardEventPayload<ExtArgs>[]
+      couponRedemptions: Prisma.$CouponRedemptionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -15857,6 +18502,7 @@ export namespace Prisma {
     sopProofs<T extends Booking$sopProofsArgs<ExtArgs> = {}>(args?: Subset<T, Booking$sopProofsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BookingSopProofPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     paymentCollection<T extends Booking$paymentCollectionArgs<ExtArgs> = {}>(args?: Subset<T, Booking$paymentCollectionArgs<ExtArgs>>): Prisma__BookingPaymentCollectionClient<$Result.GetResult<Prisma.$BookingPaymentCollectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     groomerRewardEvents<T extends Booking$groomerRewardEventsArgs<ExtArgs> = {}>(args?: Subset<T, Booking$groomerRewardEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerRewardEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    couponRedemptions<T extends Booking$couponRedemptionsArgs<ExtArgs> = {}>(args?: Subset<T, Booking$couponRedemptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -16618,6 +19264,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: GroomerRewardEventScalarFieldEnum | GroomerRewardEventScalarFieldEnum[]
+  }
+
+  /**
+   * Booking.couponRedemptions
+   */
+  export type Booking$couponRedemptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CouponRedemption
+     */
+    select?: CouponRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CouponRedemption
+     */
+    omit?: CouponRedemptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CouponRedemptionInclude<ExtArgs> | null
+    where?: CouponRedemptionWhereInput
+    orderBy?: CouponRedemptionOrderByWithRelationInput | CouponRedemptionOrderByWithRelationInput[]
+    cursor?: CouponRedemptionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CouponRedemptionScalarFieldEnum | CouponRedemptionScalarFieldEnum[]
   }
 
   /**
@@ -44998,6 +47668,41 @@ export namespace Prisma {
   export type ServiceScalarFieldEnum = (typeof ServiceScalarFieldEnum)[keyof typeof ServiceScalarFieldEnum]
 
 
+  export const CouponScalarFieldEnum: {
+    id: 'id',
+    code: 'code',
+    title: 'title',
+    description: 'description',
+    isActive: 'isActive',
+    discountType: 'discountType',
+    discountValue: 'discountValue',
+    maxDiscountAmount: 'maxDiscountAmount',
+    stackable: 'stackable',
+    firstBookingOnly: 'firstBookingOnly',
+    applicableServiceNames: 'applicableServiceNames',
+    applicableCities: 'applicableCities',
+    paymentMethods: 'paymentMethods',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CouponScalarFieldEnum = (typeof CouponScalarFieldEnum)[keyof typeof CouponScalarFieldEnum]
+
+
+  export const CouponRedemptionScalarFieldEnum: {
+    id: 'id',
+    couponId: 'couponId',
+    bookingId: 'bookingId',
+    userId: 'userId',
+    codeSnapshot: 'codeSnapshot',
+    titleSnapshot: 'titleSnapshot',
+    discountAmount: 'discountAmount',
+    createdAt: 'createdAt'
+  };
+
+  export type CouponRedemptionScalarFieldEnum = (typeof CouponRedemptionScalarFieldEnum)[keyof typeof CouponRedemptionScalarFieldEnum]
+
+
   export const ServiceAreaScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -45629,6 +48334,7 @@ export namespace Prisma {
     loyaltyLastRedeemedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     bookings?: BookingListRelationFilter
     pets?: PetListRelationFilter
+    couponRedemptions?: CouponRedemptionListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -45643,6 +48349,7 @@ export namespace Prisma {
     loyaltyLastRedeemedAt?: SortOrderInput | SortOrder
     bookings?: BookingOrderByRelationAggregateInput
     pets?: PetOrderByRelationAggregateInput
+    couponRedemptions?: CouponRedemptionOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -45660,6 +48367,7 @@ export namespace Prisma {
     loyaltyLastRedeemedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     bookings?: BookingListRelationFilter
     pets?: PetListRelationFilter
+    couponRedemptions?: CouponRedemptionListRelationFilter
   }, "id">
 
   export type UserOrderByWithAggregationInput = {
@@ -45900,6 +48608,191 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Service"> | string
     name?: StringWithAggregatesFilter<"Service"> | string
     price?: IntWithAggregatesFilter<"Service"> | number
+  }
+
+  export type CouponWhereInput = {
+    AND?: CouponWhereInput | CouponWhereInput[]
+    OR?: CouponWhereInput[]
+    NOT?: CouponWhereInput | CouponWhereInput[]
+    id?: StringFilter<"Coupon"> | string
+    code?: StringFilter<"Coupon"> | string
+    title?: StringFilter<"Coupon"> | string
+    description?: StringNullableFilter<"Coupon"> | string | null
+    isActive?: BoolFilter<"Coupon"> | boolean
+    discountType?: StringFilter<"Coupon"> | string
+    discountValue?: IntFilter<"Coupon"> | number
+    maxDiscountAmount?: IntNullableFilter<"Coupon"> | number | null
+    stackable?: BoolFilter<"Coupon"> | boolean
+    firstBookingOnly?: BoolFilter<"Coupon"> | boolean
+    applicableServiceNames?: StringNullableListFilter<"Coupon">
+    applicableCities?: StringNullableListFilter<"Coupon">
+    paymentMethods?: StringNullableListFilter<"Coupon">
+    createdAt?: DateTimeFilter<"Coupon"> | Date | string
+    updatedAt?: DateTimeFilter<"Coupon"> | Date | string
+    redemptions?: CouponRedemptionListRelationFilter
+  }
+
+  export type CouponOrderByWithRelationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    discountType?: SortOrder
+    discountValue?: SortOrder
+    maxDiscountAmount?: SortOrderInput | SortOrder
+    stackable?: SortOrder
+    firstBookingOnly?: SortOrder
+    applicableServiceNames?: SortOrder
+    applicableCities?: SortOrder
+    paymentMethods?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    redemptions?: CouponRedemptionOrderByRelationAggregateInput
+  }
+
+  export type CouponWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    code?: string
+    AND?: CouponWhereInput | CouponWhereInput[]
+    OR?: CouponWhereInput[]
+    NOT?: CouponWhereInput | CouponWhereInput[]
+    title?: StringFilter<"Coupon"> | string
+    description?: StringNullableFilter<"Coupon"> | string | null
+    isActive?: BoolFilter<"Coupon"> | boolean
+    discountType?: StringFilter<"Coupon"> | string
+    discountValue?: IntFilter<"Coupon"> | number
+    maxDiscountAmount?: IntNullableFilter<"Coupon"> | number | null
+    stackable?: BoolFilter<"Coupon"> | boolean
+    firstBookingOnly?: BoolFilter<"Coupon"> | boolean
+    applicableServiceNames?: StringNullableListFilter<"Coupon">
+    applicableCities?: StringNullableListFilter<"Coupon">
+    paymentMethods?: StringNullableListFilter<"Coupon">
+    createdAt?: DateTimeFilter<"Coupon"> | Date | string
+    updatedAt?: DateTimeFilter<"Coupon"> | Date | string
+    redemptions?: CouponRedemptionListRelationFilter
+  }, "id" | "code">
+
+  export type CouponOrderByWithAggregationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    discountType?: SortOrder
+    discountValue?: SortOrder
+    maxDiscountAmount?: SortOrderInput | SortOrder
+    stackable?: SortOrder
+    firstBookingOnly?: SortOrder
+    applicableServiceNames?: SortOrder
+    applicableCities?: SortOrder
+    paymentMethods?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CouponCountOrderByAggregateInput
+    _avg?: CouponAvgOrderByAggregateInput
+    _max?: CouponMaxOrderByAggregateInput
+    _min?: CouponMinOrderByAggregateInput
+    _sum?: CouponSumOrderByAggregateInput
+  }
+
+  export type CouponScalarWhereWithAggregatesInput = {
+    AND?: CouponScalarWhereWithAggregatesInput | CouponScalarWhereWithAggregatesInput[]
+    OR?: CouponScalarWhereWithAggregatesInput[]
+    NOT?: CouponScalarWhereWithAggregatesInput | CouponScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Coupon"> | string
+    code?: StringWithAggregatesFilter<"Coupon"> | string
+    title?: StringWithAggregatesFilter<"Coupon"> | string
+    description?: StringNullableWithAggregatesFilter<"Coupon"> | string | null
+    isActive?: BoolWithAggregatesFilter<"Coupon"> | boolean
+    discountType?: StringWithAggregatesFilter<"Coupon"> | string
+    discountValue?: IntWithAggregatesFilter<"Coupon"> | number
+    maxDiscountAmount?: IntNullableWithAggregatesFilter<"Coupon"> | number | null
+    stackable?: BoolWithAggregatesFilter<"Coupon"> | boolean
+    firstBookingOnly?: BoolWithAggregatesFilter<"Coupon"> | boolean
+    applicableServiceNames?: StringNullableListFilter<"Coupon">
+    applicableCities?: StringNullableListFilter<"Coupon">
+    paymentMethods?: StringNullableListFilter<"Coupon">
+    createdAt?: DateTimeWithAggregatesFilter<"Coupon"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Coupon"> | Date | string
+  }
+
+  export type CouponRedemptionWhereInput = {
+    AND?: CouponRedemptionWhereInput | CouponRedemptionWhereInput[]
+    OR?: CouponRedemptionWhereInput[]
+    NOT?: CouponRedemptionWhereInput | CouponRedemptionWhereInput[]
+    id?: StringFilter<"CouponRedemption"> | string
+    couponId?: StringFilter<"CouponRedemption"> | string
+    bookingId?: StringFilter<"CouponRedemption"> | string
+    userId?: StringFilter<"CouponRedemption"> | string
+    codeSnapshot?: StringFilter<"CouponRedemption"> | string
+    titleSnapshot?: StringFilter<"CouponRedemption"> | string
+    discountAmount?: IntFilter<"CouponRedemption"> | number
+    createdAt?: DateTimeFilter<"CouponRedemption"> | Date | string
+    coupon?: XOR<CouponScalarRelationFilter, CouponWhereInput>
+    booking?: XOR<BookingScalarRelationFilter, BookingWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type CouponRedemptionOrderByWithRelationInput = {
+    id?: SortOrder
+    couponId?: SortOrder
+    bookingId?: SortOrder
+    userId?: SortOrder
+    codeSnapshot?: SortOrder
+    titleSnapshot?: SortOrder
+    discountAmount?: SortOrder
+    createdAt?: SortOrder
+    coupon?: CouponOrderByWithRelationInput
+    booking?: BookingOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type CouponRedemptionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CouponRedemptionWhereInput | CouponRedemptionWhereInput[]
+    OR?: CouponRedemptionWhereInput[]
+    NOT?: CouponRedemptionWhereInput | CouponRedemptionWhereInput[]
+    couponId?: StringFilter<"CouponRedemption"> | string
+    bookingId?: StringFilter<"CouponRedemption"> | string
+    userId?: StringFilter<"CouponRedemption"> | string
+    codeSnapshot?: StringFilter<"CouponRedemption"> | string
+    titleSnapshot?: StringFilter<"CouponRedemption"> | string
+    discountAmount?: IntFilter<"CouponRedemption"> | number
+    createdAt?: DateTimeFilter<"CouponRedemption"> | Date | string
+    coupon?: XOR<CouponScalarRelationFilter, CouponWhereInput>
+    booking?: XOR<BookingScalarRelationFilter, BookingWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type CouponRedemptionOrderByWithAggregationInput = {
+    id?: SortOrder
+    couponId?: SortOrder
+    bookingId?: SortOrder
+    userId?: SortOrder
+    codeSnapshot?: SortOrder
+    titleSnapshot?: SortOrder
+    discountAmount?: SortOrder
+    createdAt?: SortOrder
+    _count?: CouponRedemptionCountOrderByAggregateInput
+    _avg?: CouponRedemptionAvgOrderByAggregateInput
+    _max?: CouponRedemptionMaxOrderByAggregateInput
+    _min?: CouponRedemptionMinOrderByAggregateInput
+    _sum?: CouponRedemptionSumOrderByAggregateInput
+  }
+
+  export type CouponRedemptionScalarWhereWithAggregatesInput = {
+    AND?: CouponRedemptionScalarWhereWithAggregatesInput | CouponRedemptionScalarWhereWithAggregatesInput[]
+    OR?: CouponRedemptionScalarWhereWithAggregatesInput[]
+    NOT?: CouponRedemptionScalarWhereWithAggregatesInput | CouponRedemptionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CouponRedemption"> | string
+    couponId?: StringWithAggregatesFilter<"CouponRedemption"> | string
+    bookingId?: StringWithAggregatesFilter<"CouponRedemption"> | string
+    userId?: StringWithAggregatesFilter<"CouponRedemption"> | string
+    codeSnapshot?: StringWithAggregatesFilter<"CouponRedemption"> | string
+    titleSnapshot?: StringWithAggregatesFilter<"CouponRedemption"> | string
+    discountAmount?: IntWithAggregatesFilter<"CouponRedemption"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"CouponRedemption"> | Date | string
   }
 
   export type ServiceAreaWhereInput = {
@@ -46300,6 +49193,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofListRelationFilter
     paymentCollection?: XOR<BookingPaymentCollectionNullableScalarRelationFilter, BookingPaymentCollectionWhereInput> | null
     groomerRewardEvents?: GroomerRewardEventListRelationFilter
+    couponRedemptions?: CouponRedemptionListRelationFilter
   }
 
   export type BookingOrderByWithRelationInput = {
@@ -46355,6 +49249,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofOrderByRelationAggregateInput
     paymentCollection?: BookingPaymentCollectionOrderByWithRelationInput
     groomerRewardEvents?: GroomerRewardEventOrderByRelationAggregateInput
+    couponRedemptions?: CouponRedemptionOrderByRelationAggregateInput
   }
 
   export type BookingWhereUniqueInput = Prisma.AtLeast<{
@@ -46413,6 +49308,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofListRelationFilter
     paymentCollection?: XOR<BookingPaymentCollectionNullableScalarRelationFilter, BookingPaymentCollectionWhereInput> | null
     groomerRewardEvents?: GroomerRewardEventListRelationFilter
+    couponRedemptions?: CouponRedemptionListRelationFilter
   }, "id">
 
   export type BookingOrderByWithAggregationInput = {
@@ -48678,6 +51574,7 @@ export namespace Prisma {
     loyaltyLastRedeemedAt?: Date | string | null
     bookings?: BookingCreateNestedManyWithoutUserInput
     pets?: PetCreateNestedManyWithoutUserInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -48692,6 +51589,7 @@ export namespace Prisma {
     loyaltyLastRedeemedAt?: Date | string | null
     bookings?: BookingUncheckedCreateNestedManyWithoutUserInput
     pets?: PetUncheckedCreateNestedManyWithoutUserInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -48706,6 +51604,7 @@ export namespace Prisma {
     loyaltyLastRedeemedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     bookings?: BookingUpdateManyWithoutUserNestedInput
     pets?: PetUpdateManyWithoutUserNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -48720,6 +51619,7 @@ export namespace Prisma {
     loyaltyLastRedeemedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     bookings?: BookingUncheckedUpdateManyWithoutUserNestedInput
     pets?: PetUncheckedUpdateManyWithoutUserNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -48983,6 +51883,210 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type CouponCreateInput = {
+    id?: string
+    code: string
+    title: string
+    description?: string | null
+    isActive?: boolean
+    discountType: string
+    discountValue: number
+    maxDiscountAmount?: number | null
+    stackable?: boolean
+    firstBookingOnly?: boolean
+    applicableServiceNames?: CouponCreateapplicableServiceNamesInput | string[]
+    applicableCities?: CouponCreateapplicableCitiesInput | string[]
+    paymentMethods?: CouponCreatepaymentMethodsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    redemptions?: CouponRedemptionCreateNestedManyWithoutCouponInput
+  }
+
+  export type CouponUncheckedCreateInput = {
+    id?: string
+    code: string
+    title: string
+    description?: string | null
+    isActive?: boolean
+    discountType: string
+    discountValue: number
+    maxDiscountAmount?: number | null
+    stackable?: boolean
+    firstBookingOnly?: boolean
+    applicableServiceNames?: CouponCreateapplicableServiceNamesInput | string[]
+    applicableCities?: CouponCreateapplicableCitiesInput | string[]
+    paymentMethods?: CouponCreatepaymentMethodsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    redemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutCouponInput
+  }
+
+  export type CouponUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discountType?: StringFieldUpdateOperationsInput | string
+    discountValue?: IntFieldUpdateOperationsInput | number
+    maxDiscountAmount?: NullableIntFieldUpdateOperationsInput | number | null
+    stackable?: BoolFieldUpdateOperationsInput | boolean
+    firstBookingOnly?: BoolFieldUpdateOperationsInput | boolean
+    applicableServiceNames?: CouponUpdateapplicableServiceNamesInput | string[]
+    applicableCities?: CouponUpdateapplicableCitiesInput | string[]
+    paymentMethods?: CouponUpdatepaymentMethodsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    redemptions?: CouponRedemptionUpdateManyWithoutCouponNestedInput
+  }
+
+  export type CouponUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discountType?: StringFieldUpdateOperationsInput | string
+    discountValue?: IntFieldUpdateOperationsInput | number
+    maxDiscountAmount?: NullableIntFieldUpdateOperationsInput | number | null
+    stackable?: BoolFieldUpdateOperationsInput | boolean
+    firstBookingOnly?: BoolFieldUpdateOperationsInput | boolean
+    applicableServiceNames?: CouponUpdateapplicableServiceNamesInput | string[]
+    applicableCities?: CouponUpdateapplicableCitiesInput | string[]
+    paymentMethods?: CouponUpdatepaymentMethodsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    redemptions?: CouponRedemptionUncheckedUpdateManyWithoutCouponNestedInput
+  }
+
+  export type CouponCreateManyInput = {
+    id?: string
+    code: string
+    title: string
+    description?: string | null
+    isActive?: boolean
+    discountType: string
+    discountValue: number
+    maxDiscountAmount?: number | null
+    stackable?: boolean
+    firstBookingOnly?: boolean
+    applicableServiceNames?: CouponCreateapplicableServiceNamesInput | string[]
+    applicableCities?: CouponCreateapplicableCitiesInput | string[]
+    paymentMethods?: CouponCreatepaymentMethodsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CouponUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discountType?: StringFieldUpdateOperationsInput | string
+    discountValue?: IntFieldUpdateOperationsInput | number
+    maxDiscountAmount?: NullableIntFieldUpdateOperationsInput | number | null
+    stackable?: BoolFieldUpdateOperationsInput | boolean
+    firstBookingOnly?: BoolFieldUpdateOperationsInput | boolean
+    applicableServiceNames?: CouponUpdateapplicableServiceNamesInput | string[]
+    applicableCities?: CouponUpdateapplicableCitiesInput | string[]
+    paymentMethods?: CouponUpdatepaymentMethodsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CouponUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discountType?: StringFieldUpdateOperationsInput | string
+    discountValue?: IntFieldUpdateOperationsInput | number
+    maxDiscountAmount?: NullableIntFieldUpdateOperationsInput | number | null
+    stackable?: BoolFieldUpdateOperationsInput | boolean
+    firstBookingOnly?: BoolFieldUpdateOperationsInput | boolean
+    applicableServiceNames?: CouponUpdateapplicableServiceNamesInput | string[]
+    applicableCities?: CouponUpdateapplicableCitiesInput | string[]
+    paymentMethods?: CouponUpdatepaymentMethodsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CouponRedemptionCreateInput = {
+    id?: string
+    codeSnapshot: string
+    titleSnapshot: string
+    discountAmount: number
+    createdAt?: Date | string
+    coupon: CouponCreateNestedOneWithoutRedemptionsInput
+    booking: BookingCreateNestedOneWithoutCouponRedemptionsInput
+    user: UserCreateNestedOneWithoutCouponRedemptionsInput
+  }
+
+  export type CouponRedemptionUncheckedCreateInput = {
+    id?: string
+    couponId: string
+    bookingId: string
+    userId: string
+    codeSnapshot: string
+    titleSnapshot: string
+    discountAmount: number
+    createdAt?: Date | string
+  }
+
+  export type CouponRedemptionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    codeSnapshot?: StringFieldUpdateOperationsInput | string
+    titleSnapshot?: StringFieldUpdateOperationsInput | string
+    discountAmount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    coupon?: CouponUpdateOneRequiredWithoutRedemptionsNestedInput
+    booking?: BookingUpdateOneRequiredWithoutCouponRedemptionsNestedInput
+    user?: UserUpdateOneRequiredWithoutCouponRedemptionsNestedInput
+  }
+
+  export type CouponRedemptionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    couponId?: StringFieldUpdateOperationsInput | string
+    bookingId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    codeSnapshot?: StringFieldUpdateOperationsInput | string
+    titleSnapshot?: StringFieldUpdateOperationsInput | string
+    discountAmount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CouponRedemptionCreateManyInput = {
+    id?: string
+    couponId: string
+    bookingId: string
+    userId: string
+    codeSnapshot: string
+    titleSnapshot: string
+    discountAmount: number
+    createdAt?: Date | string
+  }
+
+  export type CouponRedemptionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    codeSnapshot?: StringFieldUpdateOperationsInput | string
+    titleSnapshot?: StringFieldUpdateOperationsInput | string
+    discountAmount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CouponRedemptionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    couponId?: StringFieldUpdateOperationsInput | string
+    bookingId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    codeSnapshot?: StringFieldUpdateOperationsInput | string
+    titleSnapshot?: StringFieldUpdateOperationsInput | string
+    discountAmount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ServiceAreaCreateInput = {
@@ -49399,6 +52503,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateInput = {
@@ -49450,6 +52555,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUpdateInput = {
@@ -49501,6 +52607,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateInput = {
@@ -49552,6 +52659,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingCreateManyInput = {
@@ -52166,6 +55274,12 @@ export namespace Prisma {
     none?: PetWhereInput
   }
 
+  export type CouponRedemptionListRelationFilter = {
+    every?: CouponRedemptionWhereInput
+    some?: CouponRedemptionWhereInput
+    none?: CouponRedemptionWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -52176,6 +55290,10 @@ export namespace Prisma {
   }
 
   export type PetOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CouponRedemptionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -52457,6 +55575,150 @@ export namespace Prisma {
     price?: SortOrder
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type CouponCountOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    isActive?: SortOrder
+    discountType?: SortOrder
+    discountValue?: SortOrder
+    maxDiscountAmount?: SortOrder
+    stackable?: SortOrder
+    firstBookingOnly?: SortOrder
+    applicableServiceNames?: SortOrder
+    applicableCities?: SortOrder
+    paymentMethods?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CouponAvgOrderByAggregateInput = {
+    discountValue?: SortOrder
+    maxDiscountAmount?: SortOrder
+  }
+
+  export type CouponMaxOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    isActive?: SortOrder
+    discountType?: SortOrder
+    discountValue?: SortOrder
+    maxDiscountAmount?: SortOrder
+    stackable?: SortOrder
+    firstBookingOnly?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CouponMinOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    isActive?: SortOrder
+    discountType?: SortOrder
+    discountValue?: SortOrder
+    maxDiscountAmount?: SortOrder
+    stackable?: SortOrder
+    firstBookingOnly?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CouponSumOrderByAggregateInput = {
+    discountValue?: SortOrder
+    maxDiscountAmount?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type CouponScalarRelationFilter = {
+    is?: CouponWhereInput
+    isNot?: CouponWhereInput
+  }
+
+  export type BookingScalarRelationFilter = {
+    is?: BookingWhereInput
+    isNot?: BookingWhereInput
+  }
+
+  export type CouponRedemptionCountOrderByAggregateInput = {
+    id?: SortOrder
+    couponId?: SortOrder
+    bookingId?: SortOrder
+    userId?: SortOrder
+    codeSnapshot?: SortOrder
+    titleSnapshot?: SortOrder
+    discountAmount?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CouponRedemptionAvgOrderByAggregateInput = {
+    discountAmount?: SortOrder
+  }
+
+  export type CouponRedemptionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    couponId?: SortOrder
+    bookingId?: SortOrder
+    userId?: SortOrder
+    codeSnapshot?: SortOrder
+    titleSnapshot?: SortOrder
+    discountAmount?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CouponRedemptionMinOrderByAggregateInput = {
+    id?: SortOrder
+    couponId?: SortOrder
+    bookingId?: SortOrder
+    userId?: SortOrder
+    codeSnapshot?: SortOrder
+    titleSnapshot?: SortOrder
+    discountAmount?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CouponRedemptionSumOrderByAggregateInput = {
+    discountAmount?: SortOrder
+  }
+
   export type TeamCoverageAreaListRelationFilter = {
     every?: TeamCoverageAreaWhereInput
     some?: TeamCoverageAreaWhereInput
@@ -52716,17 +55978,6 @@ export namespace Prisma {
     blockedByAdminUser?: SortOrder
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type ServiceScalarRelationFilter = {
     is?: ServiceWhereInput
     isNot?: ServiceWhereInput
@@ -52939,22 +56190,6 @@ export namespace Prisma {
     finalAmount?: SortOrder
     loyaltyCompletedCountBefore?: SortOrder
     loyaltyCompletedCountAfter?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type WorkforceLeaveRequestListRelationFilter = {
@@ -53762,11 +56997,6 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type BookingScalarRelationFilter = {
-    is?: BookingWhereInput
-    isNot?: BookingWhereInput
-  }
-
   export type BookingEventCountOrderByAggregateInput = {
     id?: SortOrder
     bookingId?: SortOrder
@@ -54280,6 +57510,13 @@ export namespace Prisma {
     connect?: PetWhereUniqueInput | PetWhereUniqueInput[]
   }
 
+  export type CouponRedemptionCreateNestedManyWithoutUserInput = {
+    create?: XOR<CouponRedemptionCreateWithoutUserInput, CouponRedemptionUncheckedCreateWithoutUserInput> | CouponRedemptionCreateWithoutUserInput[] | CouponRedemptionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CouponRedemptionCreateOrConnectWithoutUserInput | CouponRedemptionCreateOrConnectWithoutUserInput[]
+    createMany?: CouponRedemptionCreateManyUserInputEnvelope
+    connect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+  }
+
   export type BookingUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<BookingCreateWithoutUserInput, BookingUncheckedCreateWithoutUserInput> | BookingCreateWithoutUserInput[] | BookingUncheckedCreateWithoutUserInput[]
     connectOrCreate?: BookingCreateOrConnectWithoutUserInput | BookingCreateOrConnectWithoutUserInput[]
@@ -54292,6 +57529,13 @@ export namespace Prisma {
     connectOrCreate?: PetCreateOrConnectWithoutUserInput | PetCreateOrConnectWithoutUserInput[]
     createMany?: PetCreateManyUserInputEnvelope
     connect?: PetWhereUniqueInput | PetWhereUniqueInput[]
+  }
+
+  export type CouponRedemptionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<CouponRedemptionCreateWithoutUserInput, CouponRedemptionUncheckedCreateWithoutUserInput> | CouponRedemptionCreateWithoutUserInput[] | CouponRedemptionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CouponRedemptionCreateOrConnectWithoutUserInput | CouponRedemptionCreateOrConnectWithoutUserInput[]
+    createMany?: CouponRedemptionCreateManyUserInputEnvelope
+    connect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -54346,6 +57590,20 @@ export namespace Prisma {
     deleteMany?: PetScalarWhereInput | PetScalarWhereInput[]
   }
 
+  export type CouponRedemptionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CouponRedemptionCreateWithoutUserInput, CouponRedemptionUncheckedCreateWithoutUserInput> | CouponRedemptionCreateWithoutUserInput[] | CouponRedemptionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CouponRedemptionCreateOrConnectWithoutUserInput | CouponRedemptionCreateOrConnectWithoutUserInput[]
+    upsert?: CouponRedemptionUpsertWithWhereUniqueWithoutUserInput | CouponRedemptionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CouponRedemptionCreateManyUserInputEnvelope
+    set?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    disconnect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    delete?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    connect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    update?: CouponRedemptionUpdateWithWhereUniqueWithoutUserInput | CouponRedemptionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CouponRedemptionUpdateManyWithWhereWithoutUserInput | CouponRedemptionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CouponRedemptionScalarWhereInput | CouponRedemptionScalarWhereInput[]
+  }
+
   export type BookingUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<BookingCreateWithoutUserInput, BookingUncheckedCreateWithoutUserInput> | BookingCreateWithoutUserInput[] | BookingUncheckedCreateWithoutUserInput[]
     connectOrCreate?: BookingCreateOrConnectWithoutUserInput | BookingCreateOrConnectWithoutUserInput[]
@@ -54372,6 +57630,20 @@ export namespace Prisma {
     update?: PetUpdateWithWhereUniqueWithoutUserInput | PetUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: PetUpdateManyWithWhereWithoutUserInput | PetUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: PetScalarWhereInput | PetScalarWhereInput[]
+  }
+
+  export type CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CouponRedemptionCreateWithoutUserInput, CouponRedemptionUncheckedCreateWithoutUserInput> | CouponRedemptionCreateWithoutUserInput[] | CouponRedemptionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CouponRedemptionCreateOrConnectWithoutUserInput | CouponRedemptionCreateOrConnectWithoutUserInput[]
+    upsert?: CouponRedemptionUpsertWithWhereUniqueWithoutUserInput | CouponRedemptionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CouponRedemptionCreateManyUserInputEnvelope
+    set?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    disconnect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    delete?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    connect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    update?: CouponRedemptionUpdateWithWhereUniqueWithoutUserInput | CouponRedemptionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CouponRedemptionUpdateManyWithWhereWithoutUserInput | CouponRedemptionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CouponRedemptionScalarWhereInput | CouponRedemptionScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutPetsInput = {
@@ -54530,6 +57802,125 @@ export namespace Prisma {
     update?: BookingUpdateWithWhereUniqueWithoutServiceInput | BookingUpdateWithWhereUniqueWithoutServiceInput[]
     updateMany?: BookingUpdateManyWithWhereWithoutServiceInput | BookingUpdateManyWithWhereWithoutServiceInput[]
     deleteMany?: BookingScalarWhereInput | BookingScalarWhereInput[]
+  }
+
+  export type CouponCreateapplicableServiceNamesInput = {
+    set: string[]
+  }
+
+  export type CouponCreateapplicableCitiesInput = {
+    set: string[]
+  }
+
+  export type CouponCreatepaymentMethodsInput = {
+    set: string[]
+  }
+
+  export type CouponRedemptionCreateNestedManyWithoutCouponInput = {
+    create?: XOR<CouponRedemptionCreateWithoutCouponInput, CouponRedemptionUncheckedCreateWithoutCouponInput> | CouponRedemptionCreateWithoutCouponInput[] | CouponRedemptionUncheckedCreateWithoutCouponInput[]
+    connectOrCreate?: CouponRedemptionCreateOrConnectWithoutCouponInput | CouponRedemptionCreateOrConnectWithoutCouponInput[]
+    createMany?: CouponRedemptionCreateManyCouponInputEnvelope
+    connect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+  }
+
+  export type CouponRedemptionUncheckedCreateNestedManyWithoutCouponInput = {
+    create?: XOR<CouponRedemptionCreateWithoutCouponInput, CouponRedemptionUncheckedCreateWithoutCouponInput> | CouponRedemptionCreateWithoutCouponInput[] | CouponRedemptionUncheckedCreateWithoutCouponInput[]
+    connectOrCreate?: CouponRedemptionCreateOrConnectWithoutCouponInput | CouponRedemptionCreateOrConnectWithoutCouponInput[]
+    createMany?: CouponRedemptionCreateManyCouponInputEnvelope
+    connect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type CouponUpdateapplicableServiceNamesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type CouponUpdateapplicableCitiesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type CouponUpdatepaymentMethodsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type CouponRedemptionUpdateManyWithoutCouponNestedInput = {
+    create?: XOR<CouponRedemptionCreateWithoutCouponInput, CouponRedemptionUncheckedCreateWithoutCouponInput> | CouponRedemptionCreateWithoutCouponInput[] | CouponRedemptionUncheckedCreateWithoutCouponInput[]
+    connectOrCreate?: CouponRedemptionCreateOrConnectWithoutCouponInput | CouponRedemptionCreateOrConnectWithoutCouponInput[]
+    upsert?: CouponRedemptionUpsertWithWhereUniqueWithoutCouponInput | CouponRedemptionUpsertWithWhereUniqueWithoutCouponInput[]
+    createMany?: CouponRedemptionCreateManyCouponInputEnvelope
+    set?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    disconnect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    delete?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    connect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    update?: CouponRedemptionUpdateWithWhereUniqueWithoutCouponInput | CouponRedemptionUpdateWithWhereUniqueWithoutCouponInput[]
+    updateMany?: CouponRedemptionUpdateManyWithWhereWithoutCouponInput | CouponRedemptionUpdateManyWithWhereWithoutCouponInput[]
+    deleteMany?: CouponRedemptionScalarWhereInput | CouponRedemptionScalarWhereInput[]
+  }
+
+  export type CouponRedemptionUncheckedUpdateManyWithoutCouponNestedInput = {
+    create?: XOR<CouponRedemptionCreateWithoutCouponInput, CouponRedemptionUncheckedCreateWithoutCouponInput> | CouponRedemptionCreateWithoutCouponInput[] | CouponRedemptionUncheckedCreateWithoutCouponInput[]
+    connectOrCreate?: CouponRedemptionCreateOrConnectWithoutCouponInput | CouponRedemptionCreateOrConnectWithoutCouponInput[]
+    upsert?: CouponRedemptionUpsertWithWhereUniqueWithoutCouponInput | CouponRedemptionUpsertWithWhereUniqueWithoutCouponInput[]
+    createMany?: CouponRedemptionCreateManyCouponInputEnvelope
+    set?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    disconnect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    delete?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    connect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    update?: CouponRedemptionUpdateWithWhereUniqueWithoutCouponInput | CouponRedemptionUpdateWithWhereUniqueWithoutCouponInput[]
+    updateMany?: CouponRedemptionUpdateManyWithWhereWithoutCouponInput | CouponRedemptionUpdateManyWithWhereWithoutCouponInput[]
+    deleteMany?: CouponRedemptionScalarWhereInput | CouponRedemptionScalarWhereInput[]
+  }
+
+  export type CouponCreateNestedOneWithoutRedemptionsInput = {
+    create?: XOR<CouponCreateWithoutRedemptionsInput, CouponUncheckedCreateWithoutRedemptionsInput>
+    connectOrCreate?: CouponCreateOrConnectWithoutRedemptionsInput
+    connect?: CouponWhereUniqueInput
+  }
+
+  export type BookingCreateNestedOneWithoutCouponRedemptionsInput = {
+    create?: XOR<BookingCreateWithoutCouponRedemptionsInput, BookingUncheckedCreateWithoutCouponRedemptionsInput>
+    connectOrCreate?: BookingCreateOrConnectWithoutCouponRedemptionsInput
+    connect?: BookingWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCouponRedemptionsInput = {
+    create?: XOR<UserCreateWithoutCouponRedemptionsInput, UserUncheckedCreateWithoutCouponRedemptionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCouponRedemptionsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type CouponUpdateOneRequiredWithoutRedemptionsNestedInput = {
+    create?: XOR<CouponCreateWithoutRedemptionsInput, CouponUncheckedCreateWithoutRedemptionsInput>
+    connectOrCreate?: CouponCreateOrConnectWithoutRedemptionsInput
+    upsert?: CouponUpsertWithoutRedemptionsInput
+    connect?: CouponWhereUniqueInput
+    update?: XOR<XOR<CouponUpdateToOneWithWhereWithoutRedemptionsInput, CouponUpdateWithoutRedemptionsInput>, CouponUncheckedUpdateWithoutRedemptionsInput>
+  }
+
+  export type BookingUpdateOneRequiredWithoutCouponRedemptionsNestedInput = {
+    create?: XOR<BookingCreateWithoutCouponRedemptionsInput, BookingUncheckedCreateWithoutCouponRedemptionsInput>
+    connectOrCreate?: BookingCreateOrConnectWithoutCouponRedemptionsInput
+    upsert?: BookingUpsertWithoutCouponRedemptionsInput
+    connect?: BookingWhereUniqueInput
+    update?: XOR<XOR<BookingUpdateToOneWithWhereWithoutCouponRedemptionsInput, BookingUpdateWithoutCouponRedemptionsInput>, BookingUncheckedUpdateWithoutCouponRedemptionsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutCouponRedemptionsNestedInput = {
+    create?: XOR<UserCreateWithoutCouponRedemptionsInput, UserUncheckedCreateWithoutCouponRedemptionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCouponRedemptionsInput
+    upsert?: UserUpsertWithoutCouponRedemptionsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCouponRedemptionsInput, UserUpdateWithoutCouponRedemptionsInput>, UserUncheckedUpdateWithoutCouponRedemptionsInput>
   }
 
   export type TeamCoverageAreaCreateNestedManyWithoutServiceAreaInput = {
@@ -55108,6 +58499,13 @@ export namespace Prisma {
     connect?: GroomerRewardEventWhereUniqueInput | GroomerRewardEventWhereUniqueInput[]
   }
 
+  export type CouponRedemptionCreateNestedManyWithoutBookingInput = {
+    create?: XOR<CouponRedemptionCreateWithoutBookingInput, CouponRedemptionUncheckedCreateWithoutBookingInput> | CouponRedemptionCreateWithoutBookingInput[] | CouponRedemptionUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: CouponRedemptionCreateOrConnectWithoutBookingInput | CouponRedemptionCreateOrConnectWithoutBookingInput[]
+    createMany?: CouponRedemptionCreateManyBookingInputEnvelope
+    connect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+  }
+
   export type BookingPetUncheckedCreateNestedManyWithoutBookingInput = {
     create?: XOR<BookingPetCreateWithoutBookingInput, BookingPetUncheckedCreateWithoutBookingInput> | BookingPetCreateWithoutBookingInput[] | BookingPetUncheckedCreateWithoutBookingInput[]
     connectOrCreate?: BookingPetCreateOrConnectWithoutBookingInput | BookingPetCreateOrConnectWithoutBookingInput[]
@@ -55184,12 +58582,11 @@ export namespace Prisma {
     connect?: GroomerRewardEventWhereUniqueInput | GroomerRewardEventWhereUniqueInput[]
   }
 
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+  export type CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput = {
+    create?: XOR<CouponRedemptionCreateWithoutBookingInput, CouponRedemptionUncheckedCreateWithoutBookingInput> | CouponRedemptionCreateWithoutBookingInput[] | CouponRedemptionUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: CouponRedemptionCreateOrConnectWithoutBookingInput | CouponRedemptionCreateOrConnectWithoutBookingInput[]
+    createMany?: CouponRedemptionCreateManyBookingInputEnvelope
+    connect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
   }
 
   export type UserUpdateOneRequiredWithoutBookingsNestedInput = {
@@ -55378,6 +58775,20 @@ export namespace Prisma {
     deleteMany?: GroomerRewardEventScalarWhereInput | GroomerRewardEventScalarWhereInput[]
   }
 
+  export type CouponRedemptionUpdateManyWithoutBookingNestedInput = {
+    create?: XOR<CouponRedemptionCreateWithoutBookingInput, CouponRedemptionUncheckedCreateWithoutBookingInput> | CouponRedemptionCreateWithoutBookingInput[] | CouponRedemptionUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: CouponRedemptionCreateOrConnectWithoutBookingInput | CouponRedemptionCreateOrConnectWithoutBookingInput[]
+    upsert?: CouponRedemptionUpsertWithWhereUniqueWithoutBookingInput | CouponRedemptionUpsertWithWhereUniqueWithoutBookingInput[]
+    createMany?: CouponRedemptionCreateManyBookingInputEnvelope
+    set?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    disconnect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    delete?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    connect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    update?: CouponRedemptionUpdateWithWhereUniqueWithoutBookingInput | CouponRedemptionUpdateWithWhereUniqueWithoutBookingInput[]
+    updateMany?: CouponRedemptionUpdateManyWithWhereWithoutBookingInput | CouponRedemptionUpdateManyWithWhereWithoutBookingInput[]
+    deleteMany?: CouponRedemptionScalarWhereInput | CouponRedemptionScalarWhereInput[]
+  }
+
   export type BookingPetUncheckedUpdateManyWithoutBookingNestedInput = {
     create?: XOR<BookingPetCreateWithoutBookingInput, BookingPetUncheckedCreateWithoutBookingInput> | BookingPetCreateWithoutBookingInput[] | BookingPetUncheckedCreateWithoutBookingInput[]
     connectOrCreate?: BookingPetCreateOrConnectWithoutBookingInput | BookingPetCreateOrConnectWithoutBookingInput[]
@@ -55526,6 +58937,20 @@ export namespace Prisma {
     update?: GroomerRewardEventUpdateWithWhereUniqueWithoutBookingInput | GroomerRewardEventUpdateWithWhereUniqueWithoutBookingInput[]
     updateMany?: GroomerRewardEventUpdateManyWithWhereWithoutBookingInput | GroomerRewardEventUpdateManyWithWhereWithoutBookingInput[]
     deleteMany?: GroomerRewardEventScalarWhereInput | GroomerRewardEventScalarWhereInput[]
+  }
+
+  export type CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput = {
+    create?: XOR<CouponRedemptionCreateWithoutBookingInput, CouponRedemptionUncheckedCreateWithoutBookingInput> | CouponRedemptionCreateWithoutBookingInput[] | CouponRedemptionUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: CouponRedemptionCreateOrConnectWithoutBookingInput | CouponRedemptionCreateOrConnectWithoutBookingInput[]
+    upsert?: CouponRedemptionUpsertWithWhereUniqueWithoutBookingInput | CouponRedemptionUpsertWithWhereUniqueWithoutBookingInput[]
+    createMany?: CouponRedemptionCreateManyBookingInputEnvelope
+    set?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    disconnect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    delete?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    connect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
+    update?: CouponRedemptionUpdateWithWhereUniqueWithoutBookingInput | CouponRedemptionUpdateWithWhereUniqueWithoutBookingInput[]
+    updateMany?: CouponRedemptionUpdateManyWithWhereWithoutBookingInput | CouponRedemptionUpdateManyWithWhereWithoutBookingInput[]
+    deleteMany?: CouponRedemptionScalarWhereInput | CouponRedemptionScalarWhereInput[]
   }
 
   export type TeamCreateNestedOneWithoutMembersInput = {
@@ -56735,6 +60160,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutUserInput = {
@@ -56785,6 +60211,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutUserInput = {
@@ -56836,6 +60263,36 @@ export namespace Prisma {
 
   export type PetCreateManyUserInputEnvelope = {
     data: PetCreateManyUserInput | PetCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CouponRedemptionCreateWithoutUserInput = {
+    id?: string
+    codeSnapshot: string
+    titleSnapshot: string
+    discountAmount: number
+    createdAt?: Date | string
+    coupon: CouponCreateNestedOneWithoutRedemptionsInput
+    booking: BookingCreateNestedOneWithoutCouponRedemptionsInput
+  }
+
+  export type CouponRedemptionUncheckedCreateWithoutUserInput = {
+    id?: string
+    couponId: string
+    bookingId: string
+    codeSnapshot: string
+    titleSnapshot: string
+    discountAmount: number
+    createdAt?: Date | string
+  }
+
+  export type CouponRedemptionCreateOrConnectWithoutUserInput = {
+    where: CouponRedemptionWhereUniqueInput
+    create: XOR<CouponRedemptionCreateWithoutUserInput, CouponRedemptionUncheckedCreateWithoutUserInput>
+  }
+
+  export type CouponRedemptionCreateManyUserInputEnvelope = {
+    data: CouponRedemptionCreateManyUserInput | CouponRedemptionCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -56932,6 +60389,36 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Pet"> | Date | string
   }
 
+  export type CouponRedemptionUpsertWithWhereUniqueWithoutUserInput = {
+    where: CouponRedemptionWhereUniqueInput
+    update: XOR<CouponRedemptionUpdateWithoutUserInput, CouponRedemptionUncheckedUpdateWithoutUserInput>
+    create: XOR<CouponRedemptionCreateWithoutUserInput, CouponRedemptionUncheckedCreateWithoutUserInput>
+  }
+
+  export type CouponRedemptionUpdateWithWhereUniqueWithoutUserInput = {
+    where: CouponRedemptionWhereUniqueInput
+    data: XOR<CouponRedemptionUpdateWithoutUserInput, CouponRedemptionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CouponRedemptionUpdateManyWithWhereWithoutUserInput = {
+    where: CouponRedemptionScalarWhereInput
+    data: XOR<CouponRedemptionUpdateManyMutationInput, CouponRedemptionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type CouponRedemptionScalarWhereInput = {
+    AND?: CouponRedemptionScalarWhereInput | CouponRedemptionScalarWhereInput[]
+    OR?: CouponRedemptionScalarWhereInput[]
+    NOT?: CouponRedemptionScalarWhereInput | CouponRedemptionScalarWhereInput[]
+    id?: StringFilter<"CouponRedemption"> | string
+    couponId?: StringFilter<"CouponRedemption"> | string
+    bookingId?: StringFilter<"CouponRedemption"> | string
+    userId?: StringFilter<"CouponRedemption"> | string
+    codeSnapshot?: StringFilter<"CouponRedemption"> | string
+    titleSnapshot?: StringFilter<"CouponRedemption"> | string
+    discountAmount?: IntFilter<"CouponRedemption"> | number
+    createdAt?: DateTimeFilter<"CouponRedemption"> | Date | string
+  }
+
   export type UserCreateWithoutPetsInput = {
     id?: string
     name: string
@@ -56943,6 +60430,7 @@ export namespace Prisma {
     loyaltyUnlockedAt?: Date | string | null
     loyaltyLastRedeemedAt?: Date | string | null
     bookings?: BookingCreateNestedManyWithoutUserInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPetsInput = {
@@ -56956,6 +60444,7 @@ export namespace Prisma {
     loyaltyUnlockedAt?: Date | string | null
     loyaltyLastRedeemedAt?: Date | string | null
     bookings?: BookingUncheckedCreateNestedManyWithoutUserInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPetsInput = {
@@ -57043,6 +60532,7 @@ export namespace Prisma {
     loyaltyUnlockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyLastRedeemedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     bookings?: BookingUpdateManyWithoutUserNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPetsInput = {
@@ -57056,6 +60546,7 @@ export namespace Prisma {
     loyaltyUnlockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyLastRedeemedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     bookings?: BookingUncheckedUpdateManyWithoutUserNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type BookingPetUpsertWithWhereUniqueWithoutPetInput = {
@@ -57244,6 +60735,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutServiceInput = {
@@ -57294,6 +60786,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutServiceInput = {
@@ -57320,6 +60813,432 @@ export namespace Prisma {
   export type BookingUpdateManyWithWhereWithoutServiceInput = {
     where: BookingScalarWhereInput
     data: XOR<BookingUpdateManyMutationInput, BookingUncheckedUpdateManyWithoutServiceInput>
+  }
+
+  export type CouponRedemptionCreateWithoutCouponInput = {
+    id?: string
+    codeSnapshot: string
+    titleSnapshot: string
+    discountAmount: number
+    createdAt?: Date | string
+    booking: BookingCreateNestedOneWithoutCouponRedemptionsInput
+    user: UserCreateNestedOneWithoutCouponRedemptionsInput
+  }
+
+  export type CouponRedemptionUncheckedCreateWithoutCouponInput = {
+    id?: string
+    bookingId: string
+    userId: string
+    codeSnapshot: string
+    titleSnapshot: string
+    discountAmount: number
+    createdAt?: Date | string
+  }
+
+  export type CouponRedemptionCreateOrConnectWithoutCouponInput = {
+    where: CouponRedemptionWhereUniqueInput
+    create: XOR<CouponRedemptionCreateWithoutCouponInput, CouponRedemptionUncheckedCreateWithoutCouponInput>
+  }
+
+  export type CouponRedemptionCreateManyCouponInputEnvelope = {
+    data: CouponRedemptionCreateManyCouponInput | CouponRedemptionCreateManyCouponInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CouponRedemptionUpsertWithWhereUniqueWithoutCouponInput = {
+    where: CouponRedemptionWhereUniqueInput
+    update: XOR<CouponRedemptionUpdateWithoutCouponInput, CouponRedemptionUncheckedUpdateWithoutCouponInput>
+    create: XOR<CouponRedemptionCreateWithoutCouponInput, CouponRedemptionUncheckedCreateWithoutCouponInput>
+  }
+
+  export type CouponRedemptionUpdateWithWhereUniqueWithoutCouponInput = {
+    where: CouponRedemptionWhereUniqueInput
+    data: XOR<CouponRedemptionUpdateWithoutCouponInput, CouponRedemptionUncheckedUpdateWithoutCouponInput>
+  }
+
+  export type CouponRedemptionUpdateManyWithWhereWithoutCouponInput = {
+    where: CouponRedemptionScalarWhereInput
+    data: XOR<CouponRedemptionUpdateManyMutationInput, CouponRedemptionUncheckedUpdateManyWithoutCouponInput>
+  }
+
+  export type CouponCreateWithoutRedemptionsInput = {
+    id?: string
+    code: string
+    title: string
+    description?: string | null
+    isActive?: boolean
+    discountType: string
+    discountValue: number
+    maxDiscountAmount?: number | null
+    stackable?: boolean
+    firstBookingOnly?: boolean
+    applicableServiceNames?: CouponCreateapplicableServiceNamesInput | string[]
+    applicableCities?: CouponCreateapplicableCitiesInput | string[]
+    paymentMethods?: CouponCreatepaymentMethodsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CouponUncheckedCreateWithoutRedemptionsInput = {
+    id?: string
+    code: string
+    title: string
+    description?: string | null
+    isActive?: boolean
+    discountType: string
+    discountValue: number
+    maxDiscountAmount?: number | null
+    stackable?: boolean
+    firstBookingOnly?: boolean
+    applicableServiceNames?: CouponCreateapplicableServiceNamesInput | string[]
+    applicableCities?: CouponCreateapplicableCitiesInput | string[]
+    paymentMethods?: CouponCreatepaymentMethodsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CouponCreateOrConnectWithoutRedemptionsInput = {
+    where: CouponWhereUniqueInput
+    create: XOR<CouponCreateWithoutRedemptionsInput, CouponUncheckedCreateWithoutRedemptionsInput>
+  }
+
+  export type BookingCreateWithoutCouponRedemptionsInput = {
+    id?: string
+    status?: string
+    paymentMethod?: string | null
+    paymentStatus?: string
+    couponCode?: string | null
+    originalAmount: number
+    finalAmount: number
+    razorpayOrderId?: string | null
+    razorpayPaymentId?: string | null
+    paymentPendingReason?: string | null
+    paymentGatewayError?: string | null
+    paymentExpiresAt?: Date | string | null
+    paymentFailedAt?: Date | string | null
+    paymentExpiredAt?: Date | string | null
+    selectedDate?: string | null
+    bookingWindowId?: string | null
+    bookingSource?: string
+    serviceAddress?: string | null
+    serviceLandmark?: string | null
+    servicePincode?: string | null
+    serviceLocationUrl?: string | null
+    addressUpdatedAt?: Date | string | null
+    dispatchState?: string
+    adminNote?: string | null
+    loyaltyEligible?: boolean
+    loyaltyCompletedCountBefore?: number | null
+    loyaltyCompletedCountAfter?: number | null
+    loyaltyRewardApplied?: boolean
+    loyaltyRewardLabel?: string | null
+    loyaltyCountedAt?: Date | string | null
+    loyaltyRewardRestored?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutBookingsInput
+    service: ServiceCreateNestedOneWithoutBookingsInput
+    assignedTeam?: TeamCreateNestedOneWithoutAssignedBookingsInput
+    groomerMember?: TeamMemberCreateNestedOneWithoutBookingsInput
+    pets?: BookingPetCreateNestedManyWithoutBookingInput
+    slots?: BookingSlotCreateNestedManyWithoutBookingInput
+    relayCalls?: RelayCallSessionCreateNestedManyWithoutBookingInput
+    dispatchAlerts?: DispatchAlertCreateNestedManyWithoutBookingInput
+    customerMessages?: BookingCustomerMessageCreateNestedManyWithoutBookingInput
+    supportCases?: BookingSupportCaseCreateNestedManyWithoutBookingInput
+    events?: BookingEventCreateNestedManyWithoutBookingInput
+    sopSteps?: BookingSopStepCreateNestedManyWithoutBookingInput
+    sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
+    paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
+    groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+  }
+
+  export type BookingUncheckedCreateWithoutCouponRedemptionsInput = {
+    id?: string
+    userId: string
+    serviceId: string
+    status?: string
+    paymentMethod?: string | null
+    paymentStatus?: string
+    couponCode?: string | null
+    originalAmount: number
+    finalAmount: number
+    razorpayOrderId?: string | null
+    razorpayPaymentId?: string | null
+    paymentPendingReason?: string | null
+    paymentGatewayError?: string | null
+    paymentExpiresAt?: Date | string | null
+    paymentFailedAt?: Date | string | null
+    paymentExpiredAt?: Date | string | null
+    selectedDate?: string | null
+    bookingWindowId?: string | null
+    bookingSource?: string
+    serviceAddress?: string | null
+    serviceLandmark?: string | null
+    servicePincode?: string | null
+    serviceLocationUrl?: string | null
+    addressUpdatedAt?: Date | string | null
+    assignedTeamId?: string | null
+    groomerMemberId?: string | null
+    dispatchState?: string
+    adminNote?: string | null
+    loyaltyEligible?: boolean
+    loyaltyCompletedCountBefore?: number | null
+    loyaltyCompletedCountAfter?: number | null
+    loyaltyRewardApplied?: boolean
+    loyaltyRewardLabel?: string | null
+    loyaltyCountedAt?: Date | string | null
+    loyaltyRewardRestored?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
+    slots?: BookingSlotUncheckedCreateNestedManyWithoutBookingInput
+    relayCalls?: RelayCallSessionUncheckedCreateNestedManyWithoutBookingInput
+    dispatchAlerts?: DispatchAlertUncheckedCreateNestedManyWithoutBookingInput
+    customerMessages?: BookingCustomerMessageUncheckedCreateNestedManyWithoutBookingInput
+    supportCases?: BookingSupportCaseUncheckedCreateNestedManyWithoutBookingInput
+    events?: BookingEventUncheckedCreateNestedManyWithoutBookingInput
+    sopSteps?: BookingSopStepUncheckedCreateNestedManyWithoutBookingInput
+    sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
+    paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
+    groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+  }
+
+  export type BookingCreateOrConnectWithoutCouponRedemptionsInput = {
+    where: BookingWhereUniqueInput
+    create: XOR<BookingCreateWithoutCouponRedemptionsInput, BookingUncheckedCreateWithoutCouponRedemptionsInput>
+  }
+
+  export type UserCreateWithoutCouponRedemptionsInput = {
+    id?: string
+    name: string
+    phone: string
+    city: string
+    createdAt?: Date | string
+    loyaltyCompletedCount?: number
+    loyaltyFreeUnlocked?: boolean
+    loyaltyUnlockedAt?: Date | string | null
+    loyaltyLastRedeemedAt?: Date | string | null
+    bookings?: BookingCreateNestedManyWithoutUserInput
+    pets?: PetCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCouponRedemptionsInput = {
+    id?: string
+    name: string
+    phone: string
+    city: string
+    createdAt?: Date | string
+    loyaltyCompletedCount?: number
+    loyaltyFreeUnlocked?: boolean
+    loyaltyUnlockedAt?: Date | string | null
+    loyaltyLastRedeemedAt?: Date | string | null
+    bookings?: BookingUncheckedCreateNestedManyWithoutUserInput
+    pets?: PetUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCouponRedemptionsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCouponRedemptionsInput, UserUncheckedCreateWithoutCouponRedemptionsInput>
+  }
+
+  export type CouponUpsertWithoutRedemptionsInput = {
+    update: XOR<CouponUpdateWithoutRedemptionsInput, CouponUncheckedUpdateWithoutRedemptionsInput>
+    create: XOR<CouponCreateWithoutRedemptionsInput, CouponUncheckedCreateWithoutRedemptionsInput>
+    where?: CouponWhereInput
+  }
+
+  export type CouponUpdateToOneWithWhereWithoutRedemptionsInput = {
+    where?: CouponWhereInput
+    data: XOR<CouponUpdateWithoutRedemptionsInput, CouponUncheckedUpdateWithoutRedemptionsInput>
+  }
+
+  export type CouponUpdateWithoutRedemptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discountType?: StringFieldUpdateOperationsInput | string
+    discountValue?: IntFieldUpdateOperationsInput | number
+    maxDiscountAmount?: NullableIntFieldUpdateOperationsInput | number | null
+    stackable?: BoolFieldUpdateOperationsInput | boolean
+    firstBookingOnly?: BoolFieldUpdateOperationsInput | boolean
+    applicableServiceNames?: CouponUpdateapplicableServiceNamesInput | string[]
+    applicableCities?: CouponUpdateapplicableCitiesInput | string[]
+    paymentMethods?: CouponUpdatepaymentMethodsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CouponUncheckedUpdateWithoutRedemptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discountType?: StringFieldUpdateOperationsInput | string
+    discountValue?: IntFieldUpdateOperationsInput | number
+    maxDiscountAmount?: NullableIntFieldUpdateOperationsInput | number | null
+    stackable?: BoolFieldUpdateOperationsInput | boolean
+    firstBookingOnly?: BoolFieldUpdateOperationsInput | boolean
+    applicableServiceNames?: CouponUpdateapplicableServiceNamesInput | string[]
+    applicableCities?: CouponUpdateapplicableCitiesInput | string[]
+    paymentMethods?: CouponUpdatepaymentMethodsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BookingUpsertWithoutCouponRedemptionsInput = {
+    update: XOR<BookingUpdateWithoutCouponRedemptionsInput, BookingUncheckedUpdateWithoutCouponRedemptionsInput>
+    create: XOR<BookingCreateWithoutCouponRedemptionsInput, BookingUncheckedCreateWithoutCouponRedemptionsInput>
+    where?: BookingWhereInput
+  }
+
+  export type BookingUpdateToOneWithWhereWithoutCouponRedemptionsInput = {
+    where?: BookingWhereInput
+    data: XOR<BookingUpdateWithoutCouponRedemptionsInput, BookingUncheckedUpdateWithoutCouponRedemptionsInput>
+  }
+
+  export type BookingUpdateWithoutCouponRedemptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    couponCode?: NullableStringFieldUpdateOperationsInput | string | null
+    originalAmount?: IntFieldUpdateOperationsInput | number
+    finalAmount?: IntFieldUpdateOperationsInput | number
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentPendingReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentGatewayError?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentFailedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentExpiredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    selectedDate?: NullableStringFieldUpdateOperationsInput | string | null
+    bookingWindowId?: NullableStringFieldUpdateOperationsInput | string | null
+    bookingSource?: StringFieldUpdateOperationsInput | string
+    serviceAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
+    servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dispatchState?: StringFieldUpdateOperationsInput | string
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
+    loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
+    loyaltyCompletedCountAfter?: NullableIntFieldUpdateOperationsInput | number | null
+    loyaltyRewardApplied?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutBookingsNestedInput
+    service?: ServiceUpdateOneRequiredWithoutBookingsNestedInput
+    assignedTeam?: TeamUpdateOneWithoutAssignedBookingsNestedInput
+    groomerMember?: TeamMemberUpdateOneWithoutBookingsNestedInput
+    pets?: BookingPetUpdateManyWithoutBookingNestedInput
+    slots?: BookingSlotUpdateManyWithoutBookingNestedInput
+    relayCalls?: RelayCallSessionUpdateManyWithoutBookingNestedInput
+    dispatchAlerts?: DispatchAlertUpdateManyWithoutBookingNestedInput
+    customerMessages?: BookingCustomerMessageUpdateManyWithoutBookingNestedInput
+    supportCases?: BookingSupportCaseUpdateManyWithoutBookingNestedInput
+    events?: BookingEventUpdateManyWithoutBookingNestedInput
+    sopSteps?: BookingSopStepUpdateManyWithoutBookingNestedInput
+    sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
+    paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
+    groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+  }
+
+  export type BookingUncheckedUpdateWithoutCouponRedemptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    serviceId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    couponCode?: NullableStringFieldUpdateOperationsInput | string | null
+    originalAmount?: IntFieldUpdateOperationsInput | number
+    finalAmount?: IntFieldUpdateOperationsInput | number
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentPendingReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentGatewayError?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentFailedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentExpiredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    selectedDate?: NullableStringFieldUpdateOperationsInput | string | null
+    bookingWindowId?: NullableStringFieldUpdateOperationsInput | string | null
+    bookingSource?: StringFieldUpdateOperationsInput | string
+    serviceAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
+    servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
+    groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchState?: StringFieldUpdateOperationsInput | string
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
+    loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
+    loyaltyCompletedCountAfter?: NullableIntFieldUpdateOperationsInput | number | null
+    loyaltyRewardApplied?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
+    slots?: BookingSlotUncheckedUpdateManyWithoutBookingNestedInput
+    relayCalls?: RelayCallSessionUncheckedUpdateManyWithoutBookingNestedInput
+    dispatchAlerts?: DispatchAlertUncheckedUpdateManyWithoutBookingNestedInput
+    customerMessages?: BookingCustomerMessageUncheckedUpdateManyWithoutBookingNestedInput
+    supportCases?: BookingSupportCaseUncheckedUpdateManyWithoutBookingNestedInput
+    events?: BookingEventUncheckedUpdateManyWithoutBookingNestedInput
+    sopSteps?: BookingSopStepUncheckedUpdateManyWithoutBookingNestedInput
+    sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
+    paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
+    groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+  }
+
+  export type UserUpsertWithoutCouponRedemptionsInput = {
+    update: XOR<UserUpdateWithoutCouponRedemptionsInput, UserUncheckedUpdateWithoutCouponRedemptionsInput>
+    create: XOR<UserCreateWithoutCouponRedemptionsInput, UserUncheckedCreateWithoutCouponRedemptionsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCouponRedemptionsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCouponRedemptionsInput, UserUncheckedUpdateWithoutCouponRedemptionsInput>
+  }
+
+  export type UserUpdateWithoutCouponRedemptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    loyaltyCompletedCount?: IntFieldUpdateOperationsInput | number
+    loyaltyFreeUnlocked?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyUnlockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    loyaltyLastRedeemedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bookings?: BookingUpdateManyWithoutUserNestedInput
+    pets?: PetUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCouponRedemptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    loyaltyCompletedCount?: IntFieldUpdateOperationsInput | number
+    loyaltyFreeUnlocked?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyUnlockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    loyaltyLastRedeemedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bookings?: BookingUncheckedUpdateManyWithoutUserNestedInput
+    pets?: PetUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TeamCoverageAreaCreateWithoutServiceAreaInput = {
@@ -57479,6 +61398,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutAssignedTeamInput = {
@@ -57529,6 +61449,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutAssignedTeamInput = {
@@ -58346,6 +62267,7 @@ export namespace Prisma {
     loyaltyUnlockedAt?: Date | string | null
     loyaltyLastRedeemedAt?: Date | string | null
     pets?: PetCreateNestedManyWithoutUserInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutBookingsInput = {
@@ -58359,6 +62281,7 @@ export namespace Prisma {
     loyaltyUnlockedAt?: Date | string | null
     loyaltyLastRedeemedAt?: Date | string | null
     pets?: PetUncheckedCreateNestedManyWithoutUserInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutBookingsInput = {
@@ -58898,6 +62821,36 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CouponRedemptionCreateWithoutBookingInput = {
+    id?: string
+    codeSnapshot: string
+    titleSnapshot: string
+    discountAmount: number
+    createdAt?: Date | string
+    coupon: CouponCreateNestedOneWithoutRedemptionsInput
+    user: UserCreateNestedOneWithoutCouponRedemptionsInput
+  }
+
+  export type CouponRedemptionUncheckedCreateWithoutBookingInput = {
+    id?: string
+    couponId: string
+    userId: string
+    codeSnapshot: string
+    titleSnapshot: string
+    discountAmount: number
+    createdAt?: Date | string
+  }
+
+  export type CouponRedemptionCreateOrConnectWithoutBookingInput = {
+    where: CouponRedemptionWhereUniqueInput
+    create: XOR<CouponRedemptionCreateWithoutBookingInput, CouponRedemptionUncheckedCreateWithoutBookingInput>
+  }
+
+  export type CouponRedemptionCreateManyBookingInputEnvelope = {
+    data: CouponRedemptionCreateManyBookingInput | CouponRedemptionCreateManyBookingInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutBookingsInput = {
     update: XOR<UserUpdateWithoutBookingsInput, UserUncheckedUpdateWithoutBookingsInput>
     create: XOR<UserCreateWithoutBookingsInput, UserUncheckedCreateWithoutBookingsInput>
@@ -58920,6 +62873,7 @@ export namespace Prisma {
     loyaltyUnlockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyLastRedeemedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pets?: PetUpdateManyWithoutUserNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBookingsInput = {
@@ -58933,6 +62887,7 @@ export namespace Prisma {
     loyaltyUnlockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyLastRedeemedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pets?: PetUncheckedUpdateManyWithoutUserNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ServiceUpsertWithoutBookingsInput = {
@@ -59420,6 +63375,22 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"GroomerRewardEvent"> | Date | string
   }
 
+  export type CouponRedemptionUpsertWithWhereUniqueWithoutBookingInput = {
+    where: CouponRedemptionWhereUniqueInput
+    update: XOR<CouponRedemptionUpdateWithoutBookingInput, CouponRedemptionUncheckedUpdateWithoutBookingInput>
+    create: XOR<CouponRedemptionCreateWithoutBookingInput, CouponRedemptionUncheckedCreateWithoutBookingInput>
+  }
+
+  export type CouponRedemptionUpdateWithWhereUniqueWithoutBookingInput = {
+    where: CouponRedemptionWhereUniqueInput
+    data: XOR<CouponRedemptionUpdateWithoutBookingInput, CouponRedemptionUncheckedUpdateWithoutBookingInput>
+  }
+
+  export type CouponRedemptionUpdateManyWithWhereWithoutBookingInput = {
+    where: CouponRedemptionScalarWhereInput
+    data: XOR<CouponRedemptionUpdateManyMutationInput, CouponRedemptionUncheckedUpdateManyWithoutBookingInput>
+  }
+
   export type TeamCreateWithoutMembersInput = {
     id?: string
     name: string
@@ -59509,6 +63480,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutGroomerMemberInput = {
@@ -59559,6 +63531,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutGroomerMemberInput = {
@@ -60640,6 +64613,7 @@ export namespace Prisma {
     sopSteps?: BookingSopStepCreateNestedManyWithoutBookingInput
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutGroomerRewardEventsInput = {
@@ -60690,6 +64664,7 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUncheckedCreateNestedManyWithoutBookingInput
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutGroomerRewardEventsInput = {
@@ -60873,6 +64848,7 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUpdateManyWithoutBookingNestedInput
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutGroomerRewardEventsInput = {
@@ -60923,6 +64899,7 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUncheckedUpdateManyWithoutBookingNestedInput
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type TeamMemberCreateWithoutLeaveRequestsInput = {
@@ -62571,6 +66548,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutEventsInput = {
@@ -62621,6 +66599,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutEventsInput = {
@@ -62687,6 +66666,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutEventsInput = {
@@ -62737,6 +66717,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingCreateWithoutSopStepsInput = {
@@ -62787,6 +66768,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutSopStepsInput = {
@@ -62837,6 +66819,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutSopStepsInput = {
@@ -62939,6 +66922,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutSopStepsInput = {
@@ -62989,6 +66973,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingSopProofUpsertWithWhereUniqueWithoutSopStepInput = {
@@ -63055,6 +67040,7 @@ export namespace Prisma {
     sopSteps?: BookingSopStepCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutSopProofsInput = {
@@ -63105,6 +67091,7 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutSopProofsInput = {
@@ -63200,6 +67187,7 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutSopProofsInput = {
@@ -63250,6 +67238,7 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingSopStepUpsertWithoutProofsInput = {
@@ -63335,6 +67324,7 @@ export namespace Prisma {
     sopSteps?: BookingSopStepCreateNestedManyWithoutBookingInput
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutPaymentCollectionInput = {
@@ -63385,6 +67375,7 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUncheckedCreateNestedManyWithoutBookingInput
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutPaymentCollectionInput = {
@@ -63451,6 +67442,7 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUpdateManyWithoutBookingNestedInput
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutPaymentCollectionInput = {
@@ -63501,6 +67493,7 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUncheckedUpdateManyWithoutBookingNestedInput
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingCreateWithoutPetsInput = {
@@ -63551,6 +67544,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutPetsInput = {
@@ -63601,6 +67595,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutPetsInput = {
@@ -63732,6 +67727,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutPetsInput = {
@@ -63782,6 +67778,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type PetUpsertWithoutBookingsInput = {
@@ -63904,6 +67901,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutSlotsInput = {
@@ -63954,6 +67952,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutSlotsInput = {
@@ -64053,6 +68052,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutSlotsInput = {
@@ -64103,6 +68103,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type SlotUpsertWithoutBookingsInput = {
@@ -64248,6 +68249,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutRelayCallsInput = {
@@ -64298,6 +68300,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutRelayCallsInput = {
@@ -64405,6 +68408,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutRelayCallsInput = {
@@ -64455,6 +68459,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type TeamUpsertWithoutRelayCallsInput = {
@@ -64552,6 +68557,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutDispatchAlertsInput = {
@@ -64602,6 +68608,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutDispatchAlertsInput = {
@@ -64709,6 +68716,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutDispatchAlertsInput = {
@@ -64759,6 +68767,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type TeamUpsertWithoutDispatchAlertsInput = {
@@ -64856,6 +68865,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutCustomerMessagesInput = {
@@ -64906,6 +68916,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutCustomerMessagesInput = {
@@ -64972,6 +68983,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutCustomerMessagesInput = {
@@ -65022,6 +69034,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingCreateWithoutSupportCasesInput = {
@@ -65072,6 +69085,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutSupportCasesInput = {
@@ -65122,6 +69136,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutSupportCasesInput = {
@@ -65188,6 +69203,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutSupportCasesInput = {
@@ -65238,6 +69254,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingCreateManyUserInput = {
@@ -65293,6 +69310,16 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type CouponRedemptionCreateManyUserInput = {
+    id?: string
+    couponId: string
+    bookingId: string
+    codeSnapshot: string
+    titleSnapshot: string
+    discountAmount: number
+    createdAt?: Date | string
+  }
+
   export type BookingUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
@@ -65341,6 +69368,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutUserInput = {
@@ -65391,6 +69419,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateManyWithoutUserInput = {
@@ -65476,6 +69505,36 @@ export namespace Prisma {
     lastBookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CouponRedemptionUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    codeSnapshot?: StringFieldUpdateOperationsInput | string
+    titleSnapshot?: StringFieldUpdateOperationsInput | string
+    discountAmount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    coupon?: CouponUpdateOneRequiredWithoutRedemptionsNestedInput
+    booking?: BookingUpdateOneRequiredWithoutCouponRedemptionsNestedInput
+  }
+
+  export type CouponRedemptionUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    couponId?: StringFieldUpdateOperationsInput | string
+    bookingId?: StringFieldUpdateOperationsInput | string
+    codeSnapshot?: StringFieldUpdateOperationsInput | string
+    titleSnapshot?: StringFieldUpdateOperationsInput | string
+    discountAmount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CouponRedemptionUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    couponId?: StringFieldUpdateOperationsInput | string
+    bookingId?: StringFieldUpdateOperationsInput | string
+    codeSnapshot?: StringFieldUpdateOperationsInput | string
+    titleSnapshot?: StringFieldUpdateOperationsInput | string
+    discountAmount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BookingPetCreateManyPetInput = {
@@ -65639,6 +69698,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutServiceInput = {
@@ -65689,6 +69749,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateManyWithoutServiceInput = {
@@ -65728,6 +69789,46 @@ export namespace Prisma {
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CouponRedemptionCreateManyCouponInput = {
+    id?: string
+    bookingId: string
+    userId: string
+    codeSnapshot: string
+    titleSnapshot: string
+    discountAmount: number
+    createdAt?: Date | string
+  }
+
+  export type CouponRedemptionUpdateWithoutCouponInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    codeSnapshot?: StringFieldUpdateOperationsInput | string
+    titleSnapshot?: StringFieldUpdateOperationsInput | string
+    discountAmount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    booking?: BookingUpdateOneRequiredWithoutCouponRedemptionsNestedInput
+    user?: UserUpdateOneRequiredWithoutCouponRedemptionsNestedInput
+  }
+
+  export type CouponRedemptionUncheckedUpdateWithoutCouponInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bookingId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    codeSnapshot?: StringFieldUpdateOperationsInput | string
+    titleSnapshot?: StringFieldUpdateOperationsInput | string
+    discountAmount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CouponRedemptionUncheckedUpdateManyWithoutCouponInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bookingId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    codeSnapshot?: StringFieldUpdateOperationsInput | string
+    titleSnapshot?: StringFieldUpdateOperationsInput | string
+    discountAmount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TeamCoverageAreaCreateManyServiceAreaInput = {
@@ -65997,6 +70098,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutAssignedTeamInput = {
@@ -66047,6 +70149,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateManyWithoutAssignedTeamInput = {
@@ -66494,6 +70597,16 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type CouponRedemptionCreateManyBookingInput = {
+    id?: string
+    couponId: string
+    userId: string
+    codeSnapshot: string
+    titleSnapshot: string
+    discountAmount: number
+    createdAt?: Date | string
+  }
+
   export type BookingPetUpdateWithoutBookingInput = {
     id?: StringFieldUpdateOperationsInput | string
     sourcePetId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66846,6 +70959,36 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CouponRedemptionUpdateWithoutBookingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    codeSnapshot?: StringFieldUpdateOperationsInput | string
+    titleSnapshot?: StringFieldUpdateOperationsInput | string
+    discountAmount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    coupon?: CouponUpdateOneRequiredWithoutRedemptionsNestedInput
+    user?: UserUpdateOneRequiredWithoutCouponRedemptionsNestedInput
+  }
+
+  export type CouponRedemptionUncheckedUpdateWithoutBookingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    couponId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    codeSnapshot?: StringFieldUpdateOperationsInput | string
+    titleSnapshot?: StringFieldUpdateOperationsInput | string
+    discountAmount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CouponRedemptionUncheckedUpdateManyWithoutBookingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    couponId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    codeSnapshot?: StringFieldUpdateOperationsInput | string
+    titleSnapshot?: StringFieldUpdateOperationsInput | string
+    discountAmount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type BookingCreateManyGroomerMemberInput = {
     id?: string
     userId: string
@@ -67041,6 +71184,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutGroomerMemberInput = {
@@ -67091,6 +71235,7 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateManyWithoutGroomerMemberInput = {

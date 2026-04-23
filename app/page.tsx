@@ -1142,7 +1142,7 @@ setSavedPetsError("");
 setSavedPetsLookupDoneForPhone("");
 setPaymentMethod("pay_now");
     setCouponCode("");
-    updatePricingPreview("");
+    void updatePricingPreview("");
     setMobileBookingStep("setup");
 setIsCalendarOpen(false);
 setIsSlotsModalOpen(true);
@@ -1412,6 +1412,18 @@ const [companionEditorError, setCompanionEditorError] = useState("");
     "pay_now"
   );
   const [couponCode, setCouponCode] = useState("");
+  const [availableCoupons, setAvailableCoupons] = useState<
+    Array<{
+      id: string;
+      code: string;
+      title: string;
+      description: string | null;
+      stackable: boolean;
+      firstBookingOnly: boolean;
+    }>
+  >([]);
+  const [couponPreviewLoading, setCouponPreviewLoading] = useState(false);
+  const [couponPreviewError, setCouponPreviewError] = useState("");
   const [pricingPreview, setPricingPreview] = useState({
     originalAmount: 1799,
     finalAmount: 1799,
@@ -1540,12 +1552,10 @@ const getBaseServicePrice = () => {
   return getServicePrice(heroForm.service);
 };
 
-const availableCoupons = [
-  { code: "WELCOME10", label: "10% off", description: "Best for first booking" },
-  { code: "FLAT200", label: "₹200 off", description: "Flat instant savings" },
-];
+const normalizeCouponInput = (value: string) =>
+  [...new Set(value.split(/[\s,]+/).map((code) => code.trim().toUpperCase()).filter(Boolean))].join(", ");
 
-const updatePricingPreview = (code: string, method = paymentMethod) => {
+const updatePricingPreview = async (code: string, method = paymentMethod) => {
   const originalAmount = getBaseServicePrice();
 
   if (method === "pay_after_service") {
@@ -1553,28 +1563,52 @@ const updatePricingPreview = (code: string, method = paymentMethod) => {
       originalAmount,
       finalAmount: originalAmount,
     });
+    setCouponPreviewError("");
     return;
   }
 
-  const normalized = code.trim().toUpperCase();
+  if (!heroForm.service.trim() || !heroForm.city.trim()) {
+    setPricingPreview({ originalAmount, finalAmount: originalAmount });
+    setCouponPreviewError("");
+    return;
+  }
 
-  if (normalized === "WELCOME10") {
+  setCouponPreviewLoading(true);
+
+  try {
+    const response = await fetch("/api/booking/coupons/preview", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        serviceName: heroForm.service,
+        city: heroForm.city,
+        phone: heroForm.phone,
+        petCount,
+        paymentMethod: method,
+        originalAmount,
+        couponCode: code,
+      }),
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data?.error || "Failed to validate coupon codes.");
+    }
+
     setPricingPreview({
       originalAmount,
-      finalAmount: Math.max(0, Math.round(originalAmount * 0.9)),
+      finalAmount: Number(data.finalAmount ?? originalAmount),
     });
-    return;
+    setCouponPreviewError(data.valid === false ? String(data.error ?? "") : "");
+  } catch (error) {
+    setPricingPreview({ originalAmount, finalAmount: originalAmount });
+    setCouponPreviewError(
+      code.trim() ? error instanceof Error ? error.message : "Failed to validate coupon codes." : ""
+    );
+  } finally {
+    setCouponPreviewLoading(false);
   }
-
-  if (normalized === "FLAT200") {
-    setPricingPreview({
-      originalAmount,
-      finalAmount: Math.max(0, originalAmount - 200),
-    });
-    return;
-  }
-
-  setPricingPreview({ originalAmount, finalAmount: originalAmount });
 };
 
 const applyCouponCode = (code: string) => {
@@ -1583,9 +1617,17 @@ const applyCouponCode = (code: string) => {
     return;
   }
 
+  const existing = normalizeCouponInput(couponCode)
+    .split(/[\s,]+/)
+    .map((entry) => entry.trim())
+    .filter(Boolean);
   const normalized = code.trim().toUpperCase();
-  setCouponCode(normalized);
-  updatePricingPreview(normalized, "pay_now");
+  const nextCodes = existing.includes(normalized)
+    ? existing.filter((entry) => entry !== normalized)
+    : [...existing, normalized];
+  const nextValue = nextCodes.join(", ");
+  setCouponCode(nextValue);
+  void updatePricingPreview(nextValue, "pay_now");
   setBookingCreateError("");
 };
 
@@ -1603,12 +1645,47 @@ const handlePaymentMethodChange = (method: "pay_now" | "pay_after_service") => {
 
   if (method === "pay_after_service") {
     setCouponCode("");
-    updatePricingPreview("", "pay_after_service");
+    void updatePricingPreview("", "pay_after_service");
     return;
   }
 
-  updatePricingPreview(couponCode, "pay_now");
+  void updatePricingPreview(couponCode, "pay_now");
 };
+
+useEffect(() => {
+  const loadCoupons = async () => {
+    if (!heroForm.service.trim() || !heroForm.city.trim()) {
+      setAvailableCoupons([]);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/booking/coupons?${new URLSearchParams({
+          serviceName: heroForm.service,
+          city: heroForm.city,
+          petCount: String(petCount),
+          paymentMethod,
+        }).toString()}`,
+        { cache: "no-store" }
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data?.error || "Failed to load coupons.");
+      }
+      setAvailableCoupons(Array.isArray(data.coupons) ? data.coupons : []);
+    } catch (error) {
+      console.error("Coupon catalog load failed", error);
+      setAvailableCoupons([]);
+    }
+  };
+
+  void loadCoupons();
+}, [heroForm.service, heroForm.city, petCount, paymentMethod]);
+
+useEffect(() => {
+  void updatePricingPreview(couponCode, paymentMethod);
+}, [heroForm.service, heroForm.city, heroForm.phone, petCount, paymentMethod]);
 
   /* =========================================================
      06. AVAILABILITY LOGIC
@@ -1830,7 +1907,7 @@ const handlePhoneBlurLookup = async () => {
     setSlotsError("");
     setSlotsMessage("");
     setBookingCreateError("");
-    updatePricingPreview(couponCode);
+    void updatePricingPreview(couponCode);
 
     const missingFields = mobileStep
       ? !heroForm.city.trim() || !heroForm.service.trim() || !heroForm.requiredDate.trim()
@@ -4377,7 +4454,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                   }
                   setBookingCreateError("");
                   setMobileBookingStep("payment");
-                  updatePricingPreview(couponCode);
+                  void updatePricingPreview(couponCode);
                 }}
                 disabled={!pets.every((p) => p.breed.trim())}
                 className="h-[54px] w-full rounded-[18px] bg-[#6d5bd0] text-[16px] font-semibold text-white shadow-[0_12px_28px_rgba(109,91,208,0.22)] disabled:opacity-50"
@@ -4420,22 +4497,34 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                   <input
                     type="text"
                     value={couponCode}
-                    onChange={(e) => { const v = e.target.value.toUpperCase(); setCouponCode(v); updatePricingPreview(v); }}
-                    placeholder="Enter coupon code"
+                    onChange={(e) => {
+                      const v = normalizeCouponInput(e.target.value);
+                      setCouponCode(v);
+                      void updatePricingPreview(v);
+                    }}
+                    placeholder="Enter coupon code(s), separated by commas"
                     className="h-[50px] w-full rounded-[16px] border border-[#d9dbe7] bg-white px-4 text-[15px] uppercase outline-none focus:border-[#7c68e5]"
                   />
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2.5">
                   {availableCoupons.map((coupon) => {
-                    const isApplied = couponCode.trim().toUpperCase() === coupon.code;
+                    const isApplied = normalizeCouponInput(couponCode)
+                      .split(/[\s,]+/)
+                      .includes(coupon.code);
                     return (
                       <button key={coupon.code} type="button" onClick={() => applyCouponCode(coupon.code)} className={`rounded-[14px] border px-4 py-2.5 text-[13px] font-semibold transition ${isApplied ? "border-[#6d5bd0] bg-[#f6f3ff] text-[#6d5bd0]" : "border-[#ddd1fb] bg-white text-[#4f477f]"}`}>
-                        {coupon.code} · {coupon.label}
+                        {coupon.code} · {coupon.title}
                       </button>
                     );
                   })}
                 </div>
-                <p className="mt-3 text-[13px] text-[#9096ac]">Coupons apply only on prepaid bookings.</p>
+                <p className="mt-3 text-[13px] text-[#9096ac]">Coupons apply only on prepaid bookings. Club stackable codes by separating them with commas.</p>
+                {couponPreviewLoading ? (
+                  <p className="mt-2 text-[13px] text-[#6b7285]">Validating coupon codes…</p>
+                ) : null}
+                {couponPreviewError ? (
+                  <p className="mt-2 text-[13px] text-[#b42318]">{couponPreviewError}</p>
+                ) : null}
               </div>
             ) : null}
 
@@ -5253,22 +5342,34 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                         <input
                           type="text"
                           value={couponCode}
-                          onChange={(e) => { const v = e.target.value.toUpperCase(); setCouponCode(v); updatePricingPreview(v); }}
-                          placeholder="Enter coupon code"
+                          onChange={(e) => {
+                            const v = normalizeCouponInput(e.target.value);
+                            setCouponCode(v);
+                            void updatePricingPreview(v);
+                          }}
+                          placeholder="Enter coupon code(s), separated by commas"
                           className="h-[50px] w-full rounded-[16px] border border-[#d9dbe7] bg-white px-4 text-[15px] uppercase outline-none focus:border-[#7c68e5]"
                         />
                       </div>
                       <div className="mt-3 flex flex-wrap gap-2.5">
                         {availableCoupons.map((coupon) => {
-                          const isApplied = couponCode.trim().toUpperCase() === coupon.code;
+                          const isApplied = normalizeCouponInput(couponCode)
+                            .split(/[\s,]+/)
+                            .includes(coupon.code);
                           return (
                             <button key={coupon.code} type="button" onClick={() => applyCouponCode(coupon.code)} className={`rounded-[14px] border px-4 py-2.5 text-[13px] font-semibold transition ${isApplied ? "border-[#6d5bd0] bg-[#f6f3ff] text-[#6d5bd0]" : "border-[#ddd1fb] bg-white text-[#4f477f] hover:border-[#c8bcf5]"}`}>
-                              {coupon.code} · {coupon.label}
+                              {coupon.code} · {coupon.title}
                             </button>
                           );
                         })}
                       </div>
-                      <p className="mt-3 text-[13px] text-[#9096ac]">Coupons apply only on prepaid bookings.</p>
+                      <p className="mt-3 text-[13px] text-[#9096ac]">Coupons apply only on prepaid bookings. Club stackable codes by separating them with commas.</p>
+                      {couponPreviewLoading ? (
+                        <p className="mt-2 text-[13px] text-[#6b7285]">Validating coupon codes…</p>
+                      ) : null}
+                      {couponPreviewError ? (
+                        <p className="mt-2 text-[13px] text-[#b42318]">{couponPreviewError}</p>
+                      ) : null}
                     </div>
                   ) : null}
 

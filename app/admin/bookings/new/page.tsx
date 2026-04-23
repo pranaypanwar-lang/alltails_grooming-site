@@ -1071,8 +1071,11 @@ export default function AdminNewBookingPage() {
                     onChange={(event) => setCouponCode(event.target.value.toUpperCase())}
                     disabled={paymentMethod !== "pay_now"}
                     className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0] disabled:cursor-not-allowed disabled:bg-[#f7f7fb]"
-                    placeholder="WELCOME10"
+                    placeholder="FIRST10, MULTIPET5"
                   />
+                  <div className="mt-1 text-[12px] text-[#7c8499]">
+                    For prepaid bookings, stackable coupon codes can be clubbed by separating them with commas.
+                  </div>
                 </label>
 
                 <label className="block">

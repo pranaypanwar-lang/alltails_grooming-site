@@ -10,9 +10,11 @@ async function main() {
     console.log("🚀 Seeding started...");
 
     // ── Wipe in dependency order ──────────────────────────────────────────────
+    await prisma.couponRedemption.deleteMany();
     await prisma.bookingSlot.deleteMany();
     await prisma.bookingPet.deleteMany();
     await prisma.booking.deleteMany();
+    await prisma.coupon.deleteMany();
     await prisma.slot.deleteMany();
     await prisma.teamCoverageArea.deleteMany();
     await prisma.teamCoverageRule.deleteMany();
@@ -34,6 +36,64 @@ async function main() {
       ],
     });
     console.log("✅ Services created");
+
+    await prisma.coupon.createMany({
+      data: [
+        {
+          code: "FIRST10",
+          title: "First booking 10% off",
+          description: "Valid on a customer's first prepaid booking across all cities.",
+          isActive: true,
+          discountType: "percent",
+          discountValue: 10,
+          stackable: true,
+          firstBookingOnly: true,
+          applicableServiceNames: [],
+          applicableCities: [],
+          paymentMethods: ["pay_now"],
+        },
+        {
+          code: "MULTIPET5",
+          title: "5% off per extra pet",
+          description: "Stackable multi-pet offer for prepaid bookings. Gives 5% off for every extra pet in the same booking.",
+          isActive: true,
+          discountType: "per_extra_pet_percent",
+          discountValue: 5,
+          stackable: true,
+          firstBookingOnly: false,
+          applicableServiceNames: [],
+          applicableCities: [],
+          paymentMethods: ["pay_now"],
+        },
+        {
+          code: "SIGNATURE5",
+          title: "Signature Care 5% off",
+          description: "Prepaid discount for Signature Care across all cities.",
+          isActive: true,
+          discountType: "percent",
+          discountValue: 5,
+          stackable: false,
+          firstBookingOnly: false,
+          applicableServiceNames: ["Signature Care"],
+          applicableCities: [],
+          paymentMethods: ["pay_now"],
+        },
+        {
+          code: "COMPLETE10",
+          title: "Complete Pampering 10% off",
+          description: "Prepaid discount for Complete Pampering across all cities.",
+          isActive: true,
+          discountType: "percent",
+          discountValue: 10,
+          stackable: false,
+          firstBookingOnly: false,
+          applicableServiceNames: ["Complete Pampering"],
+          applicableCities: [],
+          paymentMethods: ["pay_now"],
+        },
+      ],
+    });
+    console.log("✅ Coupons created");
 
     // ── Service areas ─────────────────────────────────────────────────────────
     const areas = await prisma.$transaction(

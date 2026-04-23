@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient } from "../generated/prisma";
 import { validateAndLockSlots } from "../slots/validateAndLockSlots";
+import { evaluateCoupons } from "../coupons/service";
 
 const LOYALTY_ELIGIBLE_SERVICES = new Set([
   "Complete Pampering",
@@ -60,33 +61,6 @@ export type CreateBookingInput = {
   servicePincode?: string | null;
   serviceLocationUrl?: string | null;
 };
-
-function applyCoupon(
-  servicePrice: number,
-  couponCode?: string
-): { finalAmount: number; normalizedCouponCode: string | null } {
-  const normalized = couponCode?.trim().toUpperCase() || "";
-
-  if (!normalized) {
-    return { finalAmount: servicePrice, normalizedCouponCode: null };
-  }
-
-  if (normalized === "WELCOME10") {
-    return {
-      finalAmount: Math.max(0, Math.round(servicePrice * 0.9)),
-      normalizedCouponCode: normalized,
-    };
-  }
-
-  if (normalized === "FLAT200") {
-    return {
-      finalAmount: Math.max(0, servicePrice - 200),
-      normalizedCouponCode: normalized,
-    };
-  }
-
-  return { finalAmount: servicePrice, normalizedCouponCode: normalized };
-}
 
 async function resolveCanonicalUser(
   tx: Prisma.TransactionClient,
@@ -216,19 +190,35 @@ export async function createBookingWithBusinessRules(
     });
   }
 
-  const couponEligibleCode =
-    input.paymentMethod === "pay_now" ? input.couponCode : undefined;
-  const { finalAmount: couponFinalAmount, normalizedCouponCode: couponCode } = applyCoupon(
-    service.price,
-    couponEligibleCode
-  );
-  const normalizedCouponCode =
-    typeof input.overrideFinalAmount === "number" ? null : couponCode;
-
   const result = await prisma.$transaction(async (tx) => {
     const resolvedUser = await resolveCanonicalUser(tx, input);
     let user = resolvedUser.user;
     const { normalizedPhone } = resolvedUser;
+
+    const couponEvaluation = await evaluateCoupons(tx, {
+      rawCouponCode:
+        input.paymentMethod === "pay_now" && typeof input.overrideFinalAmount !== "number"
+          ? input.couponCode
+          : null,
+      serviceName: service.name,
+      city: input.city,
+      petCount: input.pets.length,
+      paymentMethod: input.paymentMethod,
+      baseAmount: service.price,
+      userId: user.id,
+      phone: normalizedPhone,
+    });
+
+    if (!couponEvaluation.ok) {
+      throw Object.assign(new Error(couponEvaluation.error), {
+        httpStatus: 400,
+      });
+    }
+
+    const normalizedCouponCode =
+      typeof input.overrideFinalAmount === "number"
+        ? null
+        : couponEvaluation.serializedCouponCodes;
 
     const loyaltyEligible = isLoyaltyEligibleService(service.name);
     const completedCountBefore = user.loyaltyCompletedCount;
@@ -254,7 +244,7 @@ export async function createBookingWithBusinessRules(
     let finalAmount =
       typeof input.overrideFinalAmount === "number"
         ? Math.max(0, Math.round(input.overrideFinalAmount))
-        : couponFinalAmount;
+        : couponEvaluation.finalAmount;
     let paymentStatus =
       input.paymentMethod === "pay_now" ? "unpaid" : "pending_cash_collection";
     let bookingStatus =
@@ -333,6 +323,19 @@ export async function createBookingWithBusinessRules(
         adminNote: input.adminNote?.trim() || null,
       },
     });
+
+    if (couponEvaluation.appliedCoupons.length > 0) {
+      await tx.couponRedemption.createMany({
+        data: couponEvaluation.appliedCoupons.map((coupon) => ({
+          couponId: coupon.couponId,
+          bookingId: booking.id,
+          userId: user.id,
+          codeSnapshot: coupon.code,
+          titleSnapshot: coupon.title,
+          discountAmount: coupon.discountAmount,
+        })),
+      });
+    }
 
     for (const petInput of input.pets) {
       let petRecord;
@@ -490,6 +493,7 @@ export async function createBookingWithBusinessRules(
       user,
       service,
       normalizedCouponCode,
+      appliedCoupons: couponEvaluation.appliedCoupons,
       loyalty: {
         eligible: loyaltyEligible,
         completedCountBefore,

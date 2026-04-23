@@ -373,6 +373,49 @@ export type AdminBookingCreateMetaResponse = {
   serviceAreas: Array<{ id: string; name: string; slug: string; isActive: boolean }>;
 };
 
+export type AdminCoupon = {
+  id: string;
+  code: string;
+  title: string;
+  description: string | null;
+  isActive: boolean;
+  discountType: "percent" | "flat" | "per_extra_pet_percent";
+  discountValue: number;
+  maxDiscountAmount: number | null;
+  stackable: boolean;
+  firstBookingOnly: boolean;
+  applicableServiceNames: string[];
+  applicableCities: string[];
+  paymentMethods: Array<"pay_now" | "pay_after_service">;
+  createdAt: string;
+  updatedAt: string;
+  usageCount: number;
+};
+
+export type AdminCouponListResponse = {
+  coupons: AdminCoupon[];
+};
+
+export type AdminCouponPayload = {
+  code: string;
+  title: string;
+  description?: string;
+  isActive: boolean;
+  discountType: "percent" | "flat" | "per_extra_pet_percent";
+  discountValue: number;
+  maxDiscountAmount?: number | null;
+  stackable: boolean;
+  firstBookingOnly: boolean;
+  applicableServiceNames: string[];
+  applicableCities: string[];
+  paymentMethods: Array<"pay_now" | "pay_after_service">;
+};
+
+export type AdminCouponMutationResponse = {
+  success: true;
+  coupon: AdminCoupon;
+};
+
 export type AdminSavedPet = {
   petId: string;
   name: string | null;

@@ -22,8 +22,9 @@ model User {
   loyaltyUnlockedAt     DateTime?
   loyaltyLastRedeemedAt DateTime?
 
-  bookings Booking[]
-  pets     Pet[]
+  bookings          Booking[]
+  pets              Pet[]
+  couponRedemptions CouponRedemption[]
 }
 
 model Pet {
@@ -66,6 +67,44 @@ model Service {
   price Int
 
   bookings Booking[]
+}
+
+model Coupon {
+  id                     String   @id @default(uuid())
+  code                   String   @unique
+  title                  String
+  description            String?
+  isActive               Boolean  @default(true)
+  discountType           String
+  discountValue          Int
+  maxDiscountAmount      Int?
+  stackable              Boolean  @default(false)
+  firstBookingOnly       Boolean  @default(false)
+  applicableServiceNames String[] @default([])
+  applicableCities       String[] @default([])
+  paymentMethods         String[] @default([])
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @default(now()) @updatedAt
+
+  redemptions CouponRedemption[]
+}
+
+model CouponRedemption {
+  id             String   @id @default(uuid())
+  couponId       String
+  coupon         Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  bookingId      String
+  booking        Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  codeSnapshot   String
+  titleSnapshot  String
+  discountAmount Int
+  createdAt      DateTime @default(now())
+
+  @@index([couponId])
+  @@index([bookingId])
+  @@index([userId])
 }
 
 // ─── Geography ────────────────────────────────────────────────────────────────
@@ -220,6 +259,7 @@ model Booking {
   sopProofs           BookingSopProof[]
   paymentCollection   BookingPaymentCollection?
   groomerRewardEvents GroomerRewardEvent[]
+  couponRedemptions   CouponRedemption[]
 
   @@index([selectedDate, status])
   @@index([assignedTeamId])
