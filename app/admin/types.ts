@@ -278,6 +278,7 @@ export type AdminBookingListItem = {
   paymentMethodLabel: string | null;
   selectedDate: string | null;
   createdAt: string;
+  updatedAt: string;
   city: string | null;
   service: AdminBookingService;
   customer: AdminBookingCustomer;
@@ -1109,7 +1110,7 @@ export type AdminCustomerMessageResponse = {
 };
 
 export type AdminBookingsFilters = {
-  tab: "all" | "today" | "tomorrow" | "pending_payment" | "confirmed" | "completed" | "cancelled" | "payment_expired";
+  tab: "active" | "today" | "upcoming" | "past" | "cancelled_expired";
   date: string;
   dateFrom: string;
   dateTo: string;
@@ -1124,7 +1125,16 @@ export type AdminBookingsFilters = {
   paymentExpiringSoon: boolean;
   tomorrowOnly: boolean;
   search: string;
-  sortBy: "selectedDate" | "createdAt" | "startTime" | "city" | "status";
+  sortBy:
+    | "serviceDate"
+    | "createdAt"
+    | "updatedAt"
+    | "team"
+    | "city"
+    | "finalAmount"
+    | "customerName"
+    | "paymentPriority"
+    | "assignmentPriority";
   sortOrder: "asc" | "desc";
 };
 

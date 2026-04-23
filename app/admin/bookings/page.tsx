@@ -44,7 +44,7 @@ import { useAdminToast } from "../components/common/AdminToastProvider";
 import { useAdminConfirmAction } from "../hooks/useAdminConfirmAction";
 
 const DEFAULT_FILTERS: AdminBookingsFilters = {
-  tab: "all",
+  tab: "active",
   date: "",
   dateFrom: "",
   dateTo: "",
@@ -59,8 +59,8 @@ const DEFAULT_FILTERS: AdminBookingsFilters = {
   paymentExpiringSoon: false,
   tomorrowOnly: false,
   search: "",
-  sortBy: "selectedDate",
-  sortOrder: "asc",
+  sortBy: "createdAt",
+  sortOrder: "desc",
 };
 
 function ConfirmModal({
