@@ -18,6 +18,12 @@ const isLoyaltyEligibleService = (serviceName: string) =>
 const getPaymentExpiry = () =>
   new Date(Date.now() + PAYMENT_HOLD_MINUTES * 60 * 1000);
 
+function getRolePriority(role: string) {
+  if (role === "groomer") return 0;
+  if (role === "team_lead") return 1;
+  return 2;
+}
+
 export type BookingCreateAssetInput = {
   storageKey: string;
   publicUrl: string;
@@ -156,6 +162,46 @@ async function resolveCanonicalUser(
   return { user, normalizedPhone };
 }
 
+async function resolveAutoAssignedGroomer(
+  tx: Prisma.TransactionClient,
+  teamId: string,
+  selectedDate: string
+) {
+  const candidates = await tx.teamMember.findMany({
+    where: {
+      teamId,
+      isActive: true,
+      role: { in: ["groomer", "team_lead"] },
+    },
+    include: {
+      bookings: {
+        where: {
+          selectedDate,
+          status: { in: ["pending_payment", "confirmed"] },
+        },
+        select: { id: true },
+      },
+    },
+  });
+
+  if (!candidates.length) return null;
+
+  candidates.sort((a, b) => {
+    const loadDiff = a.bookings.length - b.bookings.length;
+    if (loadDiff !== 0) return loadDiff;
+
+    const roleDiff = getRolePriority(a.role) - getRolePriority(b.role);
+    if (roleDiff !== 0) return roleDiff;
+
+    const joinedDiff = a.joinedAt.getTime() - b.joinedAt.getTime();
+    if (joinedDiff !== 0) return joinedDiff;
+
+    return a.name.localeCompare(b.name);
+  });
+
+  return candidates[0];
+}
+
 export async function createBookingWithBusinessRules(
   prisma: PrismaClient,
   input: CreateBookingInput
@@ -246,6 +292,12 @@ export async function createBookingWithBusinessRules(
       });
     }
 
+    const autoAssignedGroomer = await resolveAutoAssignedGroomer(
+      tx,
+      lockResult.teamId,
+      input.selectedDate
+    );
+
     const booking = await tx.booking.create({
       data: {
         userId: user.id,
@@ -263,6 +315,9 @@ export async function createBookingWithBusinessRules(
         serviceLandmark: input.serviceLandmark?.trim() || null,
         servicePincode: input.servicePincode?.trim() || null,
         serviceLocationUrl: input.serviceLocationUrl?.trim() || null,
+        assignedTeamId: lockResult.teamId,
+        groomerMemberId: autoAssignedGroomer?.id ?? null,
+        dispatchState: "assigned",
         addressUpdatedAt:
           input.serviceAddress?.trim() ||
           input.serviceLandmark?.trim() ||
@@ -388,6 +443,37 @@ export async function createBookingWithBusinessRules(
         }),
       },
     });
+
+    await tx.bookingEvent.create({
+      data: {
+        bookingId: booking.id,
+        type: "team_assigned",
+        actor: "system",
+        summary: `Team auto-assigned to ${lockResult.teamName}`,
+        metadataJson: JSON.stringify({
+          teamId: lockResult.teamId,
+          teamName: lockResult.teamName,
+          source: "booking_creation_auto_assignment",
+        }),
+      },
+    });
+
+    if (autoAssignedGroomer) {
+      await tx.bookingEvent.create({
+        data: {
+          bookingId: booking.id,
+          type: "groomer_assigned",
+          actor: "system",
+          summary: `Groomer auto-assigned to ${autoAssignedGroomer.name}`,
+          metadataJson: JSON.stringify({
+            teamMemberId: autoAssignedGroomer.id,
+            teamId: autoAssignedGroomer.teamId,
+            role: autoAssignedGroomer.role,
+            source: "booking_creation_auto_assignment",
+          }),
+        },
+      });
+    }
 
     if (loyaltyRewardApplied) {
       await tx.user.update({
