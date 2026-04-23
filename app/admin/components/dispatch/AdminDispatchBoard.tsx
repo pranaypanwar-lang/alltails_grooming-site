@@ -30,15 +30,20 @@ const PAYMENT_CLS: Record<AdminPaymentStatus, string> = {
 
 function DispatchCard({
   card,
+  isSelected,
+  onToggleSelection,
   onClick,
   onActionClick,
 }: {
   card: AdminDispatchCard;
+  isSelected: boolean;
+  onToggleSelection: () => void;
   onClick: () => void;
   onActionClick: (action: AdminDispatchActionId) => void;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const canSelect = card.availableActions.includes("send_same_day_alert");
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -53,7 +58,7 @@ function DispatchCard({
     <div
       className={`rounded-[18px] border bg-white shadow-[0_12px_24px_rgba(73,44,120,0.05)] transition-shadow hover:shadow-[0_16px_32px_rgba(73,44,120,0.1)] ${
         card.urgency.issueFlag ? "border-[#f7d7d7]" : card.urgency.sameDay ? "border-[#fde7b0]" : "border-[#ece5ff]"
-      }`}
+      } ${isSelected ? "ring-2 ring-[#6d5bd0] ring-offset-2 ring-offset-[#f7f7fb]" : ""}`}
     >
       <button type="button" onClick={onClick} className="w-full text-left p-3.5">
         <div className="flex items-start justify-between gap-2">
@@ -121,6 +126,18 @@ function DispatchCard({
 
       {/* Footer */}
       <div className="border-t border-[#f0ecfa] px-3.5 py-2.5 flex flex-wrap items-center gap-2">
+        {canSelect && (
+          <label className="inline-flex items-center gap-2 rounded-[10px] border border-[#ddd1fb] bg-[#faf9fd] px-2.5 py-1.5 text-[11px] font-semibold text-[#6d5bd0]">
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={onToggleSelection}
+              className="h-3.5 w-3.5 rounded border-[#c7b7f5] text-[#6d5bd0] focus:ring-[#6d5bd0]"
+            />
+            Select
+          </label>
+        )}
+
         <button
           type="button"
           onClick={() => onActionClick("open_details")}
@@ -237,6 +254,8 @@ function DispatchLane({
   subtitle,
   overload,
   cards,
+  selectedBookingIds,
+  onToggleSelection,
   onCardClick,
   onActionClick,
 }: {
@@ -244,6 +263,8 @@ function DispatchLane({
   subtitle?: string;
   overload?: boolean;
   cards: AdminDispatchCard[];
+  selectedBookingIds: string[];
+  onToggleSelection: (card: AdminDispatchCard) => void;
   onCardClick: (card: AdminDispatchCard) => void;
   onActionClick: (card: AdminDispatchCard, action: AdminDispatchActionId) => void;
 }) {
@@ -276,6 +297,8 @@ function DispatchLane({
             <DispatchCard
               key={card.bookingId}
               card={card}
+              isSelected={selectedBookingIds.includes(card.bookingId)}
+              onToggleSelection={() => onToggleSelection(card)}
               onClick={() => onCardClick(card)}
               onActionClick={(action) => onActionClick(card, action)}
             />
@@ -291,13 +314,24 @@ function DispatchLane({
 type Props = {
   groups: AdminDispatchGroup[];
   unassigned: AdminDispatchCard[];
+  selectedBookingIds: string[];
   isLoading: boolean;
   error: string;
+  onToggleSelection: (card: AdminDispatchCard) => void;
   onCardClick: (card: AdminDispatchCard) => void;
   onActionClick: (card: AdminDispatchCard, action: AdminDispatchActionId) => void;
 };
 
-export function AdminDispatchBoard({ groups, unassigned, isLoading, error, onCardClick, onActionClick }: Props) {
+export function AdminDispatchBoard({
+  groups,
+  unassigned,
+  selectedBookingIds,
+  isLoading,
+  error,
+  onToggleSelection,
+  onCardClick,
+  onActionClick,
+}: Props) {
   if (isLoading) {
     return (
       <div className="rounded-[22px] border border-[#ece5ff] bg-white p-8 text-[14px] text-[#7c8499]">
@@ -321,6 +355,8 @@ export function AdminDispatchBoard({ groups, unassigned, isLoading, error, onCar
           title="Unassigned"
           subtitle={unassigned.length > 0 ? `${unassigned.length} need assignment` : "All assigned"}
           cards={unassigned}
+          selectedBookingIds={selectedBookingIds}
+          onToggleSelection={onToggleSelection}
           onCardClick={onCardClick}
           onActionClick={onActionClick}
         />
@@ -331,6 +367,8 @@ export function AdminDispatchBoard({ groups, unassigned, isLoading, error, onCar
             subtitle={`${group.capacity.assignedJobs} assigned`}
             overload={group.capacity.overload}
             cards={group.bookings}
+            selectedBookingIds={selectedBookingIds}
+            onToggleSelection={onToggleSelection}
             onCardClick={onCardClick}
             onActionClick={onActionClick}
           />

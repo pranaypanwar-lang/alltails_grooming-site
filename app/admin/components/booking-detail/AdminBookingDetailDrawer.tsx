@@ -147,6 +147,15 @@ export function AdminBookingDetailDrawer({ isOpen, booking, isLoading, error, on
                       Reschedule
                     </button>
                   )}
+                  {booking.availableActions.includes("send_same_day_alert") && (
+                    <button
+                      type="button"
+                      onClick={() => onAction("send_same_day_alert")}
+                      className="rounded-[12px] border border-[#fde7b0] bg-[#fffaf0] px-4 py-2 text-[12px] font-semibold text-[#b45309] hover:bg-[#fff8eb] transition-colors"
+                    >
+                      Send alert
+                    </button>
+                  )}
                   {booking.availableActions.includes("mark_completed") && (
                     <button
                       type="button"

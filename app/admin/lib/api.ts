@@ -974,3 +974,30 @@ export async function sendSameDayDispatchAlert(payload: {
   if (!res.ok) throw new Error(data?.error ?? "Failed to send alert");
   return data;
 }
+
+export async function sendBulkDispatchAlerts(payload: {
+  bookingIds: string[];
+  alertType: string;
+}) {
+  const res = await fetch("/api/admin/dispatch/alerts/send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error ?? "Failed to send selected alerts");
+  return data as {
+    success: boolean;
+    totalCount: number;
+    successCount: number;
+    failureCount: number;
+    results: Array<{
+      bookingId: string;
+      success: boolean;
+      teamId: string | null;
+      teamName: string | null;
+      telegramMessageId: string | null;
+      error: string | null;
+    }>;
+  };
+}

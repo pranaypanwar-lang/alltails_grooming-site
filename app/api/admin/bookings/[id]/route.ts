@@ -155,6 +155,7 @@ function getAvailableActions(
       "cancel",
       "reschedule",
       "relay_call",
+      "send_same_day_alert",
       "send_customer_message",
       "edit_metadata"
     );

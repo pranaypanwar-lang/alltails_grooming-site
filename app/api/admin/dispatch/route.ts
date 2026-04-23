@@ -56,7 +56,7 @@ function getDispatchActions(
   hasGroomer: boolean
 ): string[] {
   if (derivedStatus === "confirmed") {
-    const acts = ["open_details", "mark_completed", "reschedule", "relay_call"];
+    const acts = ["open_details", "mark_completed", "reschedule", "relay_call", "send_same_day_alert"];
     if (hasTeam && dispatchState === "assigned") acts.push("mark_en_route");
     if (hasTeam && dispatchState === "en_route") acts.push("mark_started");
     acts.push(hasTeam ? "reassign_team" : "assign_team");

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { X, Zap } from "lucide-react";
 import {
@@ -14,6 +14,7 @@ import {
   previewDigest,
   sendDigest,
   sendSameDayDispatchAlert,
+  sendBulkDispatchAlerts,
   assignAdminBookingTeam,
   assignAdminBookingGroomer,
   fetchAdminTeams,
@@ -385,6 +386,7 @@ export default function AdminDispatchPage() {
   const [teams, setTeams] = useState<AdminTeamRow[]>([]);
   const [groups, setGroups] = useState<AdminDispatchGroup[]>([]);
   const [unassigned, setUnassigned] = useState<AdminDispatchCard[]>([]);
+  const [selectedBookingIds, setSelectedBookingIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState("");
@@ -441,6 +443,18 @@ export default function AdminDispatchPage() {
     confirmLabel: "Send alert",
   });
 
+  const bulkDispatchAlertConfirm = useAdminConfirmAction<{ bookingIds: string[] }>({
+    title: "Send selected dispatch alerts",
+    getSubtitle: (payload) =>
+      payload ? `${payload.bookingIds.length} booking${payload.bookingIds.length === 1 ? "" : "s"} selected` : undefined,
+    tone: "warning",
+    getMessage: (payload) =>
+      payload
+        ? `This will immediately notify the corresponding Telegram team chats for ${payload.bookingIds.length} selected booking${payload.bookingIds.length === 1 ? "" : "s"}.`
+        : undefined,
+    confirmLabel: "Send selected",
+  });
+
   const load = useCallback(async (f: AdminDispatchFilters, silent = false) => {
     if (silent) setIsRefreshing(true);
     else setIsLoading(true);
@@ -465,6 +479,18 @@ export default function AdminDispatchPage() {
   useEffect(() => {
     void load(INITIAL_DISPATCH_FILTERS);
   }, [load]);
+
+  const sendableBookingIds = useMemo(
+    () =>
+      [...unassigned, ...groups.flatMap((group) => group.bookings)]
+        .filter((card) => card.availableActions.includes("send_same_day_alert"))
+        .map((card) => card.bookingId),
+    [groups, unassigned]
+  );
+
+  useEffect(() => {
+    setSelectedBookingIds((prev) => prev.filter((bookingId) => sendableBookingIds.includes(bookingId)));
+  }, [sendableBookingIds]);
 
   const applyFilters = useCallback((patch: Partial<AdminDispatchFilters>) => {
     setFilters((prev) => {
@@ -613,6 +639,16 @@ export default function AdminDispatchPage() {
       });
       return;
     }
+    if (action === "send_same_day_alert") {
+      sameDayAlertConfirm.open({
+        bookingId: drawerBooking.id,
+        alertType:
+          drawerBooking.selectedDate === filters.date && filters.viewMode === "today"
+            ? "same_day_new_booking"
+            : "manual_dispatch",
+      });
+      return;
+    }
     if (action === "retry_payment_support") {
       void retryAdminPaymentSupport(drawerBooking.id)
         .then((result) => showToastMsg(`Created support retry order ${result.orderId.slice(-8)}.`, true))
@@ -700,6 +736,55 @@ export default function AdminDispatchPage() {
       showToastMsg(getErrorMessage(error, "Failed to send alert."), false);
     } finally {
       sameDayAlertConfirm.setSubmitting(false);
+    }
+  };
+
+  const toggleSelectedBooking = useCallback((card: AdminDispatchCard) => {
+    if (!card.availableActions.includes("send_same_day_alert")) return;
+    setSelectedBookingIds((prev) =>
+      prev.includes(card.bookingId)
+        ? prev.filter((bookingId) => bookingId !== card.bookingId)
+        : [...prev, card.bookingId]
+    );
+  }, []);
+
+  const toggleSelectAllVisible = useCallback(() => {
+    setSelectedBookingIds((prev) =>
+      prev.length === sendableBookingIds.length ? [] : sendableBookingIds
+    );
+  }, [sendableBookingIds]);
+
+  const submitBulkDispatchAlerts = async () => {
+    const bookingIds = bulkDispatchAlertConfirm.state.payload?.bookingIds ?? [];
+    if (!bookingIds.length) return;
+
+    try {
+      bulkDispatchAlertConfirm.setSubmitting(true);
+      const result = await sendBulkDispatchAlerts({
+        bookingIds,
+        alertType: "manual_dispatch",
+      });
+
+      if (result.failureCount > 0) {
+        const failedLabels = result.results
+          .filter((entry) => !entry.success)
+          .slice(0, 2)
+          .map((entry) => `${entry.bookingId.slice(0, 8)}${entry.error ? `: ${entry.error}` : ""}`)
+          .join(" · ");
+        showToastMsg(
+          `${result.successCount}/${result.totalCount} alerts sent.${failedLabels ? ` Failed: ${failedLabels}` : ""}`,
+          false
+        );
+      } else {
+        showToastMsg(`${result.successCount} dispatch alerts sent.`, true);
+      }
+
+      setSelectedBookingIds([]);
+      bulkDispatchAlertConfirm.close();
+    } catch (error: unknown) {
+      showToastMsg(getErrorMessage(error, "Failed to send selected alerts."), false);
+    } finally {
+      bulkDispatchAlertConfirm.setSubmitting(false);
     }
   };
 
@@ -920,11 +1005,51 @@ export default function AdminDispatchPage() {
 
         <AdminDispatchFiltersBar filters={filters} onChange={applyFilters} />
 
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-[20px] border border-[#ece5ff] bg-white px-4 py-3">
+          <div>
+            <div className="text-[13px] font-semibold text-[#2a2346]">
+              {selectedBookingIds.length} selected · {sendableBookingIds.length} sendable visible
+            </div>
+            <div className="mt-0.5 text-[12px] text-[#7c8499]">
+              Select one or more confirmed bookings and send each one to its corresponding Telegram team.
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleSelectAllVisible}
+              className="inline-flex items-center h-[38px] rounded-[12px] border border-[#ece8f5] bg-white px-4 text-[12px] font-semibold text-[#2a2346] hover:bg-[#f6f4fd] transition-colors"
+            >
+              {selectedBookingIds.length === sendableBookingIds.length && sendableBookingIds.length > 0
+                ? "Clear visible"
+                : "Select all visible"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedBookingIds([])}
+              disabled={selectedBookingIds.length === 0}
+              className="inline-flex items-center h-[38px] rounded-[12px] border border-[#ece8f5] bg-white px-4 text-[12px] font-semibold text-[#2a2346] hover:bg-[#f6f4fd] transition-colors disabled:opacity-50"
+            >
+              Clear selection
+            </button>
+            <button
+              type="button"
+              onClick={() => bulkDispatchAlertConfirm.open({ bookingIds: selectedBookingIds })}
+              disabled={selectedBookingIds.length === 0}
+              className="inline-flex items-center h-[38px] rounded-[12px] bg-[#6d5bd0] px-4 text-[12px] font-semibold text-white hover:bg-[#5a4abf] transition-colors disabled:opacity-50"
+            >
+              Send selected alerts
+            </button>
+          </div>
+        </div>
+
         <AdminDispatchBoard
           groups={groups}
           unassigned={unassigned}
+          selectedBookingIds={selectedBookingIds}
           isLoading={isLoading}
           error={error}
+          onToggleSelection={toggleSelectedBooking}
           onCardClick={(card) => openDrawer(card.bookingId)}
           onActionClick={handleCardAction}
         />
@@ -988,6 +1113,11 @@ export default function AdminDispatchPage() {
       <AdminActionConfirmModal
         {...sameDayAlertConfirm.modalProps}
         onSubmit={() => void submitSameDayAlert()}
+      />
+
+      <AdminActionConfirmModal
+        {...bulkDispatchAlertConfirm.modalProps}
+        onSubmit={() => void submitBulkDispatchAlerts()}
       />
 
       <AdminTeamAssignModal
