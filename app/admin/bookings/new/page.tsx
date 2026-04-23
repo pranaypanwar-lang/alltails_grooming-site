@@ -99,6 +99,7 @@ export default function AdminNewBookingPage() {
   const [couponCode, setCouponCode] = useState("");
   const [customAmount, setCustomAmount] = useState("");
   const [customStartTime, setCustomStartTime] = useState("");
+  const [customEndTime, setCustomEndTime] = useState("");
   const [source, setSource] = useState<AdminManualBookingSource>("call");
   const [adminNote, setAdminNote] = useState("");
   const [pets, setPets] = useState<ManualPetDraft[]>([makePetDraft()]);
@@ -149,9 +150,11 @@ export default function AdminNewBookingPage() {
     if (!customStartTime || !selectedDate) return selectedWindow.displayLabel;
 
     const customStartAt = localIstDateTimeToUtc(selectedDate, customStartTime);
-    const customEndAt = new Date(customStartAt.getTime() + selectedWindowDurationMs);
+    const customEndAt = customEndTime
+      ? localIstDateTimeToUtc(selectedDate, customEndTime)
+      : new Date(customStartAt.getTime() + selectedWindowDurationMs);
     return formatBookingWindowLabel(customStartAt, customEndAt);
-  }, [customStartTime, selectedDate, selectedWindow, selectedWindowDurationMs]);
+  }, [customEndTime, customStartTime, selectedDate, selectedWindow, selectedWindowDurationMs]);
 
   const canLookupSavedPets = phone.replace(/\D/g, "").length >= 10;
   const canLoadAvailability =
@@ -185,6 +188,7 @@ export default function AdminNewBookingPage() {
     setCouponCode("");
     setCustomAmount("");
     setCustomStartTime("");
+    setCustomEndTime("");
     setSource("call");
     setAdminNote("");
     setPets([makePetDraft()]);
@@ -418,6 +422,7 @@ export default function AdminNewBookingPage() {
       bookingWindowId: selectedWindow.bookingWindowId,
       slotIds: selectedWindow.slotIds,
       customStartTime: customStartTime.trim() || undefined,
+      customEndTime: customEndTime.trim() || undefined,
       customAmount: customAmount.trim() ? Number(customAmount) : undefined,
       serviceAddress: serviceAddress.trim(),
       serviceLandmark: serviceLandmark.trim(),
@@ -953,19 +958,31 @@ export default function AdminNewBookingPage() {
                   <div>
                     <div className="text-[14px] font-bold text-[#2a2346]">Custom start time</div>
                     <div className="mt-1 text-[12px] text-[#7c8499]">
-                      For manual exceptions, you can start between standard windows. We&apos;ll block any overlapping online slots automatically.
+                      For manual exceptions, you can define the exact promised window. We&apos;ll block any overlapping online slots automatically.
                     </div>
                   </div>
-                  <label className="block md:w-[220px]">
-                    <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Manual start time</div>
-                    <input
-                      type="time"
-                      value={customStartTime}
-                      onChange={(event) => setCustomStartTime(event.target.value)}
-                      disabled={!selectedWindow || !selectedDate}
-                      className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0] disabled:cursor-not-allowed disabled:bg-[#f7f7fb]"
-                    />
-                  </label>
+                  <div className="grid gap-3 md:grid-cols-2 md:w-[460px]">
+                    <label className="block">
+                      <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Manual start time</div>
+                      <input
+                        type="time"
+                        value={customStartTime}
+                        onChange={(event) => setCustomStartTime(event.target.value)}
+                        disabled={!selectedWindow || !selectedDate}
+                        className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0] disabled:cursor-not-allowed disabled:bg-[#f7f7fb]"
+                      />
+                    </label>
+                    <label className="block">
+                      <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Manual end time</div>
+                      <input
+                        type="time"
+                        value={customEndTime}
+                        onChange={(event) => setCustomEndTime(event.target.value)}
+                        disabled={!selectedWindow || !selectedDate}
+                        className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0] disabled:cursor-not-allowed disabled:bg-[#f7f7fb]"
+                      />
+                    </label>
+                  </div>
                 </div>
 
                 <div className="mt-3 rounded-[16px] border border-dashed border-[#d7cdf8] bg-white px-4 py-3">
@@ -973,7 +990,9 @@ export default function AdminNewBookingPage() {
                   <div className="mt-1 text-[15px] font-semibold text-[#2a2346]">{effectiveWindowLabel}</div>
                   {customStartTime && selectedWindow ? (
                     <div className="mt-1 text-[12px] text-[#7c8499]">
-                      Base slot capacity stays the same, but overlapping standard windows will be blocked for online bookings.
+                      {customEndTime
+                        ? "The exact overlap between this start/end range and standard slots will be blocked online."
+                        : "If no manual end time is set, we’ll use the selected slot capacity to derive the end time."}
                     </div>
                   ) : null}
                 </div>

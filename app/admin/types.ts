@@ -400,6 +400,7 @@ export type AdminManualBookingPayload = {
   bookingWindowId: string;
   slotIds: string[];
   customStartTime?: string;
+  customEndTime?: string;
   customAmount?: number;
   serviceAddress?: string;
   serviceLandmark?: string;

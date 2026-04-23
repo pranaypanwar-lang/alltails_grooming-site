@@ -48,6 +48,7 @@ export async function POST(request: Request) {
       bookingWindowId,
       slotIds,
       customStartTime,
+      customEndTime,
       customAmount,
       serviceAddress,
       serviceLandmark,
@@ -67,6 +68,7 @@ export async function POST(request: Request) {
       bookingWindowId?: string;
       slotIds?: string[];
       customStartTime?: string;
+      customEndTime?: string;
       customAmount?: number;
       serviceAddress?: string;
       serviceLandmark?: string;
@@ -129,7 +131,16 @@ export async function POST(request: Request) {
       const lastBaseSlot = baseSlots[baseSlots.length - 1];
       const durationMs = lastBaseSlot.endTime.getTime() - firstBaseSlot.startTime.getTime();
       const customStartAt = localIstDateTimeToUtc(selectedDate, customStartTime.trim());
-      const customEndAt = new Date(customStartAt.getTime() + durationMs);
+      const customEndAt = customEndTime?.trim()
+        ? localIstDateTimeToUtc(selectedDate, customEndTime.trim())
+        : new Date(customStartAt.getTime() + durationMs);
+
+      if (customEndAt.getTime() <= customStartAt.getTime()) {
+        return NextResponse.json(
+          { error: "Manual end time must be later than manual start time" },
+          { status: 400 }
+        );
+      }
 
       const overlappingSlots = await adminPrisma.slot.findMany({
         where: {
