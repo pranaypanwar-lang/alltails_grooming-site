@@ -49,6 +49,7 @@ export default function AdminSlotsPage() {
   const [bulkLoading, setBulkLoading] = useState(false);
   const [rangeBlockOpen, setRangeBlockOpen] = useState(false);
   const [rangeBlockLoading, setRangeBlockLoading] = useState(false);
+  const activeTeams = teams.filter((team) => team.isActive);
 
   const blockConfirm = useAdminConfirmAction<SlotRow>({
     title: "Block slot",
@@ -339,7 +340,7 @@ export default function AdminSlotsPage() {
           date={date}
           teamId={teamId}
           includeBlocked={includeBlocked}
-          teams={teams}
+          teams={activeTeams}
           onChange={(next) => {
             if (next.date !== undefined) setDate(next.date);
             if (next.teamId !== undefined) setTeamId(next.teamId);

@@ -30,7 +30,9 @@ export async function GET(req: NextRequest) {
     const date = q.get("date") ?? undefined;
     const showBlocked = q.get("showBlocked") === "true";
 
-    const where: Record<string, unknown> = {};
+    const where: Record<string, unknown> = {
+      team: { isActive: true },
+    };
     if (teamId) where.teamId = teamId;
     if (!showBlocked) where.isBlocked = false;
     if (date) {
