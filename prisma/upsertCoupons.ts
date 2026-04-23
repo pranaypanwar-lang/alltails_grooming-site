@@ -18,9 +18,9 @@ const COUPONS = [
   },
   {
     code: "MULTIPET5",
-    title: "5% off per extra pet",
+    title: "5% off per pet",
     description:
-      "Stackable multi-pet offer for prepaid bookings. Gives 5% off for every extra pet in the same booking.",
+      "Stackable multi-pet offer for prepaid bookings. Gives 5% off for each pet in the same booking.",
     isActive: true,
     discountType: "per_extra_pet_percent",
     discountValue: 5,

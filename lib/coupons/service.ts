@@ -117,8 +117,7 @@ function computeCouponDiscountAmount(
   } else if (coupon.discountType === "percent") {
     amount = Math.round((baseAmount * coupon.discountValue) / 100);
   } else if (coupon.discountType === "per_extra_pet_percent") {
-    const extraPets = Math.max(0, petCount - 1);
-    amount = Math.round((baseAmount * coupon.discountValue * extraPets) / 100);
+    amount = Math.round((baseAmount * coupon.discountValue * petCount) / 100);
   }
 
   if (coupon.maxDiscountAmount && coupon.maxDiscountAmount > 0) {
