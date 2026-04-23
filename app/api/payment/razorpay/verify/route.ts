@@ -10,6 +10,7 @@ import {
 import { getAddressReadinessSummary } from "../../../../../lib/booking/addressCapture";
 import { prepareCustomerMessageForBooking } from "../../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../../lib/customerMessaging/provider";
+import { sendNewBookingAdminAlert } from "../../../../../lib/telegram/newBookingAlerts";
 
 export const runtime = "nodejs";
 
@@ -18,6 +19,15 @@ const adapter = new PrismaPg({
 });
 
 const prisma = new PrismaClient({ adapter });
+
+function getPublicAppUrl(request: Request) {
+  const configured = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  if (configured) return configured.replace(/\/$/, "");
+
+  const proto = request.headers.get("x-forwarded-proto") ?? "http";
+  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "localhost:3000";
+  return `${proto}://${host}`.replace(/\/$/, "");
+}
 
 export async function POST(request: Request) {
   try {
@@ -135,6 +145,17 @@ export async function POST(request: Request) {
       deliveryStatus: "queued",
     });
     await processQueuedCustomerMessages(prisma, { limit: 10 });
+
+    try {
+      await sendNewBookingAdminAlert({
+        prisma,
+        bookingId: updatedBooking.id,
+        sourceLabel: "website prepaid",
+        baseUrl: getPublicAppUrl(request),
+      });
+    } catch (error) {
+      console.error("Admin Telegram prepaid booking alert failed:", error);
+    }
 
     const addressInfo = getAddressReadinessSummary(updatedBooking);
 

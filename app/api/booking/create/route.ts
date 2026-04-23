@@ -11,6 +11,7 @@ import {
 import { getAddressReadinessSummary } from "../../../../lib/booking/addressCapture";
 import { prepareCustomerMessageForBooking } from "../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../lib/customerMessaging/provider";
+import { sendNewBookingAdminAlert } from "../../../../lib/telegram/newBookingAlerts";
 
 export const runtime = "nodejs";
 const adapter = new PrismaPg({
@@ -18,6 +19,15 @@ const adapter = new PrismaPg({
 });
 
 const prisma = new PrismaClient({ adapter });
+
+function getPublicAppUrl(request: Request) {
+  const configured = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  if (configured) return configured.replace(/\/$/, "");
+
+  const proto = request.headers.get("x-forwarded-proto") ?? "http";
+  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "localhost:3000";
+  return `${proto}://${host}`.replace(/\/$/, "");
+}
 
 const razorpay =
   process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET
@@ -148,6 +158,17 @@ export async function POST(request: Request) {
         deliveryStatus: "queued",
       });
       await processQueuedCustomerMessages(prisma, { limit: 10 });
+
+      try {
+        await sendNewBookingAdminAlert({
+          prisma,
+          bookingId: bookingWithAddress.id,
+          sourceLabel: "website pay-after-service",
+          baseUrl: getPublicAppUrl(request),
+        });
+      } catch (error) {
+        console.error("Admin Telegram booking alert failed:", error);
+      }
     }
 
     let paymentOrder: { orderId: string; amount: number; currency: string } | null = null;
