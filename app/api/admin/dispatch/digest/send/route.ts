@@ -113,8 +113,8 @@ export async function runDigestSend(date: string, baseUrl?: string) {
     });
 
     const message = [
-      `🌙 *All Tails Night Schedule*`,
-      `${date} — ${team.name}`,
+      "🌙 All Tails Night Schedule",
+      `${date} - ${team.name}`,
       "",
       ...lines,
       "",

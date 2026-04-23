@@ -430,11 +430,14 @@ export default function AdminDispatchPage() {
   const [paidCancelLoading, setPaidCancelLoading] = useState(false);
   const { showToast: showToastMsg } = useAdminToast();
 
-  const sameDayAlertConfirm = useAdminConfirmAction<{ bookingId: string }>({
-    title: "Send same-day alert",
+  const sameDayAlertConfirm = useAdminConfirmAction<{ bookingId: string; alertType: string }>({
+    title: "Send dispatch alert",
     getSubtitle: (p) => p ? `Booking ${p.bookingId.slice(0, 8)}` : undefined,
     tone: "warning",
-    getMessage: () => "This will immediately notify the assigned team on Telegram about this same-day job.",
+    getMessage: (p) =>
+      p?.alertType === "same_day_new_booking"
+        ? "This will immediately notify the assigned team on Telegram about this same-day job."
+        : "This will immediately notify the assigned team on Telegram about this booking.",
     confirmLabel: "Send alert",
   });
 
@@ -556,7 +559,10 @@ export default function AdminDispatchPage() {
       return;
     }
     if (action === "send_same_day_alert") {
-      sameDayAlertConfirm.open({ bookingId: card.bookingId });
+      sameDayAlertConfirm.open({
+        bookingId: card.bookingId,
+        alertType: card.urgency.sameDay ? "same_day_new_booking" : "manual_dispatch",
+      });
     }
   }, [filters, groups, load, openDrawer, showToastMsg, sameDayAlertConfirm]);
 
@@ -683,11 +689,12 @@ export default function AdminDispatchPage() {
 
   const submitSameDayAlert = async () => {
     const bookingId = sameDayAlertConfirm.state.payload?.bookingId;
+    const alertType = sameDayAlertConfirm.state.payload?.alertType ?? "manual_dispatch";
     if (!bookingId) return;
     try {
       sameDayAlertConfirm.setSubmitting(true);
-      await sendSameDayDispatchAlert({ bookingId, alertType: "same_day_new_booking" });
-      showToastMsg("Same-day alert sent.", true);
+      await sendSameDayDispatchAlert({ bookingId, alertType });
+      showToastMsg("Dispatch alert sent.", true);
       sameDayAlertConfirm.close();
     } catch (error: unknown) {
       showToastMsg(getErrorMessage(error, "Failed to send alert."), false);

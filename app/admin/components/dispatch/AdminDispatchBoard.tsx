@@ -129,7 +129,7 @@ function DispatchCard({
           Details
         </button>
 
-        {card.urgency.sameDay && (
+        {card.status === "confirmed" && (
           <button
             type="button"
             onClick={() => onActionClick("send_same_day_alert")}

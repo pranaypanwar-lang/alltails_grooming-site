@@ -5,9 +5,19 @@ import {
   type BookingCreatePetInput,
 } from "../../../../../lib/booking/createBooking";
 import { assertAdminSession } from "../../_lib/assertAdmin";
-import { adminPrisma, adminRazorpay } from "../../_lib/bookingAdmin";
+import { adminPrisma, adminRazorpay, getPublicAppUrl, logAdminBookingEvent } from "../../_lib/bookingAdmin";
+import { sendBookingDispatchAlert } from "../../../../../lib/telegram/dispatchAlerts";
 
 export const runtime = "nodejs";
+
+function getTodayInIst() {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
 
 type AdminBookingSource =
   | "call"
@@ -124,6 +134,34 @@ export async function POST(request: Request) {
     }
 
     const accessToken = createBookingAccessToken(result.booking.id, result.user.phone);
+
+    if (selectedDate === getTodayInIst()) {
+      try {
+        const dispatchResult = await sendBookingDispatchAlert({
+          prisma: adminPrisma,
+          bookingId: result.booking.id,
+          alertType: "same_day_new_booking",
+          baseUrl: getPublicAppUrl(request),
+        });
+
+        await logAdminBookingEvent({
+          bookingId: result.booking.id,
+          type: "dispatch_alert_sent",
+          summary: dispatchResult.success
+            ? `Dispatch alert sent to ${dispatchResult.team.name}`
+            : `Dispatch alert failed for ${dispatchResult.team.name}`,
+          metadata: {
+            teamId: dispatchResult.team.id,
+            alertType: "same_day_new_booking",
+            success: dispatchResult.success,
+            errorMsg: dispatchResult.errorMsg ?? null,
+            source: "admin_booking_create",
+          },
+        });
+      } catch (dispatchError) {
+        console.error("POST /api/admin/bookings/create dispatch alert failed", dispatchError);
+      }
+    }
 
     return NextResponse.json({
       success: true,
