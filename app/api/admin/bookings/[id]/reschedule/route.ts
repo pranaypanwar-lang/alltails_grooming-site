@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { assertAdminSession } from "../../../_lib/assertAdmin";
 import { adminPrisma, logAdminBookingEvent } from "../../../_lib/bookingAdmin";
-import { prepareCustomerMessageForBooking } from "../../../../../../lib/customerMessaging/service";
+import {
+  prepareCustomerMessageForBooking,
+  supersedeQueuedBookingLifecycleMessages,
+} from "../../../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../../../lib/customerMessaging/provider";
 
 export const runtime = "nodejs";
@@ -125,7 +128,10 @@ export async function POST(
       },
     });
 
-    await prepareCustomerMessageForBooking(
+    await supersedeQueuedBookingLifecycleMessages(adminPrisma, bookingId, {
+      keepMessageTypes: ["booking_rescheduled_confirmation"],
+    });
+    const prepared = await prepareCustomerMessageForBooking(
       adminPrisma,
       bookingId,
       "booking_rescheduled_confirmation",
@@ -134,7 +140,7 @@ export async function POST(
         skipIfPreparedAfter: new Date(Date.now() - 5 * 60 * 1000),
       }
     );
-    await processQueuedCustomerMessages(adminPrisma, { limit: 10 });
+    await processQueuedCustomerMessages(adminPrisma, { limit: 10, messageIds: [prepared.message.id] });
 
     return NextResponse.json({
       success: true,

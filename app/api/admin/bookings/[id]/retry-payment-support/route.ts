@@ -7,7 +7,10 @@ import {
   getPublicAppUrl,
   logAdminBookingEvent,
 } from "../../../_lib/bookingAdmin";
-import { prepareCustomerMessageForBooking } from "../../../../../../lib/customerMessaging/service";
+import {
+  prepareCustomerMessageForBooking,
+  supersedeQueuedBookingLifecycleMessages,
+} from "../../../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../../../lib/customerMessaging/provider";
 
 export const runtime = "nodejs";
@@ -74,7 +77,10 @@ export async function POST(
       },
     });
 
-    await prepareCustomerMessageForBooking(
+    await supersedeQueuedBookingLifecycleMessages(adminPrisma, booking.id, {
+      keepMessageTypes: ["payment_retry_reminder"],
+    });
+    const prepared = await prepareCustomerMessageForBooking(
       adminPrisma,
       booking.id,
       "payment_retry_reminder",
@@ -87,7 +93,7 @@ export async function POST(
         actionUrl: paymentLinkUrl ?? null,
       }
     );
-    await processQueuedCustomerMessages(adminPrisma, { limit: 10 });
+    await processQueuedCustomerMessages(adminPrisma, { limit: 10, messageIds: [prepared.message.id] });
 
     return NextResponse.json({
       success: true,

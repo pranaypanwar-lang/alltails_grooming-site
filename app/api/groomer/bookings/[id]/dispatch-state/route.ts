@@ -90,7 +90,7 @@ export async function POST(
     if (dispatchState === "en_route") {
       const prepared = await queueTeamOnTheWayMessage(adminPrisma, bookingId);
       if (prepared.created) {
-        await processQueuedCustomerMessages(adminPrisma, { limit: 10 });
+        await processQueuedCustomerMessages(adminPrisma, { limit: 10, messageIds: [prepared.message.id] });
         await logBookingEvent({
           bookingId,
           actor: "system",

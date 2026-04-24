@@ -13,7 +13,10 @@ import {
 import { assertAdminSession } from "../../_lib/assertAdmin";
 import { adminPrisma, adminRazorpay, getPublicAppUrl, logAdminBookingEvent } from "../../_lib/bookingAdmin";
 import { sendBookingDispatchAlert } from "../../../../../lib/telegram/dispatchAlerts";
-import { prepareCustomerMessageForBooking } from "../../../../../lib/customerMessaging/service";
+import {
+  prepareCustomerMessageForBooking,
+  supersedeQueuedBookingLifecycleMessages,
+} from "../../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../../lib/customerMessaging/provider";
 
 export const runtime = "nodejs";
@@ -240,11 +243,14 @@ export async function POST(request: Request) {
     const accessToken = createBookingAccessToken(result.booking.id, result.user.phone);
 
     if (result.booking.status === "confirmed") {
-      await prepareCustomerMessageForBooking(adminPrisma, result.booking.id, "booking_confirmation", {
+      await supersedeQueuedBookingLifecycleMessages(adminPrisma, result.booking.id, {
+        keepMessageTypes: ["booking_confirmation"],
+      });
+      const prepared = await prepareCustomerMessageForBooking(adminPrisma, result.booking.id, "booking_confirmation", {
         skipIfPreparedAfter: new Date(Date.now() - 5 * 60 * 1000),
         deliveryStatus: "queued",
       });
-      await processQueuedCustomerMessages(adminPrisma, { limit: 10 });
+      await processQueuedCustomerMessages(adminPrisma, { limit: 10, messageIds: [prepared.message.id] });
     }
 
     if (selectedDate === getTodayInIst()) {

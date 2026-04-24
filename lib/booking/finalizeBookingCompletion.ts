@@ -21,7 +21,11 @@ export async function finalizeBookingCompletion(
       rewardResult = await awardCompletionRewards(prisma, result.bookingId);
     }
     followUps = await queuePostCompletionCustomerJourney(prisma, result.bookingId);
-    await processQueuedCustomerMessages(prisma, { limit: 10 });
+    const messageIds = followUps.flatMap((entry) => (entry.messageId ? [entry.messageId] : []));
+    await processQueuedCustomerMessages(prisma, {
+      limit: 10,
+      messageIds,
+    });
   }
 
   return {

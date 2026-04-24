@@ -7,6 +7,15 @@ import {
 
 type DbClient = PrismaClient | Prisma.TransactionClient;
 
+const BOOKING_LIFECYCLE_MESSAGE_TYPES: ExtendedCustomerMessageType[] = [
+  "booking_confirmation",
+  "booking_cancelled_confirmation",
+  "booking_rescheduled_confirmation",
+  "payment_retry_reminder",
+  "team_on_the_way",
+  "groomer_delay_update",
+];
+
 export async function prepareCustomerMessageForBooking(
   prisma: DbClient,
   bookingId: string,
@@ -110,6 +119,31 @@ export async function prepareCustomerMessageForBooking(
   });
 
   return { created: true as const, message: customerMessage, addressStatus: message.addressStatus };
+}
+
+export async function supersedeQueuedBookingLifecycleMessages(
+  prisma: DbClient,
+  bookingId: string,
+  options?: { keepMessageTypes?: ExtendedCustomerMessageType[] }
+) {
+  const keepMessageTypes = new Set(options?.keepMessageTypes ?? []);
+
+  const result = await prisma.bookingCustomerMessage.updateMany({
+    where: {
+      bookingId,
+      status: "queued",
+      providerRef: null,
+      messageType: {
+        in: BOOKING_LIFECYCLE_MESSAGE_TYPES.filter((type) => !keepMessageTypes.has(type)),
+      },
+    },
+    data: {
+      status: "failed",
+      errorMsg: "Superseded by a newer booking lifecycle event",
+    },
+  });
+
+  return result.count;
 }
 
 export async function updateCustomerMessageStatus(

@@ -4,7 +4,10 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../../../lib/generated/prisma";
 import { assertAdminSession } from "../../../_lib/assertAdmin";
 import { logAdminBookingEvent } from "../../../_lib/bookingAdmin";
-import { prepareCustomerMessageForBooking } from "../../../../../../lib/customerMessaging/service";
+import {
+  prepareCustomerMessageForBooking,
+  supersedeQueuedBookingLifecycleMessages,
+} from "../../../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../../../lib/customerMessaging/provider";
 
 export const runtime = "nodejs";
@@ -68,11 +71,14 @@ export async function POST(
       },
     });
 
-    await prepareCustomerMessageForBooking(prisma, bookingId, "booking_cancelled_confirmation", {
+    await supersedeQueuedBookingLifecycleMessages(prisma, bookingId, {
+      keepMessageTypes: ["booking_cancelled_confirmation"],
+    });
+    const prepared = await prepareCustomerMessageForBooking(prisma, bookingId, "booking_cancelled_confirmation", {
       deliveryStatus: "queued",
       skipIfPreparedAfter: new Date(Date.now() - 5 * 60 * 1000),
     });
-    await processQueuedCustomerMessages(prisma, { limit: 10 });
+    await processQueuedCustomerMessages(prisma, { limit: 10, messageIds: [prepared.message.id] });
 
     return NextResponse.json({
       success: true,

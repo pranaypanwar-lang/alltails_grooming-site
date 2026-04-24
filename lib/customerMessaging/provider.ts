@@ -434,13 +434,17 @@ async function sendCustomerMessageViaCombirds(input: {
 
 export async function processQueuedCustomerMessages(
   prisma: DbClient,
-  options?: { limit?: number }
+  options?: { limit?: number; bookingId?: string; messageIds?: string[] }
 ) {
   const limit = options?.limit ?? 50;
+  const bookingId = options?.bookingId?.trim();
+  const messageIds = options?.messageIds?.filter(Boolean) ?? [];
   const messages = await prisma.bookingCustomerMessage.findMany({
     where: {
       status: "queued",
       providerRef: null,
+      ...(bookingId ? { bookingId } : {}),
+      ...(messageIds.length ? { id: { in: messageIds } } : {}),
     },
     include: {
       booking: {

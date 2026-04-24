@@ -9,7 +9,10 @@ import {
   type BookingCreatePetInput,
 } from "../../../../lib/booking/createBooking";
 import { getAddressReadinessSummary } from "../../../../lib/booking/addressCapture";
-import { prepareCustomerMessageForBooking } from "../../../../lib/customerMessaging/service";
+import {
+  prepareCustomerMessageForBooking,
+  supersedeQueuedBookingLifecycleMessages,
+} from "../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../lib/customerMessaging/provider";
 import { sendNewBookingAdminAlert } from "../../../../lib/telegram/newBookingAlerts";
 
@@ -153,11 +156,14 @@ export async function POST(request: Request) {
     const shouldSendImmediateConfirmation = bookingWithAddress.status === "confirmed";
 
     if (shouldSendImmediateConfirmation) {
-      await prepareCustomerMessageForBooking(prisma, bookingWithAddress.id, "booking_confirmation", {
+      await supersedeQueuedBookingLifecycleMessages(prisma, bookingWithAddress.id, {
+        keepMessageTypes: ["booking_confirmation"],
+      });
+      const prepared = await prepareCustomerMessageForBooking(prisma, bookingWithAddress.id, "booking_confirmation", {
         skipIfPreparedAfter: new Date(Date.now() - 5 * 60 * 1000),
         deliveryStatus: "queued",
       });
-      await processQueuedCustomerMessages(prisma, { limit: 10 });
+      await processQueuedCustomerMessages(prisma, { limit: 10, messageIds: [prepared.message.id] });
 
       try {
         await sendNewBookingAdminAlert({
