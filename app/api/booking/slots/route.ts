@@ -81,6 +81,16 @@ function buildBookingWindows(
   );
 }
 
+function applyLeadTimeFilter<T extends { startTime: string }>(
+  windows: T[],
+  minimumLeadMinutes: number
+) {
+  const cutoff = Date.now() + minimumLeadMinutes * 60 * 1000;
+  return windows.filter(
+    (window) => new Date(window.startTime).getTime() >= cutoff
+  );
+}
+
 // ─── Route handler ────────────────────────────────────────────────────────────
 
 export async function POST(request: Request) {
@@ -172,7 +182,10 @@ export async function POST(request: Request) {
       }];
     });
 
-    const bookingWindows = buildBookingWindows(formattedSlots, normalizedPetCount);
+    const bookingWindows = applyLeadTimeFilter(
+      buildBookingWindows(formattedSlots, normalizedPetCount),
+      120
+    );
 
     return NextResponse.json({
       city,
