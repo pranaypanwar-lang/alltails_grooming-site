@@ -184,6 +184,7 @@ export async function fetchAdminQa(filters: AdminQaFilters): Promise<AdminQaResp
     search: filters.search.trim(),
     teamId: filters.teamId,
     date: filters.date,
+    scope: filters.scope,
     qaStatus: filters.qaStatus,
     mismatchOnly: filters.mismatchOnly,
   })}`, { cache: "no-store" });

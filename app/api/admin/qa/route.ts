@@ -95,17 +95,25 @@ export async function GET(req: NextRequest) {
     const search = q.get("search")?.trim() ?? "";
     const teamId = q.get("teamId") ?? "";
     const date = q.get("date") ?? "";
+    const scope = q.get("scope") === "past" ? "past" : "today";
     const qaStatusFilter = q.get("qaStatus") ?? "";
     const mismatchOnly = q.get("mismatchOnly") === "true";
     const now = new Date();
+    const todayIst = now.toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
 
     const where: {
-      selectedDate?: string;
+      selectedDate?: string | { lt?: string };
       assignedTeamId?: string | null;
       OR?: Array<object>;
     } = {};
 
-    if (date) where.selectedDate = date;
+    if (date) {
+      where.selectedDate = date;
+    } else if (scope === "past") {
+      where.selectedDate = { lt: todayIst };
+    } else {
+      where.selectedDate = todayIst;
+    }
     if (teamId === "unassigned") where.assignedTeamId = null;
     else if (teamId) where.assignedTeamId = teamId;
 
@@ -232,8 +240,27 @@ export async function GET(req: NextRequest) {
         return true;
       })
       .sort((a, b) => {
-        const dateCompare = (a.selectedDate ?? "9999-12-31").localeCompare(b.selectedDate ?? "9999-12-31");
-        if (dateCompare !== 0) return dateCompare;
+        if (scope === "past") {
+          const dateCompare = (b.selectedDate ?? "").localeCompare(a.selectedDate ?? "");
+          if (dateCompare !== 0) return dateCompare;
+
+          const timeCompare = b._sortStart.localeCompare(a._sortStart);
+          if (timeCompare !== 0) return timeCompare;
+
+          return b.createdAt.localeCompare(a.createdAt);
+        }
+
+        const getTodayRank = (row: (typeof rows)[number]) => {
+          if (row.bookingStatus === "completed" || row.qaStatus === "complete") return 2;
+          if (row.bookingStatus === "cancelled" || row.bookingStatus === "payment_expired") return 3;
+          if (row.dispatchState === "started" || row.dispatchState === "en_route" || row.qaStatus === "in_progress") {
+            return 0;
+          }
+          return 1;
+        };
+
+        const rankCompare = getTodayRank(a) - getTodayRank(b);
+        if (rankCompare !== 0) return rankCompare;
 
         const timeCompare = a._sortStart.localeCompare(b._sortStart);
         if (timeCompare !== 0) return timeCompare;

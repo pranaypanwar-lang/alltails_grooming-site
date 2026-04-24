@@ -27,6 +27,7 @@ const DEFAULT_FILTERS: AdminQaFilters = {
   search: "",
   teamId: "",
   date: "",
+  scope: "today",
   qaStatus: "",
   mismatchOnly: false,
 };
@@ -53,7 +54,13 @@ const QUICK_TABS = [
   { id: "complete", label: "Complete" },
 ] as const;
 
+const QA_SCOPE_TABS = [
+  { id: "today", label: "Today" },
+  { id: "past", label: "Past" },
+] as const;
+
 type QuickTabId = (typeof QUICK_TABS)[number]["id"];
+type QaScopeTabId = (typeof QA_SCOPE_TABS)[number]["id"];
 type RefreshCadence = "off" | "900";
 type ViewMode = "table" | "grouped";
 
@@ -423,7 +430,11 @@ export default function AdminQaPage() {
       <div className="mx-auto max-w-[1440px] px-4 py-6 md:px-6 lg:px-8">
         <AdminPageHeader
           title="QA"
-          subtitle="Chronological quality-assurance board for SOP adherence, proof collection, and payment mismatch monitoring."
+          subtitle={
+            filters.scope === "past"
+              ? "Past-case QA archive for proof checks, issue review, and completion audits."
+              : "Same-day QA board with live cases first, followed by upcoming jobs for today."
+          }
           onRefresh={() => void load(filters, true)}
           isRefreshing={isRefreshing}
           rightSlot={
@@ -445,6 +456,23 @@ export default function AdminQaPage() {
         />
 
         <div className="mb-4 flex flex-wrap items-center gap-2">
+          <div className="mr-2 inline-flex rounded-full bg-[#f1eff9] p-1">
+            {QA_SCOPE_TABS.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => applyFilters({ scope: tab.id as QaScopeTabId, date: "" })}
+                className={`rounded-full px-4 py-2 text-[12px] font-semibold transition-colors ${
+                  filters.scope === tab.id
+                    ? "bg-[#6d5bd0] text-white shadow-[0_6px_16px_rgba(109,91,208,0.28)]"
+                    : "text-[#6d5bd0] hover:bg-[#e8e3fb]"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
           {QUICK_TABS.map((tab) => (
             <button
               key={tab.id}
@@ -582,7 +610,11 @@ export default function AdminQaPage() {
           ) : error ? (
             <div className="p-8 text-[14px] text-[#b42318]">{error}</div>
           ) : visibleRows.length === 0 ? (
-            <div className="p-10 text-center text-[14px] text-[#7c8499]">No bookings matched the current QA filters.</div>
+            <div className="p-10 text-center text-[14px] text-[#7c8499]">
+              {filters.scope === "past"
+                ? "No past bookings matched the current QA filters."
+                : "No same-day bookings matched the current QA filters."}
+            </div>
           ) : viewMode === "table" ? (
             <QaTable rows={visibleRows} onOpen={(bookingId) => void openDrawer(bookingId)} />
           ) : (

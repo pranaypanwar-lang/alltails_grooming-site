@@ -630,6 +630,7 @@ export type AdminQaFilters = {
   search: string;
   teamId: string;
   date: string;
+  scope: "today" | "past";
   qaStatus: AdminQaStatus | "";
   mismatchOnly: boolean;
 };
