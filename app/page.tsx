@@ -4468,25 +4468,58 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
         {/* Step 5: Payment */}
         {!confirmedBooking && mobileBookingStep === "payment" ? (
           <div className="px-4 pb-36 pt-5">
-            <h2 className="text-[26px] font-black tracking-[-0.04em] text-[#1f1f2c]">Payment</h2>
-            <p className="mt-2 text-[14px] leading-[1.7] text-[#6b7280]">Choose how you&apos;d like to pay.</p>
+            <h2 className="text-[26px] font-black tracking-[-0.04em] text-[#1f1f2c]">Choose payment method</h2>
+            <p className="mt-2 text-[14px] leading-[1.7] text-[#6b7280]">Select how you want to finish this booking.</p>
 
-            <div className="mt-6 space-y-4">
+            <div className="mt-6 rounded-[28px] border border-[#e8defb] bg-[linear-gradient(180deg,#ffffff_0%,#faf7ff_100%)] p-4 shadow-[0_18px_40px_rgba(109,91,208,0.08)]">
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#8d82c8]">
+                  Recommended
+                </div>
+                <div className="rounded-full bg-[#f1ebff] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6d5bd0]">
+                  Default
+                </div>
+              </div>
+
               <button
                 type="button"
                 onClick={() => handlePaymentMethodChange("pay_now")}
-                className={`w-full rounded-[24px] border p-6 text-left transition ${paymentMethod === "pay_now" ? "border-[#6d5bd0] bg-[#faf7ff] shadow-[0_8px_24px_rgba(109,91,208,0.10)]" : "border-[#d9dbe7] bg-white"}`}
+                className={`mt-3 w-full rounded-[24px] border px-5 py-5 text-left transition ${paymentMethod === "pay_now" ? "border-[#6d5bd0] bg-white shadow-[0_12px_28px_rgba(109,91,208,0.12)]" : "border-[#ddd7f0] bg-white/80 hover:border-[#c8bcf5]"}`}
               >
-                <div className="text-[22px] font-black tracking-[-0.03em] text-[#2a2346]">Pay Now</div>
-                <p className="mt-2 text-[15px] leading-[1.6] text-[#6b7285]">Reserve instantly and unlock coupon savings.</p>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="text-[21px] font-black tracking-[-0.03em] text-[#2a2346]">Pay Now</div>
+                    <p className="mt-1.5 text-[14px] leading-[1.65] text-[#6b7285]">
+                      Continue to secure checkout now.
+                    </p>
+                  </div>
+                  <span className={`mt-1 inline-flex h-7 min-w-[72px] items-center justify-center rounded-full px-3 text-[11px] font-semibold uppercase tracking-[0.14em] ${paymentMethod === "pay_now" ? "bg-[#6d5bd0] text-white" : "bg-[#f1ebff] text-[#6d5bd0]"}`}>
+                    {paymentMethod === "pay_now" ? "Selected" : "Select"}
+                  </span>
+                </div>
               </button>
+            </div>
+
+            <div className="mt-4 rounded-[24px] border border-[#ece8f5] bg-white px-5 py-4">
+              <div className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#a19ab9]">
+                Other option
+              </div>
               <button
                 type="button"
                 onClick={() => handlePaymentMethodChange("pay_after_service")}
-                className={`w-full rounded-[24px] border p-6 text-left transition ${paymentMethod === "pay_after_service" ? "border-[#6d5bd0] bg-[#faf7ff] shadow-[0_8px_24px_rgba(109,91,208,0.10)]" : "border-[#d9dbe7] bg-white"}`}
+                className={`mt-3 w-full rounded-[22px] border px-5 py-4 text-left transition ${paymentMethod === "pay_after_service" ? "border-[#cfc5f7] bg-[#faf7ff]" : "border-[#e4e2ec] bg-[#fbfbfd] hover:border-[#d6d2e4]"}`}
               >
-                <div className="text-[22px] font-black tracking-[-0.03em] text-[#2a2346]">Pay After Service</div>
-                <p className="mt-2 text-[15px] leading-[1.6] text-[#6b7285]">Confirm now and pay once the grooming session is completed.</p>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <div className="text-[18px] font-bold text-[#2a2346]">Pay after service</div>
+                    <p className="mt-1.5 text-[13px] leading-[1.65] text-[#8a90a6]">
+                      Confirm the booking now and settle after the session.
+                    </p>
+                  </div>
+                  <span className={`inline-flex h-8 min-w-[72px] items-center justify-center rounded-full px-3 text-[11px] font-semibold uppercase tracking-[0.14em] ${paymentMethod === "pay_after_service" ? "bg-[#ebe7fb] text-[#6d5bd0]" : "bg-[#f4f3f8] text-[#9aa1b2]"}`}>
+                    {paymentMethod === "pay_after_service" ? "Selected" : "Optional"}
+                  </span>
+                </div>
               </button>
             </div>
 
@@ -4518,7 +4551,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                     );
                   })}
                 </div>
-                <p className="mt-3 text-[13px] text-[#9096ac]">Coupons apply only on prepaid bookings. Club stackable codes by separating them with commas.</p>
+                <p className="mt-3 text-[13px] text-[#9096ac]">Coupon codes apply on prepaid checkout. Club stackable codes by separating them with commas.</p>
                 {couponPreviewLoading ? (
                   <p className="mt-2 text-[13px] text-[#6b7285]">Validating coupon codes…</p>
                 ) : null}
@@ -4559,7 +4592,25 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
 
             {bookingCreateError ? <p className="mt-4 text-[13px] text-red-500">{bookingCreateError}</p> : null}
 
-            <div className="fixed inset-x-0 bottom-0 z-20 space-y-2 border-t border-[#ece6fb] bg-white/95 px-4 pb-[calc(env(safe-area-inset-bottom)+16px)] pt-4 backdrop-blur">
+            <div className="fixed inset-x-0 bottom-0 z-20 space-y-3 border-t border-[#ece6fb] bg-white/95 px-4 pb-[calc(env(safe-area-inset-bottom)+16px)] pt-4 backdrop-blur">
+              <div className="flex items-center justify-between rounded-[18px] border border-[#ece6fb] bg-[#fbfaff] px-4 py-3">
+                <div>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9b95b6]">
+                    Pay using
+                  </div>
+                  <div className="mt-1 text-[15px] font-semibold text-[#2a2346]">
+                    {paymentMethod === "pay_now" ? "Pay Now" : "Pay after service"}
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9b95b6]">
+                    Total
+                  </div>
+                  <div className="mt-1 text-[18px] font-black tracking-[-0.03em] text-[#25233a]">
+                    ₹{pricingPreview.finalAmount}
+                  </div>
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={handleCreateBooking}
@@ -4569,7 +4620,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                 {bookingCreateLoading ? "Creating booking..." : paymentMethod === "pay_now" ? "Continue to payment" : "Confirm booking"}
               </button>
               <p className="text-center text-[13px] text-[#9096ac]">
-                {paymentMethod === "pay_now" ? "Secure checkout opens on the next step." : paymentMethod === "pay_after_service" ? "No online payment is required right now." : ""}
+                {paymentMethod === "pay_now" ? "Secure checkout opens on the next step." : paymentMethod === "pay_after_service" ? "This stays available, but prepaid checkout remains the default." : ""}
               </p>
             </div>
           </div>
@@ -5313,25 +5364,54 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
 
                 {/* ── Section 4: Payment ── */}
                 <section className="rounded-[28px] border border-[#e9e0fb] bg-white p-7">
-                  <div className="text-[22px] font-bold text-[#25233a]">Payment</div>
-                  <p className="mt-1 text-[15px] text-[#6b7285]">Prepaid bookings unlock offers. Pay-after-service bookings are charged at the standard package price.</p>
+                  <div className="text-[22px] font-bold text-[#25233a]">Choose payment method</div>
+                  <p className="mt-1 text-[15px] text-[#6b7285]">Select how you want to complete this booking.</p>
 
-                  <div className="mt-5 grid grid-cols-2 gap-4">
+                  <div className="mt-5 rounded-[24px] border border-[#e7ddfb] bg-[linear-gradient(180deg,#ffffff_0%,#faf7ff_100%)] p-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#9388ca]">
+                        Recommended
+                      </div>
+                      <div className="rounded-full bg-[#f1ebff] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6d5bd0]">
+                        Default
+                      </div>
+                    </div>
+
                     <button
                       type="button"
                       onClick={() => handlePaymentMethodChange("pay_now")}
-                      className={`rounded-[22px] border p-6 text-left transition-all duration-300 ${paymentMethod === "pay_now" ? "border-[#6d5bd0] bg-[#faf7ff] shadow-[0_12px_30px_rgba(109,91,208,0.10)]" : "border-[#d9dbe7] bg-white hover:border-[#c8bcf5]"}`}
+                      className={`mt-4 w-full rounded-[22px] border px-6 py-5 text-left transition-all duration-300 ${paymentMethod === "pay_now" ? "border-[#6d5bd0] bg-white shadow-[0_14px_32px_rgba(109,91,208,0.10)]" : "border-[#ddd7f0] bg-white/80 hover:border-[#c8bcf5]"}`}
                     >
-                      <div className="text-[20px] font-black text-[#25233a]">Pay Now</div>
-                      <p className="mt-2 text-[14px] leading-[1.7] text-[#6b7285]">Reserve instantly and unlock coupon savings.</p>
+                      <div className="flex items-center justify-between gap-6">
+                        <div>
+                          <div className="text-[22px] font-black text-[#25233a]">Pay Now</div>
+                          <p className="mt-2 text-[14px] leading-[1.7] text-[#6b7285]">Continue to secure checkout now.</p>
+                        </div>
+                        <span className={`inline-flex h-[38px] min-w-[108px] items-center justify-center rounded-full px-4 text-[12px] font-semibold uppercase tracking-[0.14em] ${paymentMethod === "pay_now" ? "bg-[#6d5bd0] text-white" : "bg-[#f1ebff] text-[#6d5bd0]"}`}>
+                          {paymentMethod === "pay_now" ? "Selected" : "Select"}
+                        </span>
+                      </div>
                     </button>
+                  </div>
+
+                  <div className="mt-4 rounded-[22px] border border-[#ece8f5] bg-[#fcfcfe] p-5">
+                    <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#a19ab9]">
+                      Other option
+                    </div>
                     <button
                       type="button"
                       onClick={() => handlePaymentMethodChange("pay_after_service")}
-                      className={`rounded-[22px] border p-6 text-left transition-all duration-300 ${paymentMethod === "pay_after_service" ? "border-[#6d5bd0] bg-[#faf7ff] shadow-[0_12px_30px_rgba(109,91,208,0.10)]" : "border-[#d9dbe7] bg-white hover:border-[#c8bcf5]"}`}
+                      className={`mt-3 w-full rounded-[20px] border px-6 py-5 text-left transition-all duration-300 ${paymentMethod === "pay_after_service" ? "border-[#cfc5f7] bg-[#faf7ff]" : "border-[#e4e2ec] bg-white hover:border-[#d6d2e4]"}`}
                     >
-                      <div className="text-[20px] font-black text-[#25233a]">Pay After Service</div>
-                      <p className="mt-2 text-[14px] leading-[1.7] text-[#6b7285]">Confirm now and pay once the grooming session is completed.</p>
+                      <div className="flex items-center justify-between gap-6">
+                        <div>
+                          <div className="text-[19px] font-bold text-[#25233a]">Pay after service</div>
+                          <p className="mt-2 text-[14px] leading-[1.7] text-[#8a90a6]">Keep the booking confirmed and settle after the session.</p>
+                        </div>
+                        <span className={`inline-flex h-[36px] min-w-[108px] items-center justify-center rounded-full px-4 text-[12px] font-semibold uppercase tracking-[0.14em] ${paymentMethod === "pay_after_service" ? "bg-[#ebe7fb] text-[#6d5bd0]" : "bg-[#f4f3f8] text-[#9aa1b2]"}`}>
+                          {paymentMethod === "pay_after_service" ? "Selected" : "Optional"}
+                        </span>
+                      </div>
                     </button>
                   </div>
 
@@ -5363,7 +5443,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                           );
                         })}
                       </div>
-                      <p className="mt-3 text-[13px] text-[#9096ac]">Coupons apply only on prepaid bookings. Club stackable codes by separating them with commas.</p>
+                      <p className="mt-3 text-[13px] text-[#9096ac]">Coupon codes apply on prepaid checkout. Club stackable codes by separating them with commas.</p>
                       {couponPreviewLoading ? (
                         <p className="mt-2 text-[13px] text-[#6b7285]">Validating coupon codes…</p>
                       ) : null}
@@ -5406,7 +5486,27 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
               <div className="min-h-[20px] flex-1">
                 {bookingCreateError ? (
                   <p className="text-[14px] text-red-500">{bookingCreateError}</p>
-                ) : null}
+                ) : (
+                  <div className="inline-flex items-center gap-3 rounded-[16px] border border-[#ece6fb] bg-[#fbfaff] px-4 py-3">
+                    <div>
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9b95b6]">
+                        Pay using
+                      </div>
+                      <div className="mt-1 text-[15px] font-semibold text-[#2a2346]">
+                        {paymentMethod === "pay_now" ? "Pay Now" : "Pay after service"}
+                      </div>
+                    </div>
+                    <div className="h-9 w-px bg-[#ece6fb]" />
+                    <div>
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9b95b6]">
+                        Total
+                      </div>
+                      <div className="mt-1 text-[18px] font-black tracking-[-0.03em] text-[#25233a]">
+                        ₹{pricingPreview.finalAmount}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="flex shrink-0 items-center gap-3">
                 <button
