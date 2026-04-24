@@ -1549,7 +1549,7 @@ const isSupportedCity = (city: string) => {
 };
 
 const getBaseServicePrice = () => {
-  return getServicePrice(heroForm.service);
+  return getServicePrice(heroForm.service) * petCount;
 };
 
 const normalizeCouponInput = (value: string) =>
@@ -5344,7 +5344,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                           <div className="flex items-center justify-between gap-6">
                             <div>
                               <div className="text-[28px] font-black tracking-[-0.03em] text-[#25233a]">{window.displayLabel}</div>
-                              <div className="mt-1.5 text-[15px] text-[#6b7285]">Handled by {window.teamName}</div>
+                              <div className="mt-1.5 text-[15px] text-[#6b7285]">Available booking window</div>
                               <div className="mt-1 text-[13px] text-[#9096ac]">{window.petCount} pet{window.petCount > 1 ? "s" : ""} · {window.slotLabels.length} slot{window.slotLabels.length > 1 ? "s" : ""}</div>
                             </div>
                             <span className={`inline-flex h-[44px] shrink-0 items-center rounded-full px-5 text-[14px] font-semibold transition ${isSelected ? "bg-[#6d5bd0] text-white" : "bg-[#f0eefa] text-[#6c7286]"}`}>

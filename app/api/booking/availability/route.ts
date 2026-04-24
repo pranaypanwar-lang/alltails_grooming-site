@@ -84,6 +84,40 @@ function buildBookingWindows(
   );
 }
 
+function collapseDuplicateBookingWindows<
+  T extends {
+    bookingWindowId: string;
+    teamId: string;
+    teamName: string;
+    petCount: number;
+    startTime: string;
+    endTime: string;
+    slotLabels: SlotLabel[];
+    slotIds: string[];
+    displayLabel: string;
+  },
+>(windows: T[]) {
+  const grouped = new Map<string, T>();
+
+  for (const window of windows) {
+    const key = [
+      window.petCount,
+      window.startTime,
+      window.endTime,
+      window.displayLabel,
+      window.slotLabels.join("|"),
+    ].join("__");
+
+    if (!grouped.has(key)) {
+      grouped.set(key, window);
+    }
+  }
+
+  return [...grouped.values()].sort(
+    (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+  );
+}
+
 function applyLeadTimeFilter<T extends { startTime: string }>(
   windows: T[],
   minimumLeadMinutes: number
@@ -196,9 +230,11 @@ export async function POST(request: Request) {
         }];
       });
 
-      const bookingWindows = applyLeadTimeFilter(
-        buildBookingWindows(formattedSlots, normalizedPetCount),
-        120
+      const bookingWindows = collapseDuplicateBookingWindows(
+        applyLeadTimeFilter(
+          buildBookingWindows(formattedSlots, normalizedPetCount),
+          120
+        )
       );
 
       dateBlocks.push({

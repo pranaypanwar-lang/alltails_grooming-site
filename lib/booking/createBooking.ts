@@ -194,6 +194,7 @@ export async function createBookingWithBusinessRules(
     const resolvedUser = await resolveCanonicalUser(tx, input);
     let user = resolvedUser.user;
     const { normalizedPhone } = resolvedUser;
+    const bookingBaseAmount = service.price * input.pets.length;
 
     const couponEvaluation = await evaluateCoupons(tx, {
       rawCouponCode:
@@ -204,7 +205,7 @@ export async function createBookingWithBusinessRules(
       city: input.city,
       petCount: input.pets.length,
       paymentMethod: input.paymentMethod,
-      baseAmount: service.price,
+      baseAmount: bookingBaseAmount,
       userId: user.id,
       phone: normalizedPhone,
     });
@@ -296,7 +297,7 @@ export async function createBookingWithBusinessRules(
         paymentMethod: input.paymentMethod,
         paymentStatus,
         couponCode: normalizedCouponCode,
-        originalAmount: service.price,
+        originalAmount: bookingBaseAmount,
         finalAmount,
         selectedDate: input.selectedDate,
         bookingWindowId: input.bookingWindowId,
