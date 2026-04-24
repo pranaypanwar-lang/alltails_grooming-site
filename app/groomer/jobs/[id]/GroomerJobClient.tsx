@@ -145,6 +145,12 @@ async function validateCapture(file: File) {
   }
 }
 
+function normalizeRecordedVideoMimeType(type: string) {
+  const baseType = type.split(";")[0]?.trim().toLowerCase();
+  if (baseType === "video/mp4") return "video/mp4";
+  return "video/webm";
+}
+
 function SectionTitle({
   eyebrow,
   title,
@@ -789,29 +795,47 @@ export function GroomerJobClient({
       }
     };
     recorder.onstop = async () => {
-      setIsRecordingVideo(false);
-      const blobType = recorder.mimeType || "video/webm";
-      const blob = new Blob(recordingChunksRef.current, { type: blobType });
-      const extension = blobType.includes("mp4") ? "mp4" : "webm";
-      const file = new File([blob], `live-proof-${Date.now()}.${extension}`, {
-        type: blobType,
-      });
-      setRecordedVideoFile(file);
+      try {
+        setIsRecordingVideo(false);
+        const normalizedMimeType = normalizeRecordedVideoMimeType(recorder.mimeType || "video/webm");
+        const blob = new Blob(recordingChunksRef.current, { type: normalizedMimeType });
+        if (!blob.size) {
+          throw new Error(
+            languageMode === "simple"
+              ? "Recorded video empty aa raha hai. Dobara record karein."
+              : "रिकॉर्ड किया गया वीडियो खाली आ रहा है। दोबारा रिकॉर्ड करें।"
+          );
+        }
+        const extension = normalizedMimeType === "video/mp4" ? "mp4" : "webm";
+        const file = new File([blob], `live-proof-${Date.now()}.${extension}`, {
+          type: normalizedMimeType,
+        });
+        setRecordedVideoFile(file);
 
-      mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
-      mediaStreamRef.current = null;
+        mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
+        mediaStreamRef.current = null;
 
-      if (recordedBlobUrlRef.current) {
-        URL.revokeObjectURL(recordedBlobUrlRef.current);
-      }
-      recordedBlobUrlRef.current = URL.createObjectURL(file);
+        if (recordedBlobUrlRef.current) {
+          URL.revokeObjectURL(recordedBlobUrlRef.current);
+        }
+        recordedBlobUrlRef.current = URL.createObjectURL(file);
 
-      if (liveVideoRef.current) {
-        liveVideoRef.current.srcObject = null;
-        liveVideoRef.current.src = recordedBlobUrlRef.current;
-        liveVideoRef.current.muted = false;
-        liveVideoRef.current.controls = true;
-        await liveVideoRef.current.play().catch(() => undefined);
+        if (liveVideoRef.current) {
+          liveVideoRef.current.srcObject = null;
+          liveVideoRef.current.src = recordedBlobUrlRef.current;
+          liveVideoRef.current.muted = false;
+          liveVideoRef.current.controls = true;
+          await liveVideoRef.current.play().catch(() => undefined);
+        }
+      } catch (error) {
+        setRecordedVideoFile(null);
+        setModalError(
+          error instanceof Error
+            ? error.message
+            : languageMode === "simple"
+              ? "Video तैयार नहीं हो पाया. Dobara try karein."
+              : "वीडियो तैयार नहीं हो पाया। दोबारा ट्राई करें।"
+        );
       }
     };
 
@@ -884,11 +908,19 @@ export function GroomerJobClient({
   };
 
   const uploadStepMedia = async (stepKey: string, file: File) => {
-    await validateCapture(file);
+    const normalizedFile =
+      file.type.startsWith("video/")
+        ? new File([file], file.name || `live-proof-${Date.now()}.webm`, {
+            type: normalizeRecordedVideoMimeType(file.type),
+            lastModified: file.lastModified || Date.now(),
+          })
+        : file;
+
+    await validateCapture(normalizedFile);
 
     const formData = new FormData();
     formData.set("stepKey", stepKey);
-    formData.set("file", file);
+    formData.set("file", normalizedFile, normalizedFile.name);
 
     const res = await fetch(`/api/groomer/bookings/${booking.id}/sop/proof${tokenQuery}`, {
       method: "POST",

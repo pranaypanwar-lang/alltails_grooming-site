@@ -8,6 +8,10 @@ import { awardReviewReward } from "../../../../../../../lib/groomerRewards";
 
 export const runtime = "nodejs";
 
+function normalizeMimeType(type: string) {
+  return type.split(";")[0]?.trim().toLowerCase();
+}
+
 function getProofFolder(stepKey: string) {
   return `booking-sop/${stepKey}`;
 }
@@ -38,8 +42,9 @@ export async function POST(
       return NextResponse.json({ error: "SOP step configuration not found" }, { status: 400 });
     }
 
-    const isImage = file.type.startsWith("image/");
-    const isVideo = file.type.startsWith("video/");
+    const normalizedMimeType = normalizeMimeType(file.type);
+    const isImage = normalizedMimeType.startsWith("image/");
+    const isVideo = normalizedMimeType.startsWith("video/");
     if (!isImage && !isVideo) {
       return NextResponse.json({ error: "Only image or video uploads are allowed" }, { status: 400 });
     }
@@ -53,7 +58,7 @@ export async function POST(
     const uploaded = await putBookingAsset({
       storageKey,
       body: buffer,
-      contentType: file.type,
+      contentType: normalizedMimeType || file.type || (isVideo ? "video/webm" : "image/jpeg"),
     });
 
     const proof = await adminPrisma.$transaction(async (tx) => {
@@ -83,7 +88,7 @@ export async function POST(
           storageKey,
           publicUrl: uploaded.publicUrl,
           originalName: file.name,
-          mimeType: file.type,
+          mimeType: normalizedMimeType || file.type,
           sizeBytes: file.size,
         },
       });
