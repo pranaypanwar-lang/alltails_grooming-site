@@ -907,7 +907,11 @@ export function GroomerJobClient({
     return data;
   };
 
-  const uploadStepMedia = async (stepKey: string, file: File) => {
+  const uploadStepMedia = async (
+    stepKey: string,
+    file: File,
+    options?: { skipClientValidation?: boolean }
+  ) => {
     const normalizedFile =
       file.type.startsWith("video/")
         ? new File([file], file.name || `live-proof-${Date.now()}.webm`, {
@@ -916,7 +920,9 @@ export function GroomerJobClient({
           })
         : file;
 
-    await validateCapture(normalizedFile);
+    if (!options?.skipClientValidation) {
+      await validateCapture(normalizedFile);
+    }
 
     const formData = new FormData();
     formData.set("stepKey", stepKey);
@@ -1678,7 +1684,9 @@ export function GroomerJobClient({
           onUseRecording={() => {
             if (!activeVideoStepKey || !recordedVideoFile) return;
             void runAction(activeVideoStepKey, async () => {
-              await uploadStepMedia(activeVideoStepKey, recordedVideoFile);
+              await uploadStepMedia(activeVideoStepKey, recordedVideoFile, {
+                skipClientValidation: true,
+              });
               closeLiveVideoRecorder();
             });
           }}
