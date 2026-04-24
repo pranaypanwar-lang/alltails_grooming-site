@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -241,6 +241,38 @@ function CaptureButton({
   );
 }
 
+function ActionButton({
+  label,
+  disabled,
+  tone = "default",
+  icon,
+  onClick,
+}: {
+  label: string;
+  disabled: boolean;
+  tone?: "default" | "primary";
+  icon?: ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      className={[
+        "inline-flex min-h-[48px] items-center justify-center rounded-[16px] border px-4 py-3 text-[14px] font-semibold",
+        tone === "primary"
+          ? "border-[#6d5bd0] bg-[#6d5bd0] text-white"
+          : "border-[#ddd1fb] bg-white text-[#5b4bc2]",
+        disabled ? "opacity-50" : "",
+      ].join(" ")}
+    >
+      {icon ? <span className="mr-2 inline-flex">{icon}</span> : null}
+      {label}
+    </button>
+  );
+}
+
 function ErrorModal({
   message,
   onClose,
@@ -356,6 +388,144 @@ function RewardModal({
   );
 }
 
+function formatRecordingSeconds(totalSeconds: number) {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function LiveVideoRecorderModal({
+  mode,
+  busy,
+  elapsedSeconds,
+  isRecording,
+  hasRecordedFile,
+  videoRef,
+  onStart,
+  onStop,
+  onUseRecording,
+  onRetake,
+  onClose,
+}: {
+  mode: LanguageMode;
+  busy: boolean;
+  elapsedSeconds: number;
+  isRecording: boolean;
+  hasRecordedFile: boolean;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
+  onStart: () => void;
+  onStop: () => void;
+  onUseRecording: () => void;
+  onRetake: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-[320] flex items-end justify-center bg-[rgba(20,14,35,0.56)] px-4 pb-4 pt-10">
+      <div className="w-full max-w-md rounded-[28px] bg-white p-4 shadow-2xl">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="text-[18px] font-black tracking-[-0.02em] text-[#1f1f2c]">
+              {mode === "simple" ? "Live video proof" : "लाइव वीडियो प्रूफ"}
+            </div>
+            <div className="mt-1 text-[13px] leading-[1.6] text-[#6b7280]">
+              {mode === "simple"
+                ? "Gallery upload band hai. Yahin se live video record karke hi proof bheja jayega."
+                : "गैलरी अपलोड बंद है। यहीं से लाइव वीडियो रिकॉर्ड करके ही प्रूफ भेजा जाएगा।"}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={busy}
+            className="rounded-full border border-[#e7ddfb] bg-[#faf8ff] px-3 py-1.5 text-[12px] font-semibold text-[#6d5bd0] disabled:opacity-50"
+          >
+            {mode === "simple" ? "Close" : "बंद"}
+          </button>
+        </div>
+
+        <div className="mt-4 overflow-hidden rounded-[22px] border border-[#e6def8] bg-[#140e23]">
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            muted={!hasRecordedFile}
+            controls={hasRecordedFile}
+            className="aspect-[3/4] w-full bg-black object-cover"
+          />
+        </div>
+
+        <div className="mt-3 flex items-center justify-between rounded-[18px] bg-[#f8f5ff] px-4 py-3 text-[13px] font-semibold text-[#5b4bc2]">
+          <span>
+            {isRecording
+              ? mode === "simple"
+                ? "Recording live..."
+                : "लाइव रिकॉर्ड हो रहा है..."
+              : hasRecordedFile
+                ? mode === "simple"
+                  ? "Preview ready"
+                  : "प्रीव्यू तैयार है"
+                : mode === "simple"
+                  ? "Camera ready"
+                  : "कैमरा तैयार है"}
+          </span>
+          <span>{formatRecordingSeconds(elapsedSeconds)} / 00:15</span>
+        </div>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          {!isRecording && !hasRecordedFile ? (
+            <button
+              type="button"
+              onClick={onStart}
+              disabled={busy}
+              className="flex-1 rounded-[16px] bg-[#6d5bd0] px-4 py-3 text-[14px] font-semibold text-white disabled:opacity-50"
+            >
+              {mode === "simple" ? "Start recording" : "रिकॉर्डिंग शुरू करें"}
+            </button>
+          ) : null}
+
+          {isRecording ? (
+            <button
+              type="button"
+              onClick={onStop}
+              disabled={busy}
+              className="flex-1 rounded-[16px] bg-[#be123c] px-4 py-3 text-[14px] font-semibold text-white disabled:opacity-50"
+            >
+              {mode === "simple" ? "Stop recording" : "रिकॉर्डिंग रोकें"}
+            </button>
+          ) : null}
+
+          {hasRecordedFile ? (
+            <>
+              <button
+                type="button"
+                onClick={onRetake}
+                disabled={busy}
+                className="rounded-[16px] border border-[#ddd1fb] bg-white px-4 py-3 text-[14px] font-semibold text-[#5b4bc2] disabled:opacity-50"
+              >
+                {mode === "simple" ? "Retake" : "फिर से रिकॉर्ड करें"}
+              </button>
+              <button
+                type="button"
+                onClick={onUseRecording}
+                disabled={busy}
+                className="flex-1 rounded-[16px] bg-[#16a34a] px-4 py-3 text-[14px] font-semibold text-white disabled:opacity-50"
+              >
+                {busy
+                  ? mode === "simple"
+                    ? "Uploading..."
+                    : "अपलोड हो रहा है..."
+                  : mode === "simple"
+                    ? "Use this video"
+                    : "यही वीडियो भेजें"}
+              </button>
+            </>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function StepCard({
   title,
   hint,
@@ -449,8 +619,17 @@ export function GroomerJobClient({
     booking.payment.collection?.serviceAmountUpdated ?? false
   );
   const [paymentImage, setPaymentImage] = useState<File | null>(null);
+  const [activeVideoStepKey, setActiveVideoStepKey] = useState<string | null>(null);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const [isRecordingVideo, setIsRecordingVideo] = useState(false);
+  const [recordedVideoFile, setRecordedVideoFile] = useState<File | null>(null);
   const [now, setNow] = useState(() => Date.now());
   const [momentToast, setMomentToast] = useState<MomentToast>(null);
+  const liveVideoRef = useRef<HTMLVideoElement | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordedBlobUrlRef = useRef<string | null>(null);
+  const recordingChunksRef = useRef<Blob[]>([]);
   const tokenQuery = token ? `?token=${encodeURIComponent(token)}` : "";
 
   useEffect(() => {
@@ -463,6 +642,32 @@ export function GroomerJobClient({
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!isRecordingVideo) return;
+    const timer = window.setInterval(() => {
+      setRecordingSeconds((prev) => {
+        const next = prev + 1;
+        if (next >= 15) {
+          mediaRecorderRef.current?.state === "recording" && mediaRecorderRef.current.stop();
+          return 15;
+        }
+        return next;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [isRecordingVideo]);
+
+  useEffect(() => {
+    return () => {
+      mediaRecorderRef.current?.stream.getTracks().forEach((track) => track.stop());
+      mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
+      if (recordedBlobUrlRef.current) {
+        URL.revokeObjectURL(recordedBlobUrlRef.current);
+      }
+    };
   }, []);
 
   const visibleChecklistSteps = useMemo(
@@ -501,6 +706,140 @@ export function GroomerJobClient({
   });
   const psychologyMode = languageMode === "simple" ? "hinglish" : "hindi";
   const jobPsychologyTitle = resolvePsychologyText(jobPsychology.stateKey, psychologyMode);
+
+  const cleanupLiveRecorder = () => {
+    mediaRecorderRef.current?.stream.getTracks().forEach((track) => track.stop());
+    mediaRecorderRef.current = null;
+    mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
+    mediaStreamRef.current = null;
+    recordingChunksRef.current = [];
+    setIsRecordingVideo(false);
+    setRecordingSeconds(0);
+    if (recordedBlobUrlRef.current) {
+      URL.revokeObjectURL(recordedBlobUrlRef.current);
+      recordedBlobUrlRef.current = null;
+    }
+    if (liveVideoRef.current) {
+      liveVideoRef.current.srcObject = null;
+      liveVideoRef.current.removeAttribute("src");
+      liveVideoRef.current.load();
+    }
+  };
+
+  const setupLiveVideoPreview = async () => {
+    cleanupLiveRecorder();
+    setRecordedVideoFile(null);
+
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+      throw new Error(
+        languageMode === "simple"
+          ? "Phone browser live video recording support nahi de raha. Chrome update karke dobara try karein."
+          : "फोन ब्राउज़र लाइव वीडियो रिकॉर्डिंग सपोर्ट नहीं दे रहा। Chrome अपडेट करके दोबारा ट्राई करें।"
+      );
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: "environment" } },
+      audio: true,
+    });
+    mediaStreamRef.current = stream;
+
+    if (liveVideoRef.current) {
+      liveVideoRef.current.srcObject = stream;
+      await liveVideoRef.current.play().catch(() => undefined);
+    }
+  };
+
+  const openLiveVideoRecorder = async (stepKey: string) => {
+    setActiveVideoStepKey(stepKey);
+    try {
+      await setupLiveVideoPreview();
+    } catch (error) {
+      setActiveVideoStepKey(null);
+      cleanupLiveRecorder();
+      throw error;
+    }
+  };
+
+  const startLiveRecording = () => {
+    const stream = mediaStreamRef.current;
+    if (!stream) {
+      throw new Error(
+        languageMode === "simple"
+          ? "Camera ready nahi hai. Dobara try karein."
+          : "कैमरा तैयार नहीं है। दोबारा ट्राई करें।"
+      );
+    }
+
+    const preferredMimeTypes = [
+      "video/webm;codecs=vp9,opus",
+      "video/webm;codecs=vp8,opus",
+      "video/webm",
+    ];
+    const supportedMimeType =
+      preferredMimeTypes.find((type) => MediaRecorder.isTypeSupported(type)) ?? "";
+    const recorder = supportedMimeType
+      ? new MediaRecorder(stream, { mimeType: supportedMimeType })
+      : new MediaRecorder(stream);
+
+    recordingChunksRef.current = [];
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        recordingChunksRef.current.push(event.data);
+      }
+    };
+    recorder.onstop = async () => {
+      setIsRecordingVideo(false);
+      const blobType = recorder.mimeType || "video/webm";
+      const blob = new Blob(recordingChunksRef.current, { type: blobType });
+      const extension = blobType.includes("mp4") ? "mp4" : "webm";
+      const file = new File([blob], `live-proof-${Date.now()}.${extension}`, {
+        type: blobType,
+      });
+      setRecordedVideoFile(file);
+
+      mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
+      mediaStreamRef.current = null;
+
+      if (recordedBlobUrlRef.current) {
+        URL.revokeObjectURL(recordedBlobUrlRef.current);
+      }
+      recordedBlobUrlRef.current = URL.createObjectURL(file);
+
+      if (liveVideoRef.current) {
+        liveVideoRef.current.srcObject = null;
+        liveVideoRef.current.src = recordedBlobUrlRef.current;
+        liveVideoRef.current.muted = false;
+        liveVideoRef.current.controls = true;
+        await liveVideoRef.current.play().catch(() => undefined);
+      }
+    };
+
+    mediaRecorderRef.current = recorder;
+    setRecordingSeconds(0);
+    setIsRecordingVideo(true);
+    recorder.start(250);
+  };
+
+  const stopLiveRecording = () => {
+    if (mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.stop();
+    }
+  };
+
+  const closeLiveVideoRecorder = () => {
+    cleanupLiveRecorder();
+    setRecordedVideoFile(null);
+    setActiveVideoStepKey(null);
+  };
+
+  const retakeLiveRecording = async () => {
+    try {
+      await setupLiveVideoPreview();
+    } catch (error) {
+      setModalError(error instanceof Error ? error.message : "Camera dobara nahi khul paaya.");
+    }
+  };
 
   const openMomentToast = (input: Parameters<typeof deriveActionMoment>[0]) => {
     const moment = deriveActionMoment(input);
@@ -1048,14 +1387,14 @@ export function GroomerJobClient({
               >
                 <div className="flex flex-wrap gap-2">
                   {step.proofType === "video" ? (
-                    <CaptureButton
+                    <ActionButton
                       label={languageMode === "simple" ? "Video record karein" : "वीडियो रिकॉर्ड करें"}
-                      accept="video/*"
-                      capture="environment"
                       tone="primary"
                       icon={<Video className="h-4 w-4" />}
                       disabled={busy !== null}
-                      onPick={(file) => void runAction(step.key, () => uploadStepMedia(step.key, file))}
+                      onClick={() => void openLiveVideoRecorder(step.key).catch((error: unknown) => {
+                        setModalError(error instanceof Error ? error.message : "Camera khul nahi paaya.");
+                      })}
                     />
                   ) : null}
 
@@ -1082,13 +1421,13 @@ export function GroomerJobClient({
                         disabled={busy !== null}
                         onPick={(file) => void runAction(step.key, () => uploadStepMedia(step.key, file))}
                       />
-                      <CaptureButton
+                      <ActionButton
                         label={languageMode === "simple" ? "Video banao" : "वीडियो बनाओ"}
-                        accept="video/*"
-                        capture="environment"
                         icon={<Video className="h-4 w-4" />}
                         disabled={busy !== null}
-                        onPick={(file) => void runAction(step.key, () => uploadStepMedia(step.key, file))}
+                        onClick={() => void openLiveVideoRecorder(step.key).catch((error: unknown) => {
+                          setModalError(error instanceof Error ? error.message : "Camera khul nahi paaya.");
+                        })}
                       />
                     </>
                   ) : null}
@@ -1285,6 +1624,34 @@ export function GroomerJobClient({
           message={modalError}
           onClose={() => setModalError("")}
           mode={languageMode}
+        />
+      ) : null}
+
+      {activeVideoStepKey ? (
+        <LiveVideoRecorderModal
+          mode={languageMode}
+          busy={busy !== null}
+          elapsedSeconds={recordingSeconds}
+          isRecording={isRecordingVideo}
+          hasRecordedFile={!!recordedVideoFile}
+          videoRef={liveVideoRef}
+          onStart={() => {
+            try {
+              startLiveRecording();
+            } catch (error) {
+              setModalError(error instanceof Error ? error.message : "Recording start nahi hui.");
+            }
+          }}
+          onStop={stopLiveRecording}
+          onUseRecording={() => {
+            if (!activeVideoStepKey || !recordedVideoFile) return;
+            void runAction(activeVideoStepKey, async () => {
+              await uploadStepMedia(activeVideoStepKey, recordedVideoFile);
+              closeLiveVideoRecorder();
+            });
+          }}
+          onRetake={() => void retakeLiveRecording()}
+          onClose={closeLiveVideoRecorder}
         />
       ) : null}
 
