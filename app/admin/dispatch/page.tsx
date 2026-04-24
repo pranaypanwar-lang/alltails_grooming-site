@@ -421,6 +421,23 @@ export default function AdminDispatchPage() {
     serviceLandmark?: string | null;
     servicePincode?: string | null;
     serviceLocationUrl?: string | null;
+    pets: Array<{
+      bookingPetId: string;
+      name: string | null;
+      breed: string;
+      concernPhotoAssets: Array<{
+        id: string;
+        storageKey: string;
+        publicUrl: string;
+        originalName: string;
+      }>;
+      stylingReferenceAssets: Array<{
+        id: string;
+        storageKey: string;
+        publicUrl: string;
+        originalName: string;
+      }>;
+    }>;
   } | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [showDigest, setShowDigest] = useState(false);
@@ -687,6 +704,13 @@ export default function AdminDispatchPage() {
         serviceLandmark: drawerBooking.addressInfo.serviceLandmark ?? "",
         servicePincode: drawerBooking.addressInfo.servicePincode ?? "",
         serviceLocationUrl: drawerBooking.addressInfo.serviceLocationUrl ?? "",
+        pets: drawerBooking.pets.map((pet) => ({
+          bookingPetId: pet.bookingPetId,
+          name: pet.name,
+          breed: pet.breed,
+          concernPhotoAssets: pet.concernPhotoAssets,
+          stylingReferenceAssets: pet.stylingReferenceAssets,
+        })),
       });
       return;
     }
@@ -898,6 +922,19 @@ export default function AdminDispatchPage() {
     serviceLandmark: string;
     servicePincode: string;
     serviceLocationUrl: string;
+    pets: Array<{
+      bookingPetId: string;
+      concernAssets: Array<{
+        storageKey: string;
+        publicUrl: string;
+        originalName: string;
+      }>;
+      stylingAssets: Array<{
+        storageKey: string;
+        publicUrl: string;
+        originalName: string;
+      }>;
+    }>;
   }) => {
     if (!metadataState) return;
     setActionLoading(true);
@@ -1176,6 +1213,7 @@ export default function AdminDispatchPage() {
         initialServiceLandmark={metadataState?.serviceLandmark ?? ""}
         initialServicePincode={metadataState?.servicePincode ?? ""}
         initialServiceLocationUrl={metadataState?.serviceLocationUrl ?? ""}
+        initialPets={metadataState?.pets ?? []}
         isSubmitting={actionLoading}
         onClose={() => setMetadataState(null)}
         onSubmit={(payload) => void submitMetadata(payload)}

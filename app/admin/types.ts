@@ -167,6 +167,18 @@ export type AdminBookingPetDetail = {
   stylingNotes: string | null;
   stylingReferenceUrls: string[];
   concernPhotoUrls: string[];
+  stylingReferenceAssets: Array<{
+    id: string;
+    storageKey: string;
+    publicUrl: string;
+    originalName: string;
+  }>;
+  concernPhotoAssets: Array<{
+    id: string;
+    storageKey: string;
+    publicUrl: string;
+    originalName: string;
+  }>;
 };
 
 export type AdminBookingPaymentAudit = {
@@ -1126,6 +1138,7 @@ export type AdminBookingMetadataResponse = {
   bookingSource: string;
   adminNote: string | null;
   addressInfo: AdminBookingAddressInfo;
+  pets?: AdminBookingPetDetail[];
 };
 
 export type AdminPaymentLinkResponse = {

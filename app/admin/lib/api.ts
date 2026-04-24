@@ -505,6 +505,19 @@ export async function updateAdminBookingMetadata(
     serviceLandmark?: string;
     servicePincode?: string;
     serviceLocationUrl?: string;
+    pets?: Array<{
+      bookingPetId: string;
+      stylingAssets: Array<{
+        storageKey: string;
+        publicUrl: string;
+        originalName: string;
+      }>;
+      concernAssets: Array<{
+        storageKey: string;
+        publicUrl: string;
+        originalName: string;
+      }>;
+    }>;
   }
 ): Promise<AdminBookingMetadataResponse> {
   const res = await fetch(`/api/admin/bookings/${bookingId}/metadata`, {

@@ -333,6 +333,22 @@ export async function GET(
         stylingNotes: bp.stylingNotes ?? null,
         stylingReferenceUrls: bp.assets.filter((a) => a.kind === "styling_reference").map((a) => a.publicUrl),
         concernPhotoUrls: bp.assets.filter((a) => a.kind === "concern_photo").map((a) => a.publicUrl),
+        stylingReferenceAssets: bp.assets
+          .filter((a) => a.kind === "styling_reference")
+          .map((a) => ({
+            id: a.id,
+            storageKey: a.storageKey,
+            publicUrl: a.publicUrl,
+            originalName: a.originalName,
+          })),
+        concernPhotoAssets: bp.assets
+          .filter((a) => a.kind === "concern_photo")
+          .map((a) => ({
+            id: a.id,
+            storageKey: a.storageKey,
+            publicUrl: a.publicUrl,
+            originalName: a.originalName,
+          })),
       })),
 
       paymentAudit: {
