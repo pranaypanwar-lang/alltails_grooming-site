@@ -30,7 +30,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>
+      <head>
         <Script id="meta-pixel-base" strategy="afterInteractive">
           {`
             !function(f,b,e,v,n,t,s)
@@ -45,6 +45,8 @@ export default function RootLayout({
             fbq('track', 'PageView');
           `}
         </Script>
+      </head>
+      <body className={`${inter.className} antialiased`}>
         <noscript>
           <img
             height="1"
