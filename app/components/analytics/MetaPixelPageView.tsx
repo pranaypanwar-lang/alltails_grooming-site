@@ -2,13 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { META_PIXEL_ID } from "../../../lib/analytics/metaPixel";
-
-declare global {
-  interface Window {
-    fbq?: (...args: unknown[]) => void;
-  }
-}
+import { trackMetaEvent } from "../../../lib/analytics/metaPixel";
 
 export function MetaPixelPageView() {
   const pathname = usePathname();
@@ -20,11 +14,7 @@ export function MetaPixelPageView() {
       return;
     }
 
-    if (!window.fbq) {
-      return;
-    }
-
-    window.fbq("track", "PageView");
+    trackMetaEvent("PageView");
   }, [pathname]);
 
   return null;

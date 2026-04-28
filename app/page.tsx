@@ -5,6 +5,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { User, Star, Home, CalendarCheck, Layers, Package, ChevronLeft, X, CalendarDays } from "lucide-react";
+import {
+  buildAttemptEventId,
+  buildBookingEventId,
+  buildServiceMeta,
+  getBookingAttemptId,
+  getOrCreateBookingAttemptId,
+  hasAttemptEventFired,
+  hasSessionEventFired,
+  markAttemptEventFired,
+  markSessionEventFired,
+  resetBookingAttemptId,
+  trackMetaEvent,
+} from "../lib/analytics/metaPixel";
 
 /* =========================================================
    01. TYPES
@@ -1146,6 +1159,7 @@ setPaymentMethod("pay_now");
     setMobileBookingStep("setup");
 setIsCalendarOpen(false);
 setIsSlotsModalOpen(true);
+    resetBookingAttemptId();
   };
 
   const openWhatsAppChat = (message?: string) => {
@@ -1183,6 +1197,19 @@ setIsSlotsModalOpen(true);
     setConfirmedBooking(null);
 setIsCalendarOpen(false);
 setIsSlotsModalOpen(true);
+    resetBookingAttemptId();
+
+    const sessionKey = `view_content_${packageName.trim().toLowerCase()}`;
+    if (!hasSessionEventFired(sessionKey)) {
+      trackMetaEvent(
+        "ViewContent",
+        buildServiceMeta(packageName, {
+          value: getServicePrice(packageName) * petCount,
+          currency: "INR",
+        })
+      );
+      markSessionEventFired(sessionKey);
+    }
   };
   /* -------------------------------------------------------
      04A. HERO + BASIC FORM STATE
@@ -1500,7 +1527,7 @@ const [blogPosts, setBlogPosts] = useState<BlogPostPreview[]>([]);
      05. UI HELPERS
   ========================================================= */
 
-  const handleHeroInputChange = (
+const handleHeroInputChange = (
   e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
 ) => {
   const { name, value } = e.target;
@@ -1510,6 +1537,21 @@ const [blogPosts, setBlogPosts] = useState<BlogPostPreview[]>([]);
   }
 
   setHeroForm((prev) => ({ ...prev, [name]: value }));
+
+  if (name === "service" && value.trim()) {
+    const sessionKey = `view_content_${value.trim().toLowerCase()}`;
+
+    if (!hasSessionEventFired(sessionKey)) {
+      trackMetaEvent(
+        "ViewContent",
+        buildServiceMeta(value, {
+          value: getServicePrice(value) * petCount,
+          currency: "INR",
+        })
+      );
+      markSessionEventFired(sessionKey);
+    }
+  }
 };
 
 const getBookingWindowLabel = (window: {
@@ -1734,6 +1776,12 @@ useEffect(() => {
         `No consecutive booking windows available for ${count} pet(s) on ${selectedDateBlock?.date || date}.`
       );
     }
+
+    return {
+      dates,
+      selectedDateBlock,
+      selectedWindows,
+    };
   };
 
   const handleSelectDate = (date: string) => {
@@ -1932,7 +1980,27 @@ const handlePhoneBlurLookup = async () => {
     try {
       setSlotsLoading(true);
       setSelectedBookingWindowId("");
-      await fetchAvailabilityRange(heroForm.requiredDate, petCount);
+      resetBookingAttemptId();
+      const availability = await fetchAvailabilityRange(heroForm.requiredDate, petCount);
+      if (availability.selectedWindows.length > 0) {
+        const attemptId = getOrCreateBookingAttemptId();
+
+        if (!hasAttemptEventFired(attemptId, "initiate_checkout")) {
+          trackMetaEvent(
+            "InitiateCheckout",
+            buildServiceMeta(heroForm.service, {
+              value: getServicePrice(heroForm.service) * petCount,
+              currency: "INR",
+              city: heroForm.city,
+              selected_date:
+                availability.selectedDateBlock?.date || heroForm.requiredDate,
+              pet_count: petCount,
+            }),
+            { eventID: buildAttemptEventId(attemptId, "initiate_checkout") }
+          );
+          markAttemptEventFired(attemptId, "initiate_checkout");
+        }
+      }
       if (mobileStep) {
         setMobileBookingStep("details");
       } else {
@@ -1970,6 +2038,7 @@ setExpandedPetNotes((prev) => prev.filter((index) => index < count));
         setSlotsError("");
         setSlotsMessage("");
         setSelectedBookingWindowId("");
+        resetBookingAttemptId();
         await fetchAvailabilityRange(selectedDate, count);
       } catch (error) {
         console.error(error);
@@ -3143,12 +3212,48 @@ setSavedPetsError("");
 setSavedPetsLookupDoneForPhone("");
 setActiveBreedIndex(null);
 setIsCalendarOpen(false);
+    resetBookingAttemptId();
   };
 
   const selectedBookingWindow =
     bookingWindows.find(
       (window) => window.bookingWindowId === selectedBookingWindowId
     ) || null;
+
+  useEffect(() => {
+    if (!selectedBookingWindow) return;
+
+    const attemptId = getBookingAttemptId();
+    if (!attemptId) return;
+
+    const eventKey = `add_to_cart_${selectedBookingWindow.bookingWindowId}`;
+    if (hasAttemptEventFired(attemptId, eventKey)) return;
+
+    trackMetaEvent(
+      "AddToCart",
+      buildServiceMeta(heroForm.service, {
+        value: getServicePrice(heroForm.service) * petCount,
+        currency: "INR",
+        city: heroForm.city,
+        selected_date: selectedDate,
+        booking_window: getBookingWindowLabel(selectedBookingWindow),
+        pet_count: petCount,
+      }),
+      {
+        eventID: buildAttemptEventId(
+          attemptId,
+          `add_to_cart_${selectedBookingWindow.bookingWindowId}`
+        ),
+      }
+    );
+    markAttemptEventFired(attemptId, eventKey);
+  }, [
+    heroForm.city,
+    heroForm.service,
+    petCount,
+    selectedBookingWindow,
+    selectedDate,
+  ]);
 
   useEffect(() => {
     if (!isSlotsModalOpen || confirmedBooking) return;
@@ -3161,6 +3266,63 @@ setIsCalendarOpen(false);
 
   const canContinueBooking =
     !!selectedBookingWindowId && pets.every((pet) => pet.breed.trim().length > 0);
+
+  useEffect(() => {
+    if (!isSlotsModalOpen || confirmedBooking) return;
+
+    const attemptId = getBookingAttemptId();
+    if (!attemptId || hasAttemptEventFired(attemptId, "add_payment_info")) return;
+
+    const bookingDetailsReady =
+      !!heroForm.name.trim() &&
+      !!heroForm.phone.trim() &&
+      !!heroForm.city.trim() &&
+      !!heroForm.service.trim() &&
+      !!selectedDate &&
+      !!selectedBookingWindow &&
+      pets.every((pet) => pet.breed.trim().length > 0);
+
+    if (!bookingDetailsReady) return;
+
+    const isDesktopViewport =
+      typeof window !== "undefined" &&
+      window.matchMedia("(min-width: 1024px)").matches;
+    const hasReachedPaymentStep = isDesktopViewport
+      ? availabilityDates.length > 0
+      : mobileBookingStep === "payment";
+
+    if (!hasReachedPaymentStep) return;
+
+    trackMetaEvent(
+      "AddPaymentInfo",
+      buildServiceMeta(heroForm.service, {
+        value: pricingPreview.finalAmount,
+        currency: "INR",
+        city: heroForm.city,
+        selected_date: selectedDate,
+        booking_window: getBookingWindowLabel(selectedBookingWindow),
+        pet_count: petCount,
+        payment_method: paymentMethod,
+      }),
+      { eventID: buildAttemptEventId(attemptId, "add_payment_info") }
+    );
+    markAttemptEventFired(attemptId, "add_payment_info");
+  }, [
+    availabilityDates.length,
+    confirmedBooking,
+    heroForm.city,
+    heroForm.name,
+    heroForm.phone,
+    heroForm.service,
+    isSlotsModalOpen,
+    mobileBookingStep,
+    paymentMethod,
+    petCount,
+    pets,
+    pricingPreview.finalAmount,
+    selectedBookingWindow,
+    selectedDate,
+  ]);
 
   const loadRazorpayScript = () => {
     return new Promise<boolean>((resolve) => {
@@ -3298,6 +3460,21 @@ const uploadBookingAsset = async (
     });
 
     if (!bookingData.paymentOrder) {
+      trackMetaEvent(
+        "Lead",
+        buildServiceMeta(heroForm.service, {
+          value: bookingData.finalAmount,
+          currency: "INR",
+          city: heroForm.city,
+          selected_date: selectedDate,
+          booking_window: getBookingWindowLabel(selectedBookingWindow),
+          pet_count: pets.length,
+          payment_method: bookingData.paymentMethod,
+          booking_id: bookingData.bookingId,
+        }),
+        { eventID: buildBookingEventId("lead", bookingData.bookingId) }
+      );
+      resetBookingAttemptId();
       setConfirmationLoyaltyProgress(
         getAnimatedConfirmationLoyaltyProgress({ loyalty: bookingData.loyalty })
       );
@@ -3372,6 +3549,21 @@ const uploadBookingAsset = async (
             throw new Error(verifyData?.error || "Payment verification failed");
           }
 
+          trackMetaEvent(
+            "Purchase",
+            buildServiceMeta(heroForm.service, {
+              value: bookingData.finalAmount,
+              currency: "INR",
+              city: heroForm.city,
+              selected_date: selectedDate,
+              booking_window: getBookingWindowLabel(selectedBookingWindow),
+              pet_count: pets.length,
+              payment_method: bookingData.paymentMethod,
+              booking_id: bookingData.bookingId,
+            }),
+            { eventID: buildBookingEventId("purchase", bookingData.bookingId) }
+          );
+          resetBookingAttemptId();
           setConfirmationLoyaltyProgress(
             getAnimatedConfirmationLoyaltyProgress({ loyalty: bookingData.loyalty })
           );
