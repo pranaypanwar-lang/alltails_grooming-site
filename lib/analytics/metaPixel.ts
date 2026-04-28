@@ -161,6 +161,6 @@ export const buildAttemptEventId = (attemptId: string, suffix: string) =>
   `${getEnvironmentPrefix()}_${attemptId}_${suffix}`;
 
 export const buildBookingEventId = (
-  eventType: "lead" | "purchase",
+  eventType: "lead" | "qualified_initiated" | "qualified_confirmed" | "purchase",
   bookingId: string
 ) => `${getEnvironmentPrefix()}_${eventType}_${bookingId}`;

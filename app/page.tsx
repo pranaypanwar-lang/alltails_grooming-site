@@ -3511,6 +3511,22 @@ const uploadBookingAsset = async (
       return;
     }
 
+    // Lead fires for pay_now — booking created, Razorpay about to launch
+    trackMetaEvent(
+      "Lead",
+      buildServiceMeta(heroForm.service, {
+        value: bookingData.finalAmount,
+        currency: "INR",
+        city: heroForm.city,
+        selected_date: selectedDate,
+        booking_window: getBookingWindowLabel(selectedBookingWindow),
+        pet_count: pets.length,
+        payment_method: "pay_now",
+        booking_id: bookingData.bookingId,
+      }),
+      { eventID: buildBookingEventId("lead", bookingData.bookingId) }
+    );
+
     const razorpayLoaded = await loadRazorpayScript();
     if (!razorpayLoaded) {
       throw new Error("Could not load Razorpay checkout.");

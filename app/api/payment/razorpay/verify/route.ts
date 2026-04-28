@@ -14,6 +14,7 @@ import {
 } from "../../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../../lib/customerMessaging/provider";
 import { sendNewBookingAdminAlert } from "../../../../../lib/telegram/newBookingAlerts";
+import { sendMetaConversionsEvent } from "../../../../../lib/analytics/metaConversionsApi";
 
 export const runtime = "nodejs";
 
@@ -94,7 +95,7 @@ export async function POST(request: Request) {
     const updatedBooking = await prisma.$transaction(async (tx) => {
       const booking = await tx.booking.findUnique({
         where: { id: bookingId },
-        include: { slots: true, user: true },
+        include: { slots: true, user: true, service: true },
       });
 
       if (!booking) {
@@ -125,6 +126,11 @@ export async function POST(request: Request) {
           paymentPendingReason: null,
           paymentGatewayError: null,
           paymentFailedAt: null,
+        },
+        include: {
+          user: true,
+          service: true,
+          _count: { select: { pets: true } },
         },
       });
 
@@ -161,6 +167,26 @@ export async function POST(request: Request) {
       });
     } catch (error) {
       console.error("Admin Telegram prepaid booking alert failed:", error);
+    }
+
+    try {
+      await sendMetaConversionsEvent({
+        request,
+        eventName: "Purchase",
+        bookingId: updatedBooking.id,
+        phone: updatedBooking.user.phone,
+        externalId: updatedBooking.user.id,
+        name: updatedBooking.user.name,
+        city: updatedBooking.user.city,
+        serviceName: updatedBooking.service.name,
+        value: updatedBooking.finalAmount,
+        currency: "INR",
+        petCount: updatedBooking._count.pets,
+        selectedDate: updatedBooking.selectedDate ?? null,
+        paymentMethod: updatedBooking.paymentMethod,
+      });
+    } catch (error) {
+      console.error("Meta Conversions API Purchase event failed:", error);
     }
 
     const addressInfo = getAddressReadinessSummary(updatedBooking);

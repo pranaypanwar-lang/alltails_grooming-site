@@ -15,6 +15,7 @@ import {
 } from "../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../lib/customerMessaging/provider";
 import { sendNewBookingAdminAlert } from "../../../../lib/telegram/newBookingAlerts";
+import { sendMetaConversionsEvent } from "../../../../lib/analytics/metaConversionsApi";
 
 export const runtime = "nodejs";
 const adapter = new PrismaPg({
@@ -175,6 +176,49 @@ export async function POST(request: Request) {
       } catch (error) {
         console.error("Admin Telegram booking alert failed:", error);
       }
+    }
+
+    // Lead fires for ALL bookings — mirrors the browser pixel Lead event for deduplication
+    try {
+      await sendMetaConversionsEvent({
+        request,
+        eventName: "Lead",
+        bookingId: bookingWithAddress.id,
+        phone: result.user.phone,
+        externalId: result.user.id,
+        name: result.user.name,
+        city: result.user.city,
+        serviceName: result.service.name,
+        value: bookingWithAddress.finalAmount,
+        currency: "INR",
+        petCount: pets.length,
+        selectedDate,
+        paymentMethod: bookingWithAddress.paymentMethod,
+      });
+    } catch (error) {
+      console.error("Meta Conversions API Lead event failed:", error);
+    }
+
+    // Qualified fires for ALL bookings — person submitted the booking form
+    try {
+      await sendMetaConversionsEvent({
+        request,
+        eventName: "Qualified",
+        qualifiedStage: "initiated",
+        bookingId: bookingWithAddress.id,
+        phone: result.user.phone,
+        externalId: result.user.id,
+        name: result.user.name,
+        city: result.user.city,
+        serviceName: result.service.name,
+        value: bookingWithAddress.finalAmount,
+        currency: "INR",
+        petCount: pets.length,
+        selectedDate,
+        paymentMethod: bookingWithAddress.paymentMethod,
+      });
+    } catch (error) {
+      console.error("Meta Conversions API Qualified event failed:", error);
     }
 
     let paymentOrder: { orderId: string; amount: number; currency: string } | null = null;
