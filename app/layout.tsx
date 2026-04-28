@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
 import { Playfair_Display, Inter } from "next/font/google";
-import {
-  META_PIXEL_ID,
-  MetaPixelPageView,
-} from "./components/analytics/MetaPixelPageView";
+import { MetaPixelPageView } from "./components/analytics/MetaPixelPageView";
+import { META_PIXEL_ID } from "../lib/analytics/metaPixel";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],

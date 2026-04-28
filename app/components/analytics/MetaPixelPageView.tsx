@@ -2,14 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { META_PIXEL_ID } from "../../../lib/analytics/metaPixel";
 
 declare global {
   interface Window {
     fbq?: (...args: unknown[]) => void;
   }
 }
-
-const META_PIXEL_ID = "1003580967947137";
 
 export function MetaPixelPageView() {
   const pathname = usePathname();
@@ -30,5 +29,3 @@ export function MetaPixelPageView() {
 
   return null;
 }
-
-export { META_PIXEL_ID };
