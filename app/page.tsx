@@ -1015,7 +1015,7 @@ export default function GroomingLandingPage() {
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false);
 
   /* ── MOBILE BOOKING STEP ── */
-  const [mobileBookingStep, setMobileBookingStep] = useState<"setup" | "slot" | "details" | "pets" | "payment">("setup");
+  const [mobileBookingStep, setMobileBookingStep] = useState<"setup" | "details" | "slot" | "pets" | "payment">("setup");
   const [bookingIdCopied, setBookingIdCopied] = useState(false);
   const [, setIsCalendarOpen] = useState(false);
 
@@ -1639,6 +1639,12 @@ const selectedDateLabel = heroForm.requiredDate
     })
   : "";
 
+const todayDateInputValue = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+  .toISOString()
+  .split("T")[0];
+
+const mobileBookingSteps = ["setup", "details", "slot", "pets", "payment"] as const;
+
 const handlePaymentMethodChange = (method: "pay_now" | "pay_after_service") => {
   setPaymentMethod(method);
   setBookingCreateError("");
@@ -1928,7 +1934,7 @@ const handlePhoneBlurLookup = async () => {
       setSelectedBookingWindowId("");
       await fetchAvailabilityRange(heroForm.requiredDate, petCount);
       if (mobileStep) {
-        setMobileBookingStep("slot");
+        setMobileBookingStep("details");
       } else {
         setIsSlotsModalOpen(true);
       }
@@ -3146,7 +3152,7 @@ setIsCalendarOpen(false);
 
   useEffect(() => {
     if (!isSlotsModalOpen || confirmedBooking) return;
-    if (!["details", "pets", "payment"].includes(mobileBookingStep)) return;
+  if (!["pets", "payment"].includes(mobileBookingStep)) return;
     if (selectedBookingWindowId) return;
 
     setBookingCreateError("Please select a booking window first.");
@@ -3544,12 +3550,12 @@ onClick={() => {
     closeSlotsModal();
   } else if (mobileBookingStep === "setup") {
     closeSlotsModal();
-  } else if (mobileBookingStep === "slot") {
-    setMobileBookingStep("setup");
   } else if (mobileBookingStep === "details") {
-    setMobileBookingStep("slot");
-  } else if (mobileBookingStep === "pets") {
+    setMobileBookingStep("setup");
+  } else if (mobileBookingStep === "slot") {
     setMobileBookingStep("details");
+  } else if (mobileBookingStep === "pets") {
+    setMobileBookingStep("slot");
   } else if (mobileBookingStep === "payment") {
     setMobileBookingStep("pets");
   }
@@ -3566,10 +3572,10 @@ onClick={() => {
 
           {!confirmedBooking && (
             <div className="flex items-center gap-2">
-              {(["setup", "slot", "details", "pets", "payment"] as const).map((step, i) => (
+              {mobileBookingSteps.map((step, i) => (
                 <div
                   key={step}
-                  className={`h-2 rounded-full transition-all duration-300 ${mobileBookingStep === step ? "w-6 bg-[#6d5bd0]" : i < (["setup", "slot", "details", "pets", "payment"] as const).indexOf(mobileBookingStep) ? "w-2 bg-[#6d5bd0]/40" : "w-2 bg-[#e5e1f5]"}`}
+                  className={`h-2 rounded-full transition-all duration-300 ${mobileBookingStep === step ? "w-6 bg-[#6d5bd0]" : i < mobileBookingSteps.indexOf(mobileBookingStep) ? "w-2 bg-[#6d5bd0]/40" : "w-2 bg-[#e5e1f5]"}`}
                 />
               ))}
             </div>
@@ -3966,6 +3972,7 @@ onClick={() => {
                     id="mobile-booking-date-input"
                     name="requiredDate"
                     type="date"
+                    min={todayDateInputValue}
                     value={heroForm.requiredDate}
                     onChange={handleHeroInputChange}
                     className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
@@ -4080,7 +4087,7 @@ onClick={() => {
             <div className="fixed inset-x-0 bottom-0 z-20 border-t border-[#ece6fb] bg-white/95 px-4 pb-[calc(env(safe-area-inset-bottom)+16px)] pt-4 backdrop-blur">
               <button
                 type="button"
-                onClick={() => { if (selectedBookingWindowId) setMobileBookingStep("details"); }}
+                onClick={() => { if (selectedBookingWindowId) setMobileBookingStep("pets"); }}
                 disabled={!selectedBookingWindowId}
                 className="h-[54px] w-full rounded-[18px] bg-[#6d5bd0] text-[16px] font-semibold text-white shadow-[0_12px_28px_rgba(109,91,208,0.22)] disabled:opacity-40"
               >
@@ -4145,12 +4152,6 @@ onClick={() => {
               <button
                 type="button"
                 onClick={async () => {
-                  if (!selectedBookingWindowId) {
-                    setBookingCreateError("Please select a booking window first.");
-                    setMobileBookingStep("slot");
-                    return;
-                  }
-
                   if (!heroForm.name.trim() || !heroForm.phone.trim()) {
                     setBookingCreateError("Please fill your name and phone.");
                     return;
@@ -4158,7 +4159,7 @@ onClick={() => {
                   setBookingCreateError("");
                   await fetchSavedPetsByPhone(heroForm.phone);
                   await fetchLoyaltyStatus(heroForm.phone);
-                  setMobileBookingStep("pets");
+                  setMobileBookingStep("slot");
                 }}
                 disabled={!heroForm.name.trim() || !heroForm.phone.trim()}
                 className="h-[54px] w-full rounded-[18px] bg-[#6d5bd0] text-[16px] font-semibold text-white shadow-[0_12px_28px_rgba(109,91,208,0.22)] disabled:opacity-50"
@@ -4984,6 +4985,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                   <input
                     type="date"
                     name="requiredDate"
+                    min={todayDateInputValue}
                     value={heroForm.requiredDate}
                     onChange={handleHeroInputChange}
                     className="h-[54px] w-full rounded-[18px] border border-[#d9dbe7] bg-white px-4 text-[16px] font-medium text-[#6b7280] outline-none focus:border-[#7c68e5]"
@@ -6998,6 +7000,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
             <input
               name="requiredDate"
               type="date"
+              min={todayDateInputValue}
               value={heroForm.requiredDate}
               onChange={handleHeroInputChange}
               className="h-[48px] rounded-[14px] border border-[#d9dbe7] bg-[#fcfcff] px-4 text-[15px] text-[#6b7280] outline-none focus:border-[#9c8cff]"
