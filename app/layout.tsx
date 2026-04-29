@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Playfair_Display, Inter } from "next/font/google";
 import { MetaPixelPageView } from "./components/analytics/MetaPixelPageView";
@@ -56,6 +57,7 @@ export default function RootLayout({
         </noscript>
         <MetaPixelPageView />
         {children}
+        <Analytics />
       </body>
     </html>
   );
