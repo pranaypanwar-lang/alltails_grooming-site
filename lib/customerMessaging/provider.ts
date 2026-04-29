@@ -262,7 +262,7 @@ function getCombirdsTemplatePayload(
     campaignName = "team_on_the_way1";
     templateParams = [firstName, petLabel, serviceName, windowLabel];
   } else if (message.messageType === "booking_cancelled_confirmation") {
-    campaignName = "cancelled_booking_confirmed_626fd";
+    campaignName = "booking_cancelled_confirmation";
     templateParams = [firstName, petLabel, serviceName, selectedDate, windowLabel, addressLine];
   } else if (message.messageType === "booking_rescheduled_confirmation") {
     campaignName = "booking_rescheduled_confirmation";
