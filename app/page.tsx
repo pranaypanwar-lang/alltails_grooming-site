@@ -18,6 +18,10 @@ import {
   resetBookingAttemptId,
   trackMetaEvent,
 } from "../lib/analytics/metaPixel";
+import {
+  trackGoogleAdsBookingConversion,
+  trackGoogleAdsPurchaseConversion,
+} from "../lib/analytics/googleAds";
 
 /* =========================================================
    01. TYPES
@@ -1527,12 +1531,26 @@ const [blogPosts, setBlogPosts] = useState<BlogPostPreview[]>([]);
      05. UI HELPERS
   ========================================================= */
 
+const getTodayDateInputValue = () =>
+  new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+    .toISOString()
+    .split("T")[0];
+
+const isPastDateInputValue = (value: string) =>
+  Boolean(value) && value < getTodayDateInputValue();
+
 const handleHeroInputChange = (
   e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
 ) => {
   const { name, value } = e.target;
 
   if (name === "city" && value && !isSupportedCity(value)) {
+    return;
+  }
+
+  if (name === "requiredDate" && isPastDateInputValue(value)) {
+    setSlotsError("Past dates are not available. Please choose today or a future date.");
+    setHeroForm((prev) => ({ ...prev, [name]: "" }));
     return;
   }
 
@@ -1681,9 +1699,7 @@ const selectedDateLabel = heroForm.requiredDate
     })
   : "";
 
-const todayDateInputValue = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-  .toISOString()
-  .split("T")[0];
+const todayDateInputValue = getTodayDateInputValue();
 
 const mobileBookingSteps = ["setup", "details", "slot", "pets", "payment"] as const;
 
@@ -1969,6 +1985,11 @@ const handlePhoneBlurLookup = async () => {
 
     if (missingFields) {
       setSlotsError(mobileStep ? "Please select city and visit date." : "Please fill all fields before checking availability.");
+      return;
+    }
+
+    if (isPastDateInputValue(heroForm.requiredDate)) {
+      setSlotsError("Past dates are not available. Please choose today or a future date.");
       return;
     }
 
@@ -2821,6 +2842,11 @@ const closeRescheduleFlow = () => {
       return;
     }
 
+    if (isPastDateInputValue(rescheduleDate)) {
+      setRescheduleError("Past dates are not available. Please choose today or a future date.");
+      return;
+    }
+
     if (!rescheduleCity.trim()) {
       setRescheduleError("Booking city is missing.");
       return;
@@ -3460,6 +3486,7 @@ const uploadBookingAsset = async (
     });
 
     if (!bookingData.paymentOrder) {
+      trackGoogleAdsBookingConversion(bookingData.finalAmount);
       trackMetaEvent(
         "Lead",
         buildServiceMeta(heroForm.service, {
@@ -3512,6 +3539,7 @@ const uploadBookingAsset = async (
     }
 
     // Lead fires for pay_now — booking created, Razorpay about to launch
+    trackGoogleAdsBookingConversion(bookingData.finalAmount);
     trackMetaEvent(
       "Lead",
       buildServiceMeta(heroForm.service, {
@@ -3565,6 +3593,10 @@ const uploadBookingAsset = async (
             throw new Error(verifyData?.error || "Payment verification failed");
           }
 
+          trackGoogleAdsPurchaseConversion(
+            bookingData.finalAmount,
+            bookingData.bookingId
+          );
           trackMetaEvent(
             "Purchase",
             buildServiceMeta(heroForm.service, {
@@ -6890,6 +6922,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
             </label>
             <input
               type="date"
+              min={todayDateInputValue}
               value={rescheduleDate}
               onChange={(e) => setRescheduleDate(e.target.value)}
               className="h-[48px] w-full rounded-[14px] border border-[#d9dbe7] bg-white px-4 text-[15px] outline-none focus:border-[#9c8cff]"

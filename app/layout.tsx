@@ -5,6 +5,7 @@ import "./globals.css";
 import { Playfair_Display, Inter } from "next/font/google";
 import { MetaPixelPageView } from "./components/analytics/MetaPixelPageView";
 import { META_PIXEL_ID } from "../lib/analytics/metaPixel";
+import { GOOGLE_ADS_ID } from "../lib/analytics/googleAds";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -42,6 +43,19 @@ export default function RootLayout({
             'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '${META_PIXEL_ID}');
             fbq('track', 'PageView');
+          `}
+        </Script>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-base" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            window.gtag = gtag;
+            gtag('js', new Date());
+            gtag('config', '${GOOGLE_ADS_ID}');
           `}
         </Script>
       </head>
