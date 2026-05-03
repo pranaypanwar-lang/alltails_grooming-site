@@ -75,6 +75,11 @@ const getEnvironmentPrefix = () => {
     }
   }
 
+  // Vercel sets VERCEL_ENV to "production" | "preview" | "development" server-side
+  const vercelEnv = process.env.VERCEL_ENV;
+  if (vercelEnv === "production") return "prod";
+  if (vercelEnv === "preview") return "preview";
+
   return process.env.NODE_ENV === "production" ? "prod" : "dev";
 };
 

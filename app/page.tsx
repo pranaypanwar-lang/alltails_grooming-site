@@ -3486,7 +3486,7 @@ const uploadBookingAsset = async (
     });
 
     if (!bookingData.paymentOrder) {
-      trackGoogleAdsBookingConversion(bookingData.finalAmount);
+      trackGoogleAdsBookingConversion(bookingData.finalAmount, heroForm.phone);
       trackMetaEvent(
         "Lead",
         buildServiceMeta(heroForm.service, {
@@ -3539,7 +3539,7 @@ const uploadBookingAsset = async (
     }
 
     // Lead fires for pay_now — booking created, Razorpay about to launch
-    trackGoogleAdsBookingConversion(bookingData.finalAmount);
+    trackGoogleAdsBookingConversion(bookingData.finalAmount, heroForm.phone);
     trackMetaEvent(
       "Lead",
       buildServiceMeta(heroForm.service, {
@@ -3595,7 +3595,8 @@ const uploadBookingAsset = async (
 
           trackGoogleAdsPurchaseConversion(
             bookingData.finalAmount,
-            bookingData.bookingId
+            bookingData.bookingId,
+            heroForm.phone
           );
           trackMetaEvent(
             "Purchase",

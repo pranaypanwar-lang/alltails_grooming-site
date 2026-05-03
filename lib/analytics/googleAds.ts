@@ -16,6 +16,17 @@ type GoogleAdsConversionParams = {
   value?: number;
   currency?: string;
   transactionId?: string;
+  phone?: string;
+};
+
+// Normalize phone to E.164 format expected by gtag enhanced conversions
+const normalizePhoneE164 = (phone?: string): string | undefined => {
+  if (!phone) return undefined;
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length === 10) return `+91${digits}`;
+  if (digits.length === 12 && digits.startsWith("91")) return `+${digits}`;
+  if (digits.length > 10) return `+${digits}`;
+  return undefined;
 };
 
 export const trackGoogleAdsConversion = ({
@@ -23,12 +34,13 @@ export const trackGoogleAdsConversion = ({
   value,
   currency = "INR",
   transactionId,
+  phone,
 }: GoogleAdsConversionParams) => {
   if (!isBrowser() || typeof window.gtag !== "function") {
     return;
   }
 
-  const payload: Record<string, string | number> = {
+  const payload: Record<string, unknown> = {
     send_to: `${GOOGLE_ADS_ID}/${sendToLabel}`,
   };
 
@@ -41,23 +53,31 @@ export const trackGoogleAdsConversion = ({
     payload.transaction_id = transactionId;
   }
 
+  const normalizedPhone = normalizePhoneE164(phone);
+  if (normalizedPhone) {
+    payload.user_data = { phone_number: normalizedPhone };
+  }
+
   window.gtag("event", "conversion", payload);
 };
 
-export const trackGoogleAdsBookingConversion = (value: number) =>
+export const trackGoogleAdsBookingConversion = (value: number, phone?: string) =>
   trackGoogleAdsConversion({
     sendToLabel: GOOGLE_ADS_BOOKING_LABEL,
     value,
     currency: "INR",
+    phone,
   });
 
 export const trackGoogleAdsPurchaseConversion = (
   value: number,
-  transactionId: string
+  transactionId: string,
+  phone?: string
 ) =>
   trackGoogleAdsConversion({
     sendToLabel: GOOGLE_ADS_PURCHASE_LABEL,
     value,
     currency: "INR",
     transactionId,
+    phone,
   });
