@@ -534,6 +534,20 @@ model LegalDocument {
   @@index([slug])
 }
 
+model HeroTestimonial {
+  id             String   @id @default(uuid())
+  slug           String   @unique
+  quote          String
+  authorName     String
+  authorLocation String
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+
+  @@index([slug])
+  @@index([isActive])
+}
+
 model BookingEvent {
   id        String  @id @default(uuid())
   bookingId String

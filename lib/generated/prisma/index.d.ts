@@ -134,6 +134,11 @@ export type BlogPost = $Result.DefaultSelection<Prisma.$BlogPostPayload>
  */
 export type LegalDocument = $Result.DefaultSelection<Prisma.$LegalDocumentPayload>
 /**
+ * Model HeroTestimonial
+ * 
+ */
+export type HeroTestimonial = $Result.DefaultSelection<Prisma.$HeroTestimonialPayload>
+/**
  * Model BookingEvent
  * 
  */
@@ -554,6 +559,16 @@ export class PrismaClient<
     * ```
     */
   get legalDocument(): Prisma.LegalDocumentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.heroTestimonial`: Exposes CRUD operations for the **HeroTestimonial** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more HeroTestimonials
+    * const heroTestimonials = await prisma.heroTestimonial.findMany()
+    * ```
+    */
+  get heroTestimonial(): Prisma.HeroTestimonialDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.bookingEvent`: Exposes CRUD operations for the **BookingEvent** model.
@@ -1132,6 +1147,7 @@ export namespace Prisma {
     TrainingCompletion: 'TrainingCompletion',
     BlogPost: 'BlogPost',
     LegalDocument: 'LegalDocument',
+    HeroTestimonial: 'HeroTestimonial',
     BookingEvent: 'BookingEvent',
     BookingSopStep: 'BookingSopStep',
     BookingSopProof: 'BookingSopProof',
@@ -1159,7 +1175,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "pet" | "petAsset" | "service" | "coupon" | "couponRedemption" | "serviceArea" | "team" | "teamCoverageRule" | "teamCoverageArea" | "slot" | "booking" | "teamMember" | "teamLeaderboardSnapshot" | "groomerRewardEvent" | "workforceLeaveRequest" | "workforceSalaryAdvanceRequest" | "workforceReferralRecord" | "trainingModule" | "workforceTrainingInterest" | "workforceRewardRedemptionRequest" | "trainingCompletion" | "blogPost" | "legalDocument" | "bookingEvent" | "bookingSopStep" | "bookingSopProof" | "bookingPaymentCollection" | "bookingPet" | "bookingSlot" | "bookingPetAsset" | "bookingDraftAsset" | "relayCallSession" | "dispatchAlert" | "bookingCustomerMessage" | "bookingSupportCase"
+      modelProps: "user" | "pet" | "petAsset" | "service" | "coupon" | "couponRedemption" | "serviceArea" | "team" | "teamCoverageRule" | "teamCoverageArea" | "slot" | "booking" | "teamMember" | "teamLeaderboardSnapshot" | "groomerRewardEvent" | "workforceLeaveRequest" | "workforceSalaryAdvanceRequest" | "workforceReferralRecord" | "trainingModule" | "workforceTrainingInterest" | "workforceRewardRedemptionRequest" | "trainingCompletion" | "blogPost" | "legalDocument" | "heroTestimonial" | "bookingEvent" | "bookingSopStep" | "bookingSopProof" | "bookingPaymentCollection" | "bookingPet" | "bookingSlot" | "bookingPetAsset" | "bookingDraftAsset" | "relayCallSession" | "dispatchAlert" | "bookingCustomerMessage" | "bookingSupportCase"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2939,6 +2955,80 @@ export namespace Prisma {
           }
         }
       }
+      HeroTestimonial: {
+        payload: Prisma.$HeroTestimonialPayload<ExtArgs>
+        fields: Prisma.HeroTestimonialFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.HeroTestimonialFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroTestimonialPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.HeroTestimonialFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroTestimonialPayload>
+          }
+          findFirst: {
+            args: Prisma.HeroTestimonialFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroTestimonialPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.HeroTestimonialFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroTestimonialPayload>
+          }
+          findMany: {
+            args: Prisma.HeroTestimonialFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroTestimonialPayload>[]
+          }
+          create: {
+            args: Prisma.HeroTestimonialCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroTestimonialPayload>
+          }
+          createMany: {
+            args: Prisma.HeroTestimonialCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.HeroTestimonialCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroTestimonialPayload>[]
+          }
+          delete: {
+            args: Prisma.HeroTestimonialDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroTestimonialPayload>
+          }
+          update: {
+            args: Prisma.HeroTestimonialUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroTestimonialPayload>
+          }
+          deleteMany: {
+            args: Prisma.HeroTestimonialDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.HeroTestimonialUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.HeroTestimonialUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroTestimonialPayload>[]
+          }
+          upsert: {
+            args: Prisma.HeroTestimonialUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HeroTestimonialPayload>
+          }
+          aggregate: {
+            args: Prisma.HeroTestimonialAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateHeroTestimonial>
+          }
+          groupBy: {
+            args: Prisma.HeroTestimonialGroupByArgs<ExtArgs>
+            result: $Utils.Optional<HeroTestimonialGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.HeroTestimonialCountArgs<ExtArgs>
+            result: $Utils.Optional<HeroTestimonialCountAggregateOutputType> | number
+          }
+        }
+      }
       BookingEvent: {
         payload: Prisma.$BookingEventPayload<ExtArgs>
         fields: Prisma.BookingEventFieldRefs
@@ -3959,6 +4049,7 @@ export namespace Prisma {
     trainingCompletion?: TrainingCompletionOmit
     blogPost?: BlogPostOmit
     legalDocument?: LegalDocumentOmit
+    heroTestimonial?: HeroTestimonialOmit
     bookingEvent?: BookingEventOmit
     bookingSopStep?: BookingSopStepOmit
     bookingSopProof?: BookingSopProofOmit
@@ -33992,6 +34083,1045 @@ export namespace Prisma {
 
 
   /**
+   * Model HeroTestimonial
+   */
+
+  export type AggregateHeroTestimonial = {
+    _count: HeroTestimonialCountAggregateOutputType | null
+    _min: HeroTestimonialMinAggregateOutputType | null
+    _max: HeroTestimonialMaxAggregateOutputType | null
+  }
+
+  export type HeroTestimonialMinAggregateOutputType = {
+    id: string | null
+    slug: string | null
+    quote: string | null
+    authorName: string | null
+    authorLocation: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type HeroTestimonialMaxAggregateOutputType = {
+    id: string | null
+    slug: string | null
+    quote: string | null
+    authorName: string | null
+    authorLocation: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type HeroTestimonialCountAggregateOutputType = {
+    id: number
+    slug: number
+    quote: number
+    authorName: number
+    authorLocation: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type HeroTestimonialMinAggregateInputType = {
+    id?: true
+    slug?: true
+    quote?: true
+    authorName?: true
+    authorLocation?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type HeroTestimonialMaxAggregateInputType = {
+    id?: true
+    slug?: true
+    quote?: true
+    authorName?: true
+    authorLocation?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type HeroTestimonialCountAggregateInputType = {
+    id?: true
+    slug?: true
+    quote?: true
+    authorName?: true
+    authorLocation?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type HeroTestimonialAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which HeroTestimonial to aggregate.
+     */
+    where?: HeroTestimonialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HeroTestimonials to fetch.
+     */
+    orderBy?: HeroTestimonialOrderByWithRelationInput | HeroTestimonialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: HeroTestimonialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HeroTestimonials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HeroTestimonials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned HeroTestimonials
+    **/
+    _count?: true | HeroTestimonialCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: HeroTestimonialMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: HeroTestimonialMaxAggregateInputType
+  }
+
+  export type GetHeroTestimonialAggregateType<T extends HeroTestimonialAggregateArgs> = {
+        [P in keyof T & keyof AggregateHeroTestimonial]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateHeroTestimonial[P]>
+      : GetScalarType<T[P], AggregateHeroTestimonial[P]>
+  }
+
+
+
+
+  export type HeroTestimonialGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: HeroTestimonialWhereInput
+    orderBy?: HeroTestimonialOrderByWithAggregationInput | HeroTestimonialOrderByWithAggregationInput[]
+    by: HeroTestimonialScalarFieldEnum[] | HeroTestimonialScalarFieldEnum
+    having?: HeroTestimonialScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: HeroTestimonialCountAggregateInputType | true
+    _min?: HeroTestimonialMinAggregateInputType
+    _max?: HeroTestimonialMaxAggregateInputType
+  }
+
+  export type HeroTestimonialGroupByOutputType = {
+    id: string
+    slug: string
+    quote: string
+    authorName: string
+    authorLocation: string
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: HeroTestimonialCountAggregateOutputType | null
+    _min: HeroTestimonialMinAggregateOutputType | null
+    _max: HeroTestimonialMaxAggregateOutputType | null
+  }
+
+  type GetHeroTestimonialGroupByPayload<T extends HeroTestimonialGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<HeroTestimonialGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof HeroTestimonialGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], HeroTestimonialGroupByOutputType[P]>
+            : GetScalarType<T[P], HeroTestimonialGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type HeroTestimonialSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slug?: boolean
+    quote?: boolean
+    authorName?: boolean
+    authorLocation?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["heroTestimonial"]>
+
+  export type HeroTestimonialSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slug?: boolean
+    quote?: boolean
+    authorName?: boolean
+    authorLocation?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["heroTestimonial"]>
+
+  export type HeroTestimonialSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slug?: boolean
+    quote?: boolean
+    authorName?: boolean
+    authorLocation?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["heroTestimonial"]>
+
+  export type HeroTestimonialSelectScalar = {
+    id?: boolean
+    slug?: boolean
+    quote?: boolean
+    authorName?: boolean
+    authorLocation?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type HeroTestimonialOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "slug" | "quote" | "authorName" | "authorLocation" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["heroTestimonial"]>
+
+  export type $HeroTestimonialPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "HeroTestimonial"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      slug: string
+      quote: string
+      authorName: string
+      authorLocation: string
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["heroTestimonial"]>
+    composites: {}
+  }
+
+  type HeroTestimonialGetPayload<S extends boolean | null | undefined | HeroTestimonialDefaultArgs> = $Result.GetResult<Prisma.$HeroTestimonialPayload, S>
+
+  type HeroTestimonialCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<HeroTestimonialFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: HeroTestimonialCountAggregateInputType | true
+    }
+
+  export interface HeroTestimonialDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['HeroTestimonial'], meta: { name: 'HeroTestimonial' } }
+    /**
+     * Find zero or one HeroTestimonial that matches the filter.
+     * @param {HeroTestimonialFindUniqueArgs} args - Arguments to find a HeroTestimonial
+     * @example
+     * // Get one HeroTestimonial
+     * const heroTestimonial = await prisma.heroTestimonial.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends HeroTestimonialFindUniqueArgs>(args: SelectSubset<T, HeroTestimonialFindUniqueArgs<ExtArgs>>): Prisma__HeroTestimonialClient<$Result.GetResult<Prisma.$HeroTestimonialPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one HeroTestimonial that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {HeroTestimonialFindUniqueOrThrowArgs} args - Arguments to find a HeroTestimonial
+     * @example
+     * // Get one HeroTestimonial
+     * const heroTestimonial = await prisma.heroTestimonial.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends HeroTestimonialFindUniqueOrThrowArgs>(args: SelectSubset<T, HeroTestimonialFindUniqueOrThrowArgs<ExtArgs>>): Prisma__HeroTestimonialClient<$Result.GetResult<Prisma.$HeroTestimonialPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first HeroTestimonial that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HeroTestimonialFindFirstArgs} args - Arguments to find a HeroTestimonial
+     * @example
+     * // Get one HeroTestimonial
+     * const heroTestimonial = await prisma.heroTestimonial.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends HeroTestimonialFindFirstArgs>(args?: SelectSubset<T, HeroTestimonialFindFirstArgs<ExtArgs>>): Prisma__HeroTestimonialClient<$Result.GetResult<Prisma.$HeroTestimonialPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first HeroTestimonial that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HeroTestimonialFindFirstOrThrowArgs} args - Arguments to find a HeroTestimonial
+     * @example
+     * // Get one HeroTestimonial
+     * const heroTestimonial = await prisma.heroTestimonial.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends HeroTestimonialFindFirstOrThrowArgs>(args?: SelectSubset<T, HeroTestimonialFindFirstOrThrowArgs<ExtArgs>>): Prisma__HeroTestimonialClient<$Result.GetResult<Prisma.$HeroTestimonialPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more HeroTestimonials that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HeroTestimonialFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all HeroTestimonials
+     * const heroTestimonials = await prisma.heroTestimonial.findMany()
+     * 
+     * // Get first 10 HeroTestimonials
+     * const heroTestimonials = await prisma.heroTestimonial.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const heroTestimonialWithIdOnly = await prisma.heroTestimonial.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends HeroTestimonialFindManyArgs>(args?: SelectSubset<T, HeroTestimonialFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HeroTestimonialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a HeroTestimonial.
+     * @param {HeroTestimonialCreateArgs} args - Arguments to create a HeroTestimonial.
+     * @example
+     * // Create one HeroTestimonial
+     * const HeroTestimonial = await prisma.heroTestimonial.create({
+     *   data: {
+     *     // ... data to create a HeroTestimonial
+     *   }
+     * })
+     * 
+     */
+    create<T extends HeroTestimonialCreateArgs>(args: SelectSubset<T, HeroTestimonialCreateArgs<ExtArgs>>): Prisma__HeroTestimonialClient<$Result.GetResult<Prisma.$HeroTestimonialPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many HeroTestimonials.
+     * @param {HeroTestimonialCreateManyArgs} args - Arguments to create many HeroTestimonials.
+     * @example
+     * // Create many HeroTestimonials
+     * const heroTestimonial = await prisma.heroTestimonial.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends HeroTestimonialCreateManyArgs>(args?: SelectSubset<T, HeroTestimonialCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many HeroTestimonials and returns the data saved in the database.
+     * @param {HeroTestimonialCreateManyAndReturnArgs} args - Arguments to create many HeroTestimonials.
+     * @example
+     * // Create many HeroTestimonials
+     * const heroTestimonial = await prisma.heroTestimonial.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many HeroTestimonials and only return the `id`
+     * const heroTestimonialWithIdOnly = await prisma.heroTestimonial.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends HeroTestimonialCreateManyAndReturnArgs>(args?: SelectSubset<T, HeroTestimonialCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HeroTestimonialPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a HeroTestimonial.
+     * @param {HeroTestimonialDeleteArgs} args - Arguments to delete one HeroTestimonial.
+     * @example
+     * // Delete one HeroTestimonial
+     * const HeroTestimonial = await prisma.heroTestimonial.delete({
+     *   where: {
+     *     // ... filter to delete one HeroTestimonial
+     *   }
+     * })
+     * 
+     */
+    delete<T extends HeroTestimonialDeleteArgs>(args: SelectSubset<T, HeroTestimonialDeleteArgs<ExtArgs>>): Prisma__HeroTestimonialClient<$Result.GetResult<Prisma.$HeroTestimonialPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one HeroTestimonial.
+     * @param {HeroTestimonialUpdateArgs} args - Arguments to update one HeroTestimonial.
+     * @example
+     * // Update one HeroTestimonial
+     * const heroTestimonial = await prisma.heroTestimonial.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends HeroTestimonialUpdateArgs>(args: SelectSubset<T, HeroTestimonialUpdateArgs<ExtArgs>>): Prisma__HeroTestimonialClient<$Result.GetResult<Prisma.$HeroTestimonialPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more HeroTestimonials.
+     * @param {HeroTestimonialDeleteManyArgs} args - Arguments to filter HeroTestimonials to delete.
+     * @example
+     * // Delete a few HeroTestimonials
+     * const { count } = await prisma.heroTestimonial.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends HeroTestimonialDeleteManyArgs>(args?: SelectSubset<T, HeroTestimonialDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more HeroTestimonials.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HeroTestimonialUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many HeroTestimonials
+     * const heroTestimonial = await prisma.heroTestimonial.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends HeroTestimonialUpdateManyArgs>(args: SelectSubset<T, HeroTestimonialUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more HeroTestimonials and returns the data updated in the database.
+     * @param {HeroTestimonialUpdateManyAndReturnArgs} args - Arguments to update many HeroTestimonials.
+     * @example
+     * // Update many HeroTestimonials
+     * const heroTestimonial = await prisma.heroTestimonial.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more HeroTestimonials and only return the `id`
+     * const heroTestimonialWithIdOnly = await prisma.heroTestimonial.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends HeroTestimonialUpdateManyAndReturnArgs>(args: SelectSubset<T, HeroTestimonialUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HeroTestimonialPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one HeroTestimonial.
+     * @param {HeroTestimonialUpsertArgs} args - Arguments to update or create a HeroTestimonial.
+     * @example
+     * // Update or create a HeroTestimonial
+     * const heroTestimonial = await prisma.heroTestimonial.upsert({
+     *   create: {
+     *     // ... data to create a HeroTestimonial
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the HeroTestimonial we want to update
+     *   }
+     * })
+     */
+    upsert<T extends HeroTestimonialUpsertArgs>(args: SelectSubset<T, HeroTestimonialUpsertArgs<ExtArgs>>): Prisma__HeroTestimonialClient<$Result.GetResult<Prisma.$HeroTestimonialPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of HeroTestimonials.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HeroTestimonialCountArgs} args - Arguments to filter HeroTestimonials to count.
+     * @example
+     * // Count the number of HeroTestimonials
+     * const count = await prisma.heroTestimonial.count({
+     *   where: {
+     *     // ... the filter for the HeroTestimonials we want to count
+     *   }
+     * })
+    **/
+    count<T extends HeroTestimonialCountArgs>(
+      args?: Subset<T, HeroTestimonialCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], HeroTestimonialCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a HeroTestimonial.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HeroTestimonialAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends HeroTestimonialAggregateArgs>(args: Subset<T, HeroTestimonialAggregateArgs>): Prisma.PrismaPromise<GetHeroTestimonialAggregateType<T>>
+
+    /**
+     * Group by HeroTestimonial.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HeroTestimonialGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends HeroTestimonialGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: HeroTestimonialGroupByArgs['orderBy'] }
+        : { orderBy?: HeroTestimonialGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, HeroTestimonialGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetHeroTestimonialGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the HeroTestimonial model
+   */
+  readonly fields: HeroTestimonialFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for HeroTestimonial.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__HeroTestimonialClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the HeroTestimonial model
+   */
+  interface HeroTestimonialFieldRefs {
+    readonly id: FieldRef<"HeroTestimonial", 'String'>
+    readonly slug: FieldRef<"HeroTestimonial", 'String'>
+    readonly quote: FieldRef<"HeroTestimonial", 'String'>
+    readonly authorName: FieldRef<"HeroTestimonial", 'String'>
+    readonly authorLocation: FieldRef<"HeroTestimonial", 'String'>
+    readonly isActive: FieldRef<"HeroTestimonial", 'Boolean'>
+    readonly createdAt: FieldRef<"HeroTestimonial", 'DateTime'>
+    readonly updatedAt: FieldRef<"HeroTestimonial", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * HeroTestimonial findUnique
+   */
+  export type HeroTestimonialFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroTestimonial
+     */
+    select?: HeroTestimonialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroTestimonial
+     */
+    omit?: HeroTestimonialOmit<ExtArgs> | null
+    /**
+     * Filter, which HeroTestimonial to fetch.
+     */
+    where: HeroTestimonialWhereUniqueInput
+  }
+
+  /**
+   * HeroTestimonial findUniqueOrThrow
+   */
+  export type HeroTestimonialFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroTestimonial
+     */
+    select?: HeroTestimonialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroTestimonial
+     */
+    omit?: HeroTestimonialOmit<ExtArgs> | null
+    /**
+     * Filter, which HeroTestimonial to fetch.
+     */
+    where: HeroTestimonialWhereUniqueInput
+  }
+
+  /**
+   * HeroTestimonial findFirst
+   */
+  export type HeroTestimonialFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroTestimonial
+     */
+    select?: HeroTestimonialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroTestimonial
+     */
+    omit?: HeroTestimonialOmit<ExtArgs> | null
+    /**
+     * Filter, which HeroTestimonial to fetch.
+     */
+    where?: HeroTestimonialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HeroTestimonials to fetch.
+     */
+    orderBy?: HeroTestimonialOrderByWithRelationInput | HeroTestimonialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for HeroTestimonials.
+     */
+    cursor?: HeroTestimonialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HeroTestimonials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HeroTestimonials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of HeroTestimonials.
+     */
+    distinct?: HeroTestimonialScalarFieldEnum | HeroTestimonialScalarFieldEnum[]
+  }
+
+  /**
+   * HeroTestimonial findFirstOrThrow
+   */
+  export type HeroTestimonialFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroTestimonial
+     */
+    select?: HeroTestimonialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroTestimonial
+     */
+    omit?: HeroTestimonialOmit<ExtArgs> | null
+    /**
+     * Filter, which HeroTestimonial to fetch.
+     */
+    where?: HeroTestimonialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HeroTestimonials to fetch.
+     */
+    orderBy?: HeroTestimonialOrderByWithRelationInput | HeroTestimonialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for HeroTestimonials.
+     */
+    cursor?: HeroTestimonialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HeroTestimonials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HeroTestimonials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of HeroTestimonials.
+     */
+    distinct?: HeroTestimonialScalarFieldEnum | HeroTestimonialScalarFieldEnum[]
+  }
+
+  /**
+   * HeroTestimonial findMany
+   */
+  export type HeroTestimonialFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroTestimonial
+     */
+    select?: HeroTestimonialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroTestimonial
+     */
+    omit?: HeroTestimonialOmit<ExtArgs> | null
+    /**
+     * Filter, which HeroTestimonials to fetch.
+     */
+    where?: HeroTestimonialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HeroTestimonials to fetch.
+     */
+    orderBy?: HeroTestimonialOrderByWithRelationInput | HeroTestimonialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing HeroTestimonials.
+     */
+    cursor?: HeroTestimonialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HeroTestimonials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HeroTestimonials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of HeroTestimonials.
+     */
+    distinct?: HeroTestimonialScalarFieldEnum | HeroTestimonialScalarFieldEnum[]
+  }
+
+  /**
+   * HeroTestimonial create
+   */
+  export type HeroTestimonialCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroTestimonial
+     */
+    select?: HeroTestimonialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroTestimonial
+     */
+    omit?: HeroTestimonialOmit<ExtArgs> | null
+    /**
+     * The data needed to create a HeroTestimonial.
+     */
+    data: XOR<HeroTestimonialCreateInput, HeroTestimonialUncheckedCreateInput>
+  }
+
+  /**
+   * HeroTestimonial createMany
+   */
+  export type HeroTestimonialCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many HeroTestimonials.
+     */
+    data: HeroTestimonialCreateManyInput | HeroTestimonialCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * HeroTestimonial createManyAndReturn
+   */
+  export type HeroTestimonialCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroTestimonial
+     */
+    select?: HeroTestimonialSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroTestimonial
+     */
+    omit?: HeroTestimonialOmit<ExtArgs> | null
+    /**
+     * The data used to create many HeroTestimonials.
+     */
+    data: HeroTestimonialCreateManyInput | HeroTestimonialCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * HeroTestimonial update
+   */
+  export type HeroTestimonialUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroTestimonial
+     */
+    select?: HeroTestimonialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroTestimonial
+     */
+    omit?: HeroTestimonialOmit<ExtArgs> | null
+    /**
+     * The data needed to update a HeroTestimonial.
+     */
+    data: XOR<HeroTestimonialUpdateInput, HeroTestimonialUncheckedUpdateInput>
+    /**
+     * Choose, which HeroTestimonial to update.
+     */
+    where: HeroTestimonialWhereUniqueInput
+  }
+
+  /**
+   * HeroTestimonial updateMany
+   */
+  export type HeroTestimonialUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update HeroTestimonials.
+     */
+    data: XOR<HeroTestimonialUpdateManyMutationInput, HeroTestimonialUncheckedUpdateManyInput>
+    /**
+     * Filter which HeroTestimonials to update
+     */
+    where?: HeroTestimonialWhereInput
+    /**
+     * Limit how many HeroTestimonials to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * HeroTestimonial updateManyAndReturn
+   */
+  export type HeroTestimonialUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroTestimonial
+     */
+    select?: HeroTestimonialSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroTestimonial
+     */
+    omit?: HeroTestimonialOmit<ExtArgs> | null
+    /**
+     * The data used to update HeroTestimonials.
+     */
+    data: XOR<HeroTestimonialUpdateManyMutationInput, HeroTestimonialUncheckedUpdateManyInput>
+    /**
+     * Filter which HeroTestimonials to update
+     */
+    where?: HeroTestimonialWhereInput
+    /**
+     * Limit how many HeroTestimonials to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * HeroTestimonial upsert
+   */
+  export type HeroTestimonialUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroTestimonial
+     */
+    select?: HeroTestimonialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroTestimonial
+     */
+    omit?: HeroTestimonialOmit<ExtArgs> | null
+    /**
+     * The filter to search for the HeroTestimonial to update in case it exists.
+     */
+    where: HeroTestimonialWhereUniqueInput
+    /**
+     * In case the HeroTestimonial found by the `where` argument doesn't exist, create a new HeroTestimonial with this data.
+     */
+    create: XOR<HeroTestimonialCreateInput, HeroTestimonialUncheckedCreateInput>
+    /**
+     * In case the HeroTestimonial was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<HeroTestimonialUpdateInput, HeroTestimonialUncheckedUpdateInput>
+  }
+
+  /**
+   * HeroTestimonial delete
+   */
+  export type HeroTestimonialDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroTestimonial
+     */
+    select?: HeroTestimonialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroTestimonial
+     */
+    omit?: HeroTestimonialOmit<ExtArgs> | null
+    /**
+     * Filter which HeroTestimonial to delete.
+     */
+    where: HeroTestimonialWhereUniqueInput
+  }
+
+  /**
+   * HeroTestimonial deleteMany
+   */
+  export type HeroTestimonialDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which HeroTestimonials to delete
+     */
+    where?: HeroTestimonialWhereInput
+    /**
+     * Limit how many HeroTestimonials to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * HeroTestimonial without action
+   */
+  export type HeroTestimonialDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HeroTestimonial
+     */
+    select?: HeroTestimonialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HeroTestimonial
+     */
+    omit?: HeroTestimonialOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model BookingEvent
    */
 
@@ -48043,6 +49173,20 @@ export namespace Prisma {
   export type LegalDocumentScalarFieldEnum = (typeof LegalDocumentScalarFieldEnum)[keyof typeof LegalDocumentScalarFieldEnum]
 
 
+  export const HeroTestimonialScalarFieldEnum: {
+    id: 'id',
+    slug: 'slug',
+    quote: 'quote',
+    authorName: 'authorName',
+    authorLocation: 'authorLocation',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type HeroTestimonialScalarFieldEnum = (typeof HeroTestimonialScalarFieldEnum)[keyof typeof HeroTestimonialScalarFieldEnum]
+
+
   export const BookingEventScalarFieldEnum: {
     id: 'id',
     bookingId: 'bookingId',
@@ -50628,6 +51772,73 @@ export namespace Prisma {
     body?: StringWithAggregatesFilter<"LegalDocument"> | string
     createdAt?: DateTimeWithAggregatesFilter<"LegalDocument"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"LegalDocument"> | Date | string
+  }
+
+  export type HeroTestimonialWhereInput = {
+    AND?: HeroTestimonialWhereInput | HeroTestimonialWhereInput[]
+    OR?: HeroTestimonialWhereInput[]
+    NOT?: HeroTestimonialWhereInput | HeroTestimonialWhereInput[]
+    id?: StringFilter<"HeroTestimonial"> | string
+    slug?: StringFilter<"HeroTestimonial"> | string
+    quote?: StringFilter<"HeroTestimonial"> | string
+    authorName?: StringFilter<"HeroTestimonial"> | string
+    authorLocation?: StringFilter<"HeroTestimonial"> | string
+    isActive?: BoolFilter<"HeroTestimonial"> | boolean
+    createdAt?: DateTimeFilter<"HeroTestimonial"> | Date | string
+    updatedAt?: DateTimeFilter<"HeroTestimonial"> | Date | string
+  }
+
+  export type HeroTestimonialOrderByWithRelationInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    quote?: SortOrder
+    authorName?: SortOrder
+    authorLocation?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HeroTestimonialWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    slug?: string
+    AND?: HeroTestimonialWhereInput | HeroTestimonialWhereInput[]
+    OR?: HeroTestimonialWhereInput[]
+    NOT?: HeroTestimonialWhereInput | HeroTestimonialWhereInput[]
+    quote?: StringFilter<"HeroTestimonial"> | string
+    authorName?: StringFilter<"HeroTestimonial"> | string
+    authorLocation?: StringFilter<"HeroTestimonial"> | string
+    isActive?: BoolFilter<"HeroTestimonial"> | boolean
+    createdAt?: DateTimeFilter<"HeroTestimonial"> | Date | string
+    updatedAt?: DateTimeFilter<"HeroTestimonial"> | Date | string
+  }, "id" | "slug">
+
+  export type HeroTestimonialOrderByWithAggregationInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    quote?: SortOrder
+    authorName?: SortOrder
+    authorLocation?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: HeroTestimonialCountOrderByAggregateInput
+    _max?: HeroTestimonialMaxOrderByAggregateInput
+    _min?: HeroTestimonialMinOrderByAggregateInput
+  }
+
+  export type HeroTestimonialScalarWhereWithAggregatesInput = {
+    AND?: HeroTestimonialScalarWhereWithAggregatesInput | HeroTestimonialScalarWhereWithAggregatesInput[]
+    OR?: HeroTestimonialScalarWhereWithAggregatesInput[]
+    NOT?: HeroTestimonialScalarWhereWithAggregatesInput | HeroTestimonialScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"HeroTestimonial"> | string
+    slug?: StringWithAggregatesFilter<"HeroTestimonial"> | string
+    quote?: StringWithAggregatesFilter<"HeroTestimonial"> | string
+    authorName?: StringWithAggregatesFilter<"HeroTestimonial"> | string
+    authorLocation?: StringWithAggregatesFilter<"HeroTestimonial"> | string
+    isActive?: BoolWithAggregatesFilter<"HeroTestimonial"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"HeroTestimonial"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"HeroTestimonial"> | Date | string
   }
 
   export type BookingEventWhereInput = {
@@ -54202,6 +55413,83 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type HeroTestimonialCreateInput = {
+    id?: string
+    slug: string
+    quote: string
+    authorName: string
+    authorLocation: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HeroTestimonialUncheckedCreateInput = {
+    id?: string
+    slug: string
+    quote: string
+    authorName: string
+    authorLocation: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HeroTestimonialUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    quote?: StringFieldUpdateOperationsInput | string
+    authorName?: StringFieldUpdateOperationsInput | string
+    authorLocation?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HeroTestimonialUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    quote?: StringFieldUpdateOperationsInput | string
+    authorName?: StringFieldUpdateOperationsInput | string
+    authorLocation?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HeroTestimonialCreateManyInput = {
+    id?: string
+    slug: string
+    quote: string
+    authorName: string
+    authorLocation: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HeroTestimonialUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    quote?: StringFieldUpdateOperationsInput | string
+    authorName?: StringFieldUpdateOperationsInput | string
+    authorLocation?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HeroTestimonialUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    quote?: StringFieldUpdateOperationsInput | string
+    authorName?: StringFieldUpdateOperationsInput | string
+    authorLocation?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type BookingEventCreateInput = {
     id?: string
     type: string
@@ -56993,6 +58281,39 @@ export namespace Prisma {
     summary?: SortOrder
     effectiveDate?: SortOrder
     body?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HeroTestimonialCountOrderByAggregateInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    quote?: SortOrder
+    authorName?: SortOrder
+    authorLocation?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HeroTestimonialMaxOrderByAggregateInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    quote?: SortOrder
+    authorName?: SortOrder
+    authorLocation?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HeroTestimonialMinOrderByAggregateInput = {
+    id?: SortOrder
+    slug?: SortOrder
+    quote?: SortOrder
+    authorName?: SortOrder
+    authorLocation?: SortOrder
+    isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }

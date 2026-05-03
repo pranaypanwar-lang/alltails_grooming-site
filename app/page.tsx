@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { User, Star, Home, CalendarCheck, Layers, Package, ChevronLeft, X, CalendarDays } from "lucide-react";
+import { User, Star, Home, CalendarCheck, Layers, Package, ChevronLeft, ChevronRight, X, CalendarDays } from "lucide-react";
 import {
   buildAttemptEventId,
   buildBookingEventId,
@@ -1166,6 +1166,24 @@ setIsSlotsModalOpen(true);
     resetBookingAttemptId();
   };
 
+  const openBookingFlowWithService = (serviceName: string) => {
+    setHeroForm((prev) => ({ ...prev, service: serviceName }));
+
+    const sessionKey = `view_content_${serviceName.trim().toLowerCase()}`;
+    if (!hasSessionEventFired(sessionKey)) {
+      trackMetaEvent(
+        "ViewContent",
+        buildServiceMeta(serviceName, {
+          value: getServicePrice(serviceName) * petCount,
+          currency: "INR",
+        })
+      );
+      markSessionEventFired(sessionKey);
+    }
+
+    openBookingFlow();
+  };
+
   const openWhatsAppChat = (message?: string) => {
     const text =
       message ||
@@ -1228,6 +1246,38 @@ setIsSlotsModalOpen(true);
   service: "Complete Pampering",
   requiredDate: "",
 });
+
+  const [heroTestimonial, setHeroTestimonial] = useState<{
+    quote: string;
+    authorName: string;
+    authorLocation: string;
+  }>({
+    quote:
+      "They handled my anxious indie like a pro — first stress-free bath in 2 years.",
+    authorName: "Riya",
+    authorLocation: "Gurgaon",
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/hero-testimonial")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (cancelled || !data?.testimonial) return;
+        const t = data.testimonial;
+        if (t.quote && t.authorName && t.authorLocation) {
+          setHeroTestimonial({
+            quote: t.quote,
+            authorName: t.authorName,
+            authorLocation: t.authorLocation,
+          });
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   /* -------------------------------------------------------
      04B. BOOKING / SLOTS STATE
@@ -7079,43 +7129,91 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
     <div className="absolute right-[8%] top-[26%] h-[220px] w-[220px] rounded-full bg-[#ff8ec2]/10 blur-[120px]" />
   </div>
 
-  {/* MOBILE HERO — cinematic, art-directed */}
+  {/* MOBILE HERO — service-first, conversion-led */}
   <div className="relative z-10 lg:hidden">
-    <div className="px-4 pt-[22px] pb-28 sm:px-6">
+    <div className="px-4 pt-[18px] pb-10 sm:px-6">
       {/* eyebrow */}
-      <div className="inline-flex h-[36px] items-center rounded-full border border-white/12 bg-white/[0.06] px-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/84">
+      <div className="inline-flex h-[32px] items-center rounded-full border border-white/12 bg-white/[0.06] px-3.5 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-white/84">
         Premium Home Grooming
       </div>
 
-      {/* headline */}
-      <h1 className="mt-5 max-w-[320px] text-[44px] font-black leading-[0.94] tracking-[-0.045em] text-white">
-        Gentle grooming,
-        <br />
+      {/* headline — tighter than before */}
+      <h1 className="mt-4 max-w-[340px] text-[36px] font-black leading-[0.98] tracking-[-0.04em] text-white">
+        Salon-grade grooming.{" "}
         <span className="bg-gradient-to-r from-[#d9d6ff] to-[#ffc59c] bg-clip-text text-transparent">
-          right at home.
+          At your doorstep.
         </span>
       </h1>
 
-      {/* support copy */}
-      <p className="mt-[18px] max-w-[300px] text-[17px] leading-[1.65] text-white/76">
-        Premium at-home care designed around your pet’s comfort.
-      </p>
-
-      {/* primary CTA */}
-      <div className="mt-7">
-        <button
-          type="button"
-          onClick={openBookingFlow}
-          className="flex h-[54px] min-w-[190px] items-center justify-center rounded-full bg-[#6d5bd0] px-7 text-[16px] font-semibold text-white shadow-[0_14px_34px_rgba(109,91,208,0.28)] transition active:scale-[0.98]"
-        >
-          Book a Session
-        </button>
+      {/* trust strip — moved ABOVE cards */}
+      <div className="mt-3 flex items-center gap-2 text-[13px] text-white/82">
+        <div className="flex items-center gap-0.5">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <Star key={i} className="h-3.5 w-3.5 fill-[#FACC15] text-[#FACC15]" />
+          ))}
+        </div>
+        <span className="font-semibold">4.9</span>
+        <span className="text-white/55">·</span>
+        <span>5,000+ sessions</span>
       </div>
 
-      {/* proof line */}
-      <p className="mt-[18px] text-[13px] font-medium text-white/68">
-        4.9 rated · 5000+ sessions · In-house teams
-      </p>
+      {/* SERVICE CARDS — the new conversion engine */}
+      <div className="mt-5 space-y-2.5">
+        {SERVICE_OPTIONS
+          .filter((s) => s.category === "Individual Sessions")
+          .slice()
+          .sort((a, b) => b.price - a.price)
+          .map((service) => (
+            <button
+              key={service.name}
+              type="button"
+              onClick={() => openBookingFlowWithService(service.name)}
+              className="group flex w-full items-center justify-between rounded-2xl border border-white/12 bg-white/[0.07] px-4 py-3.5 text-left backdrop-blur-sm transition active:scale-[0.99] active:bg-white/[0.10]"
+            >
+              <div className="flex flex-col">
+                <span className="text-[15px] font-semibold text-white">
+                  {service.name}
+                </span>
+                <span className="mt-0.5 text-[12px] text-white/60">
+                  Tap to check availability
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex flex-col items-end">
+                  <span className="text-[10px] uppercase tracking-[0.12em] text-white/55">
+                    From
+                  </span>
+                  <span className="text-[18px] font-bold text-white">
+                    ₹{service.price}
+                  </span>
+                </div>
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#6d5bd0] text-white">
+                  <ChevronRight className="h-4 w-4" />
+                </div>
+              </div>
+            </button>
+          ))}
+      </div>
+
+      {/* secondary fallback CTA — for users who want plans, not single sessions */}
+      <button
+        type="button"
+        onClick={openBookingFlow}
+        className="mt-4 inline-flex h-[42px] items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.04] px-4 text-[13px] font-medium text-white/82 transition active:scale-[0.98]"
+      >
+        View care plans &amp; monthly packs
+        <ChevronRight className="h-3.5 w-3.5" />
+      </button>
+
+      {/* social proof — admin-editable testimonial */}
+      <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 backdrop-blur-sm">
+        <p className="text-[13.5px] leading-[1.55] text-white/85">
+          “{heroTestimonial.quote}”
+        </p>
+        <p className="mt-1.5 text-[11.5px] font-medium text-white/55">
+          {heroTestimonial.authorName} · {heroTestimonial.authorLocation} · verified booking
+        </p>
+      </div>
     </div>
   </div>
 
