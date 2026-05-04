@@ -1184,6 +1184,21 @@ setIsSlotsModalOpen(true);
     openBookingFlow();
   };
 
+  const openHeroInclusions = (serviceName: string) => {
+    const sessionKey = `view_content_${serviceName.trim().toLowerCase()}`;
+    if (!hasSessionEventFired(sessionKey)) {
+      trackMetaEvent(
+        "ViewContent",
+        buildServiceMeta(serviceName, {
+          value: getServicePrice(serviceName) * petCount,
+          currency: "INR",
+        })
+      );
+      markSessionEventFired(sessionKey);
+    }
+    setInclusionsPackage(serviceName);
+  };
+
   const viewCoatCarePlans = () => {
     setPackageView("plans");
     // wait a tick so the section can render the plans view before scrolling
@@ -7196,7 +7211,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
             <button
               key={service.name}
               type="button"
-              onClick={() => openBookingFlowWithService(service.name)}
+              onClick={() => openHeroInclusions(service.name)}
               className="group flex w-full items-center justify-between rounded-2xl border border-white/12 bg-white/[0.07] px-4 py-3.5 text-left backdrop-blur-sm transition active:scale-[0.99] active:bg-white/[0.10]"
             >
               <div className="flex flex-col">
@@ -7204,7 +7219,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                   {service.name}
                 </span>
                 <span className="mt-0.5 text-[12px] text-white/60">
-                  Tap to check availability
+                  Tap to view inclusions
                 </span>
               </div>
               <div className="flex items-center gap-3">
