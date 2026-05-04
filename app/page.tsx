@@ -7208,19 +7208,33 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           .slice()
           .sort((a, b) => b.price - a.price)
           .map((service) => (
-            <button
+            <div
               key={service.name}
-              type="button"
-              onClick={() => openHeroInclusions(service.name)}
-              className="group flex w-full items-center justify-between rounded-2xl border border-white/12 bg-white/[0.07] px-4 py-3.5 text-left backdrop-blur-sm transition active:scale-[0.99] active:bg-white/[0.10]"
+              role="button"
+              tabIndex={0}
+              onClick={() => openBookingFlowWithService(service.name)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openBookingFlowWithService(service.name);
+                }
+              }}
+              className="group flex w-full cursor-pointer items-center justify-between rounded-2xl border border-white/12 bg-white/[0.07] px-4 py-3.5 text-left backdrop-blur-sm transition active:scale-[0.99] active:bg-white/[0.10]"
             >
-              <div className="flex flex-col">
+              <div className="flex flex-col items-start">
                 <span className="text-[15px] font-semibold text-white">
                   {service.name}
                 </span>
-                <span className="mt-0.5 text-[12px] text-white/60">
-                  Tap to view inclusions
-                </span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openHeroInclusions(service.name);
+                  }}
+                  className="mt-1 inline-flex items-center text-[11.5px] font-medium text-white/65 underline decoration-white/30 underline-offset-[3px] transition active:text-white"
+                >
+                  View inclusions
+                </button>
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex flex-col items-end">
@@ -7235,7 +7249,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                   <ChevronRight className="h-4 w-4" />
                 </div>
               </div>
-            </button>
+            </div>
           ))}
       </div>
 
