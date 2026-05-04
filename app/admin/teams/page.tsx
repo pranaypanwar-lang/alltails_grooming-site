@@ -11,6 +11,7 @@ import { AdminTeamCoverageModal } from "../components/teams/AdminTeamCoverageMod
 import { AdminTeamMembersModal } from "../components/teams/AdminTeamMembersModal";
 import { useAdminConfirmAction } from "../hooks/useAdminConfirmAction";
 import {
+  createAdminTeam,
   fetchAdminServiceAreas,
   fetchAdminTeams,
   testAdminTeamTelegram,
@@ -92,6 +93,19 @@ export default function AdminTeamsPage() {
 
   useEffect(() => { void load(); }, []);
 
+  const openCreate = () => {
+    setEditingTeam(null);
+    setDraft({
+      name: "",
+      isActive: true,
+      telegramChatId: "",
+      telegramAlertsEnabled: false,
+      opsLeadName: "",
+      opsLeadPhone: "",
+    });
+    setIsEditOpen(true);
+  };
+
   const openEdit = (team: AdminTeamRow) => {
     setEditingTeam(team);
     setDraft({
@@ -106,23 +120,36 @@ export default function AdminTeamsPage() {
   };
 
   const submitEdit = async () => {
-    if (!editingTeam) return;
+    const name = draft.name.trim();
+    if (!name) {
+      showToast("Team name is required.", false);
+      return;
+    }
+
     try {
       setIsSubmitting(true);
-      await updateAdminTeam(editingTeam.id, {
-        name: draft.name.trim(),
+      const payload = {
+        name,
         isActive: draft.isActive,
         telegramChatId: draft.telegramChatId.trim() || null,
         telegramAlertsEnabled: draft.telegramAlertsEnabled,
         opsLeadName: draft.opsLeadName.trim() || null,
         opsLeadPhone: draft.opsLeadPhone.trim() || null,
-      });
-      showToast("Team updated.", true);
+      };
+
+      if (editingTeam) {
+        await updateAdminTeam(editingTeam.id, payload);
+        showToast("Team updated.", true);
+      } else {
+        await createAdminTeam(payload);
+        showToast("Team created. Add members and coverage next.", true);
+      }
+
       setIsEditOpen(false);
       setEditingTeam(null);
       await load(true);
     } catch (err) {
-      showToast(err instanceof Error ? err.message : "Failed to update team.", false);
+      showToast(err instanceof Error ? err.message : "Failed to save team.", false);
     } finally {
       setIsSubmitting(false);
     }
@@ -243,6 +270,16 @@ export default function AdminTeamsPage() {
           subtitle="Manage Telegram routing and ops lead settings."
           onRefresh={() => void load(true)}
           isRefreshing={isRefreshing}
+          rightSlot={
+            <button
+              type="button"
+              onClick={openCreate}
+              className="inline-flex h-[40px] items-center gap-1.5 rounded-[12px] bg-[#6d5bd0] px-4 text-[13px] font-semibold text-white shadow-[0_8px_18px_rgba(109,91,208,0.22)] transition hover:bg-[#5b4ab5] active:scale-[0.98]"
+            >
+              <span className="text-[16px] leading-none">+</span>
+              Create team
+            </button>
+          }
         />
 
         <AdminSummaryBar

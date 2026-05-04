@@ -95,3 +95,40 @@ export async function GET() {
     return NextResponse.json({ error: getErrorMessage(error) }, { status: 500 });
   }
 }
+
+export async function POST(request: Request) {
+  const authErr = await assertAdminSession();
+  if (authErr) return authErr;
+
+  try {
+    const body = await request.json();
+    const name = String(body.name ?? "").trim();
+    if (!name) {
+      return NextResponse.json(
+        { error: "Team name is required." },
+        { status: 400 }
+      );
+    }
+
+    const isActive = body.isActive !== false;
+    const opsLeadName = String(body.opsLeadName ?? "").trim() || null;
+    const opsLeadPhone = String(body.opsLeadPhone ?? "").trim() || null;
+    const telegramChatId = String(body.telegramChatId ?? "").trim() || null;
+    const telegramAlertsEnabled = Boolean(body.telegramAlertsEnabled);
+
+    const team = await prisma.team.create({
+      data: {
+        name,
+        isActive,
+        opsLeadName,
+        opsLeadPhone,
+        telegramChatId,
+        telegramAlertsEnabled,
+      },
+    });
+
+    return NextResponse.json({ team });
+  } catch (error: unknown) {
+    return NextResponse.json({ error: getErrorMessage(error) }, { status: 500 });
+  }
+}

@@ -675,6 +675,24 @@ export async function fetchAdminTeams(): Promise<AdminTeamsResponse> {
   return data;
 }
 
+export async function createAdminTeam(payload: {
+  name: string;
+  isActive?: boolean;
+  telegramChatId?: string | null;
+  telegramAlertsEnabled?: boolean;
+  opsLeadName?: string | null;
+  opsLeadPhone?: string | null;
+}) {
+  const res = await fetch("/api/admin/teams", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error ?? "Failed to create team");
+  return data;
+}
+
 export async function updateAdminTeam(
   teamId: string,
   payload: {
