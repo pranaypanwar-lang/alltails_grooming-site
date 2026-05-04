@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
+
+const FaqSection = dynamic(() => import("./components/landing/FaqSection"));
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { User, Star, Home, CalendarCheck, Layers, Package, ChevronLeft, ChevronRight, X, CalendarDays } from "lucide-react";
 import {
@@ -1303,6 +1306,55 @@ setIsSlotsModalOpen(true);
       .catch(() => {});
     return () => {
       cancelled = true;
+    };
+  }, []);
+
+  // Pre-warm the availability API so the first "Check availability" tap is instant.
+  // Fires once after a short idle delay with the highest-traffic city/today defaults.
+  // Response is discarded — purpose is warming serverless function + DB connection.
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const ist = new Date(today.getTime() + 330 * 60_000);
+    const startDate = `${ist.getUTCFullYear()}-${String(ist.getUTCMonth() + 1).padStart(2, "0")}-${String(ist.getUTCDate()).padStart(2, "0")}`;
+
+    const warm = () => {
+      fetch("/api/booking/availability", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          city: "Gurgaon",
+          startDate,
+          days: 7,
+          petCount: 1,
+        }),
+        signal: controller.signal,
+      }).catch(() => {});
+    };
+
+    type IdleWindow = Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+
+    const w = window as IdleWindow;
+    let idleId: number | undefined;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+    if (typeof w.requestIdleCallback === "function") {
+      idleId = w.requestIdleCallback(warm, { timeout: 2500 });
+    } else {
+      timeoutId = setTimeout(warm, 1500);
+    }
+
+    return () => {
+      controller.abort();
+      if (idleId !== undefined && typeof w.cancelIdleCallback === "function") {
+        w.cancelIdleCallback(idleId);
+      }
+      if (timeoutId !== undefined) clearTimeout(timeoutId);
     };
   }, []);
 
@@ -4618,6 +4670,22 @@ onClick={() => {
                         </div>
                       ) : null}
                     </div>
+                    {!pet.breed.trim() ? (
+                      <div className="-mt-1 flex flex-wrap gap-1.5">
+                        <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#9aa1b2] mr-1 self-center">Quick pick:</span>
+                        {["Indie", "Labrador Retriever", "Golden Retriever", "Pug", "Shih Tzu"].map((quickBreed) => (
+                          <button
+                            key={quickBreed}
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => handleSelectBreedSuggestion(index, quickBreed)}
+                            className="rounded-full border border-[#ddd1fb] bg-[#faf8ff] px-3 py-1.5 text-[12px] font-medium text-[#5a4cb8] transition active:scale-95 active:bg-[#ece5ff]"
+                          >
+                            {quickBreed}
+                          </button>
+                        ))}
+                      </div>
+                    ) : null}
 
                     <div className="pt-1 space-y-3">
   {heroForm.service === "Complete Pampering" ? (
@@ -5453,6 +5521,22 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
     ) : null}
   </div>
 </div>
+{!pet.breed.trim() ? (
+  <div className="mt-2 flex flex-wrap gap-1.5">
+    <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#9aa1b2] mr-1 self-center">Quick pick:</span>
+    {["Indie", "Labrador Retriever", "Golden Retriever", "Pug", "Shih Tzu"].map((quickBreed) => (
+      <button
+        key={quickBreed}
+        type="button"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={() => handleSelectBreedSuggestion(index, quickBreed)}
+        className="rounded-full border border-[#ddd1fb] bg-[#faf8ff] px-3 py-1.5 text-[12px] font-medium text-[#5a4cb8] transition hover:bg-[#ece5ff] active:scale-95"
+      >
+        {quickBreed}
+      </button>
+    ))}
+  </div>
+) : null}
 
 <div className="mt-4">
   <button
@@ -7253,15 +7337,29 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           ))}
       </div>
 
-      {/* secondary CTA — jumps to packages section with coat care plans active */}
-      <button
-        type="button"
-        onClick={viewCoatCarePlans}
-        className="mt-4 inline-flex h-[42px] items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.04] px-4 text-[13px] font-medium text-white/82 transition active:scale-[0.98]"
-      >
-        View Coat Care Plans
-        <ChevronRight className="h-3.5 w-3.5" />
-      </button>
+      {/* secondary CTAs — soft entry options */}
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={viewCoatCarePlans}
+          className="inline-flex h-[42px] items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.04] px-4 text-[13px] font-medium text-white/82 transition active:scale-[0.98]"
+        >
+          View Coat Care Plans
+          <ChevronRight className="h-3.5 w-3.5" />
+        </button>
+        <button
+          type="button"
+          onClick={() =>
+            openWhatsAppChat(
+              "Hi All Tails, I'd like to know more about home grooming for my pet."
+            )
+          }
+          className="inline-flex h-[42px] items-center gap-1.5 rounded-full border border-[#25D366]/40 bg-[#25D366]/10 px-4 text-[13px] font-semibold text-[#86efac] transition active:scale-[0.98]"
+        >
+          <span className="text-[15px] leading-none">💬</span>
+          Chat on WhatsApp
+        </button>
+      </div>
 
       {/* social proof — admin-editable testimonial card, review-style layout */}
       <div className="mt-6 rounded-[20px] border border-white/12 bg-gradient-to-br from-white/[0.07] to-white/[0.03] p-4 backdrop-blur-sm shadow-[0_18px_40px_rgba(8,4,28,0.35)]">
@@ -9998,502 +10096,8 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
   </div>
 ) : null}
 
-{/* FAQ SECTION — REDESIGNED */}
-<section id="faqs-section" className="relative overflow-hidden bg-[#fcfaff] pt-10 pb-12 sm:py-20 lg:py-[120px]">
-  {/* BACKGROUND GLOWS */}
-  <div className="pointer-events-none absolute inset-0">
-    <div className="absolute left-[-120px] top-[140px] h-[300px] w-[300px] rounded-full bg-[#efe7ff] blur-[100px]" />
-    <div className="absolute right-[-100px] bottom-[100px] h-[260px] w-[260px] rounded-full bg-[#fff3ea] blur-[95px]" />
-    <div className="absolute left-[42%] bottom-[80px] h-[220px] w-[220px] rounded-full bg-[#f3ecff] blur-[90px]" />
-  </div>
-
-  <div className="relative z-10 mx-auto max-w-[1240px] px-4 sm:px-6">
-
-    {/* ══════════════════════════════
-        MOBILE FAQ — COMPACT SYSTEM
-    ══════════════════════════════ */}
-    <div className="lg:hidden">
-
-      {/* COMPACT INTRO */}
-      <div className="text-center">
-        <div className="inline-flex rounded-full border border-[#e8ddff] bg-white px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#7a5ce0] shadow-[0_6px_16px_rgba(122,92,224,0.07)]">
-          FAQs
-        </div>
-        <h2 className="mt-3 text-[24px] font-black leading-[1.06] tracking-[-0.035em] text-[#2a2346]">
-          Got questions?<br />We&apos;ve got answers.
-        </h2>
-        <p className="mx-auto mt-2 max-w-[280px] text-[13px] leading-[1.65] text-[#6b7280]">
-          Everything you may want to know before booking — clearly answered.
-        </p>
-      </div>
-
-      {/* SLIM FIRST-TIME STRIP */}
-      <div className="mt-4 flex items-center justify-between gap-3 rounded-[16px] border border-[#ece5ff] bg-white px-4 py-3 shadow-[0_4px_14px_rgba(109,91,208,0.06)]">
-        <div className="min-w-0">
-          <div className="text-[13px] font-semibold text-[#2a2346]">First time booking?</div>
-          <p className="mt-0.5 text-[11.5px] leading-[1.5] text-[#6b7280]">We&apos;ll help you choose the right package for your pet.</p>
-        </div>
-        <button
-          type="button"
-          onClick={() => openWhatsAppChat("Hi All Tails, I'd like to talk to a grooming expert and get help choosing the right package for my pet.")}
-          className="shrink-0 rounded-full bg-[#f4efff] px-3.5 py-2 text-[12px] font-semibold text-[#6d5bd0] transition active:scale-95"
-        >
-          Talk to us →
-        </button>
-      </div>
-
-      {/* MOBILE ACCORDION LIST */}
-      <div className="mt-4 space-y-2">
-
-        {/* FAQ 1 — open by default */}
-        <details open className="group rounded-[18px] border border-[#ebe5ff] bg-white p-3 shadow-[0_4px_14px_rgba(73,44,120,0.05)]">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
-            <div className="min-w-0">
-              <div className="inline-flex rounded-full bg-[#f4efff] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6d5bd0]">Comfort</div>
-              <div className="mt-1 text-[14px] font-bold leading-[1.3] tracking-[-0.01em] text-[#2a2346]">Will my pet be anxious during grooming?</div>
-            </div>
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180">
-              <span className="text-[13px] leading-none">⌄</span>
-            </div>
-          </summary>
-          <div className="mt-3 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-          <p className="mt-3 text-[13px] leading-[1.75] text-[#6b7280]">
-            We begin every session with a calm bonding period. We move at your pet&apos;s pace — no force, no rushing — so they feel safe throughout.
-          </p>
-        </details>
-
-        {/* FAQ 2 */}
-        <details className="group rounded-[18px] border border-[#ebe5ff] bg-white p-3 shadow-[0_4px_14px_rgba(73,44,120,0.05)]">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
-            <div className="min-w-0">
-              <div className="inline-flex rounded-full bg-[#f4efff] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6d5bd0]">Setup</div>
-              <div className="mt-1 text-[14px] font-bold leading-[1.3] tracking-[-0.01em] text-[#2a2346]">Do I need to prepare anything at home?</div>
-            </div>
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180">
-              <span className="text-[13px] leading-none">⌄</span>
-            </div>
-          </summary>
-          <div className="mt-3 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-          <p className="mt-3 text-[13px] leading-[1.75] text-[#6b7280]">
-            No preparation needed. Our team brings all equipment and products. We only need a small space with access to water and power.
-          </p>
-        </details>
-
-        {/* FAQ 3 */}
-        <details className="group rounded-[18px] border border-[#f4dfcf] bg-white p-3 shadow-[0_4px_14px_rgba(234,88,12,0.04)]">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
-            <div className="min-w-0">
-              <div className="inline-flex rounded-full bg-[#fff5ee] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#ea580c]">Timing</div>
-              <div className="mt-1 text-[14px] font-bold leading-[1.3] tracking-[-0.01em] text-[#2a2346]">How long does a grooming session take?</div>
-            </div>
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#fff5ee] text-[#ea580c] transition-all duration-300 group-open:rotate-180">
-              <span className="text-[13px] leading-none">⌄</span>
-            </div>
-          </summary>
-          <div className="mt-3 h-px w-full bg-[linear-gradient(to_right,transparent,#f4dfcf,transparent)]" />
-          <p className="mt-3 text-[13px] leading-[1.75] text-[#6b7280]">
-            Basic sessions ~60 min, Hygiene ~90 min, Luxury ~120 min. We never rush — patience is central to calm, quality grooming.
-          </p>
-        </details>
-
-        {/* FAQ 4 */}
-        <details className="group rounded-[18px] border border-[#ebe5ff] bg-white p-3 shadow-[0_4px_14px_rgba(73,44,120,0.05)]">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
-            <div className="min-w-0">
-              <div className="inline-flex rounded-full bg-[#f4efff] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6d5bd0]">Inclusions</div>
-              <div className="mt-1 text-[14px] font-bold leading-[1.3] tracking-[-0.01em] text-[#2a2346]">What exactly is included in a session?</div>
-            </div>
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180">
-              <span className="text-[13px] leading-none">⌄</span>
-            </div>
-          </summary>
-          <div className="mt-3 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-          <p className="mt-3 text-[13px] leading-[1.75] text-[#6b7280]">
-            Sessions include bath, conditioning, blow dry, haircut, paw care, ear cleaning, dental cleaning, serum, brushing, and finishing. All done gently, step by step.
-          </p>
-        </details>
-
-        {/* FAQ 5 */}
-        <details className="group rounded-[18px] border border-[#dff3ec] bg-white p-3 shadow-[0_4px_14px_rgba(17,155,115,0.04)]">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
-            <div className="min-w-0">
-              <div className="inline-flex rounded-full bg-[#f5fdf9] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#119b73]">Safety</div>
-              <div className="mt-1 text-[14px] font-bold leading-[1.3] tracking-[-0.01em] text-[#2a2346]">Are your products safe for pets?</div>
-            </div>
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#f5fdf9] text-[#119b73] transition-all duration-300 group-open:rotate-180">
-              <span className="text-[13px] leading-none">⌄</span>
-            </div>
-          </summary>
-          <div className="mt-3 h-px w-full bg-[linear-gradient(to_right,transparent,#dff3ec,transparent)]" />
-          <p className="mt-3 text-[13px] leading-[1.75] text-[#6b7280]">
-            Yes. We use vet-approved, breed-specific, skin-safe products tailored to your pet&apos;s coat and condition.
-          </p>
-        </details>
-
-        {/* FAQ 6 */}
-        <details className="group rounded-[18px] border border-[#ebe5ff] bg-white p-3 shadow-[0_4px_14px_rgba(73,44,120,0.05)]">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
-            <div className="min-w-0">
-              <div className="inline-flex rounded-full bg-[#f4efff] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6d5bd0]">Handling</div>
-              <div className="mt-1 text-[14px] font-bold leading-[1.3] tracking-[-0.01em] text-[#2a2346]">What if my pet is very scared or difficult to handle?</div>
-            </div>
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180">
-              <span className="text-[13px] leading-none">⌄</span>
-            </div>
-          </summary>
-          <div className="mt-3 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-          <p className="mt-3 text-[13px] leading-[1.75] text-[#6b7280]">
-            Our groomers are trained to handle anxious pets with patience. If needed, we adapt or slow down. Your pet&apos;s comfort always comes before speed.
-          </p>
-        </details>
-
-        {/* FAQ 7 */}
-        <details className="group rounded-[18px] border border-[#ebe5ff] bg-white p-3 shadow-[0_4px_14px_rgba(73,44,120,0.05)]">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
-            <div className="min-w-0">
-              <div className="inline-flex rounded-full bg-[#f4efff] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6d5bd0]">Quality</div>
-              <div className="mt-1 text-[14px] font-bold leading-[1.3] tracking-[-0.01em] text-[#2a2346]">How do you ensure quality during the session?</div>
-            </div>
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180">
-              <span className="text-[13px] leading-none">⌄</span>
-            </div>
-          </summary>
-          <div className="mt-3 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-          <p className="mt-3 text-[13px] leading-[1.75] text-[#6b7280]">
-            Every session is monitored by our QA team of senior groomers via photos and videos reviewed in real time.
-          </p>
-        </details>
-
-        {/* FAQ 8 */}
-        <details className="group rounded-[18px] border border-[#ebe5ff] bg-white p-3 shadow-[0_4px_14px_rgba(73,44,120,0.05)]">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
-            <div className="min-w-0">
-              <div className="inline-flex rounded-full bg-[#f4efff] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6d5bd0]">Scheduling</div>
-              <div className="mt-1 text-[14px] font-bold leading-[1.3] tracking-[-0.01em] text-[#2a2346]">How often should I book grooming?</div>
-            </div>
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180">
-              <span className="text-[13px] leading-none">⌄</span>
-            </div>
-          </summary>
-          <div className="mt-3 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-          <p className="mt-3 text-[13px] leading-[1.75] text-[#6b7280]">
-            Most pets benefit from grooming every 3–5 weeks depending on breed and coat length. Our team can recommend the best schedule.
-          </p>
-        </details>
-      </div>
-
-      {/* EXPERT CTA — BOTTOM */}
-      <div className="mt-5 flex items-center gap-3 rounded-[18px] border border-[#e6ddff] bg-white px-4 py-3.5 shadow-[0_4px_16px_rgba(80,60,160,0.06)]">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f4efff] text-lg">💬</span>
-        <div className="min-w-0">
-          <div className="text-[13px] font-semibold text-[#2a2346]">Still unsure? Talk to our team</div>
-          <p className="mt-0.5 text-[11.5px] text-[#8a90a2]">Get guidance based on your pet&apos;s coat and needs.</p>
-        </div>
-        <button
-          type="button"
-          onClick={() => openWhatsAppChat("Hi All Tails, I'd like to talk to a grooming expert and get help choosing the right package for my pet.")}
-          className="shrink-0 text-[13px] font-semibold text-[#6d5bd0] transition active:opacity-70"
-        >
-          →
-        </button>
-      </div>
-    </div>
-
-    {/* ══════════════════════════════
-        DESKTOP FAQ — UNCHANGED
-    ══════════════════════════════ */}
-    <div className="hidden lg:grid items-start gap-14 lg:grid-cols-[0.92fr_1.08fr]">
-      {/* LEFT PANEL */}
-      <div className="relative rounded-[34px] border border-[#ebe5ff] bg-white/80 p-5 shadow-[0_24px_70px_rgba(73,44,120,0.06)] backdrop-blur-sm sm:p-8 md:p-10 lg:min-h-[860px]">
-        <div className="inline-flex rounded-full border border-[#e8ddff] bg-white px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-[#7a5ce0] shadow-[0_8px_20px_rgba(122,92,224,0.06)]">
-          FAQs
-        </div>
-
-        <h2 className="mt-4 text-[26px] font-black leading-[1.06] tracking-[-0.035em] text-[#2a2346] sm:mt-6 sm:text-[40px] md:text-[54px]">
-          Got questions?
-          <br />
-          We’ve got answers.
-        </h2>
-
-        <p className="mt-3 max-w-[520px] text-[14px] leading-[1.75] text-[#6b7280] sm:mt-5 sm:text-[18px]">
-          Everything you may want to know before booking, answered with clarity.
-        </p>
-
-        <div className="mt-4 hidden flex-wrap gap-3 sm:flex">
-          <span className="rounded-full border border-[#ece5ff] bg-[#faf8ff] px-4 py-2 text-[13px] font-medium text-[#4b4370] shadow-sm">
-            Comfort-first grooming
-          </span>
-          <span className="rounded-full border border-[#ece5ff] bg-[#faf8ff] px-4 py-2 text-[13px] font-medium text-[#4b4370] shadow-sm">
-            Transparent process
-          </span>
-        </div>
-
-        <div className="mt-8 rounded-[24px] bg-[linear-gradient(135deg,#faf7ff_0%,#fff9f4_100%)] p-5 ring-1 ring-[#f0e9ff]">
-          <div className="text-[15px] font-semibold text-[#2a2346]">
-            Best if you’re booking for the first time
-          </div>
-          <p className="mt-2 text-[14px] leading-[1.8] text-[#6b7280]">
-            Tell us a little about your pet and we’ll help you choose the right
-            package with complete confidence.
-          </p>
-        </div>
-        {/* TALK TO HUMAN CTA */}
-<div className="mt-6">
-  <button
-    type="button"
-    onClick={() =>
-      openWhatsAppChat(
-        "Hi All Tails, I’d like to talk to a grooming expert and get help choosing the right package for my pet."
-      )
-    }
-    className="group inline-flex items-center gap-3 rounded-full border border-[#e6ddff] bg-white px-6 py-3 text-[15px] font-semibold text-[#3d3472] shadow-[0_10px_24px_rgba(80,60,160,0.08)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#d6caff] hover:shadow-[0_16px_32px_rgba(80,60,160,0.12)]"
-  >
-    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f4efff] text-[#6d5bd0] transition-all duration-300 group-hover:scale-105">
-      💬
-    </span>
-
-    Talk to our team
-
-    <span className="transition-transform duration-300 group-hover:translate-x-1">
-      →
-    </span>
-  </button>
-
-  <p className="mt-3 text-[13px] text-[#8a90a2]">
-    Get personalized guidance based on your pet
-  </p>
-</div>
-
-        {/* DECORATIVE DOG IMAGE */}
-        <div className="pointer-events-none relative mt-10 hidden sm:block">
-          <div className="absolute left-[36px] top-[60px] h-[180px] w-[180px] rounded-full bg-[#ffe7a6]/30 blur-[45px]" />
-          <Image
-            src="/images/faq-dog.png"
-            alt="Friendly dog illustration"
-            width={420}
-            height={420}
-            className="relative w-[260px] md:w-[320px] lg:w-[360px] rotate-[-4deg] object-contain drop-shadow-[0_20px_40px_rgba(42,35,70,0.10)]"
-          />
-        </div>
-      </div>
-
-      {/* RIGHT PANEL — FAQ LIST */}
-      <div className="space-y-5">
-        {/* FAQ 1 */}
-        <details className="group rounded-[24px] border border-[#ebe5ff] bg-white/95 p-4 shadow-[0_20px_60px_rgba(73,44,120,0.06)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_75px_rgba(73,44,120,0.09)] open:shadow-[0_30px_80px_rgba(73,44,120,0.10)] sm:rounded-[28px] sm:p-6 md:p-7">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-5">
-            <div>
-              <div className="inline-flex rounded-full bg-[#f4efff] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6d5bd0]">
-                Comfort
-              </div>
-              <div className="mt-2 text-[15px] font-bold leading-[1.35] tracking-[-0.01em] text-[#2a2346] sm:mt-4 sm:text-[24px] sm:font-black sm:leading-[1.25] sm:tracking-[-0.02em]">
-                Will my pet be anxious during grooming?
-              </div>
-            </div>
-
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180 sm:mt-1 sm:h-10 sm:w-10">
-              <span className="text-[16px] leading-none sm:text-[18px]">⌄</span>
-            </div>
-          </summary>
-
-          <div className="mt-5 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-
-          <p className="mt-5 text-[16px] leading-[1.95] text-[#6b7280]">
-            We begin every session with a calm bonding period where the groomer
-            gently familiarizes themselves with your pet. We move at your pet’s
-            pace—no force, no rushing—so they feel safe and comfortable throughout.
-          </p>
-        </details>
-
-        {/* FAQ 2 */}
-        <details className="group rounded-[24px] border border-[#ebe5ff] bg-white/95 p-4 shadow-[0_20px_60px_rgba(73,44,120,0.06)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_75px_rgba(73,44,120,0.09)] open:shadow-[0_30px_80px_rgba(73,44,120,0.10)] sm:rounded-[28px] sm:p-6 md:p-7">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-5">
-            <div>
-              <div className="inline-flex rounded-full bg-[#f4efff] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6d5bd0]">
-                Setup
-              </div>
-              <div className="mt-2 text-[15px] font-bold leading-[1.35] tracking-[-0.01em] text-[#2a2346] sm:mt-4 sm:text-[24px] sm:font-black sm:leading-[1.25] sm:tracking-[-0.02em]">
-                Do I need to prepare anything at home?
-              </div>
-            </div>
-
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180 sm:mt-1 sm:h-10 sm:w-10">
-              <span className="text-[16px] leading-none sm:text-[18px]">⌄</span>
-            </div>
-          </summary>
-
-          <div className="mt-5 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-
-          <p className="mt-5 text-[16px] leading-[1.95] text-[#6b7280]">
-            No preparation is needed. Our team brings all equipment, products,
-            and setup required for the session. We only need a small space with
-            access to water and power.
-          </p>
-        </details>
-
-        {/* FAQ 3 */}
-        <details className="group rounded-[24px] border border-[#f4dfcf] bg-white/95 p-4 shadow-[0_20px_60px_rgba(234,88,12,0.05)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_75px_rgba(234,88,12,0.08)] open:shadow-[0_30px_80px_rgba(234,88,12,0.09)] sm:rounded-[28px] sm:p-6 md:p-7">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-5">
-            <div>
-              <div className="inline-flex rounded-full bg-[#fff5ee] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#ea580c]">
-                Timing
-              </div>
-              <div className="mt-2 text-[15px] font-bold leading-[1.35] tracking-[-0.01em] text-[#2a2346] sm:mt-4 sm:text-[24px] sm:font-black sm:leading-[1.25] sm:tracking-[-0.02em]">
-                How long does a grooming session take?
-              </div>
-            </div>
-
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fff5ee] text-[#ea580c] transition-all duration-300 group-open:rotate-180 sm:mt-1 sm:h-10 sm:w-10">
-              <span className="text-[16px] leading-none sm:text-[18px]">⌄</span>
-            </div>
-          </summary>
-
-          <div className="mt-5 h-px w-full bg-[linear-gradient(to_right,transparent,#f4dfcf,transparent)]" />
-
-          <p className="mt-5 text-[16px] leading-[1.95] text-[#6b7280]">
-            It depends on the package selected. Basic sessions usually take around
-            <span className="font-semibold text-[#2a2346]"> 60 minutes</span>,
-            Hygiene sessions around
-            <span className="font-semibold text-[#2a2346]"> 90 minutes</span>, and
-            Luxury sessions around
-            <span className="font-semibold text-[#2a2346]"> 120 minutes</span>.
-            We never rush—patience is the key to anxiety-free grooming and finesse.
-          </p>
-        </details>
-
-        {/* FAQ 4 */}
-        <details className="group rounded-[24px] border border-[#ebe5ff] bg-white/95 p-4 shadow-[0_20px_60px_rgba(73,44,120,0.06)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_75px_rgba(73,44,120,0.09)] open:shadow-[0_30px_80px_rgba(73,44,120,0.10)] sm:rounded-[28px] sm:p-6 md:p-7">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-5">
-            <div>
-              <div className="inline-flex rounded-full bg-[#f4efff] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6d5bd0]">
-                Inclusions
-              </div>
-              <div className="mt-2 text-[15px] font-bold leading-[1.35] tracking-[-0.01em] text-[#2a2346] sm:mt-4 sm:text-[24px] sm:font-black sm:leading-[1.25] sm:tracking-[-0.02em]">
-                What exactly is included in a session?
-              </div>
-            </div>
-
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180 sm:mt-1 sm:h-10 sm:w-10">
-              <span className="text-[16px] leading-none sm:text-[18px]">⌄</span>
-            </div>
-          </summary>
-
-          <div className="mt-5 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-
-          <p className="mt-5 text-[16px] leading-[1.95] text-[#6b7280]">
-            Depending on the package, sessions may include bath, conditioning,
-            blow dry, haircut or styling, paw care, ear cleaning, dental cleaning,
-            serum, brushing, and finishing touches. Everything is done gently,
-            step by step, and with your pet’s comfort in mind.
-          </p>
-        </details>
-
-        {/* FAQ 5 */}
-        <details className="group rounded-[24px] border border-[#dff3ec] bg-white/95 p-4 shadow-[0_20px_60px_rgba(17,155,115,0.05)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_75px_rgba(17,155,115,0.08)] open:shadow-[0_30px_80px_rgba(17,155,115,0.09)] sm:rounded-[28px] sm:p-6 md:p-7">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-5">
-            <div>
-              <div className="inline-flex rounded-full bg-[#f5fdf9] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#119b73]">
-                Safety
-              </div>
-              <div className="mt-2 text-[15px] font-bold leading-[1.35] tracking-[-0.01em] text-[#2a2346] sm:mt-4 sm:text-[24px] sm:font-black sm:leading-[1.25] sm:tracking-[-0.02em]">
-                Are your products safe for pets?
-              </div>
-            </div>
-
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f5fdf9] text-[#119b73] transition-all duration-300 group-open:rotate-180 sm:mt-1 sm:h-10 sm:w-10">
-              <span className="text-[16px] leading-none sm:text-[18px]">⌄</span>
-            </div>
-          </summary>
-
-          <div className="mt-5 h-px w-full bg-[linear-gradient(to_right,transparent,#dff3ec,transparent)]" />
-
-          <p className="mt-5 text-[16px] leading-[1.95] text-[#6b7280]">
-            Absolutely. We use vet-approved, breed-specific, and skin-safe
-            products tailored to your pet’s coat and condition.
-          </p>
-        </details>
-
-        {/* FAQ 6 */}
-        <details className="group rounded-[24px] border border-[#ebe5ff] bg-white/95 p-4 shadow-[0_20px_60px_rgba(73,44,120,0.06)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_75px_rgba(73,44,120,0.09)] open:shadow-[0_30px_80px_rgba(73,44,120,0.10)] sm:rounded-[28px] sm:p-6 md:p-7">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-5">
-            <div>
-              <div className="inline-flex rounded-full bg-[#f4efff] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6d5bd0]">
-                Handling
-              </div>
-              <div className="mt-2 text-[15px] font-bold leading-[1.35] tracking-[-0.01em] text-[#2a2346] sm:mt-4 sm:text-[24px] sm:font-black sm:leading-[1.25] sm:tracking-[-0.02em]">
-                What if my pet is very scared or difficult to handle?
-              </div>
-            </div>
-
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180 sm:mt-1 sm:h-10 sm:w-10">
-              <span className="text-[16px] leading-none sm:text-[18px]">⌄</span>
-            </div>
-          </summary>
-
-          <div className="mt-5 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-
-          <p className="mt-5 text-[16px] leading-[1.95] text-[#6b7280]">
-            Our groomers are trained to handle anxious pets with patience and
-            care. If needed, we adapt the session or slow down further. Your pet’s
-            comfort always comes before speed.
-          </p>
-        </details>
-
-        {/* FAQ 7 */}
-        <details className="group rounded-[24px] border border-[#ebe5ff] bg-white/95 p-4 shadow-[0_20px_60px_rgba(73,44,120,0.06)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_75px_rgba(73,44,120,0.09)] open:shadow-[0_30px_80px_rgba(73,44,120,0.10)] sm:rounded-[28px] sm:p-6 md:p-7">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-5">
-            <div>
-              <div className="inline-flex rounded-full bg-[#f4efff] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6d5bd0]">
-                Quality
-              </div>
-              <div className="mt-2 text-[15px] font-bold leading-[1.35] tracking-[-0.01em] text-[#2a2346] sm:mt-4 sm:text-[24px] sm:font-black sm:leading-[1.25] sm:tracking-[-0.02em]">
-                How do you ensure quality during the session?
-              </div>
-            </div>
-
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180 sm:mt-1 sm:h-10 sm:w-10">
-              <span className="text-[16px] leading-none sm:text-[18px]">⌄</span>
-            </div>
-          </summary>
-
-          <div className="mt-5 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-
-          <p className="mt-5 text-[16px] leading-[1.95] text-[#6b7280]">
-            Every session is monitored by our QA team of senior groomers. Photos
-            and videos are reviewed in real time so we can maintain consistent,
-            premium-quality grooming standards.
-          </p>
-        </details>
-
-        {/* FAQ 8 */}
-        <details className="group rounded-[24px] border border-[#ebe5ff] bg-white/95 p-4 shadow-[0_20px_60px_rgba(73,44,120,0.06)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_75px_rgba(73,44,120,0.09)] open:shadow-[0_30px_80px_rgba(73,44,120,0.10)] sm:rounded-[28px] sm:p-6 md:p-7">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-5">
-            <div>
-              <div className="inline-flex rounded-full bg-[#f4efff] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6d5bd0]">
-                Scheduling
-              </div>
-              <div className="mt-2 text-[15px] font-bold leading-[1.35] tracking-[-0.01em] text-[#2a2346] sm:mt-4 sm:text-[24px] sm:font-black sm:leading-[1.25] sm:tracking-[-0.02em]">
-                How often should I book grooming?
-              </div>
-            </div>
-
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180 sm:mt-1 sm:h-10 sm:w-10">
-              <span className="text-[16px] leading-none sm:text-[18px]">⌄</span>
-            </div>
-          </summary>
-
-          <div className="mt-5 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-
-          <p className="mt-5 text-[16px] leading-[1.95] text-[#6b7280]">
-            Most pets benefit from grooming every 3–5 weeks, depending on breed,
-            coat length, and lifestyle. If you’re unsure, our team can recommend
-            the best schedule for your pet.
-          </p>
-        </details>
-           </div>
-    </div>
-  </div>
-</section>
+{/* FAQ SECTION — lazy-loaded for code splitting */}
+<FaqSection onTalkToUs={openWhatsAppChat} />
 
 {/* BLOG / RESOURCES SECTION */}
 <section className="relative overflow-hidden bg-white pt-10 pb-12 lg:py-[130px]">
@@ -11216,6 +10820,22 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
     </div>
   </div>
 </footer>
+
+{/* ── FLOATING WHATSAPP BUBBLE ── */}
+<button
+  type="button"
+  onClick={() =>
+    openWhatsAppChat(
+      "Hi All Tails, I'd like to know more about home grooming for my pet."
+    )
+  }
+  aria-label="Chat with us on WhatsApp"
+  className="fixed bottom-[88px] right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_28px_rgba(37,211,102,0.5)] transition active:scale-95 lg:bottom-6 lg:right-6 lg:h-14 lg:w-14"
+>
+  <svg viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 lg:h-7 lg:w-7" aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.768.967-.94 1.164-.174.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0 0 20.464 3.488"/>
+  </svg>
+</button>
 
 {/* ── MOBILE BOTTOM NAV ── */}
 {!isSlotsModalOpen && !isTrackBookingOpen && !rescheduleBookingId ? (
