@@ -18,7 +18,12 @@ export async function GET() {
     const testimonial = await prisma.heroTestimonial.upsert({
       where: { slug: "active" },
       update: {},
-      create: HERO_TESTIMONIAL_DEFAULT,
+      create: {
+        slug: HERO_TESTIMONIAL_DEFAULT.slug,
+        quote: HERO_TESTIMONIAL_DEFAULT.quote,
+        authorName: HERO_TESTIMONIAL_DEFAULT.authorName,
+        authorLocation: HERO_TESTIMONIAL_DEFAULT.authorLocation,
+      },
     });
 
     return NextResponse.json({ testimonial });
@@ -42,6 +47,14 @@ export async function PATCH(request: Request) {
     const authorLocation = String(body.authorLocation ?? "").trim();
     const isActive = body.isActive !== false;
 
+    let bookedAt: Date | null = null;
+    if (body.bookedAt) {
+      const parsed = new Date(String(body.bookedAt));
+      if (!Number.isNaN(parsed.getTime())) {
+        bookedAt = parsed;
+      }
+    }
+
     if (!quote || !authorName || !authorLocation) {
       return NextResponse.json(
         { error: "Quote, author name, and author location are required." },
@@ -51,13 +64,14 @@ export async function PATCH(request: Request) {
 
     const testimonial = await prisma.heroTestimonial.upsert({
       where: { slug: "active" },
-      update: { quote, authorName, authorLocation, isActive },
+      update: { quote, authorName, authorLocation, isActive, bookedAt },
       create: {
         slug: "active",
         quote,
         authorName,
         authorLocation,
         isActive,
+        bookedAt,
       },
     });
 

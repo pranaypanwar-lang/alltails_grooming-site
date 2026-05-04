@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
@@ -1184,6 +1184,15 @@ setIsSlotsModalOpen(true);
     openBookingFlow();
   };
 
+  const viewCoatCarePlans = () => {
+    setPackageView("plans");
+    // wait a tick so the section can render the plans view before scrolling
+    requestAnimationFrame(() => {
+      const el = document.getElementById("packages-section");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
+
   const openWhatsAppChat = (message?: string) => {
     const text =
       message ||
@@ -1251,11 +1260,13 @@ setIsSlotsModalOpen(true);
     quote: string;
     authorName: string;
     authorLocation: string;
+    bookedAt: string | null;
   }>({
     quote:
-      "They handled my anxious indie like a pro — first stress-free bath in 2 years.",
-    authorName: "Riya",
-    authorLocation: "Gurgaon",
+      "Excellent services by All Tails — perfect for grooming. Special thanks to groomer Mohit & Sharavan.",
+    authorName: "Prabhneet Kohli",
+    authorLocation: "verified booking",
+    bookedAt: null,
   });
 
   useEffect(() => {
@@ -1270,6 +1281,7 @@ setIsSlotsModalOpen(true);
             quote: t.quote,
             authorName: t.authorName,
             authorLocation: t.authorLocation,
+            bookedAt: t.bookedAt ?? null,
           });
         }
       })
@@ -1278,6 +1290,23 @@ setIsSlotsModalOpen(true);
       cancelled = true;
     };
   }, []);
+
+  const heroTestimonialBookedLabel = useMemo(() => {
+    if (!heroTestimonial.bookedAt) return "";
+    const booked = new Date(heroTestimonial.bookedAt);
+    if (Number.isNaN(booked.getTime())) return "";
+    booked.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const days = Math.round((today.getTime() - booked.getTime()) / 86400000);
+    if (days < 0) return "Booked recently";
+    if (days === 0) return "Booked today";
+    if (days === 1) return "Booked yesterday";
+    if (days <= 6) return `Booked ${days} days ago`;
+    if (days <= 13) return "Booked last week";
+    if (days <= 30) return `Booked ${Math.floor(days / 7)} weeks ago`;
+    return "Booked recently";
+  }, [heroTestimonial.bookedAt]);
 
   /* -------------------------------------------------------
      04B. BOOKING / SLOTS STATE
@@ -7195,24 +7224,51 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           ))}
       </div>
 
-      {/* secondary fallback CTA — for users who want plans, not single sessions */}
+      {/* secondary CTA — jumps to packages section with coat care plans active */}
       <button
         type="button"
-        onClick={openBookingFlow}
+        onClick={viewCoatCarePlans}
         className="mt-4 inline-flex h-[42px] items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.04] px-4 text-[13px] font-medium text-white/82 transition active:scale-[0.98]"
       >
-        View care plans &amp; monthly packs
+        View Coat Care Plans
         <ChevronRight className="h-3.5 w-3.5" />
       </button>
 
-      {/* social proof — admin-editable testimonial */}
-      <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 backdrop-blur-sm">
-        <p className="text-[13.5px] leading-[1.55] text-white/85">
+      {/* social proof — admin-editable testimonial card, review-style layout */}
+      <div className="mt-6 rounded-[20px] border border-white/12 bg-gradient-to-br from-white/[0.07] to-white/[0.03] p-4 backdrop-blur-sm shadow-[0_18px_40px_rgba(8,4,28,0.35)]">
+        {/* stars + relative booking date */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-0.5">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <Star key={i} className="h-3.5 w-3.5 fill-[#FACC15] text-[#FACC15]" />
+            ))}
+          </div>
+          {heroTestimonialBookedLabel ? (
+            <span className="rounded-full border border-white/12 bg-white/[0.08] px-2.5 py-[5px] text-[10.5px] font-semibold uppercase tracking-[0.06em] text-white/85">
+              {heroTestimonialBookedLabel}
+            </span>
+          ) : null}
+        </div>
+
+        {/* quote */}
+        <p className="mt-3 text-[14.5px] leading-[1.55] text-white/92">
           “{heroTestimonial.quote}”
         </p>
-        <p className="mt-1.5 text-[11.5px] font-medium text-white/55">
-          {heroTestimonial.authorName} · {heroTestimonial.authorLocation} · verified booking
-        </p>
+
+        {/* author block — avatar + name + location */}
+        <div className="mt-3.5 flex items-center gap-2.5 border-t border-white/10 pt-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#6d5bd0] to-[#9a86e8] text-[13px] font-bold text-white shadow-[0_6px_14px_rgba(109,91,208,0.45)]">
+            {heroTestimonial.authorName.trim().charAt(0).toUpperCase() || "·"}
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[13px] font-semibold text-white">
+              {heroTestimonial.authorName}
+            </span>
+            <span className="text-[11px] text-white/55">
+              {heroTestimonial.authorLocation}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>

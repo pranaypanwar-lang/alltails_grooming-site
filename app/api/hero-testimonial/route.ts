@@ -26,6 +26,7 @@ export async function GET() {
         quote: testimonial.quote,
         authorName: testimonial.authorName,
         authorLocation: testimonial.authorLocation,
+        bookedAt: testimonial.bookedAt ? testimonial.bookedAt.toISOString() : null,
       },
     });
   } catch {

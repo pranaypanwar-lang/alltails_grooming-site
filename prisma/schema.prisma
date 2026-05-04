@@ -540,6 +540,7 @@ model HeroTestimonial {
   quote          String
   authorName     String
   authorLocation String
+  bookedAt       DateTime?
   isActive       Boolean  @default(true)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now()) @updatedAt

@@ -535,14 +535,15 @@ model LegalDocument {
 }
 
 model HeroTestimonial {
-  id             String   @id @default(uuid())
-  slug           String   @unique
+  id             String    @id @default(uuid())
+  slug           String    @unique
   quote          String
   authorName     String
   authorLocation String
-  isActive       Boolean  @default(true)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @default(now()) @updatedAt
+  bookedAt       DateTime?
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
 
   @@index([slug])
   @@index([isActive])

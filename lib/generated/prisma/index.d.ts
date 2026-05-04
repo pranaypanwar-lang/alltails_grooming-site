@@ -34098,6 +34098,7 @@ export namespace Prisma {
     quote: string | null
     authorName: string | null
     authorLocation: string | null
+    bookedAt: Date | null
     isActive: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -34109,6 +34110,7 @@ export namespace Prisma {
     quote: string | null
     authorName: string | null
     authorLocation: string | null
+    bookedAt: Date | null
     isActive: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -34120,6 +34122,7 @@ export namespace Prisma {
     quote: number
     authorName: number
     authorLocation: number
+    bookedAt: number
     isActive: number
     createdAt: number
     updatedAt: number
@@ -34133,6 +34136,7 @@ export namespace Prisma {
     quote?: true
     authorName?: true
     authorLocation?: true
+    bookedAt?: true
     isActive?: true
     createdAt?: true
     updatedAt?: true
@@ -34144,6 +34148,7 @@ export namespace Prisma {
     quote?: true
     authorName?: true
     authorLocation?: true
+    bookedAt?: true
     isActive?: true
     createdAt?: true
     updatedAt?: true
@@ -34155,6 +34160,7 @@ export namespace Prisma {
     quote?: true
     authorName?: true
     authorLocation?: true
+    bookedAt?: true
     isActive?: true
     createdAt?: true
     updatedAt?: true
@@ -34239,6 +34245,7 @@ export namespace Prisma {
     quote: string
     authorName: string
     authorLocation: string
+    bookedAt: Date | null
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -34267,6 +34274,7 @@ export namespace Prisma {
     quote?: boolean
     authorName?: boolean
     authorLocation?: boolean
+    bookedAt?: boolean
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -34278,6 +34286,7 @@ export namespace Prisma {
     quote?: boolean
     authorName?: boolean
     authorLocation?: boolean
+    bookedAt?: boolean
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -34289,6 +34298,7 @@ export namespace Prisma {
     quote?: boolean
     authorName?: boolean
     authorLocation?: boolean
+    bookedAt?: boolean
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -34300,12 +34310,13 @@ export namespace Prisma {
     quote?: boolean
     authorName?: boolean
     authorLocation?: boolean
+    bookedAt?: boolean
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type HeroTestimonialOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "slug" | "quote" | "authorName" | "authorLocation" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["heroTestimonial"]>
+  export type HeroTestimonialOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "slug" | "quote" | "authorName" | "authorLocation" | "bookedAt" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["heroTestimonial"]>
 
   export type $HeroTestimonialPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "HeroTestimonial"
@@ -34316,6 +34327,7 @@ export namespace Prisma {
       quote: string
       authorName: string
       authorLocation: string
+      bookedAt: Date | null
       isActive: boolean
       createdAt: Date
       updatedAt: Date
@@ -34747,6 +34759,7 @@ export namespace Prisma {
     readonly quote: FieldRef<"HeroTestimonial", 'String'>
     readonly authorName: FieldRef<"HeroTestimonial", 'String'>
     readonly authorLocation: FieldRef<"HeroTestimonial", 'String'>
+    readonly bookedAt: FieldRef<"HeroTestimonial", 'DateTime'>
     readonly isActive: FieldRef<"HeroTestimonial", 'Boolean'>
     readonly createdAt: FieldRef<"HeroTestimonial", 'DateTime'>
     readonly updatedAt: FieldRef<"HeroTestimonial", 'DateTime'>
@@ -49179,6 +49192,7 @@ export namespace Prisma {
     quote: 'quote',
     authorName: 'authorName',
     authorLocation: 'authorLocation',
+    bookedAt: 'bookedAt',
     isActive: 'isActive',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -51783,6 +51797,7 @@ export namespace Prisma {
     quote?: StringFilter<"HeroTestimonial"> | string
     authorName?: StringFilter<"HeroTestimonial"> | string
     authorLocation?: StringFilter<"HeroTestimonial"> | string
+    bookedAt?: DateTimeNullableFilter<"HeroTestimonial"> | Date | string | null
     isActive?: BoolFilter<"HeroTestimonial"> | boolean
     createdAt?: DateTimeFilter<"HeroTestimonial"> | Date | string
     updatedAt?: DateTimeFilter<"HeroTestimonial"> | Date | string
@@ -51794,6 +51809,7 @@ export namespace Prisma {
     quote?: SortOrder
     authorName?: SortOrder
     authorLocation?: SortOrder
+    bookedAt?: SortOrderInput | SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -51808,6 +51824,7 @@ export namespace Prisma {
     quote?: StringFilter<"HeroTestimonial"> | string
     authorName?: StringFilter<"HeroTestimonial"> | string
     authorLocation?: StringFilter<"HeroTestimonial"> | string
+    bookedAt?: DateTimeNullableFilter<"HeroTestimonial"> | Date | string | null
     isActive?: BoolFilter<"HeroTestimonial"> | boolean
     createdAt?: DateTimeFilter<"HeroTestimonial"> | Date | string
     updatedAt?: DateTimeFilter<"HeroTestimonial"> | Date | string
@@ -51819,6 +51836,7 @@ export namespace Prisma {
     quote?: SortOrder
     authorName?: SortOrder
     authorLocation?: SortOrder
+    bookedAt?: SortOrderInput | SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -51836,6 +51854,7 @@ export namespace Prisma {
     quote?: StringWithAggregatesFilter<"HeroTestimonial"> | string
     authorName?: StringWithAggregatesFilter<"HeroTestimonial"> | string
     authorLocation?: StringWithAggregatesFilter<"HeroTestimonial"> | string
+    bookedAt?: DateTimeNullableWithAggregatesFilter<"HeroTestimonial"> | Date | string | null
     isActive?: BoolWithAggregatesFilter<"HeroTestimonial"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"HeroTestimonial"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"HeroTestimonial"> | Date | string
@@ -55419,6 +55438,7 @@ export namespace Prisma {
     quote: string
     authorName: string
     authorLocation: string
+    bookedAt?: Date | string | null
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -55430,6 +55450,7 @@ export namespace Prisma {
     quote: string
     authorName: string
     authorLocation: string
+    bookedAt?: Date | string | null
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -55441,6 +55462,7 @@ export namespace Prisma {
     quote?: StringFieldUpdateOperationsInput | string
     authorName?: StringFieldUpdateOperationsInput | string
     authorLocation?: StringFieldUpdateOperationsInput | string
+    bookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55452,6 +55474,7 @@ export namespace Prisma {
     quote?: StringFieldUpdateOperationsInput | string
     authorName?: StringFieldUpdateOperationsInput | string
     authorLocation?: StringFieldUpdateOperationsInput | string
+    bookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55463,6 +55486,7 @@ export namespace Prisma {
     quote: string
     authorName: string
     authorLocation: string
+    bookedAt?: Date | string | null
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -55474,6 +55498,7 @@ export namespace Prisma {
     quote?: StringFieldUpdateOperationsInput | string
     authorName?: StringFieldUpdateOperationsInput | string
     authorLocation?: StringFieldUpdateOperationsInput | string
+    bookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55485,6 +55510,7 @@ export namespace Prisma {
     quote?: StringFieldUpdateOperationsInput | string
     authorName?: StringFieldUpdateOperationsInput | string
     authorLocation?: StringFieldUpdateOperationsInput | string
+    bookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -58291,6 +58317,7 @@ export namespace Prisma {
     quote?: SortOrder
     authorName?: SortOrder
     authorLocation?: SortOrder
+    bookedAt?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -58302,6 +58329,7 @@ export namespace Prisma {
     quote?: SortOrder
     authorName?: SortOrder
     authorLocation?: SortOrder
+    bookedAt?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -58313,6 +58341,7 @@ export namespace Prisma {
     quote?: SortOrder
     authorName?: SortOrder
     authorLocation?: SortOrder
+    bookedAt?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
