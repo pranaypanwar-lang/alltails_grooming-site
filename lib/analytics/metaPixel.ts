@@ -20,6 +20,8 @@ type MetaTrackOptions = {
   eventID?: string;
 };
 
+const EVENTS_REQUIRING_DEDUPE_ID = new Set(["Lead", "Purchase"]);
+
 const BOOKING_ATTEMPT_ID_KEY = "alltails_booking_attempt_id";
 const ATTEMPT_EVENT_PREFIX = "alltails_meta_attempt";
 const SESSION_EVENT_PREFIX = "alltails_meta_session";
@@ -123,6 +125,16 @@ export const trackMetaEvent = (
 
   const payload = sanitizeParams(params);
   const fbqOptions = options.eventID ? { eventID: options.eventID } : undefined;
+
+  if (
+    process.env.NODE_ENV !== "production" &&
+    EVENTS_REQUIRING_DEDUPE_ID.has(eventName) &&
+    !options.eventID
+  ) {
+    console.warn(
+      `[meta-pixel] ${eventName} was sent without eventID; CAPI deduplication will fail.`
+    );
+  }
 
   window.fbq("track", eventName, payload, fbqOptions);
 };
