@@ -1139,9 +1139,9 @@ export default function GroomingLandingPage() {
      04C. PAGE ACTIONS
   ========================================================= */
 
-const WHATSAPP_NUMBER = "919560098105";
-const SUPPORT_PHONE_DISPLAY = "+91 95600 98105";
-const SUPPORT_PHONE_HREF = "tel:+919560098105";
+const WHATSAPP_NUMBER = "919717878052";
+const SUPPORT_PHONE_DISPLAY = "+91 97178 78052";
+const SUPPORT_PHONE_HREF = "tel:+919717878052";
 const SUPPORT_EMAIL = "hello@alltails.in";
 const SUPPORT_EMAIL_HREF = "mailto:hello@alltails.in";
 const WHATSAPP_HREF = `https://wa.me/${WHATSAPP_NUMBER}`;
@@ -10576,7 +10576,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           Reach Us
         </div>
         <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-[13px] text-white/78">
-          <div>+91 95600 98105</div>
+          <div>+91 97178 78052</div>
           <div>hello@alltails.in</div>
           <div>Delhi NCR</div>
           <div>Open 9 AM – 8 PM</div>

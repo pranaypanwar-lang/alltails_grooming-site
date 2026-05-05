@@ -102,8 +102,8 @@ export function LegalPageShell({
                 hello@alltails.in
               </a>{" "}
               or WhatsApp{" "}
-              <a className="font-semibold text-[#6d5bd0]" href="https://wa.me/919560098105">
-                +91 95600 98105
+              <a className="font-semibold text-[#6d5bd0]" href="https://wa.me/919717878052">
+                +91 97178 78052
               </a>
               .
             </p>
