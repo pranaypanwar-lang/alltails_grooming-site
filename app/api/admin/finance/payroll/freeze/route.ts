@@ -83,3 +83,81 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Failed to freeze payroll" }, { status: 500 });
   }
 }
+
+export async function DELETE(request: Request) {
+  const authErr = await assertAdminSession();
+  if (authErr) return authErr;
+
+  try {
+    const body = await request.json().catch(() => ({}));
+    const monthBucket = normalizePayrollMonth(body.monthBucket);
+    const groomerMemberId = typeof body.groomerMemberId === "string" ? body.groomerMemberId.trim() : "";
+    const reason = typeof body.reason === "string" ? body.reason.trim() : "";
+
+    if (!groomerMemberId) {
+      return NextResponse.json({ error: "groomerMemberId is required" }, { status: 400 });
+    }
+    if (!reason) {
+      return NextResponse.json({ error: "An unfreeze reason is required for the audit trail" }, { status: 400 });
+    }
+
+    const existing = await prisma.groomerPayrollSnapshot.findUnique({
+      where: {
+        groomerMemberId_monthBucket: { groomerMemberId, monthBucket },
+      },
+      select: {
+        id: true,
+        groomerMemberId: true,
+        monthBucket: true,
+        netPayable: true,
+        cashHeldSeparate: true,
+        notes: true,
+      },
+    });
+
+    if (!existing) {
+      return NextResponse.json(
+        { error: "No frozen payroll snapshot exists for this groomer + month" },
+        { status: 404 }
+      );
+    }
+
+    await prisma.groomerPayrollSnapshot.delete({
+      where: { id: existing.id },
+    });
+
+    // Audit-trail: a synthetic ledger entry so we never lose track of unfreezes.
+    // Zero-amount adjustment with reason and prior payable amount captured in metadata.
+    await prisma.groomerLedgerEntry.create({
+      data: {
+        groomerMemberId,
+        monthBucket,
+        type: "payroll_adjustment",
+        direction: "credit",
+        amount: 0,
+        sourceType: "GroomerPayrollSnapshot",
+        sourceId: existing.id,
+        description: `Payroll snapshot unfrozen: ${reason}`,
+        createdBy: "admin",
+        occurredAt: new Date(),
+        metadataJson: JSON.stringify({
+          unfreeze: true,
+          previousNetPayable: existing.netPayable,
+          previousCashHeldSeparate: existing.cashHeldSeparate,
+          previousNotes: existing.notes,
+          reason,
+        }),
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      groomerMemberId,
+      monthBucket,
+      reason,
+    });
+  } catch (error) {
+    console.error("DELETE /api/admin/finance/payroll/freeze failed", error);
+    return NextResponse.json({ error: "Failed to unfreeze payroll" }, { status: 500 });
+  }
+}

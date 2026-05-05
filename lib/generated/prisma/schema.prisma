@@ -438,21 +438,33 @@ model GroomerFuelTrip {
   toLat              Float
   toLng              Float
   distanceKm         Float
-  roadMultiplier     Float    @default(1.3)
+  roadMultiplier     Float   @default(1.3)
   litres             Float
   ratePerLitre       Float
   fuelCost           Int
-  isEstimate         Boolean  @default(true)
-  isManuallyAdjusted Boolean  @default(false)
+  isEstimate         Boolean @default(true)
+  isManuallyAdjusted Boolean @default(false)
   originalDistanceKm Float?
   originalFuelCost   Int?
   adjustmentReason   String?
-  calculatedAt       DateTime @default(now())
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @default(now()) @updatedAt
+
+  // Groomer-initiated adjustment request (status null = no pending/past request)
+  // adjustmentRequestStatus: pending | approved | rejected
+  adjustmentRequestStatus String?
+  requestedDistanceKm     Float?
+  requestedReason         String?
+  requestedAt             DateTime?
+  adjustmentReviewedBy    String?
+  adjustmentReviewedAt    DateTime?
+  adjustmentReviewNote    String?
+
+  calculatedAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
 
   @@index([groomerMemberId, calculatedAt])
   @@index([bookingId])
+  @@index([adjustmentRequestStatus, requestedAt])
 }
 
 model GroomerPayrollSnapshot {

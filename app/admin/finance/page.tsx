@@ -111,6 +111,31 @@ type FuelTripsResponse = {
   }>;
 };
 
+type FuelAdjustmentRow = {
+  id: string;
+  bookingId: string;
+  bookingDate: string | null;
+  bookingService: string | null;
+  customerName: string | null;
+  customerPhone: string | null;
+  serviceAddress: string | null;
+  servicePincode: string | null;
+  groomer: { id: string; name: string; phone: string | null } | null;
+  currentDistanceKm: number;
+  currentFuelCost: number;
+  ratePerLitre: number;
+  litres: number;
+  isManuallyAdjusted: boolean;
+  originalDistanceKm: number | null;
+  adjustmentRequestStatus: string | null;
+  requestedDistanceKm: number | null;
+  requestedReason: string | null;
+  requestedAt: string | null;
+  adjustmentReviewedBy: string | null;
+  adjustmentReviewedAt: string | null;
+  adjustmentReviewNote: string | null;
+};
+
 type PayrollResponse = {
   monthBucket: string;
   summary: {
@@ -166,6 +191,11 @@ export default function AdminFinancePage() {
   const [payrollData, setPayrollData] = useState<PayrollResponse | null>(null);
   const [payrollLoading, setPayrollLoading] = useState(true);
   const [freezingPayrollId, setFreezingPayrollId] = useState<string | null>(null);
+  const [unfreezingPayrollId, setUnfreezingPayrollId] = useState<string | null>(null);
+  const [fuelAdjustments, setFuelAdjustments] = useState<FuelAdjustmentRow[]>([]);
+  const [fuelAdjustmentsLoading, setFuelAdjustmentsLoading] = useState(true);
+  const [adjustmentReviewNotes, setAdjustmentReviewNotes] = useState<Record<string, string>>({});
+  const [reviewingAdjustmentId, setReviewingAdjustmentId] = useState<string | null>(null);
   const [settingsMemberId, setSettingsMemberId] = useState("");
   const [settingsForm, setSettingsForm] = useState({
     baseSalary: "",
@@ -240,12 +270,27 @@ export default function AdminFinancePage() {
     }
   }, [showToast]);
 
+  const loadFuelAdjustments = useCallback(async () => {
+    setFuelAdjustmentsLoading(true);
+    try {
+      const res = await fetch("/api/admin/finance/fuel-adjustments?status=pending", { cache: "no-store" });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body?.error ?? "Failed to load fuel adjustments");
+      setFuelAdjustments(body.adjustments ?? []);
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Failed to load fuel adjustments", false);
+    } finally {
+      setFuelAdjustmentsLoading(false);
+    }
+  }, [showToast]);
+
   useEffect(() => {
     void loadFinance();
     void loadExpenses();
     void loadFuelTrips();
     void loadPayroll();
-  }, [loadExpenses, loadFinance, loadFuelTrips, loadPayroll]);
+    void loadFuelAdjustments();
+  }, [loadExpenses, loadFinance, loadFuelAdjustments, loadFuelTrips, loadPayroll]);
 
   const selectedGroomer = useMemo(
     () => data?.groomers.find((groomer) => groomer.id === depositMemberId) ?? null,
@@ -326,6 +371,53 @@ export default function AdminFinancePage() {
       showToast(error instanceof Error ? error.message : "Failed to freeze payroll", false);
     } finally {
       setFreezingPayrollId(null);
+    }
+  }
+
+  async function unfreezePayroll(groomerMemberId: string) {
+    const reason = window.prompt("Why are you unfreezing this payroll? (required for audit)")?.trim();
+    if (!reason) return;
+    setUnfreezingPayrollId(groomerMemberId);
+    try {
+      const res = await fetch("/api/admin/finance/payroll/freeze", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          groomerMemberId,
+          monthBucket: payrollData?.monthBucket,
+          reason,
+        }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body?.error ?? "Failed to unfreeze payroll");
+      showToast("Payroll snapshot unfrozen.", true);
+      await loadPayroll();
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Failed to unfreeze payroll", false);
+    } finally {
+      setUnfreezingPayrollId(null);
+    }
+  }
+
+  async function reviewFuelAdjustment(adjustmentId: string, decision: "approve" | "reject") {
+    setReviewingAdjustmentId(adjustmentId);
+    try {
+      const res = await fetch(`/api/admin/finance/fuel-adjustments/${adjustmentId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          decision,
+          reviewNote: adjustmentReviewNotes[adjustmentId] ?? "",
+        }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body?.error ?? "Failed to review adjustment");
+      showToast(decision === "approve" ? "Adjustment approved." : "Adjustment rejected.", true);
+      await Promise.all([loadFuelAdjustments(), loadFuelTrips(), loadPayroll()]);
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Failed to review adjustment", false);
+    } finally {
+      setReviewingAdjustmentId(null);
     }
   }
 
@@ -493,9 +585,16 @@ export default function AdminFinancePage() {
                   <td className="px-4 py-3 text-right font-bold text-gray-950">{formatCurrency(row.netPayable)}</td>
                   <td className="px-4 py-3 text-right text-amber-700">{formatCurrency(row.cashHeldSeparate)}</td>
                   <td className="px-4 py-3">
-                    <button type="button" disabled={freezingPayrollId === row.groomer.id} onClick={() => void freezePayroll(row.groomer.id)} className="h-8 rounded-[8px] border border-gray-200 px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-60">
-                      {row.frozenSnapshot ? "Refreeze" : freezingPayrollId === row.groomer.id ? "Freezing..." : "Freeze"}
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button type="button" disabled={freezingPayrollId === row.groomer.id} onClick={() => void freezePayroll(row.groomer.id)} className="h-8 rounded-[8px] border border-gray-200 px-3 text-xs font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-60">
+                        {row.frozenSnapshot ? "Refreeze" : freezingPayrollId === row.groomer.id ? "Freezing..." : "Freeze"}
+                      </button>
+                      {row.frozenSnapshot ? (
+                        <button type="button" disabled={unfreezingPayrollId === row.groomer.id} onClick={() => void unfreezePayroll(row.groomer.id)} className="h-8 rounded-[8px] border border-red-200 bg-red-50 px-3 text-xs font-bold text-red-700 hover:bg-red-100 disabled:opacity-60">
+                          {unfreezingPayrollId === row.groomer.id ? "Unfreezing..." : "Unfreeze"}
+                        </button>
+                      ) : null}
+                    </div>
                   </td>
                 </tr>
               )) : (
@@ -546,6 +645,84 @@ export default function AdminFinancePage() {
           </form>
         </section>
       </div>
+
+      <section className="overflow-hidden rounded-[8px] border border-amber-200 bg-amber-50/40">
+        <div className="flex items-center justify-between border-b border-amber-200 px-4 py-3">
+          <div className="flex items-center gap-2">
+            <Fuel className="h-4 w-4 text-amber-700" />
+            <div>
+              <div className="text-sm font-bold text-amber-900">Pending fuel adjustment requests</div>
+              <div className="text-xs text-amber-700">Groomer-flagged trips awaiting review. Approving updates the ledger.</div>
+            </div>
+          </div>
+          <button type="button" onClick={() => void loadFuelAdjustments()} className="h-8 rounded-[8px] border border-amber-300 bg-white px-3 text-xs font-bold text-amber-800 hover:bg-amber-100">
+            Refresh
+          </button>
+        </div>
+        <div className="divide-y divide-amber-100">
+          {fuelAdjustmentsLoading ? (
+            <div className="px-4 py-6 text-center text-sm text-amber-700">Loading...</div>
+          ) : fuelAdjustments.length === 0 ? (
+            <div className="px-4 py-6 text-center text-sm text-amber-700">No pending requests.</div>
+          ) : (
+            fuelAdjustments.map((adj) => {
+              const newCost = adj.requestedDistanceKm
+                ? Math.round((adj.requestedDistanceKm / Math.max(1, adj.litres > 0 ? adj.currentDistanceKm / adj.litres : 35)) * adj.ratePerLitre)
+                : adj.currentFuelCost;
+              return (
+                <div key={adj.id} className="px-4 py-3">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-bold text-gray-950">
+                        {adj.groomer?.name ?? "Unknown groomer"} · {adj.bookingDate ?? "no date"} · {adj.bookingService ?? "Booking"}
+                      </div>
+                      <div className="mt-0.5 text-xs text-gray-600">
+                        {adj.customerName ? `${adj.customerName} · ` : ""}{adj.serviceAddress ?? adj.servicePincode ?? ""}
+                      </div>
+                      <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+                        <span className="rounded bg-white px-2 py-0.5 font-mono">Current: {adj.currentDistanceKm.toFixed(1)} km · {formatCurrency(adj.currentFuelCost)}</span>
+                        <span className="text-amber-700">→</span>
+                        <span className="rounded bg-amber-100 px-2 py-0.5 font-mono font-bold text-amber-900">Requested: {(adj.requestedDistanceKm ?? 0).toFixed(1)} km · ~{formatCurrency(newCost)}</span>
+                      </div>
+                      {adj.requestedReason ? (
+                        <div className="mt-2 text-xs italic text-gray-700">&ldquo;{adj.requestedReason}&rdquo;</div>
+                      ) : null}
+                      {adj.requestedAt ? (
+                        <div className="mt-1 text-[11px] text-gray-500">Requested {new Date(adj.requestedAt).toLocaleString("en-IN")}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <input
+                      type="text"
+                      value={adjustmentReviewNotes[adj.id] ?? ""}
+                      onChange={(e) => setAdjustmentReviewNotes((prev) => ({ ...prev, [adj.id]: e.target.value }))}
+                      placeholder="Review note (required for reject)"
+                      className="h-9 flex-1 min-w-[200px] rounded-[8px] border border-gray-200 px-3 text-xs"
+                    />
+                    <button
+                      type="button"
+                      disabled={reviewingAdjustmentId === adj.id}
+                      onClick={() => void reviewFuelAdjustment(adj.id, "approve")}
+                      className="h-9 rounded-[8px] bg-emerald-600 px-3 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-60"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      type="button"
+                      disabled={reviewingAdjustmentId === adj.id}
+                      onClick={() => void reviewFuelAdjustment(adj.id, "reject")}
+                      className="h-9 rounded-[8px] border border-red-200 bg-red-50 px-3 text-xs font-bold text-red-700 hover:bg-red-100 disabled:opacity-60"
+                    >
+                      Reject
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </section>
 
       <section className="overflow-hidden rounded-[8px] border border-gray-200 bg-white">
         <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">

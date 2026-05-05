@@ -25922,6 +25922,7 @@ export namespace Prisma {
     fuelCost: number | null
     originalDistanceKm: number | null
     originalFuelCost: number | null
+    requestedDistanceKm: number | null
   }
 
   export type GroomerFuelTripSumAggregateOutputType = {
@@ -25936,6 +25937,7 @@ export namespace Prisma {
     fuelCost: number | null
     originalDistanceKm: number | null
     originalFuelCost: number | null
+    requestedDistanceKm: number | null
   }
 
   export type GroomerFuelTripMinAggregateOutputType = {
@@ -25958,6 +25960,13 @@ export namespace Prisma {
     originalDistanceKm: number | null
     originalFuelCost: number | null
     adjustmentReason: string | null
+    adjustmentRequestStatus: string | null
+    requestedDistanceKm: number | null
+    requestedReason: string | null
+    requestedAt: Date | null
+    adjustmentReviewedBy: string | null
+    adjustmentReviewedAt: Date | null
+    adjustmentReviewNote: string | null
     calculatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -25983,6 +25992,13 @@ export namespace Prisma {
     originalDistanceKm: number | null
     originalFuelCost: number | null
     adjustmentReason: string | null
+    adjustmentRequestStatus: string | null
+    requestedDistanceKm: number | null
+    requestedReason: string | null
+    requestedAt: Date | null
+    adjustmentReviewedBy: string | null
+    adjustmentReviewedAt: Date | null
+    adjustmentReviewNote: string | null
     calculatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -26008,6 +26024,13 @@ export namespace Prisma {
     originalDistanceKm: number
     originalFuelCost: number
     adjustmentReason: number
+    adjustmentRequestStatus: number
+    requestedDistanceKm: number
+    requestedReason: number
+    requestedAt: number
+    adjustmentReviewedBy: number
+    adjustmentReviewedAt: number
+    adjustmentReviewNote: number
     calculatedAt: number
     createdAt: number
     updatedAt: number
@@ -26027,6 +26050,7 @@ export namespace Prisma {
     fuelCost?: true
     originalDistanceKm?: true
     originalFuelCost?: true
+    requestedDistanceKm?: true
   }
 
   export type GroomerFuelTripSumAggregateInputType = {
@@ -26041,6 +26065,7 @@ export namespace Prisma {
     fuelCost?: true
     originalDistanceKm?: true
     originalFuelCost?: true
+    requestedDistanceKm?: true
   }
 
   export type GroomerFuelTripMinAggregateInputType = {
@@ -26063,6 +26088,13 @@ export namespace Prisma {
     originalDistanceKm?: true
     originalFuelCost?: true
     adjustmentReason?: true
+    adjustmentRequestStatus?: true
+    requestedDistanceKm?: true
+    requestedReason?: true
+    requestedAt?: true
+    adjustmentReviewedBy?: true
+    adjustmentReviewedAt?: true
+    adjustmentReviewNote?: true
     calculatedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -26088,6 +26120,13 @@ export namespace Prisma {
     originalDistanceKm?: true
     originalFuelCost?: true
     adjustmentReason?: true
+    adjustmentRequestStatus?: true
+    requestedDistanceKm?: true
+    requestedReason?: true
+    requestedAt?: true
+    adjustmentReviewedBy?: true
+    adjustmentReviewedAt?: true
+    adjustmentReviewNote?: true
     calculatedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -26113,6 +26152,13 @@ export namespace Prisma {
     originalDistanceKm?: true
     originalFuelCost?: true
     adjustmentReason?: true
+    adjustmentRequestStatus?: true
+    requestedDistanceKm?: true
+    requestedReason?: true
+    requestedAt?: true
+    adjustmentReviewedBy?: true
+    adjustmentReviewedAt?: true
+    adjustmentReviewNote?: true
     calculatedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -26225,6 +26271,13 @@ export namespace Prisma {
     originalDistanceKm: number | null
     originalFuelCost: number | null
     adjustmentReason: string | null
+    adjustmentRequestStatus: string | null
+    requestedDistanceKm: number | null
+    requestedReason: string | null
+    requestedAt: Date | null
+    adjustmentReviewedBy: string | null
+    adjustmentReviewedAt: Date | null
+    adjustmentReviewNote: string | null
     calculatedAt: Date
     createdAt: Date
     updatedAt: Date
@@ -26269,6 +26322,13 @@ export namespace Prisma {
     originalDistanceKm?: boolean
     originalFuelCost?: boolean
     adjustmentReason?: boolean
+    adjustmentRequestStatus?: boolean
+    requestedDistanceKm?: boolean
+    requestedReason?: boolean
+    requestedAt?: boolean
+    adjustmentReviewedBy?: boolean
+    adjustmentReviewedAt?: boolean
+    adjustmentReviewNote?: boolean
     calculatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -26296,6 +26356,13 @@ export namespace Prisma {
     originalDistanceKm?: boolean
     originalFuelCost?: boolean
     adjustmentReason?: boolean
+    adjustmentRequestStatus?: boolean
+    requestedDistanceKm?: boolean
+    requestedReason?: boolean
+    requestedAt?: boolean
+    adjustmentReviewedBy?: boolean
+    adjustmentReviewedAt?: boolean
+    adjustmentReviewNote?: boolean
     calculatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -26323,6 +26390,13 @@ export namespace Prisma {
     originalDistanceKm?: boolean
     originalFuelCost?: boolean
     adjustmentReason?: boolean
+    adjustmentRequestStatus?: boolean
+    requestedDistanceKm?: boolean
+    requestedReason?: boolean
+    requestedAt?: boolean
+    adjustmentReviewedBy?: boolean
+    adjustmentReviewedAt?: boolean
+    adjustmentReviewNote?: boolean
     calculatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -26350,12 +26424,19 @@ export namespace Prisma {
     originalDistanceKm?: boolean
     originalFuelCost?: boolean
     adjustmentReason?: boolean
+    adjustmentRequestStatus?: boolean
+    requestedDistanceKm?: boolean
+    requestedReason?: boolean
+    requestedAt?: boolean
+    adjustmentReviewedBy?: boolean
+    adjustmentReviewedAt?: boolean
+    adjustmentReviewNote?: boolean
     calculatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type GroomerFuelTripOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bookingId" | "groomerMemberId" | "fromType" | "fromBookingId" | "fromLat" | "fromLng" | "toLat" | "toLng" | "distanceKm" | "roadMultiplier" | "litres" | "ratePerLitre" | "fuelCost" | "isEstimate" | "isManuallyAdjusted" | "originalDistanceKm" | "originalFuelCost" | "adjustmentReason" | "calculatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["groomerFuelTrip"]>
+  export type GroomerFuelTripOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bookingId" | "groomerMemberId" | "fromType" | "fromBookingId" | "fromLat" | "fromLng" | "toLat" | "toLng" | "distanceKm" | "roadMultiplier" | "litres" | "ratePerLitre" | "fuelCost" | "isEstimate" | "isManuallyAdjusted" | "originalDistanceKm" | "originalFuelCost" | "adjustmentReason" | "adjustmentRequestStatus" | "requestedDistanceKm" | "requestedReason" | "requestedAt" | "adjustmentReviewedBy" | "adjustmentReviewedAt" | "adjustmentReviewNote" | "calculatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["groomerFuelTrip"]>
   export type GroomerFuelTripInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     booking?: boolean | BookingDefaultArgs<ExtArgs>
     groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
@@ -26395,6 +26476,13 @@ export namespace Prisma {
       originalDistanceKm: number | null
       originalFuelCost: number | null
       adjustmentReason: string | null
+      adjustmentRequestStatus: string | null
+      requestedDistanceKm: number | null
+      requestedReason: string | null
+      requestedAt: Date | null
+      adjustmentReviewedBy: string | null
+      adjustmentReviewedAt: Date | null
+      adjustmentReviewNote: string | null
       calculatedAt: Date
       createdAt: Date
       updatedAt: Date
@@ -26842,6 +26930,13 @@ export namespace Prisma {
     readonly originalDistanceKm: FieldRef<"GroomerFuelTrip", 'Float'>
     readonly originalFuelCost: FieldRef<"GroomerFuelTrip", 'Int'>
     readonly adjustmentReason: FieldRef<"GroomerFuelTrip", 'String'>
+    readonly adjustmentRequestStatus: FieldRef<"GroomerFuelTrip", 'String'>
+    readonly requestedDistanceKm: FieldRef<"GroomerFuelTrip", 'Float'>
+    readonly requestedReason: FieldRef<"GroomerFuelTrip", 'String'>
+    readonly requestedAt: FieldRef<"GroomerFuelTrip", 'DateTime'>
+    readonly adjustmentReviewedBy: FieldRef<"GroomerFuelTrip", 'String'>
+    readonly adjustmentReviewedAt: FieldRef<"GroomerFuelTrip", 'DateTime'>
+    readonly adjustmentReviewNote: FieldRef<"GroomerFuelTrip", 'String'>
     readonly calculatedAt: FieldRef<"GroomerFuelTrip", 'DateTime'>
     readonly createdAt: FieldRef<"GroomerFuelTrip", 'DateTime'>
     readonly updatedAt: FieldRef<"GroomerFuelTrip", 'DateTime'>
@@ -56351,6 +56446,13 @@ export namespace Prisma {
     originalDistanceKm: 'originalDistanceKm',
     originalFuelCost: 'originalFuelCost',
     adjustmentReason: 'adjustmentReason',
+    adjustmentRequestStatus: 'adjustmentRequestStatus',
+    requestedDistanceKm: 'requestedDistanceKm',
+    requestedReason: 'requestedReason',
+    requestedAt: 'requestedAt',
+    adjustmentReviewedBy: 'adjustmentReviewedBy',
+    adjustmentReviewedAt: 'adjustmentReviewedAt',
+    adjustmentReviewNote: 'adjustmentReviewNote',
     calculatedAt: 'calculatedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -58638,6 +58740,13 @@ export namespace Prisma {
     originalDistanceKm?: FloatNullableFilter<"GroomerFuelTrip"> | number | null
     originalFuelCost?: IntNullableFilter<"GroomerFuelTrip"> | number | null
     adjustmentReason?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    adjustmentRequestStatus?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    requestedDistanceKm?: FloatNullableFilter<"GroomerFuelTrip"> | number | null
+    requestedReason?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    requestedAt?: DateTimeNullableFilter<"GroomerFuelTrip"> | Date | string | null
+    adjustmentReviewedBy?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    adjustmentReviewedAt?: DateTimeNullableFilter<"GroomerFuelTrip"> | Date | string | null
+    adjustmentReviewNote?: StringNullableFilter<"GroomerFuelTrip"> | string | null
     calculatedAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
     createdAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
     updatedAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
@@ -58665,6 +58774,13 @@ export namespace Prisma {
     originalDistanceKm?: SortOrderInput | SortOrder
     originalFuelCost?: SortOrderInput | SortOrder
     adjustmentReason?: SortOrderInput | SortOrder
+    adjustmentRequestStatus?: SortOrderInput | SortOrder
+    requestedDistanceKm?: SortOrderInput | SortOrder
+    requestedReason?: SortOrderInput | SortOrder
+    requestedAt?: SortOrderInput | SortOrder
+    adjustmentReviewedBy?: SortOrderInput | SortOrder
+    adjustmentReviewedAt?: SortOrderInput | SortOrder
+    adjustmentReviewNote?: SortOrderInput | SortOrder
     calculatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -58695,6 +58811,13 @@ export namespace Prisma {
     originalDistanceKm?: FloatNullableFilter<"GroomerFuelTrip"> | number | null
     originalFuelCost?: IntNullableFilter<"GroomerFuelTrip"> | number | null
     adjustmentReason?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    adjustmentRequestStatus?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    requestedDistanceKm?: FloatNullableFilter<"GroomerFuelTrip"> | number | null
+    requestedReason?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    requestedAt?: DateTimeNullableFilter<"GroomerFuelTrip"> | Date | string | null
+    adjustmentReviewedBy?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    adjustmentReviewedAt?: DateTimeNullableFilter<"GroomerFuelTrip"> | Date | string | null
+    adjustmentReviewNote?: StringNullableFilter<"GroomerFuelTrip"> | string | null
     calculatedAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
     createdAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
     updatedAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
@@ -58722,6 +58845,13 @@ export namespace Prisma {
     originalDistanceKm?: SortOrderInput | SortOrder
     originalFuelCost?: SortOrderInput | SortOrder
     adjustmentReason?: SortOrderInput | SortOrder
+    adjustmentRequestStatus?: SortOrderInput | SortOrder
+    requestedDistanceKm?: SortOrderInput | SortOrder
+    requestedReason?: SortOrderInput | SortOrder
+    requestedAt?: SortOrderInput | SortOrder
+    adjustmentReviewedBy?: SortOrderInput | SortOrder
+    adjustmentReviewedAt?: SortOrderInput | SortOrder
+    adjustmentReviewNote?: SortOrderInput | SortOrder
     calculatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -58755,6 +58885,13 @@ export namespace Prisma {
     originalDistanceKm?: FloatNullableWithAggregatesFilter<"GroomerFuelTrip"> | number | null
     originalFuelCost?: IntNullableWithAggregatesFilter<"GroomerFuelTrip"> | number | null
     adjustmentReason?: StringNullableWithAggregatesFilter<"GroomerFuelTrip"> | string | null
+    adjustmentRequestStatus?: StringNullableWithAggregatesFilter<"GroomerFuelTrip"> | string | null
+    requestedDistanceKm?: FloatNullableWithAggregatesFilter<"GroomerFuelTrip"> | number | null
+    requestedReason?: StringNullableWithAggregatesFilter<"GroomerFuelTrip"> | string | null
+    requestedAt?: DateTimeNullableWithAggregatesFilter<"GroomerFuelTrip"> | Date | string | null
+    adjustmentReviewedBy?: StringNullableWithAggregatesFilter<"GroomerFuelTrip"> | string | null
+    adjustmentReviewedAt?: DateTimeNullableWithAggregatesFilter<"GroomerFuelTrip"> | Date | string | null
+    adjustmentReviewNote?: StringNullableWithAggregatesFilter<"GroomerFuelTrip"> | string | null
     calculatedAt?: DateTimeWithAggregatesFilter<"GroomerFuelTrip"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"GroomerFuelTrip"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"GroomerFuelTrip"> | Date | string
@@ -62914,6 +63051,13 @@ export namespace Prisma {
     originalDistanceKm?: number | null
     originalFuelCost?: number | null
     adjustmentReason?: string | null
+    adjustmentRequestStatus?: string | null
+    requestedDistanceKm?: number | null
+    requestedReason?: string | null
+    requestedAt?: Date | string | null
+    adjustmentReviewedBy?: string | null
+    adjustmentReviewedAt?: Date | string | null
+    adjustmentReviewNote?: string | null
     calculatedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -62941,6 +63085,13 @@ export namespace Prisma {
     originalDistanceKm?: number | null
     originalFuelCost?: number | null
     adjustmentReason?: string | null
+    adjustmentRequestStatus?: string | null
+    requestedDistanceKm?: number | null
+    requestedReason?: string | null
+    requestedAt?: Date | string | null
+    adjustmentReviewedBy?: string | null
+    adjustmentReviewedAt?: Date | string | null
+    adjustmentReviewNote?: string | null
     calculatedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -62964,6 +63115,13 @@ export namespace Prisma {
     originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
     originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentRequestStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    requestedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -62991,6 +63149,13 @@ export namespace Prisma {
     originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
     originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentRequestStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    requestedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63016,6 +63181,13 @@ export namespace Prisma {
     originalDistanceKm?: number | null
     originalFuelCost?: number | null
     adjustmentReason?: string | null
+    adjustmentRequestStatus?: string | null
+    requestedDistanceKm?: number | null
+    requestedReason?: string | null
+    requestedAt?: Date | string | null
+    adjustmentReviewedBy?: string | null
+    adjustmentReviewedAt?: Date | string | null
+    adjustmentReviewNote?: string | null
     calculatedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -63039,6 +63211,13 @@ export namespace Prisma {
     originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
     originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentRequestStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    requestedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63064,6 +63243,13 @@ export namespace Prisma {
     originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
     originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentRequestStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    requestedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66965,6 +67151,13 @@ export namespace Prisma {
     originalDistanceKm?: SortOrder
     originalFuelCost?: SortOrder
     adjustmentReason?: SortOrder
+    adjustmentRequestStatus?: SortOrder
+    requestedDistanceKm?: SortOrder
+    requestedReason?: SortOrder
+    requestedAt?: SortOrder
+    adjustmentReviewedBy?: SortOrder
+    adjustmentReviewedAt?: SortOrder
+    adjustmentReviewNote?: SortOrder
     calculatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -66982,6 +67175,7 @@ export namespace Prisma {
     fuelCost?: SortOrder
     originalDistanceKm?: SortOrder
     originalFuelCost?: SortOrder
+    requestedDistanceKm?: SortOrder
   }
 
   export type GroomerFuelTripMaxOrderByAggregateInput = {
@@ -67004,6 +67198,13 @@ export namespace Prisma {
     originalDistanceKm?: SortOrder
     originalFuelCost?: SortOrder
     adjustmentReason?: SortOrder
+    adjustmentRequestStatus?: SortOrder
+    requestedDistanceKm?: SortOrder
+    requestedReason?: SortOrder
+    requestedAt?: SortOrder
+    adjustmentReviewedBy?: SortOrder
+    adjustmentReviewedAt?: SortOrder
+    adjustmentReviewNote?: SortOrder
     calculatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -67029,6 +67230,13 @@ export namespace Prisma {
     originalDistanceKm?: SortOrder
     originalFuelCost?: SortOrder
     adjustmentReason?: SortOrder
+    adjustmentRequestStatus?: SortOrder
+    requestedDistanceKm?: SortOrder
+    requestedReason?: SortOrder
+    requestedAt?: SortOrder
+    adjustmentReviewedBy?: SortOrder
+    adjustmentReviewedAt?: SortOrder
+    adjustmentReviewNote?: SortOrder
     calculatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -67046,6 +67254,7 @@ export namespace Prisma {
     fuelCost?: SortOrder
     originalDistanceKm?: SortOrder
     originalFuelCost?: SortOrder
+    requestedDistanceKm?: SortOrder
   }
 
   export type GroomerPayrollSnapshotGroomerMemberIdMonthBucketCompoundUniqueInput = {
@@ -74250,6 +74459,13 @@ export namespace Prisma {
     originalDistanceKm?: number | null
     originalFuelCost?: number | null
     adjustmentReason?: string | null
+    adjustmentRequestStatus?: string | null
+    requestedDistanceKm?: number | null
+    requestedReason?: string | null
+    requestedAt?: Date | string | null
+    adjustmentReviewedBy?: string | null
+    adjustmentReviewedAt?: Date | string | null
+    adjustmentReviewNote?: string | null
     calculatedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -74275,6 +74491,13 @@ export namespace Prisma {
     originalDistanceKm?: number | null
     originalFuelCost?: number | null
     adjustmentReason?: string | null
+    adjustmentRequestStatus?: string | null
+    requestedDistanceKm?: number | null
+    requestedReason?: string | null
+    requestedAt?: Date | string | null
+    adjustmentReviewedBy?: string | null
+    adjustmentReviewedAt?: Date | string | null
+    adjustmentReviewNote?: string | null
     calculatedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -74945,6 +75168,13 @@ export namespace Prisma {
     originalDistanceKm?: FloatNullableFilter<"GroomerFuelTrip"> | number | null
     originalFuelCost?: IntNullableFilter<"GroomerFuelTrip"> | number | null
     adjustmentReason?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    adjustmentRequestStatus?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    requestedDistanceKm?: FloatNullableFilter<"GroomerFuelTrip"> | number | null
+    requestedReason?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    requestedAt?: DateTimeNullableFilter<"GroomerFuelTrip"> | Date | string | null
+    adjustmentReviewedBy?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    adjustmentReviewedAt?: DateTimeNullableFilter<"GroomerFuelTrip"> | Date | string | null
+    adjustmentReviewNote?: StringNullableFilter<"GroomerFuelTrip"> | string | null
     calculatedAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
     createdAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
     updatedAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
@@ -75447,6 +75677,13 @@ export namespace Prisma {
     originalDistanceKm?: number | null
     originalFuelCost?: number | null
     adjustmentReason?: string | null
+    adjustmentRequestStatus?: string | null
+    requestedDistanceKm?: number | null
+    requestedReason?: string | null
+    requestedAt?: Date | string | null
+    adjustmentReviewedBy?: string | null
+    adjustmentReviewedAt?: Date | string | null
+    adjustmentReviewNote?: string | null
     calculatedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -75472,6 +75709,13 @@ export namespace Prisma {
     originalDistanceKm?: number | null
     originalFuelCost?: number | null
     adjustmentReason?: string | null
+    adjustmentRequestStatus?: string | null
+    requestedDistanceKm?: number | null
+    requestedReason?: string | null
+    requestedAt?: Date | string | null
+    adjustmentReviewedBy?: string | null
+    adjustmentReviewedAt?: Date | string | null
+    adjustmentReviewNote?: string | null
     calculatedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -85598,6 +85842,13 @@ export namespace Prisma {
     originalDistanceKm?: number | null
     originalFuelCost?: number | null
     adjustmentReason?: string | null
+    adjustmentRequestStatus?: string | null
+    requestedDistanceKm?: number | null
+    requestedReason?: string | null
+    requestedAt?: Date | string | null
+    adjustmentReviewedBy?: string | null
+    adjustmentReviewedAt?: Date | string | null
+    adjustmentReviewNote?: string | null
     calculatedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -86037,6 +86288,13 @@ export namespace Prisma {
     originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
     originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentRequestStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    requestedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -86062,6 +86320,13 @@ export namespace Prisma {
     originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
     originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentRequestStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    requestedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -86086,6 +86351,13 @@ export namespace Prisma {
     originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
     originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentRequestStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    requestedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -86297,6 +86569,13 @@ export namespace Prisma {
     originalDistanceKm?: number | null
     originalFuelCost?: number | null
     adjustmentReason?: string | null
+    adjustmentRequestStatus?: string | null
+    requestedDistanceKm?: number | null
+    requestedReason?: string | null
+    requestedAt?: Date | string | null
+    adjustmentReviewedBy?: string | null
+    adjustmentReviewedAt?: Date | string | null
+    adjustmentReviewNote?: string | null
     calculatedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -86884,6 +87163,13 @@ export namespace Prisma {
     originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
     originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentRequestStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    requestedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -86909,6 +87195,13 @@ export namespace Prisma {
     originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
     originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentRequestStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    requestedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -86933,6 +87226,13 @@ export namespace Prisma {
     originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
     originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
     adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentRequestStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    requestedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustmentReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustmentReviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
