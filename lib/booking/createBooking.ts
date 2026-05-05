@@ -60,6 +60,9 @@ export type CreateBookingInput = {
   serviceLandmark?: string | null;
   servicePincode?: string | null;
   serviceLocationUrl?: string | null;
+  serviceLat?: number | null;
+  serviceLng?: number | null;
+  serviceLocationSource?: string | null;
 };
 
 async function resolveCanonicalUser(
@@ -306,6 +309,9 @@ export async function createBookingWithBusinessRules(
         serviceLandmark: input.serviceLandmark?.trim() || null,
         servicePincode: input.servicePincode?.trim() || null,
         serviceLocationUrl: input.serviceLocationUrl?.trim() || null,
+        serviceLat: typeof input.serviceLat === "number" ? input.serviceLat : null,
+        serviceLng: typeof input.serviceLng === "number" ? input.serviceLng : null,
+        serviceLocationSource: input.serviceLocationSource?.trim() || null,
         assignedTeamId: lockResult.teamId,
         groomerMemberId: autoAssignedGroomer?.id ?? null,
         dispatchState: "assigned",
@@ -313,7 +319,8 @@ export async function createBookingWithBusinessRules(
           input.serviceAddress?.trim() ||
           input.serviceLandmark?.trim() ||
           input.servicePincode?.trim() ||
-          input.serviceLocationUrl?.trim()
+          input.serviceLocationUrl?.trim() ||
+          (typeof input.serviceLat === "number" && typeof input.serviceLng === "number")
             ? new Date()
             : null,
         loyaltyEligible,

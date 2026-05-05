@@ -4,6 +4,8 @@ import {
   getMissingRequiredSopEvidenceLabels,
   getMissingRequiredSopLabels,
 } from "./sop";
+import { syncCashCollectionLedgerForBooking } from "../finance/groomerLedger";
+import { syncEstimatedFuelTripForBooking } from "../finance/fuelTrips";
 
 type DbClient = PrismaClient | Prisma.TransactionClient;
 
@@ -118,6 +120,9 @@ export async function completeBookingLifecycle(
         loyaltyCountedAt: shouldCountLoyalty ? loyaltyCountedAt : booking.loyaltyCountedAt,
       },
     });
+
+    await syncCashCollectionLedgerForBooking(tx, booking.id);
+    await syncEstimatedFuelTripForBooking(tx, booking.id);
 
     return {
       alreadyCompleted: false,

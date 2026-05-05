@@ -79,6 +79,31 @@ export type Booking = $Result.DefaultSelection<Prisma.$BookingPayload>
  */
 export type TeamMember = $Result.DefaultSelection<Prisma.$TeamMemberPayload>
 /**
+ * Model GroomerLedgerEntry
+ * 
+ */
+export type GroomerLedgerEntry = $Result.DefaultSelection<Prisma.$GroomerLedgerEntryPayload>
+/**
+ * Model GroomerCashDeposit
+ * 
+ */
+export type GroomerCashDeposit = $Result.DefaultSelection<Prisma.$GroomerCashDepositPayload>
+/**
+ * Model GroomerExpense
+ * 
+ */
+export type GroomerExpense = $Result.DefaultSelection<Prisma.$GroomerExpensePayload>
+/**
+ * Model GroomerFuelTrip
+ * 
+ */
+export type GroomerFuelTrip = $Result.DefaultSelection<Prisma.$GroomerFuelTripPayload>
+/**
+ * Model GroomerPayrollSnapshot
+ * 
+ */
+export type GroomerPayrollSnapshot = $Result.DefaultSelection<Prisma.$GroomerPayrollSnapshotPayload>
+/**
  * Model TeamLeaderboardSnapshot
  * 
  */
@@ -449,6 +474,56 @@ export class PrismaClient<
     * ```
     */
   get teamMember(): Prisma.TeamMemberDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.groomerLedgerEntry`: Exposes CRUD operations for the **GroomerLedgerEntry** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GroomerLedgerEntries
+    * const groomerLedgerEntries = await prisma.groomerLedgerEntry.findMany()
+    * ```
+    */
+  get groomerLedgerEntry(): Prisma.GroomerLedgerEntryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.groomerCashDeposit`: Exposes CRUD operations for the **GroomerCashDeposit** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GroomerCashDeposits
+    * const groomerCashDeposits = await prisma.groomerCashDeposit.findMany()
+    * ```
+    */
+  get groomerCashDeposit(): Prisma.GroomerCashDepositDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.groomerExpense`: Exposes CRUD operations for the **GroomerExpense** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GroomerExpenses
+    * const groomerExpenses = await prisma.groomerExpense.findMany()
+    * ```
+    */
+  get groomerExpense(): Prisma.GroomerExpenseDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.groomerFuelTrip`: Exposes CRUD operations for the **GroomerFuelTrip** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GroomerFuelTrips
+    * const groomerFuelTrips = await prisma.groomerFuelTrip.findMany()
+    * ```
+    */
+  get groomerFuelTrip(): Prisma.GroomerFuelTripDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.groomerPayrollSnapshot`: Exposes CRUD operations for the **GroomerPayrollSnapshot** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GroomerPayrollSnapshots
+    * const groomerPayrollSnapshots = await prisma.groomerPayrollSnapshot.findMany()
+    * ```
+    */
+  get groomerPayrollSnapshot(): Prisma.GroomerPayrollSnapshotDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.teamLeaderboardSnapshot`: Exposes CRUD operations for the **TeamLeaderboardSnapshot** model.
@@ -1136,6 +1211,11 @@ export namespace Prisma {
     Slot: 'Slot',
     Booking: 'Booking',
     TeamMember: 'TeamMember',
+    GroomerLedgerEntry: 'GroomerLedgerEntry',
+    GroomerCashDeposit: 'GroomerCashDeposit',
+    GroomerExpense: 'GroomerExpense',
+    GroomerFuelTrip: 'GroomerFuelTrip',
+    GroomerPayrollSnapshot: 'GroomerPayrollSnapshot',
     TeamLeaderboardSnapshot: 'TeamLeaderboardSnapshot',
     GroomerRewardEvent: 'GroomerRewardEvent',
     WorkforceLeaveRequest: 'WorkforceLeaveRequest',
@@ -1175,7 +1255,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "pet" | "petAsset" | "service" | "coupon" | "couponRedemption" | "serviceArea" | "team" | "teamCoverageRule" | "teamCoverageArea" | "slot" | "booking" | "teamMember" | "teamLeaderboardSnapshot" | "groomerRewardEvent" | "workforceLeaveRequest" | "workforceSalaryAdvanceRequest" | "workforceReferralRecord" | "trainingModule" | "workforceTrainingInterest" | "workforceRewardRedemptionRequest" | "trainingCompletion" | "blogPost" | "legalDocument" | "heroTestimonial" | "bookingEvent" | "bookingSopStep" | "bookingSopProof" | "bookingPaymentCollection" | "bookingPet" | "bookingSlot" | "bookingPetAsset" | "bookingDraftAsset" | "relayCallSession" | "dispatchAlert" | "bookingCustomerMessage" | "bookingSupportCase"
+      modelProps: "user" | "pet" | "petAsset" | "service" | "coupon" | "couponRedemption" | "serviceArea" | "team" | "teamCoverageRule" | "teamCoverageArea" | "slot" | "booking" | "teamMember" | "groomerLedgerEntry" | "groomerCashDeposit" | "groomerExpense" | "groomerFuelTrip" | "groomerPayrollSnapshot" | "teamLeaderboardSnapshot" | "groomerRewardEvent" | "workforceLeaveRequest" | "workforceSalaryAdvanceRequest" | "workforceReferralRecord" | "trainingModule" | "workforceTrainingInterest" | "workforceRewardRedemptionRequest" | "trainingCompletion" | "blogPost" | "legalDocument" | "heroTestimonial" | "bookingEvent" | "bookingSopStep" | "bookingSopProof" | "bookingPaymentCollection" | "bookingPet" | "bookingSlot" | "bookingPetAsset" | "bookingDraftAsset" | "relayCallSession" | "dispatchAlert" | "bookingCustomerMessage" | "bookingSupportCase"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2138,6 +2218,376 @@ export namespace Prisma {
           count: {
             args: Prisma.TeamMemberCountArgs<ExtArgs>
             result: $Utils.Optional<TeamMemberCountAggregateOutputType> | number
+          }
+        }
+      }
+      GroomerLedgerEntry: {
+        payload: Prisma.$GroomerLedgerEntryPayload<ExtArgs>
+        fields: Prisma.GroomerLedgerEntryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GroomerLedgerEntryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerLedgerEntryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GroomerLedgerEntryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerLedgerEntryPayload>
+          }
+          findFirst: {
+            args: Prisma.GroomerLedgerEntryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerLedgerEntryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GroomerLedgerEntryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerLedgerEntryPayload>
+          }
+          findMany: {
+            args: Prisma.GroomerLedgerEntryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerLedgerEntryPayload>[]
+          }
+          create: {
+            args: Prisma.GroomerLedgerEntryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerLedgerEntryPayload>
+          }
+          createMany: {
+            args: Prisma.GroomerLedgerEntryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GroomerLedgerEntryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerLedgerEntryPayload>[]
+          }
+          delete: {
+            args: Prisma.GroomerLedgerEntryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerLedgerEntryPayload>
+          }
+          update: {
+            args: Prisma.GroomerLedgerEntryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerLedgerEntryPayload>
+          }
+          deleteMany: {
+            args: Prisma.GroomerLedgerEntryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GroomerLedgerEntryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GroomerLedgerEntryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerLedgerEntryPayload>[]
+          }
+          upsert: {
+            args: Prisma.GroomerLedgerEntryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerLedgerEntryPayload>
+          }
+          aggregate: {
+            args: Prisma.GroomerLedgerEntryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGroomerLedgerEntry>
+          }
+          groupBy: {
+            args: Prisma.GroomerLedgerEntryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GroomerLedgerEntryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GroomerLedgerEntryCountArgs<ExtArgs>
+            result: $Utils.Optional<GroomerLedgerEntryCountAggregateOutputType> | number
+          }
+        }
+      }
+      GroomerCashDeposit: {
+        payload: Prisma.$GroomerCashDepositPayload<ExtArgs>
+        fields: Prisma.GroomerCashDepositFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GroomerCashDepositFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerCashDepositPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GroomerCashDepositFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerCashDepositPayload>
+          }
+          findFirst: {
+            args: Prisma.GroomerCashDepositFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerCashDepositPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GroomerCashDepositFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerCashDepositPayload>
+          }
+          findMany: {
+            args: Prisma.GroomerCashDepositFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerCashDepositPayload>[]
+          }
+          create: {
+            args: Prisma.GroomerCashDepositCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerCashDepositPayload>
+          }
+          createMany: {
+            args: Prisma.GroomerCashDepositCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GroomerCashDepositCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerCashDepositPayload>[]
+          }
+          delete: {
+            args: Prisma.GroomerCashDepositDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerCashDepositPayload>
+          }
+          update: {
+            args: Prisma.GroomerCashDepositUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerCashDepositPayload>
+          }
+          deleteMany: {
+            args: Prisma.GroomerCashDepositDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GroomerCashDepositUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GroomerCashDepositUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerCashDepositPayload>[]
+          }
+          upsert: {
+            args: Prisma.GroomerCashDepositUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerCashDepositPayload>
+          }
+          aggregate: {
+            args: Prisma.GroomerCashDepositAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGroomerCashDeposit>
+          }
+          groupBy: {
+            args: Prisma.GroomerCashDepositGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GroomerCashDepositGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GroomerCashDepositCountArgs<ExtArgs>
+            result: $Utils.Optional<GroomerCashDepositCountAggregateOutputType> | number
+          }
+        }
+      }
+      GroomerExpense: {
+        payload: Prisma.$GroomerExpensePayload<ExtArgs>
+        fields: Prisma.GroomerExpenseFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GroomerExpenseFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerExpensePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GroomerExpenseFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerExpensePayload>
+          }
+          findFirst: {
+            args: Prisma.GroomerExpenseFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerExpensePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GroomerExpenseFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerExpensePayload>
+          }
+          findMany: {
+            args: Prisma.GroomerExpenseFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerExpensePayload>[]
+          }
+          create: {
+            args: Prisma.GroomerExpenseCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerExpensePayload>
+          }
+          createMany: {
+            args: Prisma.GroomerExpenseCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GroomerExpenseCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerExpensePayload>[]
+          }
+          delete: {
+            args: Prisma.GroomerExpenseDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerExpensePayload>
+          }
+          update: {
+            args: Prisma.GroomerExpenseUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerExpensePayload>
+          }
+          deleteMany: {
+            args: Prisma.GroomerExpenseDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GroomerExpenseUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GroomerExpenseUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerExpensePayload>[]
+          }
+          upsert: {
+            args: Prisma.GroomerExpenseUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerExpensePayload>
+          }
+          aggregate: {
+            args: Prisma.GroomerExpenseAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGroomerExpense>
+          }
+          groupBy: {
+            args: Prisma.GroomerExpenseGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GroomerExpenseGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GroomerExpenseCountArgs<ExtArgs>
+            result: $Utils.Optional<GroomerExpenseCountAggregateOutputType> | number
+          }
+        }
+      }
+      GroomerFuelTrip: {
+        payload: Prisma.$GroomerFuelTripPayload<ExtArgs>
+        fields: Prisma.GroomerFuelTripFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GroomerFuelTripFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerFuelTripPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GroomerFuelTripFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerFuelTripPayload>
+          }
+          findFirst: {
+            args: Prisma.GroomerFuelTripFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerFuelTripPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GroomerFuelTripFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerFuelTripPayload>
+          }
+          findMany: {
+            args: Prisma.GroomerFuelTripFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerFuelTripPayload>[]
+          }
+          create: {
+            args: Prisma.GroomerFuelTripCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerFuelTripPayload>
+          }
+          createMany: {
+            args: Prisma.GroomerFuelTripCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GroomerFuelTripCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerFuelTripPayload>[]
+          }
+          delete: {
+            args: Prisma.GroomerFuelTripDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerFuelTripPayload>
+          }
+          update: {
+            args: Prisma.GroomerFuelTripUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerFuelTripPayload>
+          }
+          deleteMany: {
+            args: Prisma.GroomerFuelTripDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GroomerFuelTripUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GroomerFuelTripUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerFuelTripPayload>[]
+          }
+          upsert: {
+            args: Prisma.GroomerFuelTripUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerFuelTripPayload>
+          }
+          aggregate: {
+            args: Prisma.GroomerFuelTripAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGroomerFuelTrip>
+          }
+          groupBy: {
+            args: Prisma.GroomerFuelTripGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GroomerFuelTripGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GroomerFuelTripCountArgs<ExtArgs>
+            result: $Utils.Optional<GroomerFuelTripCountAggregateOutputType> | number
+          }
+        }
+      }
+      GroomerPayrollSnapshot: {
+        payload: Prisma.$GroomerPayrollSnapshotPayload<ExtArgs>
+        fields: Prisma.GroomerPayrollSnapshotFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GroomerPayrollSnapshotFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerPayrollSnapshotPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GroomerPayrollSnapshotFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerPayrollSnapshotPayload>
+          }
+          findFirst: {
+            args: Prisma.GroomerPayrollSnapshotFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerPayrollSnapshotPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GroomerPayrollSnapshotFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerPayrollSnapshotPayload>
+          }
+          findMany: {
+            args: Prisma.GroomerPayrollSnapshotFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerPayrollSnapshotPayload>[]
+          }
+          create: {
+            args: Prisma.GroomerPayrollSnapshotCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerPayrollSnapshotPayload>
+          }
+          createMany: {
+            args: Prisma.GroomerPayrollSnapshotCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GroomerPayrollSnapshotCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerPayrollSnapshotPayload>[]
+          }
+          delete: {
+            args: Prisma.GroomerPayrollSnapshotDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerPayrollSnapshotPayload>
+          }
+          update: {
+            args: Prisma.GroomerPayrollSnapshotUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerPayrollSnapshotPayload>
+          }
+          deleteMany: {
+            args: Prisma.GroomerPayrollSnapshotDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GroomerPayrollSnapshotUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GroomerPayrollSnapshotUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerPayrollSnapshotPayload>[]
+          }
+          upsert: {
+            args: Prisma.GroomerPayrollSnapshotUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroomerPayrollSnapshotPayload>
+          }
+          aggregate: {
+            args: Prisma.GroomerPayrollSnapshotAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGroomerPayrollSnapshot>
+          }
+          groupBy: {
+            args: Prisma.GroomerPayrollSnapshotGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GroomerPayrollSnapshotGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GroomerPayrollSnapshotCountArgs<ExtArgs>
+            result: $Utils.Optional<GroomerPayrollSnapshotCountAggregateOutputType> | number
           }
         }
       }
@@ -4038,6 +4488,11 @@ export namespace Prisma {
     slot?: SlotOmit
     booking?: BookingOmit
     teamMember?: TeamMemberOmit
+    groomerLedgerEntry?: GroomerLedgerEntryOmit
+    groomerCashDeposit?: GroomerCashDepositOmit
+    groomerExpense?: GroomerExpenseOmit
+    groomerFuelTrip?: GroomerFuelTripOmit
+    groomerPayrollSnapshot?: GroomerPayrollSnapshotOmit
     teamLeaderboardSnapshot?: TeamLeaderboardSnapshotOmit
     groomerRewardEvent?: GroomerRewardEventOmit
     workforceLeaveRequest?: WorkforceLeaveRequestOmit
@@ -4481,6 +4936,8 @@ export namespace Prisma {
     sopSteps: number
     sopProofs: number
     groomerRewardEvents: number
+    groomerExpenses: number
+    groomerFuelTrips: number
     couponRedemptions: number
   }
 
@@ -4495,6 +4952,8 @@ export namespace Prisma {
     sopSteps?: boolean | BookingCountOutputTypeCountSopStepsArgs
     sopProofs?: boolean | BookingCountOutputTypeCountSopProofsArgs
     groomerRewardEvents?: boolean | BookingCountOutputTypeCountGroomerRewardEventsArgs
+    groomerExpenses?: boolean | BookingCountOutputTypeCountGroomerExpensesArgs
+    groomerFuelTrips?: boolean | BookingCountOutputTypeCountGroomerFuelTripsArgs
     couponRedemptions?: boolean | BookingCountOutputTypeCountCouponRedemptionsArgs
   }
 
@@ -4582,6 +5041,20 @@ export namespace Prisma {
   /**
    * BookingCountOutputType without action
    */
+  export type BookingCountOutputTypeCountGroomerExpensesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroomerExpenseWhereInput
+  }
+
+  /**
+   * BookingCountOutputType without action
+   */
+  export type BookingCountOutputTypeCountGroomerFuelTripsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroomerFuelTripWhereInput
+  }
+
+  /**
+   * BookingCountOutputType without action
+   */
   export type BookingCountOutputTypeCountCouponRedemptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CouponRedemptionWhereInput
   }
@@ -4597,6 +5070,11 @@ export namespace Prisma {
     leaderboardSnapshots: number
     leaveRequests: number
     salaryAdvanceRequests: number
+    ledgerEntries: number
+    cashDeposits: number
+    expenses: number
+    fuelTrips: number
+    payrollSnapshots: number
     referralsMade: number
     trainingCompletions: number
     trainingInterests: number
@@ -4609,6 +5087,11 @@ export namespace Prisma {
     leaderboardSnapshots?: boolean | TeamMemberCountOutputTypeCountLeaderboardSnapshotsArgs
     leaveRequests?: boolean | TeamMemberCountOutputTypeCountLeaveRequestsArgs
     salaryAdvanceRequests?: boolean | TeamMemberCountOutputTypeCountSalaryAdvanceRequestsArgs
+    ledgerEntries?: boolean | TeamMemberCountOutputTypeCountLedgerEntriesArgs
+    cashDeposits?: boolean | TeamMemberCountOutputTypeCountCashDepositsArgs
+    expenses?: boolean | TeamMemberCountOutputTypeCountExpensesArgs
+    fuelTrips?: boolean | TeamMemberCountOutputTypeCountFuelTripsArgs
+    payrollSnapshots?: boolean | TeamMemberCountOutputTypeCountPayrollSnapshotsArgs
     referralsMade?: boolean | TeamMemberCountOutputTypeCountReferralsMadeArgs
     trainingCompletions?: boolean | TeamMemberCountOutputTypeCountTrainingCompletionsArgs
     trainingInterests?: boolean | TeamMemberCountOutputTypeCountTrainingInterestsArgs
@@ -4659,6 +5142,41 @@ export namespace Prisma {
    */
   export type TeamMemberCountOutputTypeCountSalaryAdvanceRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WorkforceSalaryAdvanceRequestWhereInput
+  }
+
+  /**
+   * TeamMemberCountOutputType without action
+   */
+  export type TeamMemberCountOutputTypeCountLedgerEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroomerLedgerEntryWhereInput
+  }
+
+  /**
+   * TeamMemberCountOutputType without action
+   */
+  export type TeamMemberCountOutputTypeCountCashDepositsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroomerCashDepositWhereInput
+  }
+
+  /**
+   * TeamMemberCountOutputType without action
+   */
+  export type TeamMemberCountOutputTypeCountExpensesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroomerExpenseWhereInput
+  }
+
+  /**
+   * TeamMemberCountOutputType without action
+   */
+  export type TeamMemberCountOutputTypeCountFuelTripsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroomerFuelTripWhereInput
+  }
+
+  /**
+   * TeamMemberCountOutputType without action
+   */
+  export type TeamMemberCountOutputTypeCountPayrollSnapshotsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroomerPayrollSnapshotWhereInput
   }
 
   /**
@@ -17495,6 +18013,8 @@ export namespace Prisma {
   export type BookingAvgAggregateOutputType = {
     originalAmount: number | null
     finalAmount: number | null
+    serviceLat: number | null
+    serviceLng: number | null
     loyaltyCompletedCountBefore: number | null
     loyaltyCompletedCountAfter: number | null
     refundAmount: number | null
@@ -17503,6 +18023,8 @@ export namespace Prisma {
   export type BookingSumAggregateOutputType = {
     originalAmount: number | null
     finalAmount: number | null
+    serviceLat: number | null
+    serviceLng: number | null
     loyaltyCompletedCountBefore: number | null
     loyaltyCompletedCountAfter: number | null
     refundAmount: number | null
@@ -17532,6 +18054,9 @@ export namespace Prisma {
     serviceLandmark: string | null
     servicePincode: string | null
     serviceLocationUrl: string | null
+    serviceLat: number | null
+    serviceLng: number | null
+    serviceLocationSource: string | null
     addressUpdatedAt: Date | null
     assignedTeamId: string | null
     groomerMemberId: string | null
@@ -17579,6 +18104,9 @@ export namespace Prisma {
     serviceLandmark: string | null
     servicePincode: string | null
     serviceLocationUrl: string | null
+    serviceLat: number | null
+    serviceLng: number | null
+    serviceLocationSource: string | null
     addressUpdatedAt: Date | null
     assignedTeamId: string | null
     groomerMemberId: string | null
@@ -17626,6 +18154,9 @@ export namespace Prisma {
     serviceLandmark: number
     servicePincode: number
     serviceLocationUrl: number
+    serviceLat: number
+    serviceLng: number
+    serviceLocationSource: number
     addressUpdatedAt: number
     assignedTeamId: number
     groomerMemberId: number
@@ -17654,6 +18185,8 @@ export namespace Prisma {
   export type BookingAvgAggregateInputType = {
     originalAmount?: true
     finalAmount?: true
+    serviceLat?: true
+    serviceLng?: true
     loyaltyCompletedCountBefore?: true
     loyaltyCompletedCountAfter?: true
     refundAmount?: true
@@ -17662,6 +18195,8 @@ export namespace Prisma {
   export type BookingSumAggregateInputType = {
     originalAmount?: true
     finalAmount?: true
+    serviceLat?: true
+    serviceLng?: true
     loyaltyCompletedCountBefore?: true
     loyaltyCompletedCountAfter?: true
     refundAmount?: true
@@ -17691,6 +18226,9 @@ export namespace Prisma {
     serviceLandmark?: true
     servicePincode?: true
     serviceLocationUrl?: true
+    serviceLat?: true
+    serviceLng?: true
+    serviceLocationSource?: true
     addressUpdatedAt?: true
     assignedTeamId?: true
     groomerMemberId?: true
@@ -17738,6 +18276,9 @@ export namespace Prisma {
     serviceLandmark?: true
     servicePincode?: true
     serviceLocationUrl?: true
+    serviceLat?: true
+    serviceLng?: true
+    serviceLocationSource?: true
     addressUpdatedAt?: true
     assignedTeamId?: true
     groomerMemberId?: true
@@ -17785,6 +18326,9 @@ export namespace Prisma {
     serviceLandmark?: true
     servicePincode?: true
     serviceLocationUrl?: true
+    serviceLat?: true
+    serviceLng?: true
+    serviceLocationSource?: true
     addressUpdatedAt?: true
     assignedTeamId?: true
     groomerMemberId?: true
@@ -17919,6 +18463,9 @@ export namespace Prisma {
     serviceLandmark: string | null
     servicePincode: string | null
     serviceLocationUrl: string | null
+    serviceLat: number | null
+    serviceLng: number | null
+    serviceLocationSource: string | null
     addressUpdatedAt: Date | null
     assignedTeamId: string | null
     groomerMemberId: string | null
@@ -17985,6 +18532,9 @@ export namespace Prisma {
     serviceLandmark?: boolean
     servicePincode?: boolean
     serviceLocationUrl?: boolean
+    serviceLat?: boolean
+    serviceLng?: boolean
+    serviceLocationSource?: boolean
     addressUpdatedAt?: boolean
     assignedTeamId?: boolean
     groomerMemberId?: boolean
@@ -18021,6 +18571,8 @@ export namespace Prisma {
     sopProofs?: boolean | Booking$sopProofsArgs<ExtArgs>
     paymentCollection?: boolean | Booking$paymentCollectionArgs<ExtArgs>
     groomerRewardEvents?: boolean | Booking$groomerRewardEventsArgs<ExtArgs>
+    groomerExpenses?: boolean | Booking$groomerExpensesArgs<ExtArgs>
+    groomerFuelTrips?: boolean | Booking$groomerFuelTripsArgs<ExtArgs>
     couponRedemptions?: boolean | Booking$couponRedemptionsArgs<ExtArgs>
     _count?: boolean | BookingCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["booking"]>
@@ -18049,6 +18601,9 @@ export namespace Prisma {
     serviceLandmark?: boolean
     servicePincode?: boolean
     serviceLocationUrl?: boolean
+    serviceLat?: boolean
+    serviceLng?: boolean
+    serviceLocationSource?: boolean
     addressUpdatedAt?: boolean
     assignedTeamId?: boolean
     groomerMemberId?: boolean
@@ -18100,6 +18655,9 @@ export namespace Prisma {
     serviceLandmark?: boolean
     servicePincode?: boolean
     serviceLocationUrl?: boolean
+    serviceLat?: boolean
+    serviceLng?: boolean
+    serviceLocationSource?: boolean
     addressUpdatedAt?: boolean
     assignedTeamId?: boolean
     groomerMemberId?: boolean
@@ -18151,6 +18709,9 @@ export namespace Prisma {
     serviceLandmark?: boolean
     servicePincode?: boolean
     serviceLocationUrl?: boolean
+    serviceLat?: boolean
+    serviceLng?: boolean
+    serviceLocationSource?: boolean
     addressUpdatedAt?: boolean
     assignedTeamId?: boolean
     groomerMemberId?: boolean
@@ -18174,7 +18735,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type BookingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "serviceId" | "status" | "paymentMethod" | "paymentStatus" | "couponCode" | "originalAmount" | "finalAmount" | "razorpayOrderId" | "razorpayPaymentId" | "paymentPendingReason" | "paymentGatewayError" | "paymentExpiresAt" | "paymentFailedAt" | "paymentExpiredAt" | "selectedDate" | "bookingWindowId" | "bookingSource" | "serviceAddress" | "serviceLandmark" | "servicePincode" | "serviceLocationUrl" | "addressUpdatedAt" | "assignedTeamId" | "groomerMemberId" | "dispatchState" | "adminNote" | "loyaltyEligible" | "loyaltyCompletedCountBefore" | "loyaltyCompletedCountAfter" | "loyaltyRewardApplied" | "loyaltyRewardLabel" | "loyaltyCountedAt" | "loyaltyRewardRestored" | "refundStatus" | "refundMode" | "refundReason" | "refundNotes" | "refundAmount" | "refundedAt" | "razorpayRefundId" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
+  export type BookingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "serviceId" | "status" | "paymentMethod" | "paymentStatus" | "couponCode" | "originalAmount" | "finalAmount" | "razorpayOrderId" | "razorpayPaymentId" | "paymentPendingReason" | "paymentGatewayError" | "paymentExpiresAt" | "paymentFailedAt" | "paymentExpiredAt" | "selectedDate" | "bookingWindowId" | "bookingSource" | "serviceAddress" | "serviceLandmark" | "servicePincode" | "serviceLocationUrl" | "serviceLat" | "serviceLng" | "serviceLocationSource" | "addressUpdatedAt" | "assignedTeamId" | "groomerMemberId" | "dispatchState" | "adminNote" | "loyaltyEligible" | "loyaltyCompletedCountBefore" | "loyaltyCompletedCountAfter" | "loyaltyRewardApplied" | "loyaltyRewardLabel" | "loyaltyCountedAt" | "loyaltyRewardRestored" | "refundStatus" | "refundMode" | "refundReason" | "refundNotes" | "refundAmount" | "refundedAt" | "razorpayRefundId" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
   export type BookingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     service?: boolean | ServiceDefaultArgs<ExtArgs>
@@ -18191,6 +18752,8 @@ export namespace Prisma {
     sopProofs?: boolean | Booking$sopProofsArgs<ExtArgs>
     paymentCollection?: boolean | Booking$paymentCollectionArgs<ExtArgs>
     groomerRewardEvents?: boolean | Booking$groomerRewardEventsArgs<ExtArgs>
+    groomerExpenses?: boolean | Booking$groomerExpensesArgs<ExtArgs>
+    groomerFuelTrips?: boolean | Booking$groomerFuelTripsArgs<ExtArgs>
     couponRedemptions?: boolean | Booking$couponRedemptionsArgs<ExtArgs>
     _count?: boolean | BookingCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -18225,6 +18788,8 @@ export namespace Prisma {
       sopProofs: Prisma.$BookingSopProofPayload<ExtArgs>[]
       paymentCollection: Prisma.$BookingPaymentCollectionPayload<ExtArgs> | null
       groomerRewardEvents: Prisma.$GroomerRewardEventPayload<ExtArgs>[]
+      groomerExpenses: Prisma.$GroomerExpensePayload<ExtArgs>[]
+      groomerFuelTrips: Prisma.$GroomerFuelTripPayload<ExtArgs>[]
       couponRedemptions: Prisma.$CouponRedemptionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -18251,6 +18816,9 @@ export namespace Prisma {
       serviceLandmark: string | null
       servicePincode: string | null
       serviceLocationUrl: string | null
+      serviceLat: number | null
+      serviceLng: number | null
+      serviceLocationSource: string | null
       addressUpdatedAt: Date | null
       assignedTeamId: string | null
       groomerMemberId: string | null
@@ -18681,6 +19249,8 @@ export namespace Prisma {
     sopProofs<T extends Booking$sopProofsArgs<ExtArgs> = {}>(args?: Subset<T, Booking$sopProofsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BookingSopProofPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     paymentCollection<T extends Booking$paymentCollectionArgs<ExtArgs> = {}>(args?: Subset<T, Booking$paymentCollectionArgs<ExtArgs>>): Prisma__BookingPaymentCollectionClient<$Result.GetResult<Prisma.$BookingPaymentCollectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     groomerRewardEvents<T extends Booking$groomerRewardEventsArgs<ExtArgs> = {}>(args?: Subset<T, Booking$groomerRewardEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerRewardEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    groomerExpenses<T extends Booking$groomerExpensesArgs<ExtArgs> = {}>(args?: Subset<T, Booking$groomerExpensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    groomerFuelTrips<T extends Booking$groomerFuelTripsArgs<ExtArgs> = {}>(args?: Subset<T, Booking$groomerFuelTripsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerFuelTripPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     couponRedemptions<T extends Booking$couponRedemptionsArgs<ExtArgs> = {}>(args?: Subset<T, Booking$couponRedemptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -18734,6 +19304,9 @@ export namespace Prisma {
     readonly serviceLandmark: FieldRef<"Booking", 'String'>
     readonly servicePincode: FieldRef<"Booking", 'String'>
     readonly serviceLocationUrl: FieldRef<"Booking", 'String'>
+    readonly serviceLat: FieldRef<"Booking", 'Float'>
+    readonly serviceLng: FieldRef<"Booking", 'Float'>
+    readonly serviceLocationSource: FieldRef<"Booking", 'String'>
     readonly addressUpdatedAt: FieldRef<"Booking", 'DateTime'>
     readonly assignedTeamId: FieldRef<"Booking", 'String'>
     readonly groomerMemberId: FieldRef<"Booking", 'String'>
@@ -19453,6 +20026,54 @@ export namespace Prisma {
   }
 
   /**
+   * Booking.groomerExpenses
+   */
+  export type Booking$groomerExpensesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerExpense
+     */
+    select?: GroomerExpenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerExpense
+     */
+    omit?: GroomerExpenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerExpenseInclude<ExtArgs> | null
+    where?: GroomerExpenseWhereInput
+    orderBy?: GroomerExpenseOrderByWithRelationInput | GroomerExpenseOrderByWithRelationInput[]
+    cursor?: GroomerExpenseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GroomerExpenseScalarFieldEnum | GroomerExpenseScalarFieldEnum[]
+  }
+
+  /**
+   * Booking.groomerFuelTrips
+   */
+  export type Booking$groomerFuelTripsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerFuelTrip
+     */
+    select?: GroomerFuelTripSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerFuelTrip
+     */
+    omit?: GroomerFuelTripOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerFuelTripInclude<ExtArgs> | null
+    where?: GroomerFuelTripWhereInput
+    orderBy?: GroomerFuelTripOrderByWithRelationInput | GroomerFuelTripOrderByWithRelationInput[]
+    cursor?: GroomerFuelTripWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GroomerFuelTripScalarFieldEnum | GroomerFuelTripScalarFieldEnum[]
+  }
+
+  /**
    * Booking.couponRedemptions
    */
   export type Booking$couponRedemptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19522,6 +20143,11 @@ export namespace Prisma {
     punctualityStreak: number | null
     reviewStreak: number | null
     noLeaveStreakDays: number | null
+    baseSalary: number | null
+    homeLat: number | null
+    homeLng: number | null
+    bikeAverageKmPerLitre: number | null
+    fuelRatePerLitre: number | null
     yearsExperience: number | null
   }
 
@@ -19540,6 +20166,11 @@ export namespace Prisma {
     punctualityStreak: number | null
     reviewStreak: number | null
     noLeaveStreakDays: number | null
+    baseSalary: number | null
+    homeLat: number | null
+    homeLng: number | null
+    bikeAverageKmPerLitre: number | null
+    fuelRatePerLitre: number | null
     yearsExperience: number | null
   }
 
@@ -19580,6 +20211,13 @@ export namespace Prisma {
     bankIfsc: string | null
     bankName: string | null
     upiId: string | null
+    baseSalary: number | null
+    salaryEffectiveFromMonth: string | null
+    homeAddress: string | null
+    homeLat: number | null
+    homeLng: number | null
+    bikeAverageKmPerLitre: number | null
+    fuelRatePerLitre: number | null
     emergencyContactName: string | null
     emergencyContactPhone: string | null
     yearsExperience: number | null
@@ -19625,6 +20263,13 @@ export namespace Prisma {
     bankIfsc: string | null
     bankName: string | null
     upiId: string | null
+    baseSalary: number | null
+    salaryEffectiveFromMonth: string | null
+    homeAddress: string | null
+    homeLat: number | null
+    homeLng: number | null
+    bikeAverageKmPerLitre: number | null
+    fuelRatePerLitre: number | null
     emergencyContactName: string | null
     emergencyContactPhone: string | null
     yearsExperience: number | null
@@ -19670,6 +20315,13 @@ export namespace Prisma {
     bankIfsc: number
     bankName: number
     upiId: number
+    baseSalary: number
+    salaryEffectiveFromMonth: number
+    homeAddress: number
+    homeLat: number
+    homeLng: number
+    bikeAverageKmPerLitre: number
+    fuelRatePerLitre: number
     emergencyContactName: number
     emergencyContactPhone: number
     yearsExperience: number
@@ -19695,6 +20347,11 @@ export namespace Prisma {
     punctualityStreak?: true
     reviewStreak?: true
     noLeaveStreakDays?: true
+    baseSalary?: true
+    homeLat?: true
+    homeLng?: true
+    bikeAverageKmPerLitre?: true
+    fuelRatePerLitre?: true
     yearsExperience?: true
   }
 
@@ -19713,6 +20370,11 @@ export namespace Prisma {
     punctualityStreak?: true
     reviewStreak?: true
     noLeaveStreakDays?: true
+    baseSalary?: true
+    homeLat?: true
+    homeLng?: true
+    bikeAverageKmPerLitre?: true
+    fuelRatePerLitre?: true
     yearsExperience?: true
   }
 
@@ -19753,6 +20415,13 @@ export namespace Prisma {
     bankIfsc?: true
     bankName?: true
     upiId?: true
+    baseSalary?: true
+    salaryEffectiveFromMonth?: true
+    homeAddress?: true
+    homeLat?: true
+    homeLng?: true
+    bikeAverageKmPerLitre?: true
+    fuelRatePerLitre?: true
     emergencyContactName?: true
     emergencyContactPhone?: true
     yearsExperience?: true
@@ -19798,6 +20467,13 @@ export namespace Prisma {
     bankIfsc?: true
     bankName?: true
     upiId?: true
+    baseSalary?: true
+    salaryEffectiveFromMonth?: true
+    homeAddress?: true
+    homeLat?: true
+    homeLng?: true
+    bikeAverageKmPerLitre?: true
+    fuelRatePerLitre?: true
     emergencyContactName?: true
     emergencyContactPhone?: true
     yearsExperience?: true
@@ -19843,6 +20519,13 @@ export namespace Prisma {
     bankIfsc?: true
     bankName?: true
     upiId?: true
+    baseSalary?: true
+    salaryEffectiveFromMonth?: true
+    homeAddress?: true
+    homeLat?: true
+    homeLng?: true
+    bikeAverageKmPerLitre?: true
+    fuelRatePerLitre?: true
     emergencyContactName?: true
     emergencyContactPhone?: true
     yearsExperience?: true
@@ -19975,6 +20658,13 @@ export namespace Prisma {
     bankIfsc: string | null
     bankName: string | null
     upiId: string | null
+    baseSalary: number
+    salaryEffectiveFromMonth: string | null
+    homeAddress: string | null
+    homeLat: number | null
+    homeLng: number | null
+    bikeAverageKmPerLitre: number
+    fuelRatePerLitre: number
     emergencyContactName: string | null
     emergencyContactPhone: string | null
     yearsExperience: number | null
@@ -20039,6 +20729,13 @@ export namespace Prisma {
     bankIfsc?: boolean
     bankName?: boolean
     upiId?: boolean
+    baseSalary?: boolean
+    salaryEffectiveFromMonth?: boolean
+    homeAddress?: boolean
+    homeLat?: boolean
+    homeLng?: boolean
+    bikeAverageKmPerLitre?: boolean
+    fuelRatePerLitre?: boolean
     emergencyContactName?: boolean
     emergencyContactPhone?: boolean
     yearsExperience?: boolean
@@ -20051,6 +20748,11 @@ export namespace Prisma {
     leaderboardSnapshots?: boolean | TeamMember$leaderboardSnapshotsArgs<ExtArgs>
     leaveRequests?: boolean | TeamMember$leaveRequestsArgs<ExtArgs>
     salaryAdvanceRequests?: boolean | TeamMember$salaryAdvanceRequestsArgs<ExtArgs>
+    ledgerEntries?: boolean | TeamMember$ledgerEntriesArgs<ExtArgs>
+    cashDeposits?: boolean | TeamMember$cashDepositsArgs<ExtArgs>
+    expenses?: boolean | TeamMember$expensesArgs<ExtArgs>
+    fuelTrips?: boolean | TeamMember$fuelTripsArgs<ExtArgs>
+    payrollSnapshots?: boolean | TeamMember$payrollSnapshotsArgs<ExtArgs>
     referralsMade?: boolean | TeamMember$referralsMadeArgs<ExtArgs>
     trainingCompletions?: boolean | TeamMember$trainingCompletionsArgs<ExtArgs>
     trainingInterests?: boolean | TeamMember$trainingInterestsArgs<ExtArgs>
@@ -20095,6 +20797,13 @@ export namespace Prisma {
     bankIfsc?: boolean
     bankName?: boolean
     upiId?: boolean
+    baseSalary?: boolean
+    salaryEffectiveFromMonth?: boolean
+    homeAddress?: boolean
+    homeLat?: boolean
+    homeLng?: boolean
+    bikeAverageKmPerLitre?: boolean
+    fuelRatePerLitre?: boolean
     emergencyContactName?: boolean
     emergencyContactPhone?: boolean
     yearsExperience?: boolean
@@ -20141,6 +20850,13 @@ export namespace Prisma {
     bankIfsc?: boolean
     bankName?: boolean
     upiId?: boolean
+    baseSalary?: boolean
+    salaryEffectiveFromMonth?: boolean
+    homeAddress?: boolean
+    homeLat?: boolean
+    homeLng?: boolean
+    bikeAverageKmPerLitre?: boolean
+    fuelRatePerLitre?: boolean
     emergencyContactName?: boolean
     emergencyContactPhone?: boolean
     yearsExperience?: boolean
@@ -20187,6 +20903,13 @@ export namespace Prisma {
     bankIfsc?: boolean
     bankName?: boolean
     upiId?: boolean
+    baseSalary?: boolean
+    salaryEffectiveFromMonth?: boolean
+    homeAddress?: boolean
+    homeLat?: boolean
+    homeLng?: boolean
+    bikeAverageKmPerLitre?: boolean
+    fuelRatePerLitre?: boolean
     emergencyContactName?: boolean
     emergencyContactPhone?: boolean
     yearsExperience?: boolean
@@ -20195,7 +20918,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type TeamMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "teamId" | "name" | "phone" | "passwordHash" | "passwordSetAt" | "role" | "isActive" | "joinedAt" | "currentXp" | "lifetimeXp" | "rewardPoints" | "trustScore" | "performanceScore" | "currentLevel" | "currentRank" | "salaryHikeStage" | "completedCount" | "onTimeCount" | "reviewCount" | "highestReviewStreak" | "punctualityStreak" | "reviewStreak" | "noLeaveStreakDays" | "lastCompletedAt" | "lastReviewAt" | "lastOnTimeAt" | "aadhaarNumber" | "aadhaarImageUrl" | "panNumber" | "panImageUrl" | "bankAccountName" | "bankAccountNumber" | "bankIfsc" | "bankName" | "upiId" | "emergencyContactName" | "emergencyContactPhone" | "yearsExperience" | "experienceNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["teamMember"]>
+  export type TeamMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "teamId" | "name" | "phone" | "passwordHash" | "passwordSetAt" | "role" | "isActive" | "joinedAt" | "currentXp" | "lifetimeXp" | "rewardPoints" | "trustScore" | "performanceScore" | "currentLevel" | "currentRank" | "salaryHikeStage" | "completedCount" | "onTimeCount" | "reviewCount" | "highestReviewStreak" | "punctualityStreak" | "reviewStreak" | "noLeaveStreakDays" | "lastCompletedAt" | "lastReviewAt" | "lastOnTimeAt" | "aadhaarNumber" | "aadhaarImageUrl" | "panNumber" | "panImageUrl" | "bankAccountName" | "bankAccountNumber" | "bankIfsc" | "bankName" | "upiId" | "baseSalary" | "salaryEffectiveFromMonth" | "homeAddress" | "homeLat" | "homeLng" | "bikeAverageKmPerLitre" | "fuelRatePerLitre" | "emergencyContactName" | "emergencyContactPhone" | "yearsExperience" | "experienceNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["teamMember"]>
   export type TeamMemberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     team?: boolean | TeamDefaultArgs<ExtArgs>
     bookings?: boolean | TeamMember$bookingsArgs<ExtArgs>
@@ -20203,6 +20926,11 @@ export namespace Prisma {
     leaderboardSnapshots?: boolean | TeamMember$leaderboardSnapshotsArgs<ExtArgs>
     leaveRequests?: boolean | TeamMember$leaveRequestsArgs<ExtArgs>
     salaryAdvanceRequests?: boolean | TeamMember$salaryAdvanceRequestsArgs<ExtArgs>
+    ledgerEntries?: boolean | TeamMember$ledgerEntriesArgs<ExtArgs>
+    cashDeposits?: boolean | TeamMember$cashDepositsArgs<ExtArgs>
+    expenses?: boolean | TeamMember$expensesArgs<ExtArgs>
+    fuelTrips?: boolean | TeamMember$fuelTripsArgs<ExtArgs>
+    payrollSnapshots?: boolean | TeamMember$payrollSnapshotsArgs<ExtArgs>
     referralsMade?: boolean | TeamMember$referralsMadeArgs<ExtArgs>
     trainingCompletions?: boolean | TeamMember$trainingCompletionsArgs<ExtArgs>
     trainingInterests?: boolean | TeamMember$trainingInterestsArgs<ExtArgs>
@@ -20225,6 +20953,11 @@ export namespace Prisma {
       leaderboardSnapshots: Prisma.$TeamLeaderboardSnapshotPayload<ExtArgs>[]
       leaveRequests: Prisma.$WorkforceLeaveRequestPayload<ExtArgs>[]
       salaryAdvanceRequests: Prisma.$WorkforceSalaryAdvanceRequestPayload<ExtArgs>[]
+      ledgerEntries: Prisma.$GroomerLedgerEntryPayload<ExtArgs>[]
+      cashDeposits: Prisma.$GroomerCashDepositPayload<ExtArgs>[]
+      expenses: Prisma.$GroomerExpensePayload<ExtArgs>[]
+      fuelTrips: Prisma.$GroomerFuelTripPayload<ExtArgs>[]
+      payrollSnapshots: Prisma.$GroomerPayrollSnapshotPayload<ExtArgs>[]
       referralsMade: Prisma.$WorkforceReferralRecordPayload<ExtArgs>[]
       trainingCompletions: Prisma.$TrainingCompletionPayload<ExtArgs>[]
       trainingInterests: Prisma.$WorkforceTrainingInterestPayload<ExtArgs>[]
@@ -20267,6 +21000,13 @@ export namespace Prisma {
       bankIfsc: string | null
       bankName: string | null
       upiId: string | null
+      baseSalary: number
+      salaryEffectiveFromMonth: string | null
+      homeAddress: string | null
+      homeLat: number | null
+      homeLng: number | null
+      bikeAverageKmPerLitre: number
+      fuelRatePerLitre: number
       emergencyContactName: string | null
       emergencyContactPhone: string | null
       yearsExperience: number | null
@@ -20673,6 +21413,11 @@ export namespace Prisma {
     leaderboardSnapshots<T extends TeamMember$leaderboardSnapshotsArgs<ExtArgs> = {}>(args?: Subset<T, TeamMember$leaderboardSnapshotsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamLeaderboardSnapshotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     leaveRequests<T extends TeamMember$leaveRequestsArgs<ExtArgs> = {}>(args?: Subset<T, TeamMember$leaveRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkforceLeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     salaryAdvanceRequests<T extends TeamMember$salaryAdvanceRequestsArgs<ExtArgs> = {}>(args?: Subset<T, TeamMember$salaryAdvanceRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkforceSalaryAdvanceRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    ledgerEntries<T extends TeamMember$ledgerEntriesArgs<ExtArgs> = {}>(args?: Subset<T, TeamMember$ledgerEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerLedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cashDeposits<T extends TeamMember$cashDepositsArgs<ExtArgs> = {}>(args?: Subset<T, TeamMember$cashDepositsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerCashDepositPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    expenses<T extends TeamMember$expensesArgs<ExtArgs> = {}>(args?: Subset<T, TeamMember$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    fuelTrips<T extends TeamMember$fuelTripsArgs<ExtArgs> = {}>(args?: Subset<T, TeamMember$fuelTripsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerFuelTripPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    payrollSnapshots<T extends TeamMember$payrollSnapshotsArgs<ExtArgs> = {}>(args?: Subset<T, TeamMember$payrollSnapshotsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerPayrollSnapshotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     referralsMade<T extends TeamMember$referralsMadeArgs<ExtArgs> = {}>(args?: Subset<T, TeamMember$referralsMadeArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkforceReferralRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     trainingCompletions<T extends TeamMember$trainingCompletionsArgs<ExtArgs> = {}>(args?: Subset<T, TeamMember$trainingCompletionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TrainingCompletionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     trainingInterests<T extends TeamMember$trainingInterestsArgs<ExtArgs> = {}>(args?: Subset<T, TeamMember$trainingInterestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkforceTrainingInterestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -20742,6 +21487,13 @@ export namespace Prisma {
     readonly bankIfsc: FieldRef<"TeamMember", 'String'>
     readonly bankName: FieldRef<"TeamMember", 'String'>
     readonly upiId: FieldRef<"TeamMember", 'String'>
+    readonly baseSalary: FieldRef<"TeamMember", 'Int'>
+    readonly salaryEffectiveFromMonth: FieldRef<"TeamMember", 'String'>
+    readonly homeAddress: FieldRef<"TeamMember", 'String'>
+    readonly homeLat: FieldRef<"TeamMember", 'Float'>
+    readonly homeLng: FieldRef<"TeamMember", 'Float'>
+    readonly bikeAverageKmPerLitre: FieldRef<"TeamMember", 'Float'>
+    readonly fuelRatePerLitre: FieldRef<"TeamMember", 'Float'>
     readonly emergencyContactName: FieldRef<"TeamMember", 'String'>
     readonly emergencyContactPhone: FieldRef<"TeamMember", 'String'>
     readonly yearsExperience: FieldRef<"TeamMember", 'Int'>
@@ -21269,6 +22021,126 @@ export namespace Prisma {
   }
 
   /**
+   * TeamMember.ledgerEntries
+   */
+  export type TeamMember$ledgerEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerLedgerEntry
+     */
+    select?: GroomerLedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerLedgerEntry
+     */
+    omit?: GroomerLedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerLedgerEntryInclude<ExtArgs> | null
+    where?: GroomerLedgerEntryWhereInput
+    orderBy?: GroomerLedgerEntryOrderByWithRelationInput | GroomerLedgerEntryOrderByWithRelationInput[]
+    cursor?: GroomerLedgerEntryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GroomerLedgerEntryScalarFieldEnum | GroomerLedgerEntryScalarFieldEnum[]
+  }
+
+  /**
+   * TeamMember.cashDeposits
+   */
+  export type TeamMember$cashDepositsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerCashDeposit
+     */
+    select?: GroomerCashDepositSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerCashDeposit
+     */
+    omit?: GroomerCashDepositOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerCashDepositInclude<ExtArgs> | null
+    where?: GroomerCashDepositWhereInput
+    orderBy?: GroomerCashDepositOrderByWithRelationInput | GroomerCashDepositOrderByWithRelationInput[]
+    cursor?: GroomerCashDepositWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GroomerCashDepositScalarFieldEnum | GroomerCashDepositScalarFieldEnum[]
+  }
+
+  /**
+   * TeamMember.expenses
+   */
+  export type TeamMember$expensesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerExpense
+     */
+    select?: GroomerExpenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerExpense
+     */
+    omit?: GroomerExpenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerExpenseInclude<ExtArgs> | null
+    where?: GroomerExpenseWhereInput
+    orderBy?: GroomerExpenseOrderByWithRelationInput | GroomerExpenseOrderByWithRelationInput[]
+    cursor?: GroomerExpenseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GroomerExpenseScalarFieldEnum | GroomerExpenseScalarFieldEnum[]
+  }
+
+  /**
+   * TeamMember.fuelTrips
+   */
+  export type TeamMember$fuelTripsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerFuelTrip
+     */
+    select?: GroomerFuelTripSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerFuelTrip
+     */
+    omit?: GroomerFuelTripOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerFuelTripInclude<ExtArgs> | null
+    where?: GroomerFuelTripWhereInput
+    orderBy?: GroomerFuelTripOrderByWithRelationInput | GroomerFuelTripOrderByWithRelationInput[]
+    cursor?: GroomerFuelTripWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GroomerFuelTripScalarFieldEnum | GroomerFuelTripScalarFieldEnum[]
+  }
+
+  /**
+   * TeamMember.payrollSnapshots
+   */
+  export type TeamMember$payrollSnapshotsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerPayrollSnapshot
+     */
+    select?: GroomerPayrollSnapshotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerPayrollSnapshot
+     */
+    omit?: GroomerPayrollSnapshotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerPayrollSnapshotInclude<ExtArgs> | null
+    where?: GroomerPayrollSnapshotWhereInput
+    orderBy?: GroomerPayrollSnapshotOrderByWithRelationInput | GroomerPayrollSnapshotOrderByWithRelationInput[]
+    cursor?: GroomerPayrollSnapshotWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GroomerPayrollSnapshotScalarFieldEnum | GroomerPayrollSnapshotScalarFieldEnum[]
+  }
+
+  /**
    * TeamMember.referralsMade
    */
   export type TeamMember$referralsMadeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -21380,6 +22252,6283 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: TeamMemberInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model GroomerLedgerEntry
+   */
+
+  export type AggregateGroomerLedgerEntry = {
+    _count: GroomerLedgerEntryCountAggregateOutputType | null
+    _avg: GroomerLedgerEntryAvgAggregateOutputType | null
+    _sum: GroomerLedgerEntrySumAggregateOutputType | null
+    _min: GroomerLedgerEntryMinAggregateOutputType | null
+    _max: GroomerLedgerEntryMaxAggregateOutputType | null
+  }
+
+  export type GroomerLedgerEntryAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type GroomerLedgerEntrySumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type GroomerLedgerEntryMinAggregateOutputType = {
+    id: string | null
+    groomerMemberId: string | null
+    monthBucket: string | null
+    type: string | null
+    direction: string | null
+    amount: number | null
+    sourceType: string | null
+    sourceId: string | null
+    description: string | null
+    metadataJson: string | null
+    createdBy: string | null
+    occurredAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GroomerLedgerEntryMaxAggregateOutputType = {
+    id: string | null
+    groomerMemberId: string | null
+    monthBucket: string | null
+    type: string | null
+    direction: string | null
+    amount: number | null
+    sourceType: string | null
+    sourceId: string | null
+    description: string | null
+    metadataJson: string | null
+    createdBy: string | null
+    occurredAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GroomerLedgerEntryCountAggregateOutputType = {
+    id: number
+    groomerMemberId: number
+    monthBucket: number
+    type: number
+    direction: number
+    amount: number
+    sourceType: number
+    sourceId: number
+    description: number
+    metadataJson: number
+    createdBy: number
+    occurredAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type GroomerLedgerEntryAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type GroomerLedgerEntrySumAggregateInputType = {
+    amount?: true
+  }
+
+  export type GroomerLedgerEntryMinAggregateInputType = {
+    id?: true
+    groomerMemberId?: true
+    monthBucket?: true
+    type?: true
+    direction?: true
+    amount?: true
+    sourceType?: true
+    sourceId?: true
+    description?: true
+    metadataJson?: true
+    createdBy?: true
+    occurredAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GroomerLedgerEntryMaxAggregateInputType = {
+    id?: true
+    groomerMemberId?: true
+    monthBucket?: true
+    type?: true
+    direction?: true
+    amount?: true
+    sourceType?: true
+    sourceId?: true
+    description?: true
+    metadataJson?: true
+    createdBy?: true
+    occurredAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GroomerLedgerEntryCountAggregateInputType = {
+    id?: true
+    groomerMemberId?: true
+    monthBucket?: true
+    type?: true
+    direction?: true
+    amount?: true
+    sourceType?: true
+    sourceId?: true
+    description?: true
+    metadataJson?: true
+    createdBy?: true
+    occurredAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type GroomerLedgerEntryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroomerLedgerEntry to aggregate.
+     */
+    where?: GroomerLedgerEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerLedgerEntries to fetch.
+     */
+    orderBy?: GroomerLedgerEntryOrderByWithRelationInput | GroomerLedgerEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GroomerLedgerEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerLedgerEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerLedgerEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GroomerLedgerEntries
+    **/
+    _count?: true | GroomerLedgerEntryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: GroomerLedgerEntryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: GroomerLedgerEntrySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GroomerLedgerEntryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GroomerLedgerEntryMaxAggregateInputType
+  }
+
+  export type GetGroomerLedgerEntryAggregateType<T extends GroomerLedgerEntryAggregateArgs> = {
+        [P in keyof T & keyof AggregateGroomerLedgerEntry]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGroomerLedgerEntry[P]>
+      : GetScalarType<T[P], AggregateGroomerLedgerEntry[P]>
+  }
+
+
+
+
+  export type GroomerLedgerEntryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroomerLedgerEntryWhereInput
+    orderBy?: GroomerLedgerEntryOrderByWithAggregationInput | GroomerLedgerEntryOrderByWithAggregationInput[]
+    by: GroomerLedgerEntryScalarFieldEnum[] | GroomerLedgerEntryScalarFieldEnum
+    having?: GroomerLedgerEntryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GroomerLedgerEntryCountAggregateInputType | true
+    _avg?: GroomerLedgerEntryAvgAggregateInputType
+    _sum?: GroomerLedgerEntrySumAggregateInputType
+    _min?: GroomerLedgerEntryMinAggregateInputType
+    _max?: GroomerLedgerEntryMaxAggregateInputType
+  }
+
+  export type GroomerLedgerEntryGroupByOutputType = {
+    id: string
+    groomerMemberId: string
+    monthBucket: string
+    type: string
+    direction: string
+    amount: number
+    sourceType: string | null
+    sourceId: string | null
+    description: string | null
+    metadataJson: string | null
+    createdBy: string | null
+    occurredAt: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: GroomerLedgerEntryCountAggregateOutputType | null
+    _avg: GroomerLedgerEntryAvgAggregateOutputType | null
+    _sum: GroomerLedgerEntrySumAggregateOutputType | null
+    _min: GroomerLedgerEntryMinAggregateOutputType | null
+    _max: GroomerLedgerEntryMaxAggregateOutputType | null
+  }
+
+  type GetGroomerLedgerEntryGroupByPayload<T extends GroomerLedgerEntryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GroomerLedgerEntryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GroomerLedgerEntryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GroomerLedgerEntryGroupByOutputType[P]>
+            : GetScalarType<T[P], GroomerLedgerEntryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GroomerLedgerEntrySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groomerMemberId?: boolean
+    monthBucket?: boolean
+    type?: boolean
+    direction?: boolean
+    amount?: boolean
+    sourceType?: boolean
+    sourceId?: boolean
+    description?: boolean
+    metadataJson?: boolean
+    createdBy?: boolean
+    occurredAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groomerLedgerEntry"]>
+
+  export type GroomerLedgerEntrySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groomerMemberId?: boolean
+    monthBucket?: boolean
+    type?: boolean
+    direction?: boolean
+    amount?: boolean
+    sourceType?: boolean
+    sourceId?: boolean
+    description?: boolean
+    metadataJson?: boolean
+    createdBy?: boolean
+    occurredAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groomerLedgerEntry"]>
+
+  export type GroomerLedgerEntrySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groomerMemberId?: boolean
+    monthBucket?: boolean
+    type?: boolean
+    direction?: boolean
+    amount?: boolean
+    sourceType?: boolean
+    sourceId?: boolean
+    description?: boolean
+    metadataJson?: boolean
+    createdBy?: boolean
+    occurredAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groomerLedgerEntry"]>
+
+  export type GroomerLedgerEntrySelectScalar = {
+    id?: boolean
+    groomerMemberId?: boolean
+    monthBucket?: boolean
+    type?: boolean
+    direction?: boolean
+    amount?: boolean
+    sourceType?: boolean
+    sourceId?: boolean
+    description?: boolean
+    metadataJson?: boolean
+    createdBy?: boolean
+    occurredAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type GroomerLedgerEntryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "groomerMemberId" | "monthBucket" | "type" | "direction" | "amount" | "sourceType" | "sourceId" | "description" | "metadataJson" | "createdBy" | "occurredAt" | "createdAt" | "updatedAt", ExtArgs["result"]["groomerLedgerEntry"]>
+  export type GroomerLedgerEntryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }
+  export type GroomerLedgerEntryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }
+  export type GroomerLedgerEntryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }
+
+  export type $GroomerLedgerEntryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GroomerLedgerEntry"
+    objects: {
+      groomerMember: Prisma.$TeamMemberPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      groomerMemberId: string
+      monthBucket: string
+      type: string
+      direction: string
+      amount: number
+      sourceType: string | null
+      sourceId: string | null
+      description: string | null
+      metadataJson: string | null
+      createdBy: string | null
+      occurredAt: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["groomerLedgerEntry"]>
+    composites: {}
+  }
+
+  type GroomerLedgerEntryGetPayload<S extends boolean | null | undefined | GroomerLedgerEntryDefaultArgs> = $Result.GetResult<Prisma.$GroomerLedgerEntryPayload, S>
+
+  type GroomerLedgerEntryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GroomerLedgerEntryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GroomerLedgerEntryCountAggregateInputType | true
+    }
+
+  export interface GroomerLedgerEntryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GroomerLedgerEntry'], meta: { name: 'GroomerLedgerEntry' } }
+    /**
+     * Find zero or one GroomerLedgerEntry that matches the filter.
+     * @param {GroomerLedgerEntryFindUniqueArgs} args - Arguments to find a GroomerLedgerEntry
+     * @example
+     * // Get one GroomerLedgerEntry
+     * const groomerLedgerEntry = await prisma.groomerLedgerEntry.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GroomerLedgerEntryFindUniqueArgs>(args: SelectSubset<T, GroomerLedgerEntryFindUniqueArgs<ExtArgs>>): Prisma__GroomerLedgerEntryClient<$Result.GetResult<Prisma.$GroomerLedgerEntryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GroomerLedgerEntry that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GroomerLedgerEntryFindUniqueOrThrowArgs} args - Arguments to find a GroomerLedgerEntry
+     * @example
+     * // Get one GroomerLedgerEntry
+     * const groomerLedgerEntry = await prisma.groomerLedgerEntry.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GroomerLedgerEntryFindUniqueOrThrowArgs>(args: SelectSubset<T, GroomerLedgerEntryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GroomerLedgerEntryClient<$Result.GetResult<Prisma.$GroomerLedgerEntryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GroomerLedgerEntry that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerLedgerEntryFindFirstArgs} args - Arguments to find a GroomerLedgerEntry
+     * @example
+     * // Get one GroomerLedgerEntry
+     * const groomerLedgerEntry = await prisma.groomerLedgerEntry.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GroomerLedgerEntryFindFirstArgs>(args?: SelectSubset<T, GroomerLedgerEntryFindFirstArgs<ExtArgs>>): Prisma__GroomerLedgerEntryClient<$Result.GetResult<Prisma.$GroomerLedgerEntryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GroomerLedgerEntry that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerLedgerEntryFindFirstOrThrowArgs} args - Arguments to find a GroomerLedgerEntry
+     * @example
+     * // Get one GroomerLedgerEntry
+     * const groomerLedgerEntry = await prisma.groomerLedgerEntry.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GroomerLedgerEntryFindFirstOrThrowArgs>(args?: SelectSubset<T, GroomerLedgerEntryFindFirstOrThrowArgs<ExtArgs>>): Prisma__GroomerLedgerEntryClient<$Result.GetResult<Prisma.$GroomerLedgerEntryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GroomerLedgerEntries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerLedgerEntryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GroomerLedgerEntries
+     * const groomerLedgerEntries = await prisma.groomerLedgerEntry.findMany()
+     * 
+     * // Get first 10 GroomerLedgerEntries
+     * const groomerLedgerEntries = await prisma.groomerLedgerEntry.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const groomerLedgerEntryWithIdOnly = await prisma.groomerLedgerEntry.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GroomerLedgerEntryFindManyArgs>(args?: SelectSubset<T, GroomerLedgerEntryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerLedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GroomerLedgerEntry.
+     * @param {GroomerLedgerEntryCreateArgs} args - Arguments to create a GroomerLedgerEntry.
+     * @example
+     * // Create one GroomerLedgerEntry
+     * const GroomerLedgerEntry = await prisma.groomerLedgerEntry.create({
+     *   data: {
+     *     // ... data to create a GroomerLedgerEntry
+     *   }
+     * })
+     * 
+     */
+    create<T extends GroomerLedgerEntryCreateArgs>(args: SelectSubset<T, GroomerLedgerEntryCreateArgs<ExtArgs>>): Prisma__GroomerLedgerEntryClient<$Result.GetResult<Prisma.$GroomerLedgerEntryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GroomerLedgerEntries.
+     * @param {GroomerLedgerEntryCreateManyArgs} args - Arguments to create many GroomerLedgerEntries.
+     * @example
+     * // Create many GroomerLedgerEntries
+     * const groomerLedgerEntry = await prisma.groomerLedgerEntry.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GroomerLedgerEntryCreateManyArgs>(args?: SelectSubset<T, GroomerLedgerEntryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GroomerLedgerEntries and returns the data saved in the database.
+     * @param {GroomerLedgerEntryCreateManyAndReturnArgs} args - Arguments to create many GroomerLedgerEntries.
+     * @example
+     * // Create many GroomerLedgerEntries
+     * const groomerLedgerEntry = await prisma.groomerLedgerEntry.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GroomerLedgerEntries and only return the `id`
+     * const groomerLedgerEntryWithIdOnly = await prisma.groomerLedgerEntry.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GroomerLedgerEntryCreateManyAndReturnArgs>(args?: SelectSubset<T, GroomerLedgerEntryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerLedgerEntryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a GroomerLedgerEntry.
+     * @param {GroomerLedgerEntryDeleteArgs} args - Arguments to delete one GroomerLedgerEntry.
+     * @example
+     * // Delete one GroomerLedgerEntry
+     * const GroomerLedgerEntry = await prisma.groomerLedgerEntry.delete({
+     *   where: {
+     *     // ... filter to delete one GroomerLedgerEntry
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GroomerLedgerEntryDeleteArgs>(args: SelectSubset<T, GroomerLedgerEntryDeleteArgs<ExtArgs>>): Prisma__GroomerLedgerEntryClient<$Result.GetResult<Prisma.$GroomerLedgerEntryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GroomerLedgerEntry.
+     * @param {GroomerLedgerEntryUpdateArgs} args - Arguments to update one GroomerLedgerEntry.
+     * @example
+     * // Update one GroomerLedgerEntry
+     * const groomerLedgerEntry = await prisma.groomerLedgerEntry.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GroomerLedgerEntryUpdateArgs>(args: SelectSubset<T, GroomerLedgerEntryUpdateArgs<ExtArgs>>): Prisma__GroomerLedgerEntryClient<$Result.GetResult<Prisma.$GroomerLedgerEntryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GroomerLedgerEntries.
+     * @param {GroomerLedgerEntryDeleteManyArgs} args - Arguments to filter GroomerLedgerEntries to delete.
+     * @example
+     * // Delete a few GroomerLedgerEntries
+     * const { count } = await prisma.groomerLedgerEntry.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GroomerLedgerEntryDeleteManyArgs>(args?: SelectSubset<T, GroomerLedgerEntryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GroomerLedgerEntries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerLedgerEntryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GroomerLedgerEntries
+     * const groomerLedgerEntry = await prisma.groomerLedgerEntry.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GroomerLedgerEntryUpdateManyArgs>(args: SelectSubset<T, GroomerLedgerEntryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GroomerLedgerEntries and returns the data updated in the database.
+     * @param {GroomerLedgerEntryUpdateManyAndReturnArgs} args - Arguments to update many GroomerLedgerEntries.
+     * @example
+     * // Update many GroomerLedgerEntries
+     * const groomerLedgerEntry = await prisma.groomerLedgerEntry.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more GroomerLedgerEntries and only return the `id`
+     * const groomerLedgerEntryWithIdOnly = await prisma.groomerLedgerEntry.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GroomerLedgerEntryUpdateManyAndReturnArgs>(args: SelectSubset<T, GroomerLedgerEntryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerLedgerEntryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one GroomerLedgerEntry.
+     * @param {GroomerLedgerEntryUpsertArgs} args - Arguments to update or create a GroomerLedgerEntry.
+     * @example
+     * // Update or create a GroomerLedgerEntry
+     * const groomerLedgerEntry = await prisma.groomerLedgerEntry.upsert({
+     *   create: {
+     *     // ... data to create a GroomerLedgerEntry
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GroomerLedgerEntry we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GroomerLedgerEntryUpsertArgs>(args: SelectSubset<T, GroomerLedgerEntryUpsertArgs<ExtArgs>>): Prisma__GroomerLedgerEntryClient<$Result.GetResult<Prisma.$GroomerLedgerEntryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GroomerLedgerEntries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerLedgerEntryCountArgs} args - Arguments to filter GroomerLedgerEntries to count.
+     * @example
+     * // Count the number of GroomerLedgerEntries
+     * const count = await prisma.groomerLedgerEntry.count({
+     *   where: {
+     *     // ... the filter for the GroomerLedgerEntries we want to count
+     *   }
+     * })
+    **/
+    count<T extends GroomerLedgerEntryCountArgs>(
+      args?: Subset<T, GroomerLedgerEntryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GroomerLedgerEntryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GroomerLedgerEntry.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerLedgerEntryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GroomerLedgerEntryAggregateArgs>(args: Subset<T, GroomerLedgerEntryAggregateArgs>): Prisma.PrismaPromise<GetGroomerLedgerEntryAggregateType<T>>
+
+    /**
+     * Group by GroomerLedgerEntry.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerLedgerEntryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GroomerLedgerEntryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GroomerLedgerEntryGroupByArgs['orderBy'] }
+        : { orderBy?: GroomerLedgerEntryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GroomerLedgerEntryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGroomerLedgerEntryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GroomerLedgerEntry model
+   */
+  readonly fields: GroomerLedgerEntryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GroomerLedgerEntry.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GroomerLedgerEntryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    groomerMember<T extends TeamMemberDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamMemberDefaultArgs<ExtArgs>>): Prisma__TeamMemberClient<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GroomerLedgerEntry model
+   */
+  interface GroomerLedgerEntryFieldRefs {
+    readonly id: FieldRef<"GroomerLedgerEntry", 'String'>
+    readonly groomerMemberId: FieldRef<"GroomerLedgerEntry", 'String'>
+    readonly monthBucket: FieldRef<"GroomerLedgerEntry", 'String'>
+    readonly type: FieldRef<"GroomerLedgerEntry", 'String'>
+    readonly direction: FieldRef<"GroomerLedgerEntry", 'String'>
+    readonly amount: FieldRef<"GroomerLedgerEntry", 'Int'>
+    readonly sourceType: FieldRef<"GroomerLedgerEntry", 'String'>
+    readonly sourceId: FieldRef<"GroomerLedgerEntry", 'String'>
+    readonly description: FieldRef<"GroomerLedgerEntry", 'String'>
+    readonly metadataJson: FieldRef<"GroomerLedgerEntry", 'String'>
+    readonly createdBy: FieldRef<"GroomerLedgerEntry", 'String'>
+    readonly occurredAt: FieldRef<"GroomerLedgerEntry", 'DateTime'>
+    readonly createdAt: FieldRef<"GroomerLedgerEntry", 'DateTime'>
+    readonly updatedAt: FieldRef<"GroomerLedgerEntry", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GroomerLedgerEntry findUnique
+   */
+  export type GroomerLedgerEntryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerLedgerEntry
+     */
+    select?: GroomerLedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerLedgerEntry
+     */
+    omit?: GroomerLedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerLedgerEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerLedgerEntry to fetch.
+     */
+    where: GroomerLedgerEntryWhereUniqueInput
+  }
+
+  /**
+   * GroomerLedgerEntry findUniqueOrThrow
+   */
+  export type GroomerLedgerEntryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerLedgerEntry
+     */
+    select?: GroomerLedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerLedgerEntry
+     */
+    omit?: GroomerLedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerLedgerEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerLedgerEntry to fetch.
+     */
+    where: GroomerLedgerEntryWhereUniqueInput
+  }
+
+  /**
+   * GroomerLedgerEntry findFirst
+   */
+  export type GroomerLedgerEntryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerLedgerEntry
+     */
+    select?: GroomerLedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerLedgerEntry
+     */
+    omit?: GroomerLedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerLedgerEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerLedgerEntry to fetch.
+     */
+    where?: GroomerLedgerEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerLedgerEntries to fetch.
+     */
+    orderBy?: GroomerLedgerEntryOrderByWithRelationInput | GroomerLedgerEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroomerLedgerEntries.
+     */
+    cursor?: GroomerLedgerEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerLedgerEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerLedgerEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroomerLedgerEntries.
+     */
+    distinct?: GroomerLedgerEntryScalarFieldEnum | GroomerLedgerEntryScalarFieldEnum[]
+  }
+
+  /**
+   * GroomerLedgerEntry findFirstOrThrow
+   */
+  export type GroomerLedgerEntryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerLedgerEntry
+     */
+    select?: GroomerLedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerLedgerEntry
+     */
+    omit?: GroomerLedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerLedgerEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerLedgerEntry to fetch.
+     */
+    where?: GroomerLedgerEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerLedgerEntries to fetch.
+     */
+    orderBy?: GroomerLedgerEntryOrderByWithRelationInput | GroomerLedgerEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroomerLedgerEntries.
+     */
+    cursor?: GroomerLedgerEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerLedgerEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerLedgerEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroomerLedgerEntries.
+     */
+    distinct?: GroomerLedgerEntryScalarFieldEnum | GroomerLedgerEntryScalarFieldEnum[]
+  }
+
+  /**
+   * GroomerLedgerEntry findMany
+   */
+  export type GroomerLedgerEntryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerLedgerEntry
+     */
+    select?: GroomerLedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerLedgerEntry
+     */
+    omit?: GroomerLedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerLedgerEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerLedgerEntries to fetch.
+     */
+    where?: GroomerLedgerEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerLedgerEntries to fetch.
+     */
+    orderBy?: GroomerLedgerEntryOrderByWithRelationInput | GroomerLedgerEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GroomerLedgerEntries.
+     */
+    cursor?: GroomerLedgerEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerLedgerEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerLedgerEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroomerLedgerEntries.
+     */
+    distinct?: GroomerLedgerEntryScalarFieldEnum | GroomerLedgerEntryScalarFieldEnum[]
+  }
+
+  /**
+   * GroomerLedgerEntry create
+   */
+  export type GroomerLedgerEntryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerLedgerEntry
+     */
+    select?: GroomerLedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerLedgerEntry
+     */
+    omit?: GroomerLedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerLedgerEntryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GroomerLedgerEntry.
+     */
+    data: XOR<GroomerLedgerEntryCreateInput, GroomerLedgerEntryUncheckedCreateInput>
+  }
+
+  /**
+   * GroomerLedgerEntry createMany
+   */
+  export type GroomerLedgerEntryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GroomerLedgerEntries.
+     */
+    data: GroomerLedgerEntryCreateManyInput | GroomerLedgerEntryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GroomerLedgerEntry createManyAndReturn
+   */
+  export type GroomerLedgerEntryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerLedgerEntry
+     */
+    select?: GroomerLedgerEntrySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerLedgerEntry
+     */
+    omit?: GroomerLedgerEntryOmit<ExtArgs> | null
+    /**
+     * The data used to create many GroomerLedgerEntries.
+     */
+    data: GroomerLedgerEntryCreateManyInput | GroomerLedgerEntryCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerLedgerEntryIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GroomerLedgerEntry update
+   */
+  export type GroomerLedgerEntryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerLedgerEntry
+     */
+    select?: GroomerLedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerLedgerEntry
+     */
+    omit?: GroomerLedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerLedgerEntryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GroomerLedgerEntry.
+     */
+    data: XOR<GroomerLedgerEntryUpdateInput, GroomerLedgerEntryUncheckedUpdateInput>
+    /**
+     * Choose, which GroomerLedgerEntry to update.
+     */
+    where: GroomerLedgerEntryWhereUniqueInput
+  }
+
+  /**
+   * GroomerLedgerEntry updateMany
+   */
+  export type GroomerLedgerEntryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GroomerLedgerEntries.
+     */
+    data: XOR<GroomerLedgerEntryUpdateManyMutationInput, GroomerLedgerEntryUncheckedUpdateManyInput>
+    /**
+     * Filter which GroomerLedgerEntries to update
+     */
+    where?: GroomerLedgerEntryWhereInput
+    /**
+     * Limit how many GroomerLedgerEntries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GroomerLedgerEntry updateManyAndReturn
+   */
+  export type GroomerLedgerEntryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerLedgerEntry
+     */
+    select?: GroomerLedgerEntrySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerLedgerEntry
+     */
+    omit?: GroomerLedgerEntryOmit<ExtArgs> | null
+    /**
+     * The data used to update GroomerLedgerEntries.
+     */
+    data: XOR<GroomerLedgerEntryUpdateManyMutationInput, GroomerLedgerEntryUncheckedUpdateManyInput>
+    /**
+     * Filter which GroomerLedgerEntries to update
+     */
+    where?: GroomerLedgerEntryWhereInput
+    /**
+     * Limit how many GroomerLedgerEntries to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerLedgerEntryIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GroomerLedgerEntry upsert
+   */
+  export type GroomerLedgerEntryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerLedgerEntry
+     */
+    select?: GroomerLedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerLedgerEntry
+     */
+    omit?: GroomerLedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerLedgerEntryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GroomerLedgerEntry to update in case it exists.
+     */
+    where: GroomerLedgerEntryWhereUniqueInput
+    /**
+     * In case the GroomerLedgerEntry found by the `where` argument doesn't exist, create a new GroomerLedgerEntry with this data.
+     */
+    create: XOR<GroomerLedgerEntryCreateInput, GroomerLedgerEntryUncheckedCreateInput>
+    /**
+     * In case the GroomerLedgerEntry was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GroomerLedgerEntryUpdateInput, GroomerLedgerEntryUncheckedUpdateInput>
+  }
+
+  /**
+   * GroomerLedgerEntry delete
+   */
+  export type GroomerLedgerEntryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerLedgerEntry
+     */
+    select?: GroomerLedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerLedgerEntry
+     */
+    omit?: GroomerLedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerLedgerEntryInclude<ExtArgs> | null
+    /**
+     * Filter which GroomerLedgerEntry to delete.
+     */
+    where: GroomerLedgerEntryWhereUniqueInput
+  }
+
+  /**
+   * GroomerLedgerEntry deleteMany
+   */
+  export type GroomerLedgerEntryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroomerLedgerEntries to delete
+     */
+    where?: GroomerLedgerEntryWhereInput
+    /**
+     * Limit how many GroomerLedgerEntries to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GroomerLedgerEntry without action
+   */
+  export type GroomerLedgerEntryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerLedgerEntry
+     */
+    select?: GroomerLedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerLedgerEntry
+     */
+    omit?: GroomerLedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerLedgerEntryInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model GroomerCashDeposit
+   */
+
+  export type AggregateGroomerCashDeposit = {
+    _count: GroomerCashDepositCountAggregateOutputType | null
+    _avg: GroomerCashDepositAvgAggregateOutputType | null
+    _sum: GroomerCashDepositSumAggregateOutputType | null
+    _min: GroomerCashDepositMinAggregateOutputType | null
+    _max: GroomerCashDepositMaxAggregateOutputType | null
+  }
+
+  export type GroomerCashDepositAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type GroomerCashDepositSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type GroomerCashDepositMinAggregateOutputType = {
+    id: string | null
+    groomerMemberId: string | null
+    amount: number | null
+    depositMode: string | null
+    referenceId: string | null
+    notes: string | null
+    recordedBy: string | null
+    depositedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GroomerCashDepositMaxAggregateOutputType = {
+    id: string | null
+    groomerMemberId: string | null
+    amount: number | null
+    depositMode: string | null
+    referenceId: string | null
+    notes: string | null
+    recordedBy: string | null
+    depositedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GroomerCashDepositCountAggregateOutputType = {
+    id: number
+    groomerMemberId: number
+    amount: number
+    depositMode: number
+    referenceId: number
+    notes: number
+    recordedBy: number
+    depositedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type GroomerCashDepositAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type GroomerCashDepositSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type GroomerCashDepositMinAggregateInputType = {
+    id?: true
+    groomerMemberId?: true
+    amount?: true
+    depositMode?: true
+    referenceId?: true
+    notes?: true
+    recordedBy?: true
+    depositedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GroomerCashDepositMaxAggregateInputType = {
+    id?: true
+    groomerMemberId?: true
+    amount?: true
+    depositMode?: true
+    referenceId?: true
+    notes?: true
+    recordedBy?: true
+    depositedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GroomerCashDepositCountAggregateInputType = {
+    id?: true
+    groomerMemberId?: true
+    amount?: true
+    depositMode?: true
+    referenceId?: true
+    notes?: true
+    recordedBy?: true
+    depositedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type GroomerCashDepositAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroomerCashDeposit to aggregate.
+     */
+    where?: GroomerCashDepositWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerCashDeposits to fetch.
+     */
+    orderBy?: GroomerCashDepositOrderByWithRelationInput | GroomerCashDepositOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GroomerCashDepositWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerCashDeposits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerCashDeposits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GroomerCashDeposits
+    **/
+    _count?: true | GroomerCashDepositCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: GroomerCashDepositAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: GroomerCashDepositSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GroomerCashDepositMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GroomerCashDepositMaxAggregateInputType
+  }
+
+  export type GetGroomerCashDepositAggregateType<T extends GroomerCashDepositAggregateArgs> = {
+        [P in keyof T & keyof AggregateGroomerCashDeposit]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGroomerCashDeposit[P]>
+      : GetScalarType<T[P], AggregateGroomerCashDeposit[P]>
+  }
+
+
+
+
+  export type GroomerCashDepositGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroomerCashDepositWhereInput
+    orderBy?: GroomerCashDepositOrderByWithAggregationInput | GroomerCashDepositOrderByWithAggregationInput[]
+    by: GroomerCashDepositScalarFieldEnum[] | GroomerCashDepositScalarFieldEnum
+    having?: GroomerCashDepositScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GroomerCashDepositCountAggregateInputType | true
+    _avg?: GroomerCashDepositAvgAggregateInputType
+    _sum?: GroomerCashDepositSumAggregateInputType
+    _min?: GroomerCashDepositMinAggregateInputType
+    _max?: GroomerCashDepositMaxAggregateInputType
+  }
+
+  export type GroomerCashDepositGroupByOutputType = {
+    id: string
+    groomerMemberId: string
+    amount: number
+    depositMode: string
+    referenceId: string | null
+    notes: string | null
+    recordedBy: string | null
+    depositedAt: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: GroomerCashDepositCountAggregateOutputType | null
+    _avg: GroomerCashDepositAvgAggregateOutputType | null
+    _sum: GroomerCashDepositSumAggregateOutputType | null
+    _min: GroomerCashDepositMinAggregateOutputType | null
+    _max: GroomerCashDepositMaxAggregateOutputType | null
+  }
+
+  type GetGroomerCashDepositGroupByPayload<T extends GroomerCashDepositGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GroomerCashDepositGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GroomerCashDepositGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GroomerCashDepositGroupByOutputType[P]>
+            : GetScalarType<T[P], GroomerCashDepositGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GroomerCashDepositSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groomerMemberId?: boolean
+    amount?: boolean
+    depositMode?: boolean
+    referenceId?: boolean
+    notes?: boolean
+    recordedBy?: boolean
+    depositedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groomerCashDeposit"]>
+
+  export type GroomerCashDepositSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groomerMemberId?: boolean
+    amount?: boolean
+    depositMode?: boolean
+    referenceId?: boolean
+    notes?: boolean
+    recordedBy?: boolean
+    depositedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groomerCashDeposit"]>
+
+  export type GroomerCashDepositSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groomerMemberId?: boolean
+    amount?: boolean
+    depositMode?: boolean
+    referenceId?: boolean
+    notes?: boolean
+    recordedBy?: boolean
+    depositedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groomerCashDeposit"]>
+
+  export type GroomerCashDepositSelectScalar = {
+    id?: boolean
+    groomerMemberId?: boolean
+    amount?: boolean
+    depositMode?: boolean
+    referenceId?: boolean
+    notes?: boolean
+    recordedBy?: boolean
+    depositedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type GroomerCashDepositOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "groomerMemberId" | "amount" | "depositMode" | "referenceId" | "notes" | "recordedBy" | "depositedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["groomerCashDeposit"]>
+  export type GroomerCashDepositInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }
+  export type GroomerCashDepositIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }
+  export type GroomerCashDepositIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }
+
+  export type $GroomerCashDepositPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GroomerCashDeposit"
+    objects: {
+      groomerMember: Prisma.$TeamMemberPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      groomerMemberId: string
+      amount: number
+      depositMode: string
+      referenceId: string | null
+      notes: string | null
+      recordedBy: string | null
+      depositedAt: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["groomerCashDeposit"]>
+    composites: {}
+  }
+
+  type GroomerCashDepositGetPayload<S extends boolean | null | undefined | GroomerCashDepositDefaultArgs> = $Result.GetResult<Prisma.$GroomerCashDepositPayload, S>
+
+  type GroomerCashDepositCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GroomerCashDepositFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GroomerCashDepositCountAggregateInputType | true
+    }
+
+  export interface GroomerCashDepositDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GroomerCashDeposit'], meta: { name: 'GroomerCashDeposit' } }
+    /**
+     * Find zero or one GroomerCashDeposit that matches the filter.
+     * @param {GroomerCashDepositFindUniqueArgs} args - Arguments to find a GroomerCashDeposit
+     * @example
+     * // Get one GroomerCashDeposit
+     * const groomerCashDeposit = await prisma.groomerCashDeposit.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GroomerCashDepositFindUniqueArgs>(args: SelectSubset<T, GroomerCashDepositFindUniqueArgs<ExtArgs>>): Prisma__GroomerCashDepositClient<$Result.GetResult<Prisma.$GroomerCashDepositPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GroomerCashDeposit that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GroomerCashDepositFindUniqueOrThrowArgs} args - Arguments to find a GroomerCashDeposit
+     * @example
+     * // Get one GroomerCashDeposit
+     * const groomerCashDeposit = await prisma.groomerCashDeposit.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GroomerCashDepositFindUniqueOrThrowArgs>(args: SelectSubset<T, GroomerCashDepositFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GroomerCashDepositClient<$Result.GetResult<Prisma.$GroomerCashDepositPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GroomerCashDeposit that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerCashDepositFindFirstArgs} args - Arguments to find a GroomerCashDeposit
+     * @example
+     * // Get one GroomerCashDeposit
+     * const groomerCashDeposit = await prisma.groomerCashDeposit.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GroomerCashDepositFindFirstArgs>(args?: SelectSubset<T, GroomerCashDepositFindFirstArgs<ExtArgs>>): Prisma__GroomerCashDepositClient<$Result.GetResult<Prisma.$GroomerCashDepositPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GroomerCashDeposit that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerCashDepositFindFirstOrThrowArgs} args - Arguments to find a GroomerCashDeposit
+     * @example
+     * // Get one GroomerCashDeposit
+     * const groomerCashDeposit = await prisma.groomerCashDeposit.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GroomerCashDepositFindFirstOrThrowArgs>(args?: SelectSubset<T, GroomerCashDepositFindFirstOrThrowArgs<ExtArgs>>): Prisma__GroomerCashDepositClient<$Result.GetResult<Prisma.$GroomerCashDepositPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GroomerCashDeposits that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerCashDepositFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GroomerCashDeposits
+     * const groomerCashDeposits = await prisma.groomerCashDeposit.findMany()
+     * 
+     * // Get first 10 GroomerCashDeposits
+     * const groomerCashDeposits = await prisma.groomerCashDeposit.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const groomerCashDepositWithIdOnly = await prisma.groomerCashDeposit.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GroomerCashDepositFindManyArgs>(args?: SelectSubset<T, GroomerCashDepositFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerCashDepositPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GroomerCashDeposit.
+     * @param {GroomerCashDepositCreateArgs} args - Arguments to create a GroomerCashDeposit.
+     * @example
+     * // Create one GroomerCashDeposit
+     * const GroomerCashDeposit = await prisma.groomerCashDeposit.create({
+     *   data: {
+     *     // ... data to create a GroomerCashDeposit
+     *   }
+     * })
+     * 
+     */
+    create<T extends GroomerCashDepositCreateArgs>(args: SelectSubset<T, GroomerCashDepositCreateArgs<ExtArgs>>): Prisma__GroomerCashDepositClient<$Result.GetResult<Prisma.$GroomerCashDepositPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GroomerCashDeposits.
+     * @param {GroomerCashDepositCreateManyArgs} args - Arguments to create many GroomerCashDeposits.
+     * @example
+     * // Create many GroomerCashDeposits
+     * const groomerCashDeposit = await prisma.groomerCashDeposit.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GroomerCashDepositCreateManyArgs>(args?: SelectSubset<T, GroomerCashDepositCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GroomerCashDeposits and returns the data saved in the database.
+     * @param {GroomerCashDepositCreateManyAndReturnArgs} args - Arguments to create many GroomerCashDeposits.
+     * @example
+     * // Create many GroomerCashDeposits
+     * const groomerCashDeposit = await prisma.groomerCashDeposit.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GroomerCashDeposits and only return the `id`
+     * const groomerCashDepositWithIdOnly = await prisma.groomerCashDeposit.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GroomerCashDepositCreateManyAndReturnArgs>(args?: SelectSubset<T, GroomerCashDepositCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerCashDepositPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a GroomerCashDeposit.
+     * @param {GroomerCashDepositDeleteArgs} args - Arguments to delete one GroomerCashDeposit.
+     * @example
+     * // Delete one GroomerCashDeposit
+     * const GroomerCashDeposit = await prisma.groomerCashDeposit.delete({
+     *   where: {
+     *     // ... filter to delete one GroomerCashDeposit
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GroomerCashDepositDeleteArgs>(args: SelectSubset<T, GroomerCashDepositDeleteArgs<ExtArgs>>): Prisma__GroomerCashDepositClient<$Result.GetResult<Prisma.$GroomerCashDepositPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GroomerCashDeposit.
+     * @param {GroomerCashDepositUpdateArgs} args - Arguments to update one GroomerCashDeposit.
+     * @example
+     * // Update one GroomerCashDeposit
+     * const groomerCashDeposit = await prisma.groomerCashDeposit.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GroomerCashDepositUpdateArgs>(args: SelectSubset<T, GroomerCashDepositUpdateArgs<ExtArgs>>): Prisma__GroomerCashDepositClient<$Result.GetResult<Prisma.$GroomerCashDepositPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GroomerCashDeposits.
+     * @param {GroomerCashDepositDeleteManyArgs} args - Arguments to filter GroomerCashDeposits to delete.
+     * @example
+     * // Delete a few GroomerCashDeposits
+     * const { count } = await prisma.groomerCashDeposit.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GroomerCashDepositDeleteManyArgs>(args?: SelectSubset<T, GroomerCashDepositDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GroomerCashDeposits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerCashDepositUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GroomerCashDeposits
+     * const groomerCashDeposit = await prisma.groomerCashDeposit.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GroomerCashDepositUpdateManyArgs>(args: SelectSubset<T, GroomerCashDepositUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GroomerCashDeposits and returns the data updated in the database.
+     * @param {GroomerCashDepositUpdateManyAndReturnArgs} args - Arguments to update many GroomerCashDeposits.
+     * @example
+     * // Update many GroomerCashDeposits
+     * const groomerCashDeposit = await prisma.groomerCashDeposit.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more GroomerCashDeposits and only return the `id`
+     * const groomerCashDepositWithIdOnly = await prisma.groomerCashDeposit.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GroomerCashDepositUpdateManyAndReturnArgs>(args: SelectSubset<T, GroomerCashDepositUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerCashDepositPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one GroomerCashDeposit.
+     * @param {GroomerCashDepositUpsertArgs} args - Arguments to update or create a GroomerCashDeposit.
+     * @example
+     * // Update or create a GroomerCashDeposit
+     * const groomerCashDeposit = await prisma.groomerCashDeposit.upsert({
+     *   create: {
+     *     // ... data to create a GroomerCashDeposit
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GroomerCashDeposit we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GroomerCashDepositUpsertArgs>(args: SelectSubset<T, GroomerCashDepositUpsertArgs<ExtArgs>>): Prisma__GroomerCashDepositClient<$Result.GetResult<Prisma.$GroomerCashDepositPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GroomerCashDeposits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerCashDepositCountArgs} args - Arguments to filter GroomerCashDeposits to count.
+     * @example
+     * // Count the number of GroomerCashDeposits
+     * const count = await prisma.groomerCashDeposit.count({
+     *   where: {
+     *     // ... the filter for the GroomerCashDeposits we want to count
+     *   }
+     * })
+    **/
+    count<T extends GroomerCashDepositCountArgs>(
+      args?: Subset<T, GroomerCashDepositCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GroomerCashDepositCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GroomerCashDeposit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerCashDepositAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GroomerCashDepositAggregateArgs>(args: Subset<T, GroomerCashDepositAggregateArgs>): Prisma.PrismaPromise<GetGroomerCashDepositAggregateType<T>>
+
+    /**
+     * Group by GroomerCashDeposit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerCashDepositGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GroomerCashDepositGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GroomerCashDepositGroupByArgs['orderBy'] }
+        : { orderBy?: GroomerCashDepositGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GroomerCashDepositGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGroomerCashDepositGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GroomerCashDeposit model
+   */
+  readonly fields: GroomerCashDepositFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GroomerCashDeposit.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GroomerCashDepositClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    groomerMember<T extends TeamMemberDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamMemberDefaultArgs<ExtArgs>>): Prisma__TeamMemberClient<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GroomerCashDeposit model
+   */
+  interface GroomerCashDepositFieldRefs {
+    readonly id: FieldRef<"GroomerCashDeposit", 'String'>
+    readonly groomerMemberId: FieldRef<"GroomerCashDeposit", 'String'>
+    readonly amount: FieldRef<"GroomerCashDeposit", 'Int'>
+    readonly depositMode: FieldRef<"GroomerCashDeposit", 'String'>
+    readonly referenceId: FieldRef<"GroomerCashDeposit", 'String'>
+    readonly notes: FieldRef<"GroomerCashDeposit", 'String'>
+    readonly recordedBy: FieldRef<"GroomerCashDeposit", 'String'>
+    readonly depositedAt: FieldRef<"GroomerCashDeposit", 'DateTime'>
+    readonly createdAt: FieldRef<"GroomerCashDeposit", 'DateTime'>
+    readonly updatedAt: FieldRef<"GroomerCashDeposit", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GroomerCashDeposit findUnique
+   */
+  export type GroomerCashDepositFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerCashDeposit
+     */
+    select?: GroomerCashDepositSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerCashDeposit
+     */
+    omit?: GroomerCashDepositOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerCashDepositInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerCashDeposit to fetch.
+     */
+    where: GroomerCashDepositWhereUniqueInput
+  }
+
+  /**
+   * GroomerCashDeposit findUniqueOrThrow
+   */
+  export type GroomerCashDepositFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerCashDeposit
+     */
+    select?: GroomerCashDepositSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerCashDeposit
+     */
+    omit?: GroomerCashDepositOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerCashDepositInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerCashDeposit to fetch.
+     */
+    where: GroomerCashDepositWhereUniqueInput
+  }
+
+  /**
+   * GroomerCashDeposit findFirst
+   */
+  export type GroomerCashDepositFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerCashDeposit
+     */
+    select?: GroomerCashDepositSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerCashDeposit
+     */
+    omit?: GroomerCashDepositOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerCashDepositInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerCashDeposit to fetch.
+     */
+    where?: GroomerCashDepositWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerCashDeposits to fetch.
+     */
+    orderBy?: GroomerCashDepositOrderByWithRelationInput | GroomerCashDepositOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroomerCashDeposits.
+     */
+    cursor?: GroomerCashDepositWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerCashDeposits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerCashDeposits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroomerCashDeposits.
+     */
+    distinct?: GroomerCashDepositScalarFieldEnum | GroomerCashDepositScalarFieldEnum[]
+  }
+
+  /**
+   * GroomerCashDeposit findFirstOrThrow
+   */
+  export type GroomerCashDepositFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerCashDeposit
+     */
+    select?: GroomerCashDepositSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerCashDeposit
+     */
+    omit?: GroomerCashDepositOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerCashDepositInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerCashDeposit to fetch.
+     */
+    where?: GroomerCashDepositWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerCashDeposits to fetch.
+     */
+    orderBy?: GroomerCashDepositOrderByWithRelationInput | GroomerCashDepositOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroomerCashDeposits.
+     */
+    cursor?: GroomerCashDepositWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerCashDeposits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerCashDeposits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroomerCashDeposits.
+     */
+    distinct?: GroomerCashDepositScalarFieldEnum | GroomerCashDepositScalarFieldEnum[]
+  }
+
+  /**
+   * GroomerCashDeposit findMany
+   */
+  export type GroomerCashDepositFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerCashDeposit
+     */
+    select?: GroomerCashDepositSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerCashDeposit
+     */
+    omit?: GroomerCashDepositOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerCashDepositInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerCashDeposits to fetch.
+     */
+    where?: GroomerCashDepositWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerCashDeposits to fetch.
+     */
+    orderBy?: GroomerCashDepositOrderByWithRelationInput | GroomerCashDepositOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GroomerCashDeposits.
+     */
+    cursor?: GroomerCashDepositWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerCashDeposits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerCashDeposits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroomerCashDeposits.
+     */
+    distinct?: GroomerCashDepositScalarFieldEnum | GroomerCashDepositScalarFieldEnum[]
+  }
+
+  /**
+   * GroomerCashDeposit create
+   */
+  export type GroomerCashDepositCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerCashDeposit
+     */
+    select?: GroomerCashDepositSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerCashDeposit
+     */
+    omit?: GroomerCashDepositOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerCashDepositInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GroomerCashDeposit.
+     */
+    data: XOR<GroomerCashDepositCreateInput, GroomerCashDepositUncheckedCreateInput>
+  }
+
+  /**
+   * GroomerCashDeposit createMany
+   */
+  export type GroomerCashDepositCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GroomerCashDeposits.
+     */
+    data: GroomerCashDepositCreateManyInput | GroomerCashDepositCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GroomerCashDeposit createManyAndReturn
+   */
+  export type GroomerCashDepositCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerCashDeposit
+     */
+    select?: GroomerCashDepositSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerCashDeposit
+     */
+    omit?: GroomerCashDepositOmit<ExtArgs> | null
+    /**
+     * The data used to create many GroomerCashDeposits.
+     */
+    data: GroomerCashDepositCreateManyInput | GroomerCashDepositCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerCashDepositIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GroomerCashDeposit update
+   */
+  export type GroomerCashDepositUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerCashDeposit
+     */
+    select?: GroomerCashDepositSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerCashDeposit
+     */
+    omit?: GroomerCashDepositOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerCashDepositInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GroomerCashDeposit.
+     */
+    data: XOR<GroomerCashDepositUpdateInput, GroomerCashDepositUncheckedUpdateInput>
+    /**
+     * Choose, which GroomerCashDeposit to update.
+     */
+    where: GroomerCashDepositWhereUniqueInput
+  }
+
+  /**
+   * GroomerCashDeposit updateMany
+   */
+  export type GroomerCashDepositUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GroomerCashDeposits.
+     */
+    data: XOR<GroomerCashDepositUpdateManyMutationInput, GroomerCashDepositUncheckedUpdateManyInput>
+    /**
+     * Filter which GroomerCashDeposits to update
+     */
+    where?: GroomerCashDepositWhereInput
+    /**
+     * Limit how many GroomerCashDeposits to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GroomerCashDeposit updateManyAndReturn
+   */
+  export type GroomerCashDepositUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerCashDeposit
+     */
+    select?: GroomerCashDepositSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerCashDeposit
+     */
+    omit?: GroomerCashDepositOmit<ExtArgs> | null
+    /**
+     * The data used to update GroomerCashDeposits.
+     */
+    data: XOR<GroomerCashDepositUpdateManyMutationInput, GroomerCashDepositUncheckedUpdateManyInput>
+    /**
+     * Filter which GroomerCashDeposits to update
+     */
+    where?: GroomerCashDepositWhereInput
+    /**
+     * Limit how many GroomerCashDeposits to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerCashDepositIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GroomerCashDeposit upsert
+   */
+  export type GroomerCashDepositUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerCashDeposit
+     */
+    select?: GroomerCashDepositSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerCashDeposit
+     */
+    omit?: GroomerCashDepositOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerCashDepositInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GroomerCashDeposit to update in case it exists.
+     */
+    where: GroomerCashDepositWhereUniqueInput
+    /**
+     * In case the GroomerCashDeposit found by the `where` argument doesn't exist, create a new GroomerCashDeposit with this data.
+     */
+    create: XOR<GroomerCashDepositCreateInput, GroomerCashDepositUncheckedCreateInput>
+    /**
+     * In case the GroomerCashDeposit was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GroomerCashDepositUpdateInput, GroomerCashDepositUncheckedUpdateInput>
+  }
+
+  /**
+   * GroomerCashDeposit delete
+   */
+  export type GroomerCashDepositDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerCashDeposit
+     */
+    select?: GroomerCashDepositSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerCashDeposit
+     */
+    omit?: GroomerCashDepositOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerCashDepositInclude<ExtArgs> | null
+    /**
+     * Filter which GroomerCashDeposit to delete.
+     */
+    where: GroomerCashDepositWhereUniqueInput
+  }
+
+  /**
+   * GroomerCashDeposit deleteMany
+   */
+  export type GroomerCashDepositDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroomerCashDeposits to delete
+     */
+    where?: GroomerCashDepositWhereInput
+    /**
+     * Limit how many GroomerCashDeposits to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GroomerCashDeposit without action
+   */
+  export type GroomerCashDepositDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerCashDeposit
+     */
+    select?: GroomerCashDepositSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerCashDeposit
+     */
+    omit?: GroomerCashDepositOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerCashDepositInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model GroomerExpense
+   */
+
+  export type AggregateGroomerExpense = {
+    _count: GroomerExpenseCountAggregateOutputType | null
+    _avg: GroomerExpenseAvgAggregateOutputType | null
+    _sum: GroomerExpenseSumAggregateOutputType | null
+    _min: GroomerExpenseMinAggregateOutputType | null
+    _max: GroomerExpenseMaxAggregateOutputType | null
+  }
+
+  export type GroomerExpenseAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type GroomerExpenseSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type GroomerExpenseMinAggregateOutputType = {
+    id: string | null
+    groomerMemberId: string | null
+    bookingId: string | null
+    category: string | null
+    amount: number | null
+    billDate: Date | null
+    billPhotoUrl: string | null
+    storageKey: string | null
+    notes: string | null
+    status: string | null
+    reviewNote: string | null
+    reviewedBy: string | null
+    reviewedAt: Date | null
+    submittedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GroomerExpenseMaxAggregateOutputType = {
+    id: string | null
+    groomerMemberId: string | null
+    bookingId: string | null
+    category: string | null
+    amount: number | null
+    billDate: Date | null
+    billPhotoUrl: string | null
+    storageKey: string | null
+    notes: string | null
+    status: string | null
+    reviewNote: string | null
+    reviewedBy: string | null
+    reviewedAt: Date | null
+    submittedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GroomerExpenseCountAggregateOutputType = {
+    id: number
+    groomerMemberId: number
+    bookingId: number
+    category: number
+    amount: number
+    billDate: number
+    billPhotoUrl: number
+    storageKey: number
+    notes: number
+    status: number
+    reviewNote: number
+    reviewedBy: number
+    reviewedAt: number
+    submittedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type GroomerExpenseAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type GroomerExpenseSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type GroomerExpenseMinAggregateInputType = {
+    id?: true
+    groomerMemberId?: true
+    bookingId?: true
+    category?: true
+    amount?: true
+    billDate?: true
+    billPhotoUrl?: true
+    storageKey?: true
+    notes?: true
+    status?: true
+    reviewNote?: true
+    reviewedBy?: true
+    reviewedAt?: true
+    submittedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GroomerExpenseMaxAggregateInputType = {
+    id?: true
+    groomerMemberId?: true
+    bookingId?: true
+    category?: true
+    amount?: true
+    billDate?: true
+    billPhotoUrl?: true
+    storageKey?: true
+    notes?: true
+    status?: true
+    reviewNote?: true
+    reviewedBy?: true
+    reviewedAt?: true
+    submittedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GroomerExpenseCountAggregateInputType = {
+    id?: true
+    groomerMemberId?: true
+    bookingId?: true
+    category?: true
+    amount?: true
+    billDate?: true
+    billPhotoUrl?: true
+    storageKey?: true
+    notes?: true
+    status?: true
+    reviewNote?: true
+    reviewedBy?: true
+    reviewedAt?: true
+    submittedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type GroomerExpenseAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroomerExpense to aggregate.
+     */
+    where?: GroomerExpenseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerExpenses to fetch.
+     */
+    orderBy?: GroomerExpenseOrderByWithRelationInput | GroomerExpenseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GroomerExpenseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerExpenses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerExpenses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GroomerExpenses
+    **/
+    _count?: true | GroomerExpenseCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: GroomerExpenseAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: GroomerExpenseSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GroomerExpenseMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GroomerExpenseMaxAggregateInputType
+  }
+
+  export type GetGroomerExpenseAggregateType<T extends GroomerExpenseAggregateArgs> = {
+        [P in keyof T & keyof AggregateGroomerExpense]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGroomerExpense[P]>
+      : GetScalarType<T[P], AggregateGroomerExpense[P]>
+  }
+
+
+
+
+  export type GroomerExpenseGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroomerExpenseWhereInput
+    orderBy?: GroomerExpenseOrderByWithAggregationInput | GroomerExpenseOrderByWithAggregationInput[]
+    by: GroomerExpenseScalarFieldEnum[] | GroomerExpenseScalarFieldEnum
+    having?: GroomerExpenseScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GroomerExpenseCountAggregateInputType | true
+    _avg?: GroomerExpenseAvgAggregateInputType
+    _sum?: GroomerExpenseSumAggregateInputType
+    _min?: GroomerExpenseMinAggregateInputType
+    _max?: GroomerExpenseMaxAggregateInputType
+  }
+
+  export type GroomerExpenseGroupByOutputType = {
+    id: string
+    groomerMemberId: string
+    bookingId: string | null
+    category: string
+    amount: number
+    billDate: Date | null
+    billPhotoUrl: string
+    storageKey: string | null
+    notes: string | null
+    status: string
+    reviewNote: string | null
+    reviewedBy: string | null
+    reviewedAt: Date | null
+    submittedAt: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: GroomerExpenseCountAggregateOutputType | null
+    _avg: GroomerExpenseAvgAggregateOutputType | null
+    _sum: GroomerExpenseSumAggregateOutputType | null
+    _min: GroomerExpenseMinAggregateOutputType | null
+    _max: GroomerExpenseMaxAggregateOutputType | null
+  }
+
+  type GetGroomerExpenseGroupByPayload<T extends GroomerExpenseGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GroomerExpenseGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GroomerExpenseGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GroomerExpenseGroupByOutputType[P]>
+            : GetScalarType<T[P], GroomerExpenseGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GroomerExpenseSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groomerMemberId?: boolean
+    bookingId?: boolean
+    category?: boolean
+    amount?: boolean
+    billDate?: boolean
+    billPhotoUrl?: boolean
+    storageKey?: boolean
+    notes?: boolean
+    status?: boolean
+    reviewNote?: boolean
+    reviewedBy?: boolean
+    reviewedAt?: boolean
+    submittedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+    booking?: boolean | GroomerExpense$bookingArgs<ExtArgs>
+  }, ExtArgs["result"]["groomerExpense"]>
+
+  export type GroomerExpenseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groomerMemberId?: boolean
+    bookingId?: boolean
+    category?: boolean
+    amount?: boolean
+    billDate?: boolean
+    billPhotoUrl?: boolean
+    storageKey?: boolean
+    notes?: boolean
+    status?: boolean
+    reviewNote?: boolean
+    reviewedBy?: boolean
+    reviewedAt?: boolean
+    submittedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+    booking?: boolean | GroomerExpense$bookingArgs<ExtArgs>
+  }, ExtArgs["result"]["groomerExpense"]>
+
+  export type GroomerExpenseSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groomerMemberId?: boolean
+    bookingId?: boolean
+    category?: boolean
+    amount?: boolean
+    billDate?: boolean
+    billPhotoUrl?: boolean
+    storageKey?: boolean
+    notes?: boolean
+    status?: boolean
+    reviewNote?: boolean
+    reviewedBy?: boolean
+    reviewedAt?: boolean
+    submittedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+    booking?: boolean | GroomerExpense$bookingArgs<ExtArgs>
+  }, ExtArgs["result"]["groomerExpense"]>
+
+  export type GroomerExpenseSelectScalar = {
+    id?: boolean
+    groomerMemberId?: boolean
+    bookingId?: boolean
+    category?: boolean
+    amount?: boolean
+    billDate?: boolean
+    billPhotoUrl?: boolean
+    storageKey?: boolean
+    notes?: boolean
+    status?: boolean
+    reviewNote?: boolean
+    reviewedBy?: boolean
+    reviewedAt?: boolean
+    submittedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type GroomerExpenseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "groomerMemberId" | "bookingId" | "category" | "amount" | "billDate" | "billPhotoUrl" | "storageKey" | "notes" | "status" | "reviewNote" | "reviewedBy" | "reviewedAt" | "submittedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["groomerExpense"]>
+  export type GroomerExpenseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+    booking?: boolean | GroomerExpense$bookingArgs<ExtArgs>
+  }
+  export type GroomerExpenseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+    booking?: boolean | GroomerExpense$bookingArgs<ExtArgs>
+  }
+  export type GroomerExpenseIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+    booking?: boolean | GroomerExpense$bookingArgs<ExtArgs>
+  }
+
+  export type $GroomerExpensePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GroomerExpense"
+    objects: {
+      groomerMember: Prisma.$TeamMemberPayload<ExtArgs>
+      booking: Prisma.$BookingPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      groomerMemberId: string
+      bookingId: string | null
+      category: string
+      amount: number
+      billDate: Date | null
+      billPhotoUrl: string
+      storageKey: string | null
+      notes: string | null
+      status: string
+      reviewNote: string | null
+      reviewedBy: string | null
+      reviewedAt: Date | null
+      submittedAt: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["groomerExpense"]>
+    composites: {}
+  }
+
+  type GroomerExpenseGetPayload<S extends boolean | null | undefined | GroomerExpenseDefaultArgs> = $Result.GetResult<Prisma.$GroomerExpensePayload, S>
+
+  type GroomerExpenseCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GroomerExpenseFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GroomerExpenseCountAggregateInputType | true
+    }
+
+  export interface GroomerExpenseDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GroomerExpense'], meta: { name: 'GroomerExpense' } }
+    /**
+     * Find zero or one GroomerExpense that matches the filter.
+     * @param {GroomerExpenseFindUniqueArgs} args - Arguments to find a GroomerExpense
+     * @example
+     * // Get one GroomerExpense
+     * const groomerExpense = await prisma.groomerExpense.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GroomerExpenseFindUniqueArgs>(args: SelectSubset<T, GroomerExpenseFindUniqueArgs<ExtArgs>>): Prisma__GroomerExpenseClient<$Result.GetResult<Prisma.$GroomerExpensePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GroomerExpense that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GroomerExpenseFindUniqueOrThrowArgs} args - Arguments to find a GroomerExpense
+     * @example
+     * // Get one GroomerExpense
+     * const groomerExpense = await prisma.groomerExpense.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GroomerExpenseFindUniqueOrThrowArgs>(args: SelectSubset<T, GroomerExpenseFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GroomerExpenseClient<$Result.GetResult<Prisma.$GroomerExpensePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GroomerExpense that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerExpenseFindFirstArgs} args - Arguments to find a GroomerExpense
+     * @example
+     * // Get one GroomerExpense
+     * const groomerExpense = await prisma.groomerExpense.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GroomerExpenseFindFirstArgs>(args?: SelectSubset<T, GroomerExpenseFindFirstArgs<ExtArgs>>): Prisma__GroomerExpenseClient<$Result.GetResult<Prisma.$GroomerExpensePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GroomerExpense that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerExpenseFindFirstOrThrowArgs} args - Arguments to find a GroomerExpense
+     * @example
+     * // Get one GroomerExpense
+     * const groomerExpense = await prisma.groomerExpense.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GroomerExpenseFindFirstOrThrowArgs>(args?: SelectSubset<T, GroomerExpenseFindFirstOrThrowArgs<ExtArgs>>): Prisma__GroomerExpenseClient<$Result.GetResult<Prisma.$GroomerExpensePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GroomerExpenses that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerExpenseFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GroomerExpenses
+     * const groomerExpenses = await prisma.groomerExpense.findMany()
+     * 
+     * // Get first 10 GroomerExpenses
+     * const groomerExpenses = await prisma.groomerExpense.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const groomerExpenseWithIdOnly = await prisma.groomerExpense.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GroomerExpenseFindManyArgs>(args?: SelectSubset<T, GroomerExpenseFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GroomerExpense.
+     * @param {GroomerExpenseCreateArgs} args - Arguments to create a GroomerExpense.
+     * @example
+     * // Create one GroomerExpense
+     * const GroomerExpense = await prisma.groomerExpense.create({
+     *   data: {
+     *     // ... data to create a GroomerExpense
+     *   }
+     * })
+     * 
+     */
+    create<T extends GroomerExpenseCreateArgs>(args: SelectSubset<T, GroomerExpenseCreateArgs<ExtArgs>>): Prisma__GroomerExpenseClient<$Result.GetResult<Prisma.$GroomerExpensePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GroomerExpenses.
+     * @param {GroomerExpenseCreateManyArgs} args - Arguments to create many GroomerExpenses.
+     * @example
+     * // Create many GroomerExpenses
+     * const groomerExpense = await prisma.groomerExpense.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GroomerExpenseCreateManyArgs>(args?: SelectSubset<T, GroomerExpenseCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GroomerExpenses and returns the data saved in the database.
+     * @param {GroomerExpenseCreateManyAndReturnArgs} args - Arguments to create many GroomerExpenses.
+     * @example
+     * // Create many GroomerExpenses
+     * const groomerExpense = await prisma.groomerExpense.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GroomerExpenses and only return the `id`
+     * const groomerExpenseWithIdOnly = await prisma.groomerExpense.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GroomerExpenseCreateManyAndReturnArgs>(args?: SelectSubset<T, GroomerExpenseCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerExpensePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a GroomerExpense.
+     * @param {GroomerExpenseDeleteArgs} args - Arguments to delete one GroomerExpense.
+     * @example
+     * // Delete one GroomerExpense
+     * const GroomerExpense = await prisma.groomerExpense.delete({
+     *   where: {
+     *     // ... filter to delete one GroomerExpense
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GroomerExpenseDeleteArgs>(args: SelectSubset<T, GroomerExpenseDeleteArgs<ExtArgs>>): Prisma__GroomerExpenseClient<$Result.GetResult<Prisma.$GroomerExpensePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GroomerExpense.
+     * @param {GroomerExpenseUpdateArgs} args - Arguments to update one GroomerExpense.
+     * @example
+     * // Update one GroomerExpense
+     * const groomerExpense = await prisma.groomerExpense.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GroomerExpenseUpdateArgs>(args: SelectSubset<T, GroomerExpenseUpdateArgs<ExtArgs>>): Prisma__GroomerExpenseClient<$Result.GetResult<Prisma.$GroomerExpensePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GroomerExpenses.
+     * @param {GroomerExpenseDeleteManyArgs} args - Arguments to filter GroomerExpenses to delete.
+     * @example
+     * // Delete a few GroomerExpenses
+     * const { count } = await prisma.groomerExpense.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GroomerExpenseDeleteManyArgs>(args?: SelectSubset<T, GroomerExpenseDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GroomerExpenses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerExpenseUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GroomerExpenses
+     * const groomerExpense = await prisma.groomerExpense.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GroomerExpenseUpdateManyArgs>(args: SelectSubset<T, GroomerExpenseUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GroomerExpenses and returns the data updated in the database.
+     * @param {GroomerExpenseUpdateManyAndReturnArgs} args - Arguments to update many GroomerExpenses.
+     * @example
+     * // Update many GroomerExpenses
+     * const groomerExpense = await prisma.groomerExpense.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more GroomerExpenses and only return the `id`
+     * const groomerExpenseWithIdOnly = await prisma.groomerExpense.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GroomerExpenseUpdateManyAndReturnArgs>(args: SelectSubset<T, GroomerExpenseUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerExpensePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one GroomerExpense.
+     * @param {GroomerExpenseUpsertArgs} args - Arguments to update or create a GroomerExpense.
+     * @example
+     * // Update or create a GroomerExpense
+     * const groomerExpense = await prisma.groomerExpense.upsert({
+     *   create: {
+     *     // ... data to create a GroomerExpense
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GroomerExpense we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GroomerExpenseUpsertArgs>(args: SelectSubset<T, GroomerExpenseUpsertArgs<ExtArgs>>): Prisma__GroomerExpenseClient<$Result.GetResult<Prisma.$GroomerExpensePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GroomerExpenses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerExpenseCountArgs} args - Arguments to filter GroomerExpenses to count.
+     * @example
+     * // Count the number of GroomerExpenses
+     * const count = await prisma.groomerExpense.count({
+     *   where: {
+     *     // ... the filter for the GroomerExpenses we want to count
+     *   }
+     * })
+    **/
+    count<T extends GroomerExpenseCountArgs>(
+      args?: Subset<T, GroomerExpenseCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GroomerExpenseCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GroomerExpense.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerExpenseAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GroomerExpenseAggregateArgs>(args: Subset<T, GroomerExpenseAggregateArgs>): Prisma.PrismaPromise<GetGroomerExpenseAggregateType<T>>
+
+    /**
+     * Group by GroomerExpense.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerExpenseGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GroomerExpenseGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GroomerExpenseGroupByArgs['orderBy'] }
+        : { orderBy?: GroomerExpenseGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GroomerExpenseGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGroomerExpenseGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GroomerExpense model
+   */
+  readonly fields: GroomerExpenseFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GroomerExpense.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GroomerExpenseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    groomerMember<T extends TeamMemberDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamMemberDefaultArgs<ExtArgs>>): Prisma__TeamMemberClient<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    booking<T extends GroomerExpense$bookingArgs<ExtArgs> = {}>(args?: Subset<T, GroomerExpense$bookingArgs<ExtArgs>>): Prisma__BookingClient<$Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GroomerExpense model
+   */
+  interface GroomerExpenseFieldRefs {
+    readonly id: FieldRef<"GroomerExpense", 'String'>
+    readonly groomerMemberId: FieldRef<"GroomerExpense", 'String'>
+    readonly bookingId: FieldRef<"GroomerExpense", 'String'>
+    readonly category: FieldRef<"GroomerExpense", 'String'>
+    readonly amount: FieldRef<"GroomerExpense", 'Int'>
+    readonly billDate: FieldRef<"GroomerExpense", 'DateTime'>
+    readonly billPhotoUrl: FieldRef<"GroomerExpense", 'String'>
+    readonly storageKey: FieldRef<"GroomerExpense", 'String'>
+    readonly notes: FieldRef<"GroomerExpense", 'String'>
+    readonly status: FieldRef<"GroomerExpense", 'String'>
+    readonly reviewNote: FieldRef<"GroomerExpense", 'String'>
+    readonly reviewedBy: FieldRef<"GroomerExpense", 'String'>
+    readonly reviewedAt: FieldRef<"GroomerExpense", 'DateTime'>
+    readonly submittedAt: FieldRef<"GroomerExpense", 'DateTime'>
+    readonly createdAt: FieldRef<"GroomerExpense", 'DateTime'>
+    readonly updatedAt: FieldRef<"GroomerExpense", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GroomerExpense findUnique
+   */
+  export type GroomerExpenseFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerExpense
+     */
+    select?: GroomerExpenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerExpense
+     */
+    omit?: GroomerExpenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerExpenseInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerExpense to fetch.
+     */
+    where: GroomerExpenseWhereUniqueInput
+  }
+
+  /**
+   * GroomerExpense findUniqueOrThrow
+   */
+  export type GroomerExpenseFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerExpense
+     */
+    select?: GroomerExpenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerExpense
+     */
+    omit?: GroomerExpenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerExpenseInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerExpense to fetch.
+     */
+    where: GroomerExpenseWhereUniqueInput
+  }
+
+  /**
+   * GroomerExpense findFirst
+   */
+  export type GroomerExpenseFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerExpense
+     */
+    select?: GroomerExpenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerExpense
+     */
+    omit?: GroomerExpenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerExpenseInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerExpense to fetch.
+     */
+    where?: GroomerExpenseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerExpenses to fetch.
+     */
+    orderBy?: GroomerExpenseOrderByWithRelationInput | GroomerExpenseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroomerExpenses.
+     */
+    cursor?: GroomerExpenseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerExpenses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerExpenses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroomerExpenses.
+     */
+    distinct?: GroomerExpenseScalarFieldEnum | GroomerExpenseScalarFieldEnum[]
+  }
+
+  /**
+   * GroomerExpense findFirstOrThrow
+   */
+  export type GroomerExpenseFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerExpense
+     */
+    select?: GroomerExpenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerExpense
+     */
+    omit?: GroomerExpenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerExpenseInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerExpense to fetch.
+     */
+    where?: GroomerExpenseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerExpenses to fetch.
+     */
+    orderBy?: GroomerExpenseOrderByWithRelationInput | GroomerExpenseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroomerExpenses.
+     */
+    cursor?: GroomerExpenseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerExpenses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerExpenses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroomerExpenses.
+     */
+    distinct?: GroomerExpenseScalarFieldEnum | GroomerExpenseScalarFieldEnum[]
+  }
+
+  /**
+   * GroomerExpense findMany
+   */
+  export type GroomerExpenseFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerExpense
+     */
+    select?: GroomerExpenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerExpense
+     */
+    omit?: GroomerExpenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerExpenseInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerExpenses to fetch.
+     */
+    where?: GroomerExpenseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerExpenses to fetch.
+     */
+    orderBy?: GroomerExpenseOrderByWithRelationInput | GroomerExpenseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GroomerExpenses.
+     */
+    cursor?: GroomerExpenseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerExpenses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerExpenses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroomerExpenses.
+     */
+    distinct?: GroomerExpenseScalarFieldEnum | GroomerExpenseScalarFieldEnum[]
+  }
+
+  /**
+   * GroomerExpense create
+   */
+  export type GroomerExpenseCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerExpense
+     */
+    select?: GroomerExpenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerExpense
+     */
+    omit?: GroomerExpenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerExpenseInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GroomerExpense.
+     */
+    data: XOR<GroomerExpenseCreateInput, GroomerExpenseUncheckedCreateInput>
+  }
+
+  /**
+   * GroomerExpense createMany
+   */
+  export type GroomerExpenseCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GroomerExpenses.
+     */
+    data: GroomerExpenseCreateManyInput | GroomerExpenseCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GroomerExpense createManyAndReturn
+   */
+  export type GroomerExpenseCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerExpense
+     */
+    select?: GroomerExpenseSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerExpense
+     */
+    omit?: GroomerExpenseOmit<ExtArgs> | null
+    /**
+     * The data used to create many GroomerExpenses.
+     */
+    data: GroomerExpenseCreateManyInput | GroomerExpenseCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerExpenseIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GroomerExpense update
+   */
+  export type GroomerExpenseUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerExpense
+     */
+    select?: GroomerExpenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerExpense
+     */
+    omit?: GroomerExpenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerExpenseInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GroomerExpense.
+     */
+    data: XOR<GroomerExpenseUpdateInput, GroomerExpenseUncheckedUpdateInput>
+    /**
+     * Choose, which GroomerExpense to update.
+     */
+    where: GroomerExpenseWhereUniqueInput
+  }
+
+  /**
+   * GroomerExpense updateMany
+   */
+  export type GroomerExpenseUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GroomerExpenses.
+     */
+    data: XOR<GroomerExpenseUpdateManyMutationInput, GroomerExpenseUncheckedUpdateManyInput>
+    /**
+     * Filter which GroomerExpenses to update
+     */
+    where?: GroomerExpenseWhereInput
+    /**
+     * Limit how many GroomerExpenses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GroomerExpense updateManyAndReturn
+   */
+  export type GroomerExpenseUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerExpense
+     */
+    select?: GroomerExpenseSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerExpense
+     */
+    omit?: GroomerExpenseOmit<ExtArgs> | null
+    /**
+     * The data used to update GroomerExpenses.
+     */
+    data: XOR<GroomerExpenseUpdateManyMutationInput, GroomerExpenseUncheckedUpdateManyInput>
+    /**
+     * Filter which GroomerExpenses to update
+     */
+    where?: GroomerExpenseWhereInput
+    /**
+     * Limit how many GroomerExpenses to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerExpenseIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GroomerExpense upsert
+   */
+  export type GroomerExpenseUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerExpense
+     */
+    select?: GroomerExpenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerExpense
+     */
+    omit?: GroomerExpenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerExpenseInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GroomerExpense to update in case it exists.
+     */
+    where: GroomerExpenseWhereUniqueInput
+    /**
+     * In case the GroomerExpense found by the `where` argument doesn't exist, create a new GroomerExpense with this data.
+     */
+    create: XOR<GroomerExpenseCreateInput, GroomerExpenseUncheckedCreateInput>
+    /**
+     * In case the GroomerExpense was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GroomerExpenseUpdateInput, GroomerExpenseUncheckedUpdateInput>
+  }
+
+  /**
+   * GroomerExpense delete
+   */
+  export type GroomerExpenseDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerExpense
+     */
+    select?: GroomerExpenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerExpense
+     */
+    omit?: GroomerExpenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerExpenseInclude<ExtArgs> | null
+    /**
+     * Filter which GroomerExpense to delete.
+     */
+    where: GroomerExpenseWhereUniqueInput
+  }
+
+  /**
+   * GroomerExpense deleteMany
+   */
+  export type GroomerExpenseDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroomerExpenses to delete
+     */
+    where?: GroomerExpenseWhereInput
+    /**
+     * Limit how many GroomerExpenses to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GroomerExpense.booking
+   */
+  export type GroomerExpense$bookingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Booking
+     */
+    select?: BookingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Booking
+     */
+    omit?: BookingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BookingInclude<ExtArgs> | null
+    where?: BookingWhereInput
+  }
+
+  /**
+   * GroomerExpense without action
+   */
+  export type GroomerExpenseDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerExpense
+     */
+    select?: GroomerExpenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerExpense
+     */
+    omit?: GroomerExpenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerExpenseInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model GroomerFuelTrip
+   */
+
+  export type AggregateGroomerFuelTrip = {
+    _count: GroomerFuelTripCountAggregateOutputType | null
+    _avg: GroomerFuelTripAvgAggregateOutputType | null
+    _sum: GroomerFuelTripSumAggregateOutputType | null
+    _min: GroomerFuelTripMinAggregateOutputType | null
+    _max: GroomerFuelTripMaxAggregateOutputType | null
+  }
+
+  export type GroomerFuelTripAvgAggregateOutputType = {
+    fromLat: number | null
+    fromLng: number | null
+    toLat: number | null
+    toLng: number | null
+    distanceKm: number | null
+    roadMultiplier: number | null
+    litres: number | null
+    ratePerLitre: number | null
+    fuelCost: number | null
+    originalDistanceKm: number | null
+    originalFuelCost: number | null
+  }
+
+  export type GroomerFuelTripSumAggregateOutputType = {
+    fromLat: number | null
+    fromLng: number | null
+    toLat: number | null
+    toLng: number | null
+    distanceKm: number | null
+    roadMultiplier: number | null
+    litres: number | null
+    ratePerLitre: number | null
+    fuelCost: number | null
+    originalDistanceKm: number | null
+    originalFuelCost: number | null
+  }
+
+  export type GroomerFuelTripMinAggregateOutputType = {
+    id: string | null
+    bookingId: string | null
+    groomerMemberId: string | null
+    fromType: string | null
+    fromBookingId: string | null
+    fromLat: number | null
+    fromLng: number | null
+    toLat: number | null
+    toLng: number | null
+    distanceKm: number | null
+    roadMultiplier: number | null
+    litres: number | null
+    ratePerLitre: number | null
+    fuelCost: number | null
+    isEstimate: boolean | null
+    isManuallyAdjusted: boolean | null
+    originalDistanceKm: number | null
+    originalFuelCost: number | null
+    adjustmentReason: string | null
+    calculatedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GroomerFuelTripMaxAggregateOutputType = {
+    id: string | null
+    bookingId: string | null
+    groomerMemberId: string | null
+    fromType: string | null
+    fromBookingId: string | null
+    fromLat: number | null
+    fromLng: number | null
+    toLat: number | null
+    toLng: number | null
+    distanceKm: number | null
+    roadMultiplier: number | null
+    litres: number | null
+    ratePerLitre: number | null
+    fuelCost: number | null
+    isEstimate: boolean | null
+    isManuallyAdjusted: boolean | null
+    originalDistanceKm: number | null
+    originalFuelCost: number | null
+    adjustmentReason: string | null
+    calculatedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GroomerFuelTripCountAggregateOutputType = {
+    id: number
+    bookingId: number
+    groomerMemberId: number
+    fromType: number
+    fromBookingId: number
+    fromLat: number
+    fromLng: number
+    toLat: number
+    toLng: number
+    distanceKm: number
+    roadMultiplier: number
+    litres: number
+    ratePerLitre: number
+    fuelCost: number
+    isEstimate: number
+    isManuallyAdjusted: number
+    originalDistanceKm: number
+    originalFuelCost: number
+    adjustmentReason: number
+    calculatedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type GroomerFuelTripAvgAggregateInputType = {
+    fromLat?: true
+    fromLng?: true
+    toLat?: true
+    toLng?: true
+    distanceKm?: true
+    roadMultiplier?: true
+    litres?: true
+    ratePerLitre?: true
+    fuelCost?: true
+    originalDistanceKm?: true
+    originalFuelCost?: true
+  }
+
+  export type GroomerFuelTripSumAggregateInputType = {
+    fromLat?: true
+    fromLng?: true
+    toLat?: true
+    toLng?: true
+    distanceKm?: true
+    roadMultiplier?: true
+    litres?: true
+    ratePerLitre?: true
+    fuelCost?: true
+    originalDistanceKm?: true
+    originalFuelCost?: true
+  }
+
+  export type GroomerFuelTripMinAggregateInputType = {
+    id?: true
+    bookingId?: true
+    groomerMemberId?: true
+    fromType?: true
+    fromBookingId?: true
+    fromLat?: true
+    fromLng?: true
+    toLat?: true
+    toLng?: true
+    distanceKm?: true
+    roadMultiplier?: true
+    litres?: true
+    ratePerLitre?: true
+    fuelCost?: true
+    isEstimate?: true
+    isManuallyAdjusted?: true
+    originalDistanceKm?: true
+    originalFuelCost?: true
+    adjustmentReason?: true
+    calculatedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GroomerFuelTripMaxAggregateInputType = {
+    id?: true
+    bookingId?: true
+    groomerMemberId?: true
+    fromType?: true
+    fromBookingId?: true
+    fromLat?: true
+    fromLng?: true
+    toLat?: true
+    toLng?: true
+    distanceKm?: true
+    roadMultiplier?: true
+    litres?: true
+    ratePerLitre?: true
+    fuelCost?: true
+    isEstimate?: true
+    isManuallyAdjusted?: true
+    originalDistanceKm?: true
+    originalFuelCost?: true
+    adjustmentReason?: true
+    calculatedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GroomerFuelTripCountAggregateInputType = {
+    id?: true
+    bookingId?: true
+    groomerMemberId?: true
+    fromType?: true
+    fromBookingId?: true
+    fromLat?: true
+    fromLng?: true
+    toLat?: true
+    toLng?: true
+    distanceKm?: true
+    roadMultiplier?: true
+    litres?: true
+    ratePerLitre?: true
+    fuelCost?: true
+    isEstimate?: true
+    isManuallyAdjusted?: true
+    originalDistanceKm?: true
+    originalFuelCost?: true
+    adjustmentReason?: true
+    calculatedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type GroomerFuelTripAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroomerFuelTrip to aggregate.
+     */
+    where?: GroomerFuelTripWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerFuelTrips to fetch.
+     */
+    orderBy?: GroomerFuelTripOrderByWithRelationInput | GroomerFuelTripOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GroomerFuelTripWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerFuelTrips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerFuelTrips.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GroomerFuelTrips
+    **/
+    _count?: true | GroomerFuelTripCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: GroomerFuelTripAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: GroomerFuelTripSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GroomerFuelTripMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GroomerFuelTripMaxAggregateInputType
+  }
+
+  export type GetGroomerFuelTripAggregateType<T extends GroomerFuelTripAggregateArgs> = {
+        [P in keyof T & keyof AggregateGroomerFuelTrip]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGroomerFuelTrip[P]>
+      : GetScalarType<T[P], AggregateGroomerFuelTrip[P]>
+  }
+
+
+
+
+  export type GroomerFuelTripGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroomerFuelTripWhereInput
+    orderBy?: GroomerFuelTripOrderByWithAggregationInput | GroomerFuelTripOrderByWithAggregationInput[]
+    by: GroomerFuelTripScalarFieldEnum[] | GroomerFuelTripScalarFieldEnum
+    having?: GroomerFuelTripScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GroomerFuelTripCountAggregateInputType | true
+    _avg?: GroomerFuelTripAvgAggregateInputType
+    _sum?: GroomerFuelTripSumAggregateInputType
+    _min?: GroomerFuelTripMinAggregateInputType
+    _max?: GroomerFuelTripMaxAggregateInputType
+  }
+
+  export type GroomerFuelTripGroupByOutputType = {
+    id: string
+    bookingId: string
+    groomerMemberId: string
+    fromType: string
+    fromBookingId: string | null
+    fromLat: number
+    fromLng: number
+    toLat: number
+    toLng: number
+    distanceKm: number
+    roadMultiplier: number
+    litres: number
+    ratePerLitre: number
+    fuelCost: number
+    isEstimate: boolean
+    isManuallyAdjusted: boolean
+    originalDistanceKm: number | null
+    originalFuelCost: number | null
+    adjustmentReason: string | null
+    calculatedAt: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: GroomerFuelTripCountAggregateOutputType | null
+    _avg: GroomerFuelTripAvgAggregateOutputType | null
+    _sum: GroomerFuelTripSumAggregateOutputType | null
+    _min: GroomerFuelTripMinAggregateOutputType | null
+    _max: GroomerFuelTripMaxAggregateOutputType | null
+  }
+
+  type GetGroomerFuelTripGroupByPayload<T extends GroomerFuelTripGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GroomerFuelTripGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GroomerFuelTripGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GroomerFuelTripGroupByOutputType[P]>
+            : GetScalarType<T[P], GroomerFuelTripGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GroomerFuelTripSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    bookingId?: boolean
+    groomerMemberId?: boolean
+    fromType?: boolean
+    fromBookingId?: boolean
+    fromLat?: boolean
+    fromLng?: boolean
+    toLat?: boolean
+    toLng?: boolean
+    distanceKm?: boolean
+    roadMultiplier?: boolean
+    litres?: boolean
+    ratePerLitre?: boolean
+    fuelCost?: boolean
+    isEstimate?: boolean
+    isManuallyAdjusted?: boolean
+    originalDistanceKm?: boolean
+    originalFuelCost?: boolean
+    adjustmentReason?: boolean
+    calculatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    booking?: boolean | BookingDefaultArgs<ExtArgs>
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groomerFuelTrip"]>
+
+  export type GroomerFuelTripSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    bookingId?: boolean
+    groomerMemberId?: boolean
+    fromType?: boolean
+    fromBookingId?: boolean
+    fromLat?: boolean
+    fromLng?: boolean
+    toLat?: boolean
+    toLng?: boolean
+    distanceKm?: boolean
+    roadMultiplier?: boolean
+    litres?: boolean
+    ratePerLitre?: boolean
+    fuelCost?: boolean
+    isEstimate?: boolean
+    isManuallyAdjusted?: boolean
+    originalDistanceKm?: boolean
+    originalFuelCost?: boolean
+    adjustmentReason?: boolean
+    calculatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    booking?: boolean | BookingDefaultArgs<ExtArgs>
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groomerFuelTrip"]>
+
+  export type GroomerFuelTripSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    bookingId?: boolean
+    groomerMemberId?: boolean
+    fromType?: boolean
+    fromBookingId?: boolean
+    fromLat?: boolean
+    fromLng?: boolean
+    toLat?: boolean
+    toLng?: boolean
+    distanceKm?: boolean
+    roadMultiplier?: boolean
+    litres?: boolean
+    ratePerLitre?: boolean
+    fuelCost?: boolean
+    isEstimate?: boolean
+    isManuallyAdjusted?: boolean
+    originalDistanceKm?: boolean
+    originalFuelCost?: boolean
+    adjustmentReason?: boolean
+    calculatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    booking?: boolean | BookingDefaultArgs<ExtArgs>
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groomerFuelTrip"]>
+
+  export type GroomerFuelTripSelectScalar = {
+    id?: boolean
+    bookingId?: boolean
+    groomerMemberId?: boolean
+    fromType?: boolean
+    fromBookingId?: boolean
+    fromLat?: boolean
+    fromLng?: boolean
+    toLat?: boolean
+    toLng?: boolean
+    distanceKm?: boolean
+    roadMultiplier?: boolean
+    litres?: boolean
+    ratePerLitre?: boolean
+    fuelCost?: boolean
+    isEstimate?: boolean
+    isManuallyAdjusted?: boolean
+    originalDistanceKm?: boolean
+    originalFuelCost?: boolean
+    adjustmentReason?: boolean
+    calculatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type GroomerFuelTripOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bookingId" | "groomerMemberId" | "fromType" | "fromBookingId" | "fromLat" | "fromLng" | "toLat" | "toLng" | "distanceKm" | "roadMultiplier" | "litres" | "ratePerLitre" | "fuelCost" | "isEstimate" | "isManuallyAdjusted" | "originalDistanceKm" | "originalFuelCost" | "adjustmentReason" | "calculatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["groomerFuelTrip"]>
+  export type GroomerFuelTripInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    booking?: boolean | BookingDefaultArgs<ExtArgs>
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }
+  export type GroomerFuelTripIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    booking?: boolean | BookingDefaultArgs<ExtArgs>
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }
+  export type GroomerFuelTripIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    booking?: boolean | BookingDefaultArgs<ExtArgs>
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }
+
+  export type $GroomerFuelTripPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GroomerFuelTrip"
+    objects: {
+      booking: Prisma.$BookingPayload<ExtArgs>
+      groomerMember: Prisma.$TeamMemberPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      bookingId: string
+      groomerMemberId: string
+      fromType: string
+      fromBookingId: string | null
+      fromLat: number
+      fromLng: number
+      toLat: number
+      toLng: number
+      distanceKm: number
+      roadMultiplier: number
+      litres: number
+      ratePerLitre: number
+      fuelCost: number
+      isEstimate: boolean
+      isManuallyAdjusted: boolean
+      originalDistanceKm: number | null
+      originalFuelCost: number | null
+      adjustmentReason: string | null
+      calculatedAt: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["groomerFuelTrip"]>
+    composites: {}
+  }
+
+  type GroomerFuelTripGetPayload<S extends boolean | null | undefined | GroomerFuelTripDefaultArgs> = $Result.GetResult<Prisma.$GroomerFuelTripPayload, S>
+
+  type GroomerFuelTripCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GroomerFuelTripFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GroomerFuelTripCountAggregateInputType | true
+    }
+
+  export interface GroomerFuelTripDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GroomerFuelTrip'], meta: { name: 'GroomerFuelTrip' } }
+    /**
+     * Find zero or one GroomerFuelTrip that matches the filter.
+     * @param {GroomerFuelTripFindUniqueArgs} args - Arguments to find a GroomerFuelTrip
+     * @example
+     * // Get one GroomerFuelTrip
+     * const groomerFuelTrip = await prisma.groomerFuelTrip.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GroomerFuelTripFindUniqueArgs>(args: SelectSubset<T, GroomerFuelTripFindUniqueArgs<ExtArgs>>): Prisma__GroomerFuelTripClient<$Result.GetResult<Prisma.$GroomerFuelTripPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GroomerFuelTrip that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GroomerFuelTripFindUniqueOrThrowArgs} args - Arguments to find a GroomerFuelTrip
+     * @example
+     * // Get one GroomerFuelTrip
+     * const groomerFuelTrip = await prisma.groomerFuelTrip.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GroomerFuelTripFindUniqueOrThrowArgs>(args: SelectSubset<T, GroomerFuelTripFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GroomerFuelTripClient<$Result.GetResult<Prisma.$GroomerFuelTripPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GroomerFuelTrip that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerFuelTripFindFirstArgs} args - Arguments to find a GroomerFuelTrip
+     * @example
+     * // Get one GroomerFuelTrip
+     * const groomerFuelTrip = await prisma.groomerFuelTrip.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GroomerFuelTripFindFirstArgs>(args?: SelectSubset<T, GroomerFuelTripFindFirstArgs<ExtArgs>>): Prisma__GroomerFuelTripClient<$Result.GetResult<Prisma.$GroomerFuelTripPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GroomerFuelTrip that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerFuelTripFindFirstOrThrowArgs} args - Arguments to find a GroomerFuelTrip
+     * @example
+     * // Get one GroomerFuelTrip
+     * const groomerFuelTrip = await prisma.groomerFuelTrip.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GroomerFuelTripFindFirstOrThrowArgs>(args?: SelectSubset<T, GroomerFuelTripFindFirstOrThrowArgs<ExtArgs>>): Prisma__GroomerFuelTripClient<$Result.GetResult<Prisma.$GroomerFuelTripPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GroomerFuelTrips that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerFuelTripFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GroomerFuelTrips
+     * const groomerFuelTrips = await prisma.groomerFuelTrip.findMany()
+     * 
+     * // Get first 10 GroomerFuelTrips
+     * const groomerFuelTrips = await prisma.groomerFuelTrip.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const groomerFuelTripWithIdOnly = await prisma.groomerFuelTrip.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GroomerFuelTripFindManyArgs>(args?: SelectSubset<T, GroomerFuelTripFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerFuelTripPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GroomerFuelTrip.
+     * @param {GroomerFuelTripCreateArgs} args - Arguments to create a GroomerFuelTrip.
+     * @example
+     * // Create one GroomerFuelTrip
+     * const GroomerFuelTrip = await prisma.groomerFuelTrip.create({
+     *   data: {
+     *     // ... data to create a GroomerFuelTrip
+     *   }
+     * })
+     * 
+     */
+    create<T extends GroomerFuelTripCreateArgs>(args: SelectSubset<T, GroomerFuelTripCreateArgs<ExtArgs>>): Prisma__GroomerFuelTripClient<$Result.GetResult<Prisma.$GroomerFuelTripPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GroomerFuelTrips.
+     * @param {GroomerFuelTripCreateManyArgs} args - Arguments to create many GroomerFuelTrips.
+     * @example
+     * // Create many GroomerFuelTrips
+     * const groomerFuelTrip = await prisma.groomerFuelTrip.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GroomerFuelTripCreateManyArgs>(args?: SelectSubset<T, GroomerFuelTripCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GroomerFuelTrips and returns the data saved in the database.
+     * @param {GroomerFuelTripCreateManyAndReturnArgs} args - Arguments to create many GroomerFuelTrips.
+     * @example
+     * // Create many GroomerFuelTrips
+     * const groomerFuelTrip = await prisma.groomerFuelTrip.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GroomerFuelTrips and only return the `id`
+     * const groomerFuelTripWithIdOnly = await prisma.groomerFuelTrip.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GroomerFuelTripCreateManyAndReturnArgs>(args?: SelectSubset<T, GroomerFuelTripCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerFuelTripPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a GroomerFuelTrip.
+     * @param {GroomerFuelTripDeleteArgs} args - Arguments to delete one GroomerFuelTrip.
+     * @example
+     * // Delete one GroomerFuelTrip
+     * const GroomerFuelTrip = await prisma.groomerFuelTrip.delete({
+     *   where: {
+     *     // ... filter to delete one GroomerFuelTrip
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GroomerFuelTripDeleteArgs>(args: SelectSubset<T, GroomerFuelTripDeleteArgs<ExtArgs>>): Prisma__GroomerFuelTripClient<$Result.GetResult<Prisma.$GroomerFuelTripPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GroomerFuelTrip.
+     * @param {GroomerFuelTripUpdateArgs} args - Arguments to update one GroomerFuelTrip.
+     * @example
+     * // Update one GroomerFuelTrip
+     * const groomerFuelTrip = await prisma.groomerFuelTrip.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GroomerFuelTripUpdateArgs>(args: SelectSubset<T, GroomerFuelTripUpdateArgs<ExtArgs>>): Prisma__GroomerFuelTripClient<$Result.GetResult<Prisma.$GroomerFuelTripPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GroomerFuelTrips.
+     * @param {GroomerFuelTripDeleteManyArgs} args - Arguments to filter GroomerFuelTrips to delete.
+     * @example
+     * // Delete a few GroomerFuelTrips
+     * const { count } = await prisma.groomerFuelTrip.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GroomerFuelTripDeleteManyArgs>(args?: SelectSubset<T, GroomerFuelTripDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GroomerFuelTrips.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerFuelTripUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GroomerFuelTrips
+     * const groomerFuelTrip = await prisma.groomerFuelTrip.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GroomerFuelTripUpdateManyArgs>(args: SelectSubset<T, GroomerFuelTripUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GroomerFuelTrips and returns the data updated in the database.
+     * @param {GroomerFuelTripUpdateManyAndReturnArgs} args - Arguments to update many GroomerFuelTrips.
+     * @example
+     * // Update many GroomerFuelTrips
+     * const groomerFuelTrip = await prisma.groomerFuelTrip.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more GroomerFuelTrips and only return the `id`
+     * const groomerFuelTripWithIdOnly = await prisma.groomerFuelTrip.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GroomerFuelTripUpdateManyAndReturnArgs>(args: SelectSubset<T, GroomerFuelTripUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerFuelTripPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one GroomerFuelTrip.
+     * @param {GroomerFuelTripUpsertArgs} args - Arguments to update or create a GroomerFuelTrip.
+     * @example
+     * // Update or create a GroomerFuelTrip
+     * const groomerFuelTrip = await prisma.groomerFuelTrip.upsert({
+     *   create: {
+     *     // ... data to create a GroomerFuelTrip
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GroomerFuelTrip we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GroomerFuelTripUpsertArgs>(args: SelectSubset<T, GroomerFuelTripUpsertArgs<ExtArgs>>): Prisma__GroomerFuelTripClient<$Result.GetResult<Prisma.$GroomerFuelTripPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GroomerFuelTrips.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerFuelTripCountArgs} args - Arguments to filter GroomerFuelTrips to count.
+     * @example
+     * // Count the number of GroomerFuelTrips
+     * const count = await prisma.groomerFuelTrip.count({
+     *   where: {
+     *     // ... the filter for the GroomerFuelTrips we want to count
+     *   }
+     * })
+    **/
+    count<T extends GroomerFuelTripCountArgs>(
+      args?: Subset<T, GroomerFuelTripCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GroomerFuelTripCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GroomerFuelTrip.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerFuelTripAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GroomerFuelTripAggregateArgs>(args: Subset<T, GroomerFuelTripAggregateArgs>): Prisma.PrismaPromise<GetGroomerFuelTripAggregateType<T>>
+
+    /**
+     * Group by GroomerFuelTrip.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerFuelTripGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GroomerFuelTripGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GroomerFuelTripGroupByArgs['orderBy'] }
+        : { orderBy?: GroomerFuelTripGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GroomerFuelTripGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGroomerFuelTripGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GroomerFuelTrip model
+   */
+  readonly fields: GroomerFuelTripFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GroomerFuelTrip.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GroomerFuelTripClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    booking<T extends BookingDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BookingDefaultArgs<ExtArgs>>): Prisma__BookingClient<$Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    groomerMember<T extends TeamMemberDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamMemberDefaultArgs<ExtArgs>>): Prisma__TeamMemberClient<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GroomerFuelTrip model
+   */
+  interface GroomerFuelTripFieldRefs {
+    readonly id: FieldRef<"GroomerFuelTrip", 'String'>
+    readonly bookingId: FieldRef<"GroomerFuelTrip", 'String'>
+    readonly groomerMemberId: FieldRef<"GroomerFuelTrip", 'String'>
+    readonly fromType: FieldRef<"GroomerFuelTrip", 'String'>
+    readonly fromBookingId: FieldRef<"GroomerFuelTrip", 'String'>
+    readonly fromLat: FieldRef<"GroomerFuelTrip", 'Float'>
+    readonly fromLng: FieldRef<"GroomerFuelTrip", 'Float'>
+    readonly toLat: FieldRef<"GroomerFuelTrip", 'Float'>
+    readonly toLng: FieldRef<"GroomerFuelTrip", 'Float'>
+    readonly distanceKm: FieldRef<"GroomerFuelTrip", 'Float'>
+    readonly roadMultiplier: FieldRef<"GroomerFuelTrip", 'Float'>
+    readonly litres: FieldRef<"GroomerFuelTrip", 'Float'>
+    readonly ratePerLitre: FieldRef<"GroomerFuelTrip", 'Float'>
+    readonly fuelCost: FieldRef<"GroomerFuelTrip", 'Int'>
+    readonly isEstimate: FieldRef<"GroomerFuelTrip", 'Boolean'>
+    readonly isManuallyAdjusted: FieldRef<"GroomerFuelTrip", 'Boolean'>
+    readonly originalDistanceKm: FieldRef<"GroomerFuelTrip", 'Float'>
+    readonly originalFuelCost: FieldRef<"GroomerFuelTrip", 'Int'>
+    readonly adjustmentReason: FieldRef<"GroomerFuelTrip", 'String'>
+    readonly calculatedAt: FieldRef<"GroomerFuelTrip", 'DateTime'>
+    readonly createdAt: FieldRef<"GroomerFuelTrip", 'DateTime'>
+    readonly updatedAt: FieldRef<"GroomerFuelTrip", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GroomerFuelTrip findUnique
+   */
+  export type GroomerFuelTripFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerFuelTrip
+     */
+    select?: GroomerFuelTripSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerFuelTrip
+     */
+    omit?: GroomerFuelTripOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerFuelTripInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerFuelTrip to fetch.
+     */
+    where: GroomerFuelTripWhereUniqueInput
+  }
+
+  /**
+   * GroomerFuelTrip findUniqueOrThrow
+   */
+  export type GroomerFuelTripFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerFuelTrip
+     */
+    select?: GroomerFuelTripSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerFuelTrip
+     */
+    omit?: GroomerFuelTripOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerFuelTripInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerFuelTrip to fetch.
+     */
+    where: GroomerFuelTripWhereUniqueInput
+  }
+
+  /**
+   * GroomerFuelTrip findFirst
+   */
+  export type GroomerFuelTripFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerFuelTrip
+     */
+    select?: GroomerFuelTripSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerFuelTrip
+     */
+    omit?: GroomerFuelTripOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerFuelTripInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerFuelTrip to fetch.
+     */
+    where?: GroomerFuelTripWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerFuelTrips to fetch.
+     */
+    orderBy?: GroomerFuelTripOrderByWithRelationInput | GroomerFuelTripOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroomerFuelTrips.
+     */
+    cursor?: GroomerFuelTripWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerFuelTrips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerFuelTrips.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroomerFuelTrips.
+     */
+    distinct?: GroomerFuelTripScalarFieldEnum | GroomerFuelTripScalarFieldEnum[]
+  }
+
+  /**
+   * GroomerFuelTrip findFirstOrThrow
+   */
+  export type GroomerFuelTripFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerFuelTrip
+     */
+    select?: GroomerFuelTripSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerFuelTrip
+     */
+    omit?: GroomerFuelTripOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerFuelTripInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerFuelTrip to fetch.
+     */
+    where?: GroomerFuelTripWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerFuelTrips to fetch.
+     */
+    orderBy?: GroomerFuelTripOrderByWithRelationInput | GroomerFuelTripOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroomerFuelTrips.
+     */
+    cursor?: GroomerFuelTripWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerFuelTrips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerFuelTrips.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroomerFuelTrips.
+     */
+    distinct?: GroomerFuelTripScalarFieldEnum | GroomerFuelTripScalarFieldEnum[]
+  }
+
+  /**
+   * GroomerFuelTrip findMany
+   */
+  export type GroomerFuelTripFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerFuelTrip
+     */
+    select?: GroomerFuelTripSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerFuelTrip
+     */
+    omit?: GroomerFuelTripOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerFuelTripInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerFuelTrips to fetch.
+     */
+    where?: GroomerFuelTripWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerFuelTrips to fetch.
+     */
+    orderBy?: GroomerFuelTripOrderByWithRelationInput | GroomerFuelTripOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GroomerFuelTrips.
+     */
+    cursor?: GroomerFuelTripWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerFuelTrips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerFuelTrips.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroomerFuelTrips.
+     */
+    distinct?: GroomerFuelTripScalarFieldEnum | GroomerFuelTripScalarFieldEnum[]
+  }
+
+  /**
+   * GroomerFuelTrip create
+   */
+  export type GroomerFuelTripCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerFuelTrip
+     */
+    select?: GroomerFuelTripSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerFuelTrip
+     */
+    omit?: GroomerFuelTripOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerFuelTripInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GroomerFuelTrip.
+     */
+    data: XOR<GroomerFuelTripCreateInput, GroomerFuelTripUncheckedCreateInput>
+  }
+
+  /**
+   * GroomerFuelTrip createMany
+   */
+  export type GroomerFuelTripCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GroomerFuelTrips.
+     */
+    data: GroomerFuelTripCreateManyInput | GroomerFuelTripCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GroomerFuelTrip createManyAndReturn
+   */
+  export type GroomerFuelTripCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerFuelTrip
+     */
+    select?: GroomerFuelTripSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerFuelTrip
+     */
+    omit?: GroomerFuelTripOmit<ExtArgs> | null
+    /**
+     * The data used to create many GroomerFuelTrips.
+     */
+    data: GroomerFuelTripCreateManyInput | GroomerFuelTripCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerFuelTripIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GroomerFuelTrip update
+   */
+  export type GroomerFuelTripUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerFuelTrip
+     */
+    select?: GroomerFuelTripSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerFuelTrip
+     */
+    omit?: GroomerFuelTripOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerFuelTripInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GroomerFuelTrip.
+     */
+    data: XOR<GroomerFuelTripUpdateInput, GroomerFuelTripUncheckedUpdateInput>
+    /**
+     * Choose, which GroomerFuelTrip to update.
+     */
+    where: GroomerFuelTripWhereUniqueInput
+  }
+
+  /**
+   * GroomerFuelTrip updateMany
+   */
+  export type GroomerFuelTripUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GroomerFuelTrips.
+     */
+    data: XOR<GroomerFuelTripUpdateManyMutationInput, GroomerFuelTripUncheckedUpdateManyInput>
+    /**
+     * Filter which GroomerFuelTrips to update
+     */
+    where?: GroomerFuelTripWhereInput
+    /**
+     * Limit how many GroomerFuelTrips to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GroomerFuelTrip updateManyAndReturn
+   */
+  export type GroomerFuelTripUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerFuelTrip
+     */
+    select?: GroomerFuelTripSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerFuelTrip
+     */
+    omit?: GroomerFuelTripOmit<ExtArgs> | null
+    /**
+     * The data used to update GroomerFuelTrips.
+     */
+    data: XOR<GroomerFuelTripUpdateManyMutationInput, GroomerFuelTripUncheckedUpdateManyInput>
+    /**
+     * Filter which GroomerFuelTrips to update
+     */
+    where?: GroomerFuelTripWhereInput
+    /**
+     * Limit how many GroomerFuelTrips to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerFuelTripIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GroomerFuelTrip upsert
+   */
+  export type GroomerFuelTripUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerFuelTrip
+     */
+    select?: GroomerFuelTripSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerFuelTrip
+     */
+    omit?: GroomerFuelTripOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerFuelTripInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GroomerFuelTrip to update in case it exists.
+     */
+    where: GroomerFuelTripWhereUniqueInput
+    /**
+     * In case the GroomerFuelTrip found by the `where` argument doesn't exist, create a new GroomerFuelTrip with this data.
+     */
+    create: XOR<GroomerFuelTripCreateInput, GroomerFuelTripUncheckedCreateInput>
+    /**
+     * In case the GroomerFuelTrip was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GroomerFuelTripUpdateInput, GroomerFuelTripUncheckedUpdateInput>
+  }
+
+  /**
+   * GroomerFuelTrip delete
+   */
+  export type GroomerFuelTripDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerFuelTrip
+     */
+    select?: GroomerFuelTripSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerFuelTrip
+     */
+    omit?: GroomerFuelTripOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerFuelTripInclude<ExtArgs> | null
+    /**
+     * Filter which GroomerFuelTrip to delete.
+     */
+    where: GroomerFuelTripWhereUniqueInput
+  }
+
+  /**
+   * GroomerFuelTrip deleteMany
+   */
+  export type GroomerFuelTripDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroomerFuelTrips to delete
+     */
+    where?: GroomerFuelTripWhereInput
+    /**
+     * Limit how many GroomerFuelTrips to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GroomerFuelTrip without action
+   */
+  export type GroomerFuelTripDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerFuelTrip
+     */
+    select?: GroomerFuelTripSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerFuelTrip
+     */
+    omit?: GroomerFuelTripOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerFuelTripInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model GroomerPayrollSnapshot
+   */
+
+  export type AggregateGroomerPayrollSnapshot = {
+    _count: GroomerPayrollSnapshotCountAggregateOutputType | null
+    _avg: GroomerPayrollSnapshotAvgAggregateOutputType | null
+    _sum: GroomerPayrollSnapshotSumAggregateOutputType | null
+    _min: GroomerPayrollSnapshotMinAggregateOutputType | null
+    _max: GroomerPayrollSnapshotMaxAggregateOutputType | null
+  }
+
+  export type GroomerPayrollSnapshotAvgAggregateOutputType = {
+    baseSalary: number | null
+    fuelReimbursements: number | null
+    otherReimbursements: number | null
+    incentives: number | null
+    payrollAdjustments: number | null
+    advanceRecovery: number | null
+    netPayable: number | null
+    cashHeldSeparate: number | null
+  }
+
+  export type GroomerPayrollSnapshotSumAggregateOutputType = {
+    baseSalary: number | null
+    fuelReimbursements: number | null
+    otherReimbursements: number | null
+    incentives: number | null
+    payrollAdjustments: number | null
+    advanceRecovery: number | null
+    netPayable: number | null
+    cashHeldSeparate: number | null
+  }
+
+  export type GroomerPayrollSnapshotMinAggregateOutputType = {
+    id: string | null
+    groomerMemberId: string | null
+    monthBucket: string | null
+    baseSalary: number | null
+    fuelReimbursements: number | null
+    otherReimbursements: number | null
+    incentives: number | null
+    payrollAdjustments: number | null
+    advanceRecovery: number | null
+    netPayable: number | null
+    cashHeldSeparate: number | null
+    frozenBy: string | null
+    frozenAt: Date | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GroomerPayrollSnapshotMaxAggregateOutputType = {
+    id: string | null
+    groomerMemberId: string | null
+    monthBucket: string | null
+    baseSalary: number | null
+    fuelReimbursements: number | null
+    otherReimbursements: number | null
+    incentives: number | null
+    payrollAdjustments: number | null
+    advanceRecovery: number | null
+    netPayable: number | null
+    cashHeldSeparate: number | null
+    frozenBy: string | null
+    frozenAt: Date | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GroomerPayrollSnapshotCountAggregateOutputType = {
+    id: number
+    groomerMemberId: number
+    monthBucket: number
+    baseSalary: number
+    fuelReimbursements: number
+    otherReimbursements: number
+    incentives: number
+    payrollAdjustments: number
+    advanceRecovery: number
+    netPayable: number
+    cashHeldSeparate: number
+    frozenBy: number
+    frozenAt: number
+    notes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type GroomerPayrollSnapshotAvgAggregateInputType = {
+    baseSalary?: true
+    fuelReimbursements?: true
+    otherReimbursements?: true
+    incentives?: true
+    payrollAdjustments?: true
+    advanceRecovery?: true
+    netPayable?: true
+    cashHeldSeparate?: true
+  }
+
+  export type GroomerPayrollSnapshotSumAggregateInputType = {
+    baseSalary?: true
+    fuelReimbursements?: true
+    otherReimbursements?: true
+    incentives?: true
+    payrollAdjustments?: true
+    advanceRecovery?: true
+    netPayable?: true
+    cashHeldSeparate?: true
+  }
+
+  export type GroomerPayrollSnapshotMinAggregateInputType = {
+    id?: true
+    groomerMemberId?: true
+    monthBucket?: true
+    baseSalary?: true
+    fuelReimbursements?: true
+    otherReimbursements?: true
+    incentives?: true
+    payrollAdjustments?: true
+    advanceRecovery?: true
+    netPayable?: true
+    cashHeldSeparate?: true
+    frozenBy?: true
+    frozenAt?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GroomerPayrollSnapshotMaxAggregateInputType = {
+    id?: true
+    groomerMemberId?: true
+    monthBucket?: true
+    baseSalary?: true
+    fuelReimbursements?: true
+    otherReimbursements?: true
+    incentives?: true
+    payrollAdjustments?: true
+    advanceRecovery?: true
+    netPayable?: true
+    cashHeldSeparate?: true
+    frozenBy?: true
+    frozenAt?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GroomerPayrollSnapshotCountAggregateInputType = {
+    id?: true
+    groomerMemberId?: true
+    monthBucket?: true
+    baseSalary?: true
+    fuelReimbursements?: true
+    otherReimbursements?: true
+    incentives?: true
+    payrollAdjustments?: true
+    advanceRecovery?: true
+    netPayable?: true
+    cashHeldSeparate?: true
+    frozenBy?: true
+    frozenAt?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type GroomerPayrollSnapshotAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroomerPayrollSnapshot to aggregate.
+     */
+    where?: GroomerPayrollSnapshotWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerPayrollSnapshots to fetch.
+     */
+    orderBy?: GroomerPayrollSnapshotOrderByWithRelationInput | GroomerPayrollSnapshotOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GroomerPayrollSnapshotWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerPayrollSnapshots from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerPayrollSnapshots.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GroomerPayrollSnapshots
+    **/
+    _count?: true | GroomerPayrollSnapshotCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: GroomerPayrollSnapshotAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: GroomerPayrollSnapshotSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GroomerPayrollSnapshotMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GroomerPayrollSnapshotMaxAggregateInputType
+  }
+
+  export type GetGroomerPayrollSnapshotAggregateType<T extends GroomerPayrollSnapshotAggregateArgs> = {
+        [P in keyof T & keyof AggregateGroomerPayrollSnapshot]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGroomerPayrollSnapshot[P]>
+      : GetScalarType<T[P], AggregateGroomerPayrollSnapshot[P]>
+  }
+
+
+
+
+  export type GroomerPayrollSnapshotGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroomerPayrollSnapshotWhereInput
+    orderBy?: GroomerPayrollSnapshotOrderByWithAggregationInput | GroomerPayrollSnapshotOrderByWithAggregationInput[]
+    by: GroomerPayrollSnapshotScalarFieldEnum[] | GroomerPayrollSnapshotScalarFieldEnum
+    having?: GroomerPayrollSnapshotScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GroomerPayrollSnapshotCountAggregateInputType | true
+    _avg?: GroomerPayrollSnapshotAvgAggregateInputType
+    _sum?: GroomerPayrollSnapshotSumAggregateInputType
+    _min?: GroomerPayrollSnapshotMinAggregateInputType
+    _max?: GroomerPayrollSnapshotMaxAggregateInputType
+  }
+
+  export type GroomerPayrollSnapshotGroupByOutputType = {
+    id: string
+    groomerMemberId: string
+    monthBucket: string
+    baseSalary: number
+    fuelReimbursements: number
+    otherReimbursements: number
+    incentives: number
+    payrollAdjustments: number
+    advanceRecovery: number
+    netPayable: number
+    cashHeldSeparate: number
+    frozenBy: string | null
+    frozenAt: Date
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: GroomerPayrollSnapshotCountAggregateOutputType | null
+    _avg: GroomerPayrollSnapshotAvgAggregateOutputType | null
+    _sum: GroomerPayrollSnapshotSumAggregateOutputType | null
+    _min: GroomerPayrollSnapshotMinAggregateOutputType | null
+    _max: GroomerPayrollSnapshotMaxAggregateOutputType | null
+  }
+
+  type GetGroomerPayrollSnapshotGroupByPayload<T extends GroomerPayrollSnapshotGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GroomerPayrollSnapshotGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GroomerPayrollSnapshotGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GroomerPayrollSnapshotGroupByOutputType[P]>
+            : GetScalarType<T[P], GroomerPayrollSnapshotGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GroomerPayrollSnapshotSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groomerMemberId?: boolean
+    monthBucket?: boolean
+    baseSalary?: boolean
+    fuelReimbursements?: boolean
+    otherReimbursements?: boolean
+    incentives?: boolean
+    payrollAdjustments?: boolean
+    advanceRecovery?: boolean
+    netPayable?: boolean
+    cashHeldSeparate?: boolean
+    frozenBy?: boolean
+    frozenAt?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groomerPayrollSnapshot"]>
+
+  export type GroomerPayrollSnapshotSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groomerMemberId?: boolean
+    monthBucket?: boolean
+    baseSalary?: boolean
+    fuelReimbursements?: boolean
+    otherReimbursements?: boolean
+    incentives?: boolean
+    payrollAdjustments?: boolean
+    advanceRecovery?: boolean
+    netPayable?: boolean
+    cashHeldSeparate?: boolean
+    frozenBy?: boolean
+    frozenAt?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groomerPayrollSnapshot"]>
+
+  export type GroomerPayrollSnapshotSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    groomerMemberId?: boolean
+    monthBucket?: boolean
+    baseSalary?: boolean
+    fuelReimbursements?: boolean
+    otherReimbursements?: boolean
+    incentives?: boolean
+    payrollAdjustments?: boolean
+    advanceRecovery?: boolean
+    netPayable?: boolean
+    cashHeldSeparate?: boolean
+    frozenBy?: boolean
+    frozenAt?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groomerPayrollSnapshot"]>
+
+  export type GroomerPayrollSnapshotSelectScalar = {
+    id?: boolean
+    groomerMemberId?: boolean
+    monthBucket?: boolean
+    baseSalary?: boolean
+    fuelReimbursements?: boolean
+    otherReimbursements?: boolean
+    incentives?: boolean
+    payrollAdjustments?: boolean
+    advanceRecovery?: boolean
+    netPayable?: boolean
+    cashHeldSeparate?: boolean
+    frozenBy?: boolean
+    frozenAt?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type GroomerPayrollSnapshotOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "groomerMemberId" | "monthBucket" | "baseSalary" | "fuelReimbursements" | "otherReimbursements" | "incentives" | "payrollAdjustments" | "advanceRecovery" | "netPayable" | "cashHeldSeparate" | "frozenBy" | "frozenAt" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["groomerPayrollSnapshot"]>
+  export type GroomerPayrollSnapshotInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }
+  export type GroomerPayrollSnapshotIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }
+  export type GroomerPayrollSnapshotIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groomerMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
+  }
+
+  export type $GroomerPayrollSnapshotPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GroomerPayrollSnapshot"
+    objects: {
+      groomerMember: Prisma.$TeamMemberPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      groomerMemberId: string
+      monthBucket: string
+      baseSalary: number
+      fuelReimbursements: number
+      otherReimbursements: number
+      incentives: number
+      payrollAdjustments: number
+      advanceRecovery: number
+      netPayable: number
+      cashHeldSeparate: number
+      frozenBy: string | null
+      frozenAt: Date
+      notes: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["groomerPayrollSnapshot"]>
+    composites: {}
+  }
+
+  type GroomerPayrollSnapshotGetPayload<S extends boolean | null | undefined | GroomerPayrollSnapshotDefaultArgs> = $Result.GetResult<Prisma.$GroomerPayrollSnapshotPayload, S>
+
+  type GroomerPayrollSnapshotCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GroomerPayrollSnapshotFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GroomerPayrollSnapshotCountAggregateInputType | true
+    }
+
+  export interface GroomerPayrollSnapshotDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GroomerPayrollSnapshot'], meta: { name: 'GroomerPayrollSnapshot' } }
+    /**
+     * Find zero or one GroomerPayrollSnapshot that matches the filter.
+     * @param {GroomerPayrollSnapshotFindUniqueArgs} args - Arguments to find a GroomerPayrollSnapshot
+     * @example
+     * // Get one GroomerPayrollSnapshot
+     * const groomerPayrollSnapshot = await prisma.groomerPayrollSnapshot.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GroomerPayrollSnapshotFindUniqueArgs>(args: SelectSubset<T, GroomerPayrollSnapshotFindUniqueArgs<ExtArgs>>): Prisma__GroomerPayrollSnapshotClient<$Result.GetResult<Prisma.$GroomerPayrollSnapshotPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GroomerPayrollSnapshot that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GroomerPayrollSnapshotFindUniqueOrThrowArgs} args - Arguments to find a GroomerPayrollSnapshot
+     * @example
+     * // Get one GroomerPayrollSnapshot
+     * const groomerPayrollSnapshot = await prisma.groomerPayrollSnapshot.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GroomerPayrollSnapshotFindUniqueOrThrowArgs>(args: SelectSubset<T, GroomerPayrollSnapshotFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GroomerPayrollSnapshotClient<$Result.GetResult<Prisma.$GroomerPayrollSnapshotPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GroomerPayrollSnapshot that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerPayrollSnapshotFindFirstArgs} args - Arguments to find a GroomerPayrollSnapshot
+     * @example
+     * // Get one GroomerPayrollSnapshot
+     * const groomerPayrollSnapshot = await prisma.groomerPayrollSnapshot.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GroomerPayrollSnapshotFindFirstArgs>(args?: SelectSubset<T, GroomerPayrollSnapshotFindFirstArgs<ExtArgs>>): Prisma__GroomerPayrollSnapshotClient<$Result.GetResult<Prisma.$GroomerPayrollSnapshotPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GroomerPayrollSnapshot that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerPayrollSnapshotFindFirstOrThrowArgs} args - Arguments to find a GroomerPayrollSnapshot
+     * @example
+     * // Get one GroomerPayrollSnapshot
+     * const groomerPayrollSnapshot = await prisma.groomerPayrollSnapshot.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GroomerPayrollSnapshotFindFirstOrThrowArgs>(args?: SelectSubset<T, GroomerPayrollSnapshotFindFirstOrThrowArgs<ExtArgs>>): Prisma__GroomerPayrollSnapshotClient<$Result.GetResult<Prisma.$GroomerPayrollSnapshotPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GroomerPayrollSnapshots that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerPayrollSnapshotFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GroomerPayrollSnapshots
+     * const groomerPayrollSnapshots = await prisma.groomerPayrollSnapshot.findMany()
+     * 
+     * // Get first 10 GroomerPayrollSnapshots
+     * const groomerPayrollSnapshots = await prisma.groomerPayrollSnapshot.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const groomerPayrollSnapshotWithIdOnly = await prisma.groomerPayrollSnapshot.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GroomerPayrollSnapshotFindManyArgs>(args?: SelectSubset<T, GroomerPayrollSnapshotFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerPayrollSnapshotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GroomerPayrollSnapshot.
+     * @param {GroomerPayrollSnapshotCreateArgs} args - Arguments to create a GroomerPayrollSnapshot.
+     * @example
+     * // Create one GroomerPayrollSnapshot
+     * const GroomerPayrollSnapshot = await prisma.groomerPayrollSnapshot.create({
+     *   data: {
+     *     // ... data to create a GroomerPayrollSnapshot
+     *   }
+     * })
+     * 
+     */
+    create<T extends GroomerPayrollSnapshotCreateArgs>(args: SelectSubset<T, GroomerPayrollSnapshotCreateArgs<ExtArgs>>): Prisma__GroomerPayrollSnapshotClient<$Result.GetResult<Prisma.$GroomerPayrollSnapshotPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GroomerPayrollSnapshots.
+     * @param {GroomerPayrollSnapshotCreateManyArgs} args - Arguments to create many GroomerPayrollSnapshots.
+     * @example
+     * // Create many GroomerPayrollSnapshots
+     * const groomerPayrollSnapshot = await prisma.groomerPayrollSnapshot.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GroomerPayrollSnapshotCreateManyArgs>(args?: SelectSubset<T, GroomerPayrollSnapshotCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GroomerPayrollSnapshots and returns the data saved in the database.
+     * @param {GroomerPayrollSnapshotCreateManyAndReturnArgs} args - Arguments to create many GroomerPayrollSnapshots.
+     * @example
+     * // Create many GroomerPayrollSnapshots
+     * const groomerPayrollSnapshot = await prisma.groomerPayrollSnapshot.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GroomerPayrollSnapshots and only return the `id`
+     * const groomerPayrollSnapshotWithIdOnly = await prisma.groomerPayrollSnapshot.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GroomerPayrollSnapshotCreateManyAndReturnArgs>(args?: SelectSubset<T, GroomerPayrollSnapshotCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerPayrollSnapshotPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a GroomerPayrollSnapshot.
+     * @param {GroomerPayrollSnapshotDeleteArgs} args - Arguments to delete one GroomerPayrollSnapshot.
+     * @example
+     * // Delete one GroomerPayrollSnapshot
+     * const GroomerPayrollSnapshot = await prisma.groomerPayrollSnapshot.delete({
+     *   where: {
+     *     // ... filter to delete one GroomerPayrollSnapshot
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GroomerPayrollSnapshotDeleteArgs>(args: SelectSubset<T, GroomerPayrollSnapshotDeleteArgs<ExtArgs>>): Prisma__GroomerPayrollSnapshotClient<$Result.GetResult<Prisma.$GroomerPayrollSnapshotPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GroomerPayrollSnapshot.
+     * @param {GroomerPayrollSnapshotUpdateArgs} args - Arguments to update one GroomerPayrollSnapshot.
+     * @example
+     * // Update one GroomerPayrollSnapshot
+     * const groomerPayrollSnapshot = await prisma.groomerPayrollSnapshot.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GroomerPayrollSnapshotUpdateArgs>(args: SelectSubset<T, GroomerPayrollSnapshotUpdateArgs<ExtArgs>>): Prisma__GroomerPayrollSnapshotClient<$Result.GetResult<Prisma.$GroomerPayrollSnapshotPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GroomerPayrollSnapshots.
+     * @param {GroomerPayrollSnapshotDeleteManyArgs} args - Arguments to filter GroomerPayrollSnapshots to delete.
+     * @example
+     * // Delete a few GroomerPayrollSnapshots
+     * const { count } = await prisma.groomerPayrollSnapshot.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GroomerPayrollSnapshotDeleteManyArgs>(args?: SelectSubset<T, GroomerPayrollSnapshotDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GroomerPayrollSnapshots.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerPayrollSnapshotUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GroomerPayrollSnapshots
+     * const groomerPayrollSnapshot = await prisma.groomerPayrollSnapshot.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GroomerPayrollSnapshotUpdateManyArgs>(args: SelectSubset<T, GroomerPayrollSnapshotUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GroomerPayrollSnapshots and returns the data updated in the database.
+     * @param {GroomerPayrollSnapshotUpdateManyAndReturnArgs} args - Arguments to update many GroomerPayrollSnapshots.
+     * @example
+     * // Update many GroomerPayrollSnapshots
+     * const groomerPayrollSnapshot = await prisma.groomerPayrollSnapshot.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more GroomerPayrollSnapshots and only return the `id`
+     * const groomerPayrollSnapshotWithIdOnly = await prisma.groomerPayrollSnapshot.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GroomerPayrollSnapshotUpdateManyAndReturnArgs>(args: SelectSubset<T, GroomerPayrollSnapshotUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroomerPayrollSnapshotPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one GroomerPayrollSnapshot.
+     * @param {GroomerPayrollSnapshotUpsertArgs} args - Arguments to update or create a GroomerPayrollSnapshot.
+     * @example
+     * // Update or create a GroomerPayrollSnapshot
+     * const groomerPayrollSnapshot = await prisma.groomerPayrollSnapshot.upsert({
+     *   create: {
+     *     // ... data to create a GroomerPayrollSnapshot
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GroomerPayrollSnapshot we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GroomerPayrollSnapshotUpsertArgs>(args: SelectSubset<T, GroomerPayrollSnapshotUpsertArgs<ExtArgs>>): Prisma__GroomerPayrollSnapshotClient<$Result.GetResult<Prisma.$GroomerPayrollSnapshotPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GroomerPayrollSnapshots.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerPayrollSnapshotCountArgs} args - Arguments to filter GroomerPayrollSnapshots to count.
+     * @example
+     * // Count the number of GroomerPayrollSnapshots
+     * const count = await prisma.groomerPayrollSnapshot.count({
+     *   where: {
+     *     // ... the filter for the GroomerPayrollSnapshots we want to count
+     *   }
+     * })
+    **/
+    count<T extends GroomerPayrollSnapshotCountArgs>(
+      args?: Subset<T, GroomerPayrollSnapshotCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GroomerPayrollSnapshotCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GroomerPayrollSnapshot.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerPayrollSnapshotAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GroomerPayrollSnapshotAggregateArgs>(args: Subset<T, GroomerPayrollSnapshotAggregateArgs>): Prisma.PrismaPromise<GetGroomerPayrollSnapshotAggregateType<T>>
+
+    /**
+     * Group by GroomerPayrollSnapshot.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroomerPayrollSnapshotGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GroomerPayrollSnapshotGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GroomerPayrollSnapshotGroupByArgs['orderBy'] }
+        : { orderBy?: GroomerPayrollSnapshotGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GroomerPayrollSnapshotGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGroomerPayrollSnapshotGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GroomerPayrollSnapshot model
+   */
+  readonly fields: GroomerPayrollSnapshotFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GroomerPayrollSnapshot.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GroomerPayrollSnapshotClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    groomerMember<T extends TeamMemberDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamMemberDefaultArgs<ExtArgs>>): Prisma__TeamMemberClient<$Result.GetResult<Prisma.$TeamMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GroomerPayrollSnapshot model
+   */
+  interface GroomerPayrollSnapshotFieldRefs {
+    readonly id: FieldRef<"GroomerPayrollSnapshot", 'String'>
+    readonly groomerMemberId: FieldRef<"GroomerPayrollSnapshot", 'String'>
+    readonly monthBucket: FieldRef<"GroomerPayrollSnapshot", 'String'>
+    readonly baseSalary: FieldRef<"GroomerPayrollSnapshot", 'Int'>
+    readonly fuelReimbursements: FieldRef<"GroomerPayrollSnapshot", 'Int'>
+    readonly otherReimbursements: FieldRef<"GroomerPayrollSnapshot", 'Int'>
+    readonly incentives: FieldRef<"GroomerPayrollSnapshot", 'Int'>
+    readonly payrollAdjustments: FieldRef<"GroomerPayrollSnapshot", 'Int'>
+    readonly advanceRecovery: FieldRef<"GroomerPayrollSnapshot", 'Int'>
+    readonly netPayable: FieldRef<"GroomerPayrollSnapshot", 'Int'>
+    readonly cashHeldSeparate: FieldRef<"GroomerPayrollSnapshot", 'Int'>
+    readonly frozenBy: FieldRef<"GroomerPayrollSnapshot", 'String'>
+    readonly frozenAt: FieldRef<"GroomerPayrollSnapshot", 'DateTime'>
+    readonly notes: FieldRef<"GroomerPayrollSnapshot", 'String'>
+    readonly createdAt: FieldRef<"GroomerPayrollSnapshot", 'DateTime'>
+    readonly updatedAt: FieldRef<"GroomerPayrollSnapshot", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GroomerPayrollSnapshot findUnique
+   */
+  export type GroomerPayrollSnapshotFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerPayrollSnapshot
+     */
+    select?: GroomerPayrollSnapshotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerPayrollSnapshot
+     */
+    omit?: GroomerPayrollSnapshotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerPayrollSnapshotInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerPayrollSnapshot to fetch.
+     */
+    where: GroomerPayrollSnapshotWhereUniqueInput
+  }
+
+  /**
+   * GroomerPayrollSnapshot findUniqueOrThrow
+   */
+  export type GroomerPayrollSnapshotFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerPayrollSnapshot
+     */
+    select?: GroomerPayrollSnapshotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerPayrollSnapshot
+     */
+    omit?: GroomerPayrollSnapshotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerPayrollSnapshotInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerPayrollSnapshot to fetch.
+     */
+    where: GroomerPayrollSnapshotWhereUniqueInput
+  }
+
+  /**
+   * GroomerPayrollSnapshot findFirst
+   */
+  export type GroomerPayrollSnapshotFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerPayrollSnapshot
+     */
+    select?: GroomerPayrollSnapshotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerPayrollSnapshot
+     */
+    omit?: GroomerPayrollSnapshotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerPayrollSnapshotInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerPayrollSnapshot to fetch.
+     */
+    where?: GroomerPayrollSnapshotWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerPayrollSnapshots to fetch.
+     */
+    orderBy?: GroomerPayrollSnapshotOrderByWithRelationInput | GroomerPayrollSnapshotOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroomerPayrollSnapshots.
+     */
+    cursor?: GroomerPayrollSnapshotWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerPayrollSnapshots from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerPayrollSnapshots.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroomerPayrollSnapshots.
+     */
+    distinct?: GroomerPayrollSnapshotScalarFieldEnum | GroomerPayrollSnapshotScalarFieldEnum[]
+  }
+
+  /**
+   * GroomerPayrollSnapshot findFirstOrThrow
+   */
+  export type GroomerPayrollSnapshotFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerPayrollSnapshot
+     */
+    select?: GroomerPayrollSnapshotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerPayrollSnapshot
+     */
+    omit?: GroomerPayrollSnapshotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerPayrollSnapshotInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerPayrollSnapshot to fetch.
+     */
+    where?: GroomerPayrollSnapshotWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerPayrollSnapshots to fetch.
+     */
+    orderBy?: GroomerPayrollSnapshotOrderByWithRelationInput | GroomerPayrollSnapshotOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroomerPayrollSnapshots.
+     */
+    cursor?: GroomerPayrollSnapshotWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerPayrollSnapshots from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerPayrollSnapshots.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroomerPayrollSnapshots.
+     */
+    distinct?: GroomerPayrollSnapshotScalarFieldEnum | GroomerPayrollSnapshotScalarFieldEnum[]
+  }
+
+  /**
+   * GroomerPayrollSnapshot findMany
+   */
+  export type GroomerPayrollSnapshotFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerPayrollSnapshot
+     */
+    select?: GroomerPayrollSnapshotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerPayrollSnapshot
+     */
+    omit?: GroomerPayrollSnapshotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerPayrollSnapshotInclude<ExtArgs> | null
+    /**
+     * Filter, which GroomerPayrollSnapshots to fetch.
+     */
+    where?: GroomerPayrollSnapshotWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroomerPayrollSnapshots to fetch.
+     */
+    orderBy?: GroomerPayrollSnapshotOrderByWithRelationInput | GroomerPayrollSnapshotOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GroomerPayrollSnapshots.
+     */
+    cursor?: GroomerPayrollSnapshotWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroomerPayrollSnapshots from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroomerPayrollSnapshots.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroomerPayrollSnapshots.
+     */
+    distinct?: GroomerPayrollSnapshotScalarFieldEnum | GroomerPayrollSnapshotScalarFieldEnum[]
+  }
+
+  /**
+   * GroomerPayrollSnapshot create
+   */
+  export type GroomerPayrollSnapshotCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerPayrollSnapshot
+     */
+    select?: GroomerPayrollSnapshotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerPayrollSnapshot
+     */
+    omit?: GroomerPayrollSnapshotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerPayrollSnapshotInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GroomerPayrollSnapshot.
+     */
+    data: XOR<GroomerPayrollSnapshotCreateInput, GroomerPayrollSnapshotUncheckedCreateInput>
+  }
+
+  /**
+   * GroomerPayrollSnapshot createMany
+   */
+  export type GroomerPayrollSnapshotCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GroomerPayrollSnapshots.
+     */
+    data: GroomerPayrollSnapshotCreateManyInput | GroomerPayrollSnapshotCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GroomerPayrollSnapshot createManyAndReturn
+   */
+  export type GroomerPayrollSnapshotCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerPayrollSnapshot
+     */
+    select?: GroomerPayrollSnapshotSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerPayrollSnapshot
+     */
+    omit?: GroomerPayrollSnapshotOmit<ExtArgs> | null
+    /**
+     * The data used to create many GroomerPayrollSnapshots.
+     */
+    data: GroomerPayrollSnapshotCreateManyInput | GroomerPayrollSnapshotCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerPayrollSnapshotIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GroomerPayrollSnapshot update
+   */
+  export type GroomerPayrollSnapshotUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerPayrollSnapshot
+     */
+    select?: GroomerPayrollSnapshotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerPayrollSnapshot
+     */
+    omit?: GroomerPayrollSnapshotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerPayrollSnapshotInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GroomerPayrollSnapshot.
+     */
+    data: XOR<GroomerPayrollSnapshotUpdateInput, GroomerPayrollSnapshotUncheckedUpdateInput>
+    /**
+     * Choose, which GroomerPayrollSnapshot to update.
+     */
+    where: GroomerPayrollSnapshotWhereUniqueInput
+  }
+
+  /**
+   * GroomerPayrollSnapshot updateMany
+   */
+  export type GroomerPayrollSnapshotUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GroomerPayrollSnapshots.
+     */
+    data: XOR<GroomerPayrollSnapshotUpdateManyMutationInput, GroomerPayrollSnapshotUncheckedUpdateManyInput>
+    /**
+     * Filter which GroomerPayrollSnapshots to update
+     */
+    where?: GroomerPayrollSnapshotWhereInput
+    /**
+     * Limit how many GroomerPayrollSnapshots to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GroomerPayrollSnapshot updateManyAndReturn
+   */
+  export type GroomerPayrollSnapshotUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerPayrollSnapshot
+     */
+    select?: GroomerPayrollSnapshotSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerPayrollSnapshot
+     */
+    omit?: GroomerPayrollSnapshotOmit<ExtArgs> | null
+    /**
+     * The data used to update GroomerPayrollSnapshots.
+     */
+    data: XOR<GroomerPayrollSnapshotUpdateManyMutationInput, GroomerPayrollSnapshotUncheckedUpdateManyInput>
+    /**
+     * Filter which GroomerPayrollSnapshots to update
+     */
+    where?: GroomerPayrollSnapshotWhereInput
+    /**
+     * Limit how many GroomerPayrollSnapshots to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerPayrollSnapshotIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GroomerPayrollSnapshot upsert
+   */
+  export type GroomerPayrollSnapshotUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerPayrollSnapshot
+     */
+    select?: GroomerPayrollSnapshotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerPayrollSnapshot
+     */
+    omit?: GroomerPayrollSnapshotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerPayrollSnapshotInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GroomerPayrollSnapshot to update in case it exists.
+     */
+    where: GroomerPayrollSnapshotWhereUniqueInput
+    /**
+     * In case the GroomerPayrollSnapshot found by the `where` argument doesn't exist, create a new GroomerPayrollSnapshot with this data.
+     */
+    create: XOR<GroomerPayrollSnapshotCreateInput, GroomerPayrollSnapshotUncheckedCreateInput>
+    /**
+     * In case the GroomerPayrollSnapshot was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GroomerPayrollSnapshotUpdateInput, GroomerPayrollSnapshotUncheckedUpdateInput>
+  }
+
+  /**
+   * GroomerPayrollSnapshot delete
+   */
+  export type GroomerPayrollSnapshotDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerPayrollSnapshot
+     */
+    select?: GroomerPayrollSnapshotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerPayrollSnapshot
+     */
+    omit?: GroomerPayrollSnapshotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerPayrollSnapshotInclude<ExtArgs> | null
+    /**
+     * Filter which GroomerPayrollSnapshot to delete.
+     */
+    where: GroomerPayrollSnapshotWhereUniqueInput
+  }
+
+  /**
+   * GroomerPayrollSnapshot deleteMany
+   */
+  export type GroomerPayrollSnapshotDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroomerPayrollSnapshots to delete
+     */
+    where?: GroomerPayrollSnapshotWhereInput
+    /**
+     * Limit how many GroomerPayrollSnapshots to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GroomerPayrollSnapshot without action
+   */
+  export type GroomerPayrollSnapshotDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroomerPayrollSnapshot
+     */
+    select?: GroomerPayrollSnapshotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroomerPayrollSnapshot
+     */
+    omit?: GroomerPayrollSnapshotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroomerPayrollSnapshotInclude<ExtArgs> | null
   }
 
 
@@ -25009,6 +32158,7 @@ export namespace Prisma {
     trustScoreSnapshot: number | null
     performanceSnapshot: number | null
     nextEligibleAt: Date | null
+    recoverFromMonth: string | null
     reviewNote: string | null
     requestedBy: string | null
     reviewedBy: string | null
@@ -25029,6 +32179,7 @@ export namespace Prisma {
     trustScoreSnapshot: number | null
     performanceSnapshot: number | null
     nextEligibleAt: Date | null
+    recoverFromMonth: string | null
     reviewNote: string | null
     requestedBy: string | null
     reviewedBy: string | null
@@ -25049,6 +32200,7 @@ export namespace Prisma {
     trustScoreSnapshot: number
     performanceSnapshot: number
     nextEligibleAt: number
+    recoverFromMonth: number
     reviewNote: number
     requestedBy: number
     reviewedBy: number
@@ -25085,6 +32237,7 @@ export namespace Prisma {
     trustScoreSnapshot?: true
     performanceSnapshot?: true
     nextEligibleAt?: true
+    recoverFromMonth?: true
     reviewNote?: true
     requestedBy?: true
     reviewedBy?: true
@@ -25105,6 +32258,7 @@ export namespace Prisma {
     trustScoreSnapshot?: true
     performanceSnapshot?: true
     nextEligibleAt?: true
+    recoverFromMonth?: true
     reviewNote?: true
     requestedBy?: true
     reviewedBy?: true
@@ -25125,6 +32279,7 @@ export namespace Prisma {
     trustScoreSnapshot?: true
     performanceSnapshot?: true
     nextEligibleAt?: true
+    recoverFromMonth?: true
     reviewNote?: true
     requestedBy?: true
     reviewedBy?: true
@@ -25232,6 +32387,7 @@ export namespace Prisma {
     trustScoreSnapshot: number
     performanceSnapshot: number
     nextEligibleAt: Date | null
+    recoverFromMonth: string | null
     reviewNote: string | null
     requestedBy: string | null
     reviewedBy: string | null
@@ -25271,6 +32427,7 @@ export namespace Prisma {
     trustScoreSnapshot?: boolean
     performanceSnapshot?: boolean
     nextEligibleAt?: boolean
+    recoverFromMonth?: boolean
     reviewNote?: boolean
     requestedBy?: boolean
     reviewedBy?: boolean
@@ -25292,6 +32449,7 @@ export namespace Prisma {
     trustScoreSnapshot?: boolean
     performanceSnapshot?: boolean
     nextEligibleAt?: boolean
+    recoverFromMonth?: boolean
     reviewNote?: boolean
     requestedBy?: boolean
     reviewedBy?: boolean
@@ -25313,6 +32471,7 @@ export namespace Prisma {
     trustScoreSnapshot?: boolean
     performanceSnapshot?: boolean
     nextEligibleAt?: boolean
+    recoverFromMonth?: boolean
     reviewNote?: boolean
     requestedBy?: boolean
     reviewedBy?: boolean
@@ -25334,6 +32493,7 @@ export namespace Prisma {
     trustScoreSnapshot?: boolean
     performanceSnapshot?: boolean
     nextEligibleAt?: boolean
+    recoverFromMonth?: boolean
     reviewNote?: boolean
     requestedBy?: boolean
     reviewedBy?: boolean
@@ -25343,7 +32503,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type WorkforceSalaryAdvanceRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "teamMemberId" | "status" | "amount" | "reason" | "eligibilitySnapshot" | "tenureMonthsSnapshot" | "trustScoreSnapshot" | "performanceSnapshot" | "nextEligibleAt" | "reviewNote" | "requestedBy" | "reviewedBy" | "requestedAt" | "reviewedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["workforceSalaryAdvanceRequest"]>
+  export type WorkforceSalaryAdvanceRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "teamMemberId" | "status" | "amount" | "reason" | "eligibilitySnapshot" | "tenureMonthsSnapshot" | "trustScoreSnapshot" | "performanceSnapshot" | "nextEligibleAt" | "recoverFromMonth" | "reviewNote" | "requestedBy" | "reviewedBy" | "requestedAt" | "reviewedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["workforceSalaryAdvanceRequest"]>
   export type WorkforceSalaryAdvanceRequestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     teamMember?: boolean | TeamMemberDefaultArgs<ExtArgs>
   }
@@ -25370,6 +32530,7 @@ export namespace Prisma {
       trustScoreSnapshot: number
       performanceSnapshot: number
       nextEligibleAt: Date | null
+      recoverFromMonth: string | null
       reviewNote: string | null
       requestedBy: string | null
       reviewedBy: string | null
@@ -25811,6 +32972,7 @@ export namespace Prisma {
     readonly trustScoreSnapshot: FieldRef<"WorkforceSalaryAdvanceRequest", 'Int'>
     readonly performanceSnapshot: FieldRef<"WorkforceSalaryAdvanceRequest", 'Int'>
     readonly nextEligibleAt: FieldRef<"WorkforceSalaryAdvanceRequest", 'DateTime'>
+    readonly recoverFromMonth: FieldRef<"WorkforceSalaryAdvanceRequest", 'String'>
     readonly reviewNote: FieldRef<"WorkforceSalaryAdvanceRequest", 'String'>
     readonly requestedBy: FieldRef<"WorkforceSalaryAdvanceRequest", 'String'>
     readonly reviewedBy: FieldRef<"WorkforceSalaryAdvanceRequest", 'String'>
@@ -49027,6 +56189,9 @@ export namespace Prisma {
     serviceLandmark: 'serviceLandmark',
     servicePincode: 'servicePincode',
     serviceLocationUrl: 'serviceLocationUrl',
+    serviceLat: 'serviceLat',
+    serviceLng: 'serviceLng',
+    serviceLocationSource: 'serviceLocationSource',
     addressUpdatedAt: 'addressUpdatedAt',
     assignedTeamId: 'assignedTeamId',
     groomerMemberId: 'groomerMemberId',
@@ -49090,6 +56255,13 @@ export namespace Prisma {
     bankIfsc: 'bankIfsc',
     bankName: 'bankName',
     upiId: 'upiId',
+    baseSalary: 'baseSalary',
+    salaryEffectiveFromMonth: 'salaryEffectiveFromMonth',
+    homeAddress: 'homeAddress',
+    homeLat: 'homeLat',
+    homeLng: 'homeLng',
+    bikeAverageKmPerLitre: 'bikeAverageKmPerLitre',
+    fuelRatePerLitre: 'fuelRatePerLitre',
     emergencyContactName: 'emergencyContactName',
     emergencyContactPhone: 'emergencyContactPhone',
     yearsExperience: 'yearsExperience',
@@ -49099,6 +56271,114 @@ export namespace Prisma {
   };
 
   export type TeamMemberScalarFieldEnum = (typeof TeamMemberScalarFieldEnum)[keyof typeof TeamMemberScalarFieldEnum]
+
+
+  export const GroomerLedgerEntryScalarFieldEnum: {
+    id: 'id',
+    groomerMemberId: 'groomerMemberId',
+    monthBucket: 'monthBucket',
+    type: 'type',
+    direction: 'direction',
+    amount: 'amount',
+    sourceType: 'sourceType',
+    sourceId: 'sourceId',
+    description: 'description',
+    metadataJson: 'metadataJson',
+    createdBy: 'createdBy',
+    occurredAt: 'occurredAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type GroomerLedgerEntryScalarFieldEnum = (typeof GroomerLedgerEntryScalarFieldEnum)[keyof typeof GroomerLedgerEntryScalarFieldEnum]
+
+
+  export const GroomerCashDepositScalarFieldEnum: {
+    id: 'id',
+    groomerMemberId: 'groomerMemberId',
+    amount: 'amount',
+    depositMode: 'depositMode',
+    referenceId: 'referenceId',
+    notes: 'notes',
+    recordedBy: 'recordedBy',
+    depositedAt: 'depositedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type GroomerCashDepositScalarFieldEnum = (typeof GroomerCashDepositScalarFieldEnum)[keyof typeof GroomerCashDepositScalarFieldEnum]
+
+
+  export const GroomerExpenseScalarFieldEnum: {
+    id: 'id',
+    groomerMemberId: 'groomerMemberId',
+    bookingId: 'bookingId',
+    category: 'category',
+    amount: 'amount',
+    billDate: 'billDate',
+    billPhotoUrl: 'billPhotoUrl',
+    storageKey: 'storageKey',
+    notes: 'notes',
+    status: 'status',
+    reviewNote: 'reviewNote',
+    reviewedBy: 'reviewedBy',
+    reviewedAt: 'reviewedAt',
+    submittedAt: 'submittedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type GroomerExpenseScalarFieldEnum = (typeof GroomerExpenseScalarFieldEnum)[keyof typeof GroomerExpenseScalarFieldEnum]
+
+
+  export const GroomerFuelTripScalarFieldEnum: {
+    id: 'id',
+    bookingId: 'bookingId',
+    groomerMemberId: 'groomerMemberId',
+    fromType: 'fromType',
+    fromBookingId: 'fromBookingId',
+    fromLat: 'fromLat',
+    fromLng: 'fromLng',
+    toLat: 'toLat',
+    toLng: 'toLng',
+    distanceKm: 'distanceKm',
+    roadMultiplier: 'roadMultiplier',
+    litres: 'litres',
+    ratePerLitre: 'ratePerLitre',
+    fuelCost: 'fuelCost',
+    isEstimate: 'isEstimate',
+    isManuallyAdjusted: 'isManuallyAdjusted',
+    originalDistanceKm: 'originalDistanceKm',
+    originalFuelCost: 'originalFuelCost',
+    adjustmentReason: 'adjustmentReason',
+    calculatedAt: 'calculatedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type GroomerFuelTripScalarFieldEnum = (typeof GroomerFuelTripScalarFieldEnum)[keyof typeof GroomerFuelTripScalarFieldEnum]
+
+
+  export const GroomerPayrollSnapshotScalarFieldEnum: {
+    id: 'id',
+    groomerMemberId: 'groomerMemberId',
+    monthBucket: 'monthBucket',
+    baseSalary: 'baseSalary',
+    fuelReimbursements: 'fuelReimbursements',
+    otherReimbursements: 'otherReimbursements',
+    incentives: 'incentives',
+    payrollAdjustments: 'payrollAdjustments',
+    advanceRecovery: 'advanceRecovery',
+    netPayable: 'netPayable',
+    cashHeldSeparate: 'cashHeldSeparate',
+    frozenBy: 'frozenBy',
+    frozenAt: 'frozenAt',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type GroomerPayrollSnapshotScalarFieldEnum = (typeof GroomerPayrollSnapshotScalarFieldEnum)[keyof typeof GroomerPayrollSnapshotScalarFieldEnum]
 
 
   export const TeamLeaderboardSnapshotScalarFieldEnum: {
@@ -49166,6 +56446,7 @@ export namespace Prisma {
     trustScoreSnapshot: 'trustScoreSnapshot',
     performanceSnapshot: 'performanceSnapshot',
     nextEligibleAt: 'nextEligibleAt',
+    recoverFromMonth: 'recoverFromMonth',
     reviewNote: 'reviewNote',
     requestedBy: 'requestedBy',
     reviewedBy: 'reviewedBy',
@@ -50424,6 +57705,9 @@ export namespace Prisma {
     serviceLandmark?: StringNullableFilter<"Booking"> | string | null
     servicePincode?: StringNullableFilter<"Booking"> | string | null
     serviceLocationUrl?: StringNullableFilter<"Booking"> | string | null
+    serviceLat?: FloatNullableFilter<"Booking"> | number | null
+    serviceLng?: FloatNullableFilter<"Booking"> | number | null
+    serviceLocationSource?: StringNullableFilter<"Booking"> | string | null
     addressUpdatedAt?: DateTimeNullableFilter<"Booking"> | Date | string | null
     assignedTeamId?: StringNullableFilter<"Booking"> | string | null
     groomerMemberId?: StringNullableFilter<"Booking"> | string | null
@@ -50460,6 +57744,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofListRelationFilter
     paymentCollection?: XOR<BookingPaymentCollectionNullableScalarRelationFilter, BookingPaymentCollectionWhereInput> | null
     groomerRewardEvents?: GroomerRewardEventListRelationFilter
+    groomerExpenses?: GroomerExpenseListRelationFilter
+    groomerFuelTrips?: GroomerFuelTripListRelationFilter
     couponRedemptions?: CouponRedemptionListRelationFilter
   }
 
@@ -50487,6 +57773,9 @@ export namespace Prisma {
     serviceLandmark?: SortOrderInput | SortOrder
     servicePincode?: SortOrderInput | SortOrder
     serviceLocationUrl?: SortOrderInput | SortOrder
+    serviceLat?: SortOrderInput | SortOrder
+    serviceLng?: SortOrderInput | SortOrder
+    serviceLocationSource?: SortOrderInput | SortOrder
     addressUpdatedAt?: SortOrderInput | SortOrder
     assignedTeamId?: SortOrderInput | SortOrder
     groomerMemberId?: SortOrderInput | SortOrder
@@ -50523,6 +57812,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofOrderByRelationAggregateInput
     paymentCollection?: BookingPaymentCollectionOrderByWithRelationInput
     groomerRewardEvents?: GroomerRewardEventOrderByRelationAggregateInput
+    groomerExpenses?: GroomerExpenseOrderByRelationAggregateInput
+    groomerFuelTrips?: GroomerFuelTripOrderByRelationAggregateInput
     couponRedemptions?: CouponRedemptionOrderByRelationAggregateInput
   }
 
@@ -50553,6 +57844,9 @@ export namespace Prisma {
     serviceLandmark?: StringNullableFilter<"Booking"> | string | null
     servicePincode?: StringNullableFilter<"Booking"> | string | null
     serviceLocationUrl?: StringNullableFilter<"Booking"> | string | null
+    serviceLat?: FloatNullableFilter<"Booking"> | number | null
+    serviceLng?: FloatNullableFilter<"Booking"> | number | null
+    serviceLocationSource?: StringNullableFilter<"Booking"> | string | null
     addressUpdatedAt?: DateTimeNullableFilter<"Booking"> | Date | string | null
     assignedTeamId?: StringNullableFilter<"Booking"> | string | null
     groomerMemberId?: StringNullableFilter<"Booking"> | string | null
@@ -50589,6 +57883,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofListRelationFilter
     paymentCollection?: XOR<BookingPaymentCollectionNullableScalarRelationFilter, BookingPaymentCollectionWhereInput> | null
     groomerRewardEvents?: GroomerRewardEventListRelationFilter
+    groomerExpenses?: GroomerExpenseListRelationFilter
+    groomerFuelTrips?: GroomerFuelTripListRelationFilter
     couponRedemptions?: CouponRedemptionListRelationFilter
   }, "id">
 
@@ -50616,6 +57912,9 @@ export namespace Prisma {
     serviceLandmark?: SortOrderInput | SortOrder
     servicePincode?: SortOrderInput | SortOrder
     serviceLocationUrl?: SortOrderInput | SortOrder
+    serviceLat?: SortOrderInput | SortOrder
+    serviceLng?: SortOrderInput | SortOrder
+    serviceLocationSource?: SortOrderInput | SortOrder
     addressUpdatedAt?: SortOrderInput | SortOrder
     assignedTeamId?: SortOrderInput | SortOrder
     groomerMemberId?: SortOrderInput | SortOrder
@@ -50671,6 +57970,9 @@ export namespace Prisma {
     serviceLandmark?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     servicePincode?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     serviceLocationUrl?: StringNullableWithAggregatesFilter<"Booking"> | string | null
+    serviceLat?: FloatNullableWithAggregatesFilter<"Booking"> | number | null
+    serviceLng?: FloatNullableWithAggregatesFilter<"Booking"> | number | null
+    serviceLocationSource?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     addressUpdatedAt?: DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
     assignedTeamId?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     groomerMemberId?: StringNullableWithAggregatesFilter<"Booking"> | string | null
@@ -50734,6 +58036,13 @@ export namespace Prisma {
     bankIfsc?: StringNullableFilter<"TeamMember"> | string | null
     bankName?: StringNullableFilter<"TeamMember"> | string | null
     upiId?: StringNullableFilter<"TeamMember"> | string | null
+    baseSalary?: IntFilter<"TeamMember"> | number
+    salaryEffectiveFromMonth?: StringNullableFilter<"TeamMember"> | string | null
+    homeAddress?: StringNullableFilter<"TeamMember"> | string | null
+    homeLat?: FloatNullableFilter<"TeamMember"> | number | null
+    homeLng?: FloatNullableFilter<"TeamMember"> | number | null
+    bikeAverageKmPerLitre?: FloatFilter<"TeamMember"> | number
+    fuelRatePerLitre?: FloatFilter<"TeamMember"> | number
     emergencyContactName?: StringNullableFilter<"TeamMember"> | string | null
     emergencyContactPhone?: StringNullableFilter<"TeamMember"> | string | null
     yearsExperience?: IntNullableFilter<"TeamMember"> | number | null
@@ -50746,6 +58055,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotListRelationFilter
     leaveRequests?: WorkforceLeaveRequestListRelationFilter
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestListRelationFilter
+    ledgerEntries?: GroomerLedgerEntryListRelationFilter
+    cashDeposits?: GroomerCashDepositListRelationFilter
+    expenses?: GroomerExpenseListRelationFilter
+    fuelTrips?: GroomerFuelTripListRelationFilter
+    payrollSnapshots?: GroomerPayrollSnapshotListRelationFilter
     referralsMade?: WorkforceReferralRecordListRelationFilter
     trainingCompletions?: TrainingCompletionListRelationFilter
     trainingInterests?: WorkforceTrainingInterestListRelationFilter
@@ -50789,6 +58103,13 @@ export namespace Prisma {
     bankIfsc?: SortOrderInput | SortOrder
     bankName?: SortOrderInput | SortOrder
     upiId?: SortOrderInput | SortOrder
+    baseSalary?: SortOrder
+    salaryEffectiveFromMonth?: SortOrderInput | SortOrder
+    homeAddress?: SortOrderInput | SortOrder
+    homeLat?: SortOrderInput | SortOrder
+    homeLng?: SortOrderInput | SortOrder
+    bikeAverageKmPerLitre?: SortOrder
+    fuelRatePerLitre?: SortOrder
     emergencyContactName?: SortOrderInput | SortOrder
     emergencyContactPhone?: SortOrderInput | SortOrder
     yearsExperience?: SortOrderInput | SortOrder
@@ -50801,6 +58122,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotOrderByRelationAggregateInput
     leaveRequests?: WorkforceLeaveRequestOrderByRelationAggregateInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestOrderByRelationAggregateInput
+    ledgerEntries?: GroomerLedgerEntryOrderByRelationAggregateInput
+    cashDeposits?: GroomerCashDepositOrderByRelationAggregateInput
+    expenses?: GroomerExpenseOrderByRelationAggregateInput
+    fuelTrips?: GroomerFuelTripOrderByRelationAggregateInput
+    payrollSnapshots?: GroomerPayrollSnapshotOrderByRelationAggregateInput
     referralsMade?: WorkforceReferralRecordOrderByRelationAggregateInput
     trainingCompletions?: TrainingCompletionOrderByRelationAggregateInput
     trainingInterests?: WorkforceTrainingInterestOrderByRelationAggregateInput
@@ -50847,6 +58173,13 @@ export namespace Prisma {
     bankIfsc?: StringNullableFilter<"TeamMember"> | string | null
     bankName?: StringNullableFilter<"TeamMember"> | string | null
     upiId?: StringNullableFilter<"TeamMember"> | string | null
+    baseSalary?: IntFilter<"TeamMember"> | number
+    salaryEffectiveFromMonth?: StringNullableFilter<"TeamMember"> | string | null
+    homeAddress?: StringNullableFilter<"TeamMember"> | string | null
+    homeLat?: FloatNullableFilter<"TeamMember"> | number | null
+    homeLng?: FloatNullableFilter<"TeamMember"> | number | null
+    bikeAverageKmPerLitre?: FloatFilter<"TeamMember"> | number
+    fuelRatePerLitre?: FloatFilter<"TeamMember"> | number
     emergencyContactName?: StringNullableFilter<"TeamMember"> | string | null
     emergencyContactPhone?: StringNullableFilter<"TeamMember"> | string | null
     yearsExperience?: IntNullableFilter<"TeamMember"> | number | null
@@ -50859,6 +58192,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotListRelationFilter
     leaveRequests?: WorkforceLeaveRequestListRelationFilter
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestListRelationFilter
+    ledgerEntries?: GroomerLedgerEntryListRelationFilter
+    cashDeposits?: GroomerCashDepositListRelationFilter
+    expenses?: GroomerExpenseListRelationFilter
+    fuelTrips?: GroomerFuelTripListRelationFilter
+    payrollSnapshots?: GroomerPayrollSnapshotListRelationFilter
     referralsMade?: WorkforceReferralRecordListRelationFilter
     trainingCompletions?: TrainingCompletionListRelationFilter
     trainingInterests?: WorkforceTrainingInterestListRelationFilter
@@ -50902,6 +58240,13 @@ export namespace Prisma {
     bankIfsc?: SortOrderInput | SortOrder
     bankName?: SortOrderInput | SortOrder
     upiId?: SortOrderInput | SortOrder
+    baseSalary?: SortOrder
+    salaryEffectiveFromMonth?: SortOrderInput | SortOrder
+    homeAddress?: SortOrderInput | SortOrder
+    homeLat?: SortOrderInput | SortOrder
+    homeLng?: SortOrderInput | SortOrder
+    bikeAverageKmPerLitre?: SortOrder
+    fuelRatePerLitre?: SortOrder
     emergencyContactName?: SortOrderInput | SortOrder
     emergencyContactPhone?: SortOrderInput | SortOrder
     yearsExperience?: SortOrderInput | SortOrder
@@ -50955,12 +58300,577 @@ export namespace Prisma {
     bankIfsc?: StringNullableWithAggregatesFilter<"TeamMember"> | string | null
     bankName?: StringNullableWithAggregatesFilter<"TeamMember"> | string | null
     upiId?: StringNullableWithAggregatesFilter<"TeamMember"> | string | null
+    baseSalary?: IntWithAggregatesFilter<"TeamMember"> | number
+    salaryEffectiveFromMonth?: StringNullableWithAggregatesFilter<"TeamMember"> | string | null
+    homeAddress?: StringNullableWithAggregatesFilter<"TeamMember"> | string | null
+    homeLat?: FloatNullableWithAggregatesFilter<"TeamMember"> | number | null
+    homeLng?: FloatNullableWithAggregatesFilter<"TeamMember"> | number | null
+    bikeAverageKmPerLitre?: FloatWithAggregatesFilter<"TeamMember"> | number
+    fuelRatePerLitre?: FloatWithAggregatesFilter<"TeamMember"> | number
     emergencyContactName?: StringNullableWithAggregatesFilter<"TeamMember"> | string | null
     emergencyContactPhone?: StringNullableWithAggregatesFilter<"TeamMember"> | string | null
     yearsExperience?: IntNullableWithAggregatesFilter<"TeamMember"> | number | null
     experienceNotes?: StringNullableWithAggregatesFilter<"TeamMember"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"TeamMember"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"TeamMember"> | Date | string
+  }
+
+  export type GroomerLedgerEntryWhereInput = {
+    AND?: GroomerLedgerEntryWhereInput | GroomerLedgerEntryWhereInput[]
+    OR?: GroomerLedgerEntryWhereInput[]
+    NOT?: GroomerLedgerEntryWhereInput | GroomerLedgerEntryWhereInput[]
+    id?: StringFilter<"GroomerLedgerEntry"> | string
+    groomerMemberId?: StringFilter<"GroomerLedgerEntry"> | string
+    monthBucket?: StringFilter<"GroomerLedgerEntry"> | string
+    type?: StringFilter<"GroomerLedgerEntry"> | string
+    direction?: StringFilter<"GroomerLedgerEntry"> | string
+    amount?: IntFilter<"GroomerLedgerEntry"> | number
+    sourceType?: StringNullableFilter<"GroomerLedgerEntry"> | string | null
+    sourceId?: StringNullableFilter<"GroomerLedgerEntry"> | string | null
+    description?: StringNullableFilter<"GroomerLedgerEntry"> | string | null
+    metadataJson?: StringNullableFilter<"GroomerLedgerEntry"> | string | null
+    createdBy?: StringNullableFilter<"GroomerLedgerEntry"> | string | null
+    occurredAt?: DateTimeFilter<"GroomerLedgerEntry"> | Date | string
+    createdAt?: DateTimeFilter<"GroomerLedgerEntry"> | Date | string
+    updatedAt?: DateTimeFilter<"GroomerLedgerEntry"> | Date | string
+    groomerMember?: XOR<TeamMemberScalarRelationFilter, TeamMemberWhereInput>
+  }
+
+  export type GroomerLedgerEntryOrderByWithRelationInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    monthBucket?: SortOrder
+    type?: SortOrder
+    direction?: SortOrder
+    amount?: SortOrder
+    sourceType?: SortOrderInput | SortOrder
+    sourceId?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    metadataJson?: SortOrderInput | SortOrder
+    createdBy?: SortOrderInput | SortOrder
+    occurredAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    groomerMember?: TeamMemberOrderByWithRelationInput
+  }
+
+  export type GroomerLedgerEntryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    sourceType_sourceId_type?: GroomerLedgerEntrySourceTypeSourceIdTypeCompoundUniqueInput
+    AND?: GroomerLedgerEntryWhereInput | GroomerLedgerEntryWhereInput[]
+    OR?: GroomerLedgerEntryWhereInput[]
+    NOT?: GroomerLedgerEntryWhereInput | GroomerLedgerEntryWhereInput[]
+    groomerMemberId?: StringFilter<"GroomerLedgerEntry"> | string
+    monthBucket?: StringFilter<"GroomerLedgerEntry"> | string
+    type?: StringFilter<"GroomerLedgerEntry"> | string
+    direction?: StringFilter<"GroomerLedgerEntry"> | string
+    amount?: IntFilter<"GroomerLedgerEntry"> | number
+    sourceType?: StringNullableFilter<"GroomerLedgerEntry"> | string | null
+    sourceId?: StringNullableFilter<"GroomerLedgerEntry"> | string | null
+    description?: StringNullableFilter<"GroomerLedgerEntry"> | string | null
+    metadataJson?: StringNullableFilter<"GroomerLedgerEntry"> | string | null
+    createdBy?: StringNullableFilter<"GroomerLedgerEntry"> | string | null
+    occurredAt?: DateTimeFilter<"GroomerLedgerEntry"> | Date | string
+    createdAt?: DateTimeFilter<"GroomerLedgerEntry"> | Date | string
+    updatedAt?: DateTimeFilter<"GroomerLedgerEntry"> | Date | string
+    groomerMember?: XOR<TeamMemberScalarRelationFilter, TeamMemberWhereInput>
+  }, "id" | "sourceType_sourceId_type">
+
+  export type GroomerLedgerEntryOrderByWithAggregationInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    monthBucket?: SortOrder
+    type?: SortOrder
+    direction?: SortOrder
+    amount?: SortOrder
+    sourceType?: SortOrderInput | SortOrder
+    sourceId?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    metadataJson?: SortOrderInput | SortOrder
+    createdBy?: SortOrderInput | SortOrder
+    occurredAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: GroomerLedgerEntryCountOrderByAggregateInput
+    _avg?: GroomerLedgerEntryAvgOrderByAggregateInput
+    _max?: GroomerLedgerEntryMaxOrderByAggregateInput
+    _min?: GroomerLedgerEntryMinOrderByAggregateInput
+    _sum?: GroomerLedgerEntrySumOrderByAggregateInput
+  }
+
+  export type GroomerLedgerEntryScalarWhereWithAggregatesInput = {
+    AND?: GroomerLedgerEntryScalarWhereWithAggregatesInput | GroomerLedgerEntryScalarWhereWithAggregatesInput[]
+    OR?: GroomerLedgerEntryScalarWhereWithAggregatesInput[]
+    NOT?: GroomerLedgerEntryScalarWhereWithAggregatesInput | GroomerLedgerEntryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GroomerLedgerEntry"> | string
+    groomerMemberId?: StringWithAggregatesFilter<"GroomerLedgerEntry"> | string
+    monthBucket?: StringWithAggregatesFilter<"GroomerLedgerEntry"> | string
+    type?: StringWithAggregatesFilter<"GroomerLedgerEntry"> | string
+    direction?: StringWithAggregatesFilter<"GroomerLedgerEntry"> | string
+    amount?: IntWithAggregatesFilter<"GroomerLedgerEntry"> | number
+    sourceType?: StringNullableWithAggregatesFilter<"GroomerLedgerEntry"> | string | null
+    sourceId?: StringNullableWithAggregatesFilter<"GroomerLedgerEntry"> | string | null
+    description?: StringNullableWithAggregatesFilter<"GroomerLedgerEntry"> | string | null
+    metadataJson?: StringNullableWithAggregatesFilter<"GroomerLedgerEntry"> | string | null
+    createdBy?: StringNullableWithAggregatesFilter<"GroomerLedgerEntry"> | string | null
+    occurredAt?: DateTimeWithAggregatesFilter<"GroomerLedgerEntry"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"GroomerLedgerEntry"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"GroomerLedgerEntry"> | Date | string
+  }
+
+  export type GroomerCashDepositWhereInput = {
+    AND?: GroomerCashDepositWhereInput | GroomerCashDepositWhereInput[]
+    OR?: GroomerCashDepositWhereInput[]
+    NOT?: GroomerCashDepositWhereInput | GroomerCashDepositWhereInput[]
+    id?: StringFilter<"GroomerCashDeposit"> | string
+    groomerMemberId?: StringFilter<"GroomerCashDeposit"> | string
+    amount?: IntFilter<"GroomerCashDeposit"> | number
+    depositMode?: StringFilter<"GroomerCashDeposit"> | string
+    referenceId?: StringNullableFilter<"GroomerCashDeposit"> | string | null
+    notes?: StringNullableFilter<"GroomerCashDeposit"> | string | null
+    recordedBy?: StringNullableFilter<"GroomerCashDeposit"> | string | null
+    depositedAt?: DateTimeFilter<"GroomerCashDeposit"> | Date | string
+    createdAt?: DateTimeFilter<"GroomerCashDeposit"> | Date | string
+    updatedAt?: DateTimeFilter<"GroomerCashDeposit"> | Date | string
+    groomerMember?: XOR<TeamMemberScalarRelationFilter, TeamMemberWhereInput>
+  }
+
+  export type GroomerCashDepositOrderByWithRelationInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    amount?: SortOrder
+    depositMode?: SortOrder
+    referenceId?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    recordedBy?: SortOrderInput | SortOrder
+    depositedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    groomerMember?: TeamMemberOrderByWithRelationInput
+  }
+
+  export type GroomerCashDepositWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: GroomerCashDepositWhereInput | GroomerCashDepositWhereInput[]
+    OR?: GroomerCashDepositWhereInput[]
+    NOT?: GroomerCashDepositWhereInput | GroomerCashDepositWhereInput[]
+    groomerMemberId?: StringFilter<"GroomerCashDeposit"> | string
+    amount?: IntFilter<"GroomerCashDeposit"> | number
+    depositMode?: StringFilter<"GroomerCashDeposit"> | string
+    referenceId?: StringNullableFilter<"GroomerCashDeposit"> | string | null
+    notes?: StringNullableFilter<"GroomerCashDeposit"> | string | null
+    recordedBy?: StringNullableFilter<"GroomerCashDeposit"> | string | null
+    depositedAt?: DateTimeFilter<"GroomerCashDeposit"> | Date | string
+    createdAt?: DateTimeFilter<"GroomerCashDeposit"> | Date | string
+    updatedAt?: DateTimeFilter<"GroomerCashDeposit"> | Date | string
+    groomerMember?: XOR<TeamMemberScalarRelationFilter, TeamMemberWhereInput>
+  }, "id">
+
+  export type GroomerCashDepositOrderByWithAggregationInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    amount?: SortOrder
+    depositMode?: SortOrder
+    referenceId?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    recordedBy?: SortOrderInput | SortOrder
+    depositedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: GroomerCashDepositCountOrderByAggregateInput
+    _avg?: GroomerCashDepositAvgOrderByAggregateInput
+    _max?: GroomerCashDepositMaxOrderByAggregateInput
+    _min?: GroomerCashDepositMinOrderByAggregateInput
+    _sum?: GroomerCashDepositSumOrderByAggregateInput
+  }
+
+  export type GroomerCashDepositScalarWhereWithAggregatesInput = {
+    AND?: GroomerCashDepositScalarWhereWithAggregatesInput | GroomerCashDepositScalarWhereWithAggregatesInput[]
+    OR?: GroomerCashDepositScalarWhereWithAggregatesInput[]
+    NOT?: GroomerCashDepositScalarWhereWithAggregatesInput | GroomerCashDepositScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GroomerCashDeposit"> | string
+    groomerMemberId?: StringWithAggregatesFilter<"GroomerCashDeposit"> | string
+    amount?: IntWithAggregatesFilter<"GroomerCashDeposit"> | number
+    depositMode?: StringWithAggregatesFilter<"GroomerCashDeposit"> | string
+    referenceId?: StringNullableWithAggregatesFilter<"GroomerCashDeposit"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"GroomerCashDeposit"> | string | null
+    recordedBy?: StringNullableWithAggregatesFilter<"GroomerCashDeposit"> | string | null
+    depositedAt?: DateTimeWithAggregatesFilter<"GroomerCashDeposit"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"GroomerCashDeposit"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"GroomerCashDeposit"> | Date | string
+  }
+
+  export type GroomerExpenseWhereInput = {
+    AND?: GroomerExpenseWhereInput | GroomerExpenseWhereInput[]
+    OR?: GroomerExpenseWhereInput[]
+    NOT?: GroomerExpenseWhereInput | GroomerExpenseWhereInput[]
+    id?: StringFilter<"GroomerExpense"> | string
+    groomerMemberId?: StringFilter<"GroomerExpense"> | string
+    bookingId?: StringNullableFilter<"GroomerExpense"> | string | null
+    category?: StringFilter<"GroomerExpense"> | string
+    amount?: IntFilter<"GroomerExpense"> | number
+    billDate?: DateTimeNullableFilter<"GroomerExpense"> | Date | string | null
+    billPhotoUrl?: StringFilter<"GroomerExpense"> | string
+    storageKey?: StringNullableFilter<"GroomerExpense"> | string | null
+    notes?: StringNullableFilter<"GroomerExpense"> | string | null
+    status?: StringFilter<"GroomerExpense"> | string
+    reviewNote?: StringNullableFilter<"GroomerExpense"> | string | null
+    reviewedBy?: StringNullableFilter<"GroomerExpense"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"GroomerExpense"> | Date | string | null
+    submittedAt?: DateTimeFilter<"GroomerExpense"> | Date | string
+    createdAt?: DateTimeFilter<"GroomerExpense"> | Date | string
+    updatedAt?: DateTimeFilter<"GroomerExpense"> | Date | string
+    groomerMember?: XOR<TeamMemberScalarRelationFilter, TeamMemberWhereInput>
+    booking?: XOR<BookingNullableScalarRelationFilter, BookingWhereInput> | null
+  }
+
+  export type GroomerExpenseOrderByWithRelationInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    bookingId?: SortOrderInput | SortOrder
+    category?: SortOrder
+    amount?: SortOrder
+    billDate?: SortOrderInput | SortOrder
+    billPhotoUrl?: SortOrder
+    storageKey?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    status?: SortOrder
+    reviewNote?: SortOrderInput | SortOrder
+    reviewedBy?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    submittedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    groomerMember?: TeamMemberOrderByWithRelationInput
+    booking?: BookingOrderByWithRelationInput
+  }
+
+  export type GroomerExpenseWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: GroomerExpenseWhereInput | GroomerExpenseWhereInput[]
+    OR?: GroomerExpenseWhereInput[]
+    NOT?: GroomerExpenseWhereInput | GroomerExpenseWhereInput[]
+    groomerMemberId?: StringFilter<"GroomerExpense"> | string
+    bookingId?: StringNullableFilter<"GroomerExpense"> | string | null
+    category?: StringFilter<"GroomerExpense"> | string
+    amount?: IntFilter<"GroomerExpense"> | number
+    billDate?: DateTimeNullableFilter<"GroomerExpense"> | Date | string | null
+    billPhotoUrl?: StringFilter<"GroomerExpense"> | string
+    storageKey?: StringNullableFilter<"GroomerExpense"> | string | null
+    notes?: StringNullableFilter<"GroomerExpense"> | string | null
+    status?: StringFilter<"GroomerExpense"> | string
+    reviewNote?: StringNullableFilter<"GroomerExpense"> | string | null
+    reviewedBy?: StringNullableFilter<"GroomerExpense"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"GroomerExpense"> | Date | string | null
+    submittedAt?: DateTimeFilter<"GroomerExpense"> | Date | string
+    createdAt?: DateTimeFilter<"GroomerExpense"> | Date | string
+    updatedAt?: DateTimeFilter<"GroomerExpense"> | Date | string
+    groomerMember?: XOR<TeamMemberScalarRelationFilter, TeamMemberWhereInput>
+    booking?: XOR<BookingNullableScalarRelationFilter, BookingWhereInput> | null
+  }, "id">
+
+  export type GroomerExpenseOrderByWithAggregationInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    bookingId?: SortOrderInput | SortOrder
+    category?: SortOrder
+    amount?: SortOrder
+    billDate?: SortOrderInput | SortOrder
+    billPhotoUrl?: SortOrder
+    storageKey?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    status?: SortOrder
+    reviewNote?: SortOrderInput | SortOrder
+    reviewedBy?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    submittedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: GroomerExpenseCountOrderByAggregateInput
+    _avg?: GroomerExpenseAvgOrderByAggregateInput
+    _max?: GroomerExpenseMaxOrderByAggregateInput
+    _min?: GroomerExpenseMinOrderByAggregateInput
+    _sum?: GroomerExpenseSumOrderByAggregateInput
+  }
+
+  export type GroomerExpenseScalarWhereWithAggregatesInput = {
+    AND?: GroomerExpenseScalarWhereWithAggregatesInput | GroomerExpenseScalarWhereWithAggregatesInput[]
+    OR?: GroomerExpenseScalarWhereWithAggregatesInput[]
+    NOT?: GroomerExpenseScalarWhereWithAggregatesInput | GroomerExpenseScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GroomerExpense"> | string
+    groomerMemberId?: StringWithAggregatesFilter<"GroomerExpense"> | string
+    bookingId?: StringNullableWithAggregatesFilter<"GroomerExpense"> | string | null
+    category?: StringWithAggregatesFilter<"GroomerExpense"> | string
+    amount?: IntWithAggregatesFilter<"GroomerExpense"> | number
+    billDate?: DateTimeNullableWithAggregatesFilter<"GroomerExpense"> | Date | string | null
+    billPhotoUrl?: StringWithAggregatesFilter<"GroomerExpense"> | string
+    storageKey?: StringNullableWithAggregatesFilter<"GroomerExpense"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"GroomerExpense"> | string | null
+    status?: StringWithAggregatesFilter<"GroomerExpense"> | string
+    reviewNote?: StringNullableWithAggregatesFilter<"GroomerExpense"> | string | null
+    reviewedBy?: StringNullableWithAggregatesFilter<"GroomerExpense"> | string | null
+    reviewedAt?: DateTimeNullableWithAggregatesFilter<"GroomerExpense"> | Date | string | null
+    submittedAt?: DateTimeWithAggregatesFilter<"GroomerExpense"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"GroomerExpense"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"GroomerExpense"> | Date | string
+  }
+
+  export type GroomerFuelTripWhereInput = {
+    AND?: GroomerFuelTripWhereInput | GroomerFuelTripWhereInput[]
+    OR?: GroomerFuelTripWhereInput[]
+    NOT?: GroomerFuelTripWhereInput | GroomerFuelTripWhereInput[]
+    id?: StringFilter<"GroomerFuelTrip"> | string
+    bookingId?: StringFilter<"GroomerFuelTrip"> | string
+    groomerMemberId?: StringFilter<"GroomerFuelTrip"> | string
+    fromType?: StringFilter<"GroomerFuelTrip"> | string
+    fromBookingId?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    fromLat?: FloatFilter<"GroomerFuelTrip"> | number
+    fromLng?: FloatFilter<"GroomerFuelTrip"> | number
+    toLat?: FloatFilter<"GroomerFuelTrip"> | number
+    toLng?: FloatFilter<"GroomerFuelTrip"> | number
+    distanceKm?: FloatFilter<"GroomerFuelTrip"> | number
+    roadMultiplier?: FloatFilter<"GroomerFuelTrip"> | number
+    litres?: FloatFilter<"GroomerFuelTrip"> | number
+    ratePerLitre?: FloatFilter<"GroomerFuelTrip"> | number
+    fuelCost?: IntFilter<"GroomerFuelTrip"> | number
+    isEstimate?: BoolFilter<"GroomerFuelTrip"> | boolean
+    isManuallyAdjusted?: BoolFilter<"GroomerFuelTrip"> | boolean
+    originalDistanceKm?: FloatNullableFilter<"GroomerFuelTrip"> | number | null
+    originalFuelCost?: IntNullableFilter<"GroomerFuelTrip"> | number | null
+    adjustmentReason?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    calculatedAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
+    createdAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
+    updatedAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
+    booking?: XOR<BookingScalarRelationFilter, BookingWhereInput>
+    groomerMember?: XOR<TeamMemberScalarRelationFilter, TeamMemberWhereInput>
+  }
+
+  export type GroomerFuelTripOrderByWithRelationInput = {
+    id?: SortOrder
+    bookingId?: SortOrder
+    groomerMemberId?: SortOrder
+    fromType?: SortOrder
+    fromBookingId?: SortOrderInput | SortOrder
+    fromLat?: SortOrder
+    fromLng?: SortOrder
+    toLat?: SortOrder
+    toLng?: SortOrder
+    distanceKm?: SortOrder
+    roadMultiplier?: SortOrder
+    litres?: SortOrder
+    ratePerLitre?: SortOrder
+    fuelCost?: SortOrder
+    isEstimate?: SortOrder
+    isManuallyAdjusted?: SortOrder
+    originalDistanceKm?: SortOrderInput | SortOrder
+    originalFuelCost?: SortOrderInput | SortOrder
+    adjustmentReason?: SortOrderInput | SortOrder
+    calculatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    booking?: BookingOrderByWithRelationInput
+    groomerMember?: TeamMemberOrderByWithRelationInput
+  }
+
+  export type GroomerFuelTripWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    bookingId?: string
+    AND?: GroomerFuelTripWhereInput | GroomerFuelTripWhereInput[]
+    OR?: GroomerFuelTripWhereInput[]
+    NOT?: GroomerFuelTripWhereInput | GroomerFuelTripWhereInput[]
+    groomerMemberId?: StringFilter<"GroomerFuelTrip"> | string
+    fromType?: StringFilter<"GroomerFuelTrip"> | string
+    fromBookingId?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    fromLat?: FloatFilter<"GroomerFuelTrip"> | number
+    fromLng?: FloatFilter<"GroomerFuelTrip"> | number
+    toLat?: FloatFilter<"GroomerFuelTrip"> | number
+    toLng?: FloatFilter<"GroomerFuelTrip"> | number
+    distanceKm?: FloatFilter<"GroomerFuelTrip"> | number
+    roadMultiplier?: FloatFilter<"GroomerFuelTrip"> | number
+    litres?: FloatFilter<"GroomerFuelTrip"> | number
+    ratePerLitre?: FloatFilter<"GroomerFuelTrip"> | number
+    fuelCost?: IntFilter<"GroomerFuelTrip"> | number
+    isEstimate?: BoolFilter<"GroomerFuelTrip"> | boolean
+    isManuallyAdjusted?: BoolFilter<"GroomerFuelTrip"> | boolean
+    originalDistanceKm?: FloatNullableFilter<"GroomerFuelTrip"> | number | null
+    originalFuelCost?: IntNullableFilter<"GroomerFuelTrip"> | number | null
+    adjustmentReason?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    calculatedAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
+    createdAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
+    updatedAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
+    booking?: XOR<BookingScalarRelationFilter, BookingWhereInput>
+    groomerMember?: XOR<TeamMemberScalarRelationFilter, TeamMemberWhereInput>
+  }, "id" | "bookingId">
+
+  export type GroomerFuelTripOrderByWithAggregationInput = {
+    id?: SortOrder
+    bookingId?: SortOrder
+    groomerMemberId?: SortOrder
+    fromType?: SortOrder
+    fromBookingId?: SortOrderInput | SortOrder
+    fromLat?: SortOrder
+    fromLng?: SortOrder
+    toLat?: SortOrder
+    toLng?: SortOrder
+    distanceKm?: SortOrder
+    roadMultiplier?: SortOrder
+    litres?: SortOrder
+    ratePerLitre?: SortOrder
+    fuelCost?: SortOrder
+    isEstimate?: SortOrder
+    isManuallyAdjusted?: SortOrder
+    originalDistanceKm?: SortOrderInput | SortOrder
+    originalFuelCost?: SortOrderInput | SortOrder
+    adjustmentReason?: SortOrderInput | SortOrder
+    calculatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: GroomerFuelTripCountOrderByAggregateInput
+    _avg?: GroomerFuelTripAvgOrderByAggregateInput
+    _max?: GroomerFuelTripMaxOrderByAggregateInput
+    _min?: GroomerFuelTripMinOrderByAggregateInput
+    _sum?: GroomerFuelTripSumOrderByAggregateInput
+  }
+
+  export type GroomerFuelTripScalarWhereWithAggregatesInput = {
+    AND?: GroomerFuelTripScalarWhereWithAggregatesInput | GroomerFuelTripScalarWhereWithAggregatesInput[]
+    OR?: GroomerFuelTripScalarWhereWithAggregatesInput[]
+    NOT?: GroomerFuelTripScalarWhereWithAggregatesInput | GroomerFuelTripScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GroomerFuelTrip"> | string
+    bookingId?: StringWithAggregatesFilter<"GroomerFuelTrip"> | string
+    groomerMemberId?: StringWithAggregatesFilter<"GroomerFuelTrip"> | string
+    fromType?: StringWithAggregatesFilter<"GroomerFuelTrip"> | string
+    fromBookingId?: StringNullableWithAggregatesFilter<"GroomerFuelTrip"> | string | null
+    fromLat?: FloatWithAggregatesFilter<"GroomerFuelTrip"> | number
+    fromLng?: FloatWithAggregatesFilter<"GroomerFuelTrip"> | number
+    toLat?: FloatWithAggregatesFilter<"GroomerFuelTrip"> | number
+    toLng?: FloatWithAggregatesFilter<"GroomerFuelTrip"> | number
+    distanceKm?: FloatWithAggregatesFilter<"GroomerFuelTrip"> | number
+    roadMultiplier?: FloatWithAggregatesFilter<"GroomerFuelTrip"> | number
+    litres?: FloatWithAggregatesFilter<"GroomerFuelTrip"> | number
+    ratePerLitre?: FloatWithAggregatesFilter<"GroomerFuelTrip"> | number
+    fuelCost?: IntWithAggregatesFilter<"GroomerFuelTrip"> | number
+    isEstimate?: BoolWithAggregatesFilter<"GroomerFuelTrip"> | boolean
+    isManuallyAdjusted?: BoolWithAggregatesFilter<"GroomerFuelTrip"> | boolean
+    originalDistanceKm?: FloatNullableWithAggregatesFilter<"GroomerFuelTrip"> | number | null
+    originalFuelCost?: IntNullableWithAggregatesFilter<"GroomerFuelTrip"> | number | null
+    adjustmentReason?: StringNullableWithAggregatesFilter<"GroomerFuelTrip"> | string | null
+    calculatedAt?: DateTimeWithAggregatesFilter<"GroomerFuelTrip"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"GroomerFuelTrip"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"GroomerFuelTrip"> | Date | string
+  }
+
+  export type GroomerPayrollSnapshotWhereInput = {
+    AND?: GroomerPayrollSnapshotWhereInput | GroomerPayrollSnapshotWhereInput[]
+    OR?: GroomerPayrollSnapshotWhereInput[]
+    NOT?: GroomerPayrollSnapshotWhereInput | GroomerPayrollSnapshotWhereInput[]
+    id?: StringFilter<"GroomerPayrollSnapshot"> | string
+    groomerMemberId?: StringFilter<"GroomerPayrollSnapshot"> | string
+    monthBucket?: StringFilter<"GroomerPayrollSnapshot"> | string
+    baseSalary?: IntFilter<"GroomerPayrollSnapshot"> | number
+    fuelReimbursements?: IntFilter<"GroomerPayrollSnapshot"> | number
+    otherReimbursements?: IntFilter<"GroomerPayrollSnapshot"> | number
+    incentives?: IntFilter<"GroomerPayrollSnapshot"> | number
+    payrollAdjustments?: IntFilter<"GroomerPayrollSnapshot"> | number
+    advanceRecovery?: IntFilter<"GroomerPayrollSnapshot"> | number
+    netPayable?: IntFilter<"GroomerPayrollSnapshot"> | number
+    cashHeldSeparate?: IntFilter<"GroomerPayrollSnapshot"> | number
+    frozenBy?: StringNullableFilter<"GroomerPayrollSnapshot"> | string | null
+    frozenAt?: DateTimeFilter<"GroomerPayrollSnapshot"> | Date | string
+    notes?: StringNullableFilter<"GroomerPayrollSnapshot"> | string | null
+    createdAt?: DateTimeFilter<"GroomerPayrollSnapshot"> | Date | string
+    updatedAt?: DateTimeFilter<"GroomerPayrollSnapshot"> | Date | string
+    groomerMember?: XOR<TeamMemberScalarRelationFilter, TeamMemberWhereInput>
+  }
+
+  export type GroomerPayrollSnapshotOrderByWithRelationInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    monthBucket?: SortOrder
+    baseSalary?: SortOrder
+    fuelReimbursements?: SortOrder
+    otherReimbursements?: SortOrder
+    incentives?: SortOrder
+    payrollAdjustments?: SortOrder
+    advanceRecovery?: SortOrder
+    netPayable?: SortOrder
+    cashHeldSeparate?: SortOrder
+    frozenBy?: SortOrderInput | SortOrder
+    frozenAt?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    groomerMember?: TeamMemberOrderByWithRelationInput
+  }
+
+  export type GroomerPayrollSnapshotWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    groomerMemberId_monthBucket?: GroomerPayrollSnapshotGroomerMemberIdMonthBucketCompoundUniqueInput
+    AND?: GroomerPayrollSnapshotWhereInput | GroomerPayrollSnapshotWhereInput[]
+    OR?: GroomerPayrollSnapshotWhereInput[]
+    NOT?: GroomerPayrollSnapshotWhereInput | GroomerPayrollSnapshotWhereInput[]
+    groomerMemberId?: StringFilter<"GroomerPayrollSnapshot"> | string
+    monthBucket?: StringFilter<"GroomerPayrollSnapshot"> | string
+    baseSalary?: IntFilter<"GroomerPayrollSnapshot"> | number
+    fuelReimbursements?: IntFilter<"GroomerPayrollSnapshot"> | number
+    otherReimbursements?: IntFilter<"GroomerPayrollSnapshot"> | number
+    incentives?: IntFilter<"GroomerPayrollSnapshot"> | number
+    payrollAdjustments?: IntFilter<"GroomerPayrollSnapshot"> | number
+    advanceRecovery?: IntFilter<"GroomerPayrollSnapshot"> | number
+    netPayable?: IntFilter<"GroomerPayrollSnapshot"> | number
+    cashHeldSeparate?: IntFilter<"GroomerPayrollSnapshot"> | number
+    frozenBy?: StringNullableFilter<"GroomerPayrollSnapshot"> | string | null
+    frozenAt?: DateTimeFilter<"GroomerPayrollSnapshot"> | Date | string
+    notes?: StringNullableFilter<"GroomerPayrollSnapshot"> | string | null
+    createdAt?: DateTimeFilter<"GroomerPayrollSnapshot"> | Date | string
+    updatedAt?: DateTimeFilter<"GroomerPayrollSnapshot"> | Date | string
+    groomerMember?: XOR<TeamMemberScalarRelationFilter, TeamMemberWhereInput>
+  }, "id" | "groomerMemberId_monthBucket">
+
+  export type GroomerPayrollSnapshotOrderByWithAggregationInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    monthBucket?: SortOrder
+    baseSalary?: SortOrder
+    fuelReimbursements?: SortOrder
+    otherReimbursements?: SortOrder
+    incentives?: SortOrder
+    payrollAdjustments?: SortOrder
+    advanceRecovery?: SortOrder
+    netPayable?: SortOrder
+    cashHeldSeparate?: SortOrder
+    frozenBy?: SortOrderInput | SortOrder
+    frozenAt?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: GroomerPayrollSnapshotCountOrderByAggregateInput
+    _avg?: GroomerPayrollSnapshotAvgOrderByAggregateInput
+    _max?: GroomerPayrollSnapshotMaxOrderByAggregateInput
+    _min?: GroomerPayrollSnapshotMinOrderByAggregateInput
+    _sum?: GroomerPayrollSnapshotSumOrderByAggregateInput
+  }
+
+  export type GroomerPayrollSnapshotScalarWhereWithAggregatesInput = {
+    AND?: GroomerPayrollSnapshotScalarWhereWithAggregatesInput | GroomerPayrollSnapshotScalarWhereWithAggregatesInput[]
+    OR?: GroomerPayrollSnapshotScalarWhereWithAggregatesInput[]
+    NOT?: GroomerPayrollSnapshotScalarWhereWithAggregatesInput | GroomerPayrollSnapshotScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GroomerPayrollSnapshot"> | string
+    groomerMemberId?: StringWithAggregatesFilter<"GroomerPayrollSnapshot"> | string
+    monthBucket?: StringWithAggregatesFilter<"GroomerPayrollSnapshot"> | string
+    baseSalary?: IntWithAggregatesFilter<"GroomerPayrollSnapshot"> | number
+    fuelReimbursements?: IntWithAggregatesFilter<"GroomerPayrollSnapshot"> | number
+    otherReimbursements?: IntWithAggregatesFilter<"GroomerPayrollSnapshot"> | number
+    incentives?: IntWithAggregatesFilter<"GroomerPayrollSnapshot"> | number
+    payrollAdjustments?: IntWithAggregatesFilter<"GroomerPayrollSnapshot"> | number
+    advanceRecovery?: IntWithAggregatesFilter<"GroomerPayrollSnapshot"> | number
+    netPayable?: IntWithAggregatesFilter<"GroomerPayrollSnapshot"> | number
+    cashHeldSeparate?: IntWithAggregatesFilter<"GroomerPayrollSnapshot"> | number
+    frozenBy?: StringNullableWithAggregatesFilter<"GroomerPayrollSnapshot"> | string | null
+    frozenAt?: DateTimeWithAggregatesFilter<"GroomerPayrollSnapshot"> | Date | string
+    notes?: StringNullableWithAggregatesFilter<"GroomerPayrollSnapshot"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"GroomerPayrollSnapshot"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"GroomerPayrollSnapshot"> | Date | string
   }
 
   export type TeamLeaderboardSnapshotWhereInput = {
@@ -51259,6 +59169,7 @@ export namespace Prisma {
     trustScoreSnapshot?: IntFilter<"WorkforceSalaryAdvanceRequest"> | number
     performanceSnapshot?: IntFilter<"WorkforceSalaryAdvanceRequest"> | number
     nextEligibleAt?: DateTimeNullableFilter<"WorkforceSalaryAdvanceRequest"> | Date | string | null
+    recoverFromMonth?: StringNullableFilter<"WorkforceSalaryAdvanceRequest"> | string | null
     reviewNote?: StringNullableFilter<"WorkforceSalaryAdvanceRequest"> | string | null
     requestedBy?: StringNullableFilter<"WorkforceSalaryAdvanceRequest"> | string | null
     reviewedBy?: StringNullableFilter<"WorkforceSalaryAdvanceRequest"> | string | null
@@ -51280,6 +59191,7 @@ export namespace Prisma {
     trustScoreSnapshot?: SortOrder
     performanceSnapshot?: SortOrder
     nextEligibleAt?: SortOrderInput | SortOrder
+    recoverFromMonth?: SortOrderInput | SortOrder
     reviewNote?: SortOrderInput | SortOrder
     requestedBy?: SortOrderInput | SortOrder
     reviewedBy?: SortOrderInput | SortOrder
@@ -51304,6 +59216,7 @@ export namespace Prisma {
     trustScoreSnapshot?: IntFilter<"WorkforceSalaryAdvanceRequest"> | number
     performanceSnapshot?: IntFilter<"WorkforceSalaryAdvanceRequest"> | number
     nextEligibleAt?: DateTimeNullableFilter<"WorkforceSalaryAdvanceRequest"> | Date | string | null
+    recoverFromMonth?: StringNullableFilter<"WorkforceSalaryAdvanceRequest"> | string | null
     reviewNote?: StringNullableFilter<"WorkforceSalaryAdvanceRequest"> | string | null
     requestedBy?: StringNullableFilter<"WorkforceSalaryAdvanceRequest"> | string | null
     reviewedBy?: StringNullableFilter<"WorkforceSalaryAdvanceRequest"> | string | null
@@ -51325,6 +59238,7 @@ export namespace Prisma {
     trustScoreSnapshot?: SortOrder
     performanceSnapshot?: SortOrder
     nextEligibleAt?: SortOrderInput | SortOrder
+    recoverFromMonth?: SortOrderInput | SortOrder
     reviewNote?: SortOrderInput | SortOrder
     requestedBy?: SortOrderInput | SortOrder
     reviewedBy?: SortOrderInput | SortOrder
@@ -51353,6 +59267,7 @@ export namespace Prisma {
     trustScoreSnapshot?: IntWithAggregatesFilter<"WorkforceSalaryAdvanceRequest"> | number
     performanceSnapshot?: IntWithAggregatesFilter<"WorkforceSalaryAdvanceRequest"> | number
     nextEligibleAt?: DateTimeNullableWithAggregatesFilter<"WorkforceSalaryAdvanceRequest"> | Date | string | null
+    recoverFromMonth?: StringNullableWithAggregatesFilter<"WorkforceSalaryAdvanceRequest"> | string | null
     reviewNote?: StringNullableWithAggregatesFilter<"WorkforceSalaryAdvanceRequest"> | string | null
     requestedBy?: StringNullableWithAggregatesFilter<"WorkforceSalaryAdvanceRequest"> | string | null
     reviewedBy?: StringNullableWithAggregatesFilter<"WorkforceSalaryAdvanceRequest"> | string | null
@@ -53843,6 +61758,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -53877,6 +61795,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -53904,6 +61824,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -53936,6 +61859,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -53961,6 +61886,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53995,6 +61923,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -54022,6 +61952,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54054,6 +61987,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -54081,6 +62016,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -54126,6 +62064,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54171,6 +62112,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54230,6 +62174,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -54242,6 +62193,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestCreateNestedManyWithoutTeamMemberInput
@@ -54285,6 +62241,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -54296,6 +62259,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestUncheckedCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionUncheckedCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestUncheckedCreateNestedManyWithoutTeamMemberInput
@@ -54338,6 +62306,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -54350,6 +62325,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUpdateManyWithoutTeamMemberNestedInput
@@ -54393,6 +62373,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -54404,6 +62391,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUncheckedUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUncheckedUpdateManyWithoutTeamMemberNestedInput
@@ -54447,6 +62439,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -54491,6 +62490,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -54536,10 +62542,661 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
     experienceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerLedgerEntryCreateInput = {
+    id?: string
+    monthBucket: string
+    type: string
+    direction: string
+    amount: number
+    sourceType?: string | null
+    sourceId?: string | null
+    description?: string | null
+    metadataJson?: string | null
+    createdBy?: string | null
+    occurredAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    groomerMember: TeamMemberCreateNestedOneWithoutLedgerEntriesInput
+  }
+
+  export type GroomerLedgerEntryUncheckedCreateInput = {
+    id?: string
+    groomerMemberId: string
+    monthBucket: string
+    type: string
+    direction: string
+    amount: number
+    sourceType?: string | null
+    sourceId?: string | null
+    description?: string | null
+    metadataJson?: string | null
+    createdBy?: string | null
+    occurredAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerLedgerEntryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthBucket?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    direction?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    sourceType?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    metadataJson?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    groomerMember?: TeamMemberUpdateOneRequiredWithoutLedgerEntriesNestedInput
+  }
+
+  export type GroomerLedgerEntryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groomerMemberId?: StringFieldUpdateOperationsInput | string
+    monthBucket?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    direction?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    sourceType?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    metadataJson?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerLedgerEntryCreateManyInput = {
+    id?: string
+    groomerMemberId: string
+    monthBucket: string
+    type: string
+    direction: string
+    amount: number
+    sourceType?: string | null
+    sourceId?: string | null
+    description?: string | null
+    metadataJson?: string | null
+    createdBy?: string | null
+    occurredAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerLedgerEntryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthBucket?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    direction?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    sourceType?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    metadataJson?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerLedgerEntryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groomerMemberId?: StringFieldUpdateOperationsInput | string
+    monthBucket?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    direction?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    sourceType?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    metadataJson?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerCashDepositCreateInput = {
+    id?: string
+    amount: number
+    depositMode?: string
+    referenceId?: string | null
+    notes?: string | null
+    recordedBy?: string | null
+    depositedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    groomerMember: TeamMemberCreateNestedOneWithoutCashDepositsInput
+  }
+
+  export type GroomerCashDepositUncheckedCreateInput = {
+    id?: string
+    groomerMemberId: string
+    amount: number
+    depositMode?: string
+    referenceId?: string | null
+    notes?: string | null
+    recordedBy?: string | null
+    depositedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerCashDepositUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    depositMode?: StringFieldUpdateOperationsInput | string
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    depositedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    groomerMember?: TeamMemberUpdateOneRequiredWithoutCashDepositsNestedInput
+  }
+
+  export type GroomerCashDepositUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groomerMemberId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    depositMode?: StringFieldUpdateOperationsInput | string
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    depositedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerCashDepositCreateManyInput = {
+    id?: string
+    groomerMemberId: string
+    amount: number
+    depositMode?: string
+    referenceId?: string | null
+    notes?: string | null
+    recordedBy?: string | null
+    depositedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerCashDepositUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    depositMode?: StringFieldUpdateOperationsInput | string
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    depositedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerCashDepositUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groomerMemberId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    depositMode?: StringFieldUpdateOperationsInput | string
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    depositedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerExpenseCreateInput = {
+    id?: string
+    category: string
+    amount: number
+    billDate?: Date | string | null
+    billPhotoUrl: string
+    storageKey?: string | null
+    notes?: string | null
+    status?: string
+    reviewNote?: string | null
+    reviewedBy?: string | null
+    reviewedAt?: Date | string | null
+    submittedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    groomerMember: TeamMemberCreateNestedOneWithoutExpensesInput
+    booking?: BookingCreateNestedOneWithoutGroomerExpensesInput
+  }
+
+  export type GroomerExpenseUncheckedCreateInput = {
+    id?: string
+    groomerMemberId: string
+    bookingId?: string | null
+    category: string
+    amount: number
+    billDate?: Date | string | null
+    billPhotoUrl: string
+    storageKey?: string | null
+    notes?: string | null
+    status?: string
+    reviewNote?: string | null
+    reviewedBy?: string | null
+    reviewedAt?: Date | string | null
+    submittedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerExpenseUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    billDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billPhotoUrl?: StringFieldUpdateOperationsInput | string
+    storageKey?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    groomerMember?: TeamMemberUpdateOneRequiredWithoutExpensesNestedInput
+    booking?: BookingUpdateOneWithoutGroomerExpensesNestedInput
+  }
+
+  export type GroomerExpenseUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groomerMemberId?: StringFieldUpdateOperationsInput | string
+    bookingId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    billDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billPhotoUrl?: StringFieldUpdateOperationsInput | string
+    storageKey?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerExpenseCreateManyInput = {
+    id?: string
+    groomerMemberId: string
+    bookingId?: string | null
+    category: string
+    amount: number
+    billDate?: Date | string | null
+    billPhotoUrl: string
+    storageKey?: string | null
+    notes?: string | null
+    status?: string
+    reviewNote?: string | null
+    reviewedBy?: string | null
+    reviewedAt?: Date | string | null
+    submittedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerExpenseUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    billDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billPhotoUrl?: StringFieldUpdateOperationsInput | string
+    storageKey?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerExpenseUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groomerMemberId?: StringFieldUpdateOperationsInput | string
+    bookingId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    billDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billPhotoUrl?: StringFieldUpdateOperationsInput | string
+    storageKey?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerFuelTripCreateInput = {
+    id?: string
+    fromType: string
+    fromBookingId?: string | null
+    fromLat: number
+    fromLng: number
+    toLat: number
+    toLng: number
+    distanceKm: number
+    roadMultiplier?: number
+    litres: number
+    ratePerLitre: number
+    fuelCost: number
+    isEstimate?: boolean
+    isManuallyAdjusted?: boolean
+    originalDistanceKm?: number | null
+    originalFuelCost?: number | null
+    adjustmentReason?: string | null
+    calculatedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    booking: BookingCreateNestedOneWithoutGroomerFuelTripsInput
+    groomerMember: TeamMemberCreateNestedOneWithoutFuelTripsInput
+  }
+
+  export type GroomerFuelTripUncheckedCreateInput = {
+    id?: string
+    bookingId: string
+    groomerMemberId: string
+    fromType: string
+    fromBookingId?: string | null
+    fromLat: number
+    fromLng: number
+    toLat: number
+    toLng: number
+    distanceKm: number
+    roadMultiplier?: number
+    litres: number
+    ratePerLitre: number
+    fuelCost: number
+    isEstimate?: boolean
+    isManuallyAdjusted?: boolean
+    originalDistanceKm?: number | null
+    originalFuelCost?: number | null
+    adjustmentReason?: string | null
+    calculatedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerFuelTripUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromType?: StringFieldUpdateOperationsInput | string
+    fromBookingId?: NullableStringFieldUpdateOperationsInput | string | null
+    fromLat?: FloatFieldUpdateOperationsInput | number
+    fromLng?: FloatFieldUpdateOperationsInput | number
+    toLat?: FloatFieldUpdateOperationsInput | number
+    toLng?: FloatFieldUpdateOperationsInput | number
+    distanceKm?: FloatFieldUpdateOperationsInput | number
+    roadMultiplier?: FloatFieldUpdateOperationsInput | number
+    litres?: FloatFieldUpdateOperationsInput | number
+    ratePerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelCost?: IntFieldUpdateOperationsInput | number
+    isEstimate?: BoolFieldUpdateOperationsInput | boolean
+    isManuallyAdjusted?: BoolFieldUpdateOperationsInput | boolean
+    originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
+    adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    booking?: BookingUpdateOneRequiredWithoutGroomerFuelTripsNestedInput
+    groomerMember?: TeamMemberUpdateOneRequiredWithoutFuelTripsNestedInput
+  }
+
+  export type GroomerFuelTripUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bookingId?: StringFieldUpdateOperationsInput | string
+    groomerMemberId?: StringFieldUpdateOperationsInput | string
+    fromType?: StringFieldUpdateOperationsInput | string
+    fromBookingId?: NullableStringFieldUpdateOperationsInput | string | null
+    fromLat?: FloatFieldUpdateOperationsInput | number
+    fromLng?: FloatFieldUpdateOperationsInput | number
+    toLat?: FloatFieldUpdateOperationsInput | number
+    toLng?: FloatFieldUpdateOperationsInput | number
+    distanceKm?: FloatFieldUpdateOperationsInput | number
+    roadMultiplier?: FloatFieldUpdateOperationsInput | number
+    litres?: FloatFieldUpdateOperationsInput | number
+    ratePerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelCost?: IntFieldUpdateOperationsInput | number
+    isEstimate?: BoolFieldUpdateOperationsInput | boolean
+    isManuallyAdjusted?: BoolFieldUpdateOperationsInput | boolean
+    originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
+    adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerFuelTripCreateManyInput = {
+    id?: string
+    bookingId: string
+    groomerMemberId: string
+    fromType: string
+    fromBookingId?: string | null
+    fromLat: number
+    fromLng: number
+    toLat: number
+    toLng: number
+    distanceKm: number
+    roadMultiplier?: number
+    litres: number
+    ratePerLitre: number
+    fuelCost: number
+    isEstimate?: boolean
+    isManuallyAdjusted?: boolean
+    originalDistanceKm?: number | null
+    originalFuelCost?: number | null
+    adjustmentReason?: string | null
+    calculatedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerFuelTripUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromType?: StringFieldUpdateOperationsInput | string
+    fromBookingId?: NullableStringFieldUpdateOperationsInput | string | null
+    fromLat?: FloatFieldUpdateOperationsInput | number
+    fromLng?: FloatFieldUpdateOperationsInput | number
+    toLat?: FloatFieldUpdateOperationsInput | number
+    toLng?: FloatFieldUpdateOperationsInput | number
+    distanceKm?: FloatFieldUpdateOperationsInput | number
+    roadMultiplier?: FloatFieldUpdateOperationsInput | number
+    litres?: FloatFieldUpdateOperationsInput | number
+    ratePerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelCost?: IntFieldUpdateOperationsInput | number
+    isEstimate?: BoolFieldUpdateOperationsInput | boolean
+    isManuallyAdjusted?: BoolFieldUpdateOperationsInput | boolean
+    originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
+    adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerFuelTripUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bookingId?: StringFieldUpdateOperationsInput | string
+    groomerMemberId?: StringFieldUpdateOperationsInput | string
+    fromType?: StringFieldUpdateOperationsInput | string
+    fromBookingId?: NullableStringFieldUpdateOperationsInput | string | null
+    fromLat?: FloatFieldUpdateOperationsInput | number
+    fromLng?: FloatFieldUpdateOperationsInput | number
+    toLat?: FloatFieldUpdateOperationsInput | number
+    toLng?: FloatFieldUpdateOperationsInput | number
+    distanceKm?: FloatFieldUpdateOperationsInput | number
+    roadMultiplier?: FloatFieldUpdateOperationsInput | number
+    litres?: FloatFieldUpdateOperationsInput | number
+    ratePerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelCost?: IntFieldUpdateOperationsInput | number
+    isEstimate?: BoolFieldUpdateOperationsInput | boolean
+    isManuallyAdjusted?: BoolFieldUpdateOperationsInput | boolean
+    originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
+    adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerPayrollSnapshotCreateInput = {
+    id?: string
+    monthBucket: string
+    baseSalary: number
+    fuelReimbursements: number
+    otherReimbursements: number
+    incentives: number
+    payrollAdjustments?: number
+    advanceRecovery: number
+    netPayable: number
+    cashHeldSeparate: number
+    frozenBy?: string | null
+    frozenAt?: Date | string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    groomerMember: TeamMemberCreateNestedOneWithoutPayrollSnapshotsInput
+  }
+
+  export type GroomerPayrollSnapshotUncheckedCreateInput = {
+    id?: string
+    groomerMemberId: string
+    monthBucket: string
+    baseSalary: number
+    fuelReimbursements: number
+    otherReimbursements: number
+    incentives: number
+    payrollAdjustments?: number
+    advanceRecovery: number
+    netPayable: number
+    cashHeldSeparate: number
+    frozenBy?: string | null
+    frozenAt?: Date | string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerPayrollSnapshotUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthBucket?: StringFieldUpdateOperationsInput | string
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    fuelReimbursements?: IntFieldUpdateOperationsInput | number
+    otherReimbursements?: IntFieldUpdateOperationsInput | number
+    incentives?: IntFieldUpdateOperationsInput | number
+    payrollAdjustments?: IntFieldUpdateOperationsInput | number
+    advanceRecovery?: IntFieldUpdateOperationsInput | number
+    netPayable?: IntFieldUpdateOperationsInput | number
+    cashHeldSeparate?: IntFieldUpdateOperationsInput | number
+    frozenBy?: NullableStringFieldUpdateOperationsInput | string | null
+    frozenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    groomerMember?: TeamMemberUpdateOneRequiredWithoutPayrollSnapshotsNestedInput
+  }
+
+  export type GroomerPayrollSnapshotUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groomerMemberId?: StringFieldUpdateOperationsInput | string
+    monthBucket?: StringFieldUpdateOperationsInput | string
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    fuelReimbursements?: IntFieldUpdateOperationsInput | number
+    otherReimbursements?: IntFieldUpdateOperationsInput | number
+    incentives?: IntFieldUpdateOperationsInput | number
+    payrollAdjustments?: IntFieldUpdateOperationsInput | number
+    advanceRecovery?: IntFieldUpdateOperationsInput | number
+    netPayable?: IntFieldUpdateOperationsInput | number
+    cashHeldSeparate?: IntFieldUpdateOperationsInput | number
+    frozenBy?: NullableStringFieldUpdateOperationsInput | string | null
+    frozenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerPayrollSnapshotCreateManyInput = {
+    id?: string
+    groomerMemberId: string
+    monthBucket: string
+    baseSalary: number
+    fuelReimbursements: number
+    otherReimbursements: number
+    incentives: number
+    payrollAdjustments?: number
+    advanceRecovery: number
+    netPayable: number
+    cashHeldSeparate: number
+    frozenBy?: string | null
+    frozenAt?: Date | string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerPayrollSnapshotUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthBucket?: StringFieldUpdateOperationsInput | string
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    fuelReimbursements?: IntFieldUpdateOperationsInput | number
+    otherReimbursements?: IntFieldUpdateOperationsInput | number
+    incentives?: IntFieldUpdateOperationsInput | number
+    payrollAdjustments?: IntFieldUpdateOperationsInput | number
+    advanceRecovery?: IntFieldUpdateOperationsInput | number
+    netPayable?: IntFieldUpdateOperationsInput | number
+    cashHeldSeparate?: IntFieldUpdateOperationsInput | number
+    frozenBy?: NullableStringFieldUpdateOperationsInput | string | null
+    frozenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerPayrollSnapshotUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groomerMemberId?: StringFieldUpdateOperationsInput | string
+    monthBucket?: StringFieldUpdateOperationsInput | string
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    fuelReimbursements?: IntFieldUpdateOperationsInput | number
+    otherReimbursements?: IntFieldUpdateOperationsInput | number
+    incentives?: IntFieldUpdateOperationsInput | number
+    payrollAdjustments?: IntFieldUpdateOperationsInput | number
+    advanceRecovery?: IntFieldUpdateOperationsInput | number
+    netPayable?: IntFieldUpdateOperationsInput | number
+    cashHeldSeparate?: IntFieldUpdateOperationsInput | number
+    frozenBy?: NullableStringFieldUpdateOperationsInput | string | null
+    frozenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -54864,6 +63521,7 @@ export namespace Prisma {
     trustScoreSnapshot?: number
     performanceSnapshot?: number
     nextEligibleAt?: Date | string | null
+    recoverFromMonth?: string | null
     reviewNote?: string | null
     requestedBy?: string | null
     reviewedBy?: string | null
@@ -54885,6 +63543,7 @@ export namespace Prisma {
     trustScoreSnapshot?: number
     performanceSnapshot?: number
     nextEligibleAt?: Date | string | null
+    recoverFromMonth?: string | null
     reviewNote?: string | null
     requestedBy?: string | null
     reviewedBy?: string | null
@@ -54904,6 +63563,7 @@ export namespace Prisma {
     trustScoreSnapshot?: IntFieldUpdateOperationsInput | number
     performanceSnapshot?: IntFieldUpdateOperationsInput | number
     nextEligibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recoverFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
     reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     requestedBy?: NullableStringFieldUpdateOperationsInput | string | null
     reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54925,6 +63585,7 @@ export namespace Prisma {
     trustScoreSnapshot?: IntFieldUpdateOperationsInput | number
     performanceSnapshot?: IntFieldUpdateOperationsInput | number
     nextEligibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recoverFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
     reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     requestedBy?: NullableStringFieldUpdateOperationsInput | string | null
     reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54945,6 +63606,7 @@ export namespace Prisma {
     trustScoreSnapshot?: number
     performanceSnapshot?: number
     nextEligibleAt?: Date | string | null
+    recoverFromMonth?: string | null
     reviewNote?: string | null
     requestedBy?: string | null
     reviewedBy?: string | null
@@ -54964,6 +63626,7 @@ export namespace Prisma {
     trustScoreSnapshot?: IntFieldUpdateOperationsInput | number
     performanceSnapshot?: IntFieldUpdateOperationsInput | number
     nextEligibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recoverFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
     reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     requestedBy?: NullableStringFieldUpdateOperationsInput | string | null
     reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54984,6 +63647,7 @@ export namespace Prisma {
     trustScoreSnapshot?: IntFieldUpdateOperationsInput | number
     performanceSnapshot?: IntFieldUpdateOperationsInput | number
     nextEligibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recoverFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
     reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     requestedBy?: NullableStringFieldUpdateOperationsInput | string | null
     reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
@@ -57545,6 +66209,18 @@ export namespace Prisma {
     none?: GroomerRewardEventWhereInput
   }
 
+  export type GroomerExpenseListRelationFilter = {
+    every?: GroomerExpenseWhereInput
+    some?: GroomerExpenseWhereInput
+    none?: GroomerExpenseWhereInput
+  }
+
+  export type GroomerFuelTripListRelationFilter = {
+    every?: GroomerFuelTripWhereInput
+    some?: GroomerFuelTripWhereInput
+    none?: GroomerFuelTripWhereInput
+  }
+
   export type BookingCustomerMessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -57566,6 +66242,14 @@ export namespace Prisma {
   }
 
   export type GroomerRewardEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type GroomerExpenseOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type GroomerFuelTripOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -57593,6 +66277,9 @@ export namespace Prisma {
     serviceLandmark?: SortOrder
     servicePincode?: SortOrder
     serviceLocationUrl?: SortOrder
+    serviceLat?: SortOrder
+    serviceLng?: SortOrder
+    serviceLocationSource?: SortOrder
     addressUpdatedAt?: SortOrder
     assignedTeamId?: SortOrder
     groomerMemberId?: SortOrder
@@ -57619,6 +66306,8 @@ export namespace Prisma {
   export type BookingAvgOrderByAggregateInput = {
     originalAmount?: SortOrder
     finalAmount?: SortOrder
+    serviceLat?: SortOrder
+    serviceLng?: SortOrder
     loyaltyCompletedCountBefore?: SortOrder
     loyaltyCompletedCountAfter?: SortOrder
     refundAmount?: SortOrder
@@ -57648,6 +66337,9 @@ export namespace Prisma {
     serviceLandmark?: SortOrder
     servicePincode?: SortOrder
     serviceLocationUrl?: SortOrder
+    serviceLat?: SortOrder
+    serviceLng?: SortOrder
+    serviceLocationSource?: SortOrder
     addressUpdatedAt?: SortOrder
     assignedTeamId?: SortOrder
     groomerMemberId?: SortOrder
@@ -57695,6 +66387,9 @@ export namespace Prisma {
     serviceLandmark?: SortOrder
     servicePincode?: SortOrder
     serviceLocationUrl?: SortOrder
+    serviceLat?: SortOrder
+    serviceLng?: SortOrder
+    serviceLocationSource?: SortOrder
     addressUpdatedAt?: SortOrder
     assignedTeamId?: SortOrder
     groomerMemberId?: SortOrder
@@ -57721,6 +66416,8 @@ export namespace Prisma {
   export type BookingSumOrderByAggregateInput = {
     originalAmount?: SortOrder
     finalAmount?: SortOrder
+    serviceLat?: SortOrder
+    serviceLng?: SortOrder
     loyaltyCompletedCountBefore?: SortOrder
     loyaltyCompletedCountAfter?: SortOrder
     refundAmount?: SortOrder
@@ -57742,6 +66439,17 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type WorkforceLeaveRequestListRelationFilter = {
     every?: WorkforceLeaveRequestWhereInput
     some?: WorkforceLeaveRequestWhereInput
@@ -57752,6 +66460,24 @@ export namespace Prisma {
     every?: WorkforceSalaryAdvanceRequestWhereInput
     some?: WorkforceSalaryAdvanceRequestWhereInput
     none?: WorkforceSalaryAdvanceRequestWhereInput
+  }
+
+  export type GroomerLedgerEntryListRelationFilter = {
+    every?: GroomerLedgerEntryWhereInput
+    some?: GroomerLedgerEntryWhereInput
+    none?: GroomerLedgerEntryWhereInput
+  }
+
+  export type GroomerCashDepositListRelationFilter = {
+    every?: GroomerCashDepositWhereInput
+    some?: GroomerCashDepositWhereInput
+    none?: GroomerCashDepositWhereInput
+  }
+
+  export type GroomerPayrollSnapshotListRelationFilter = {
+    every?: GroomerPayrollSnapshotWhereInput
+    some?: GroomerPayrollSnapshotWhereInput
+    none?: GroomerPayrollSnapshotWhereInput
   }
 
   export type WorkforceReferralRecordListRelationFilter = {
@@ -57783,6 +66509,18 @@ export namespace Prisma {
   }
 
   export type WorkforceSalaryAdvanceRequestOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type GroomerLedgerEntryOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type GroomerCashDepositOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type GroomerPayrollSnapshotOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -57839,6 +66577,13 @@ export namespace Prisma {
     bankIfsc?: SortOrder
     bankName?: SortOrder
     upiId?: SortOrder
+    baseSalary?: SortOrder
+    salaryEffectiveFromMonth?: SortOrder
+    homeAddress?: SortOrder
+    homeLat?: SortOrder
+    homeLng?: SortOrder
+    bikeAverageKmPerLitre?: SortOrder
+    fuelRatePerLitre?: SortOrder
     emergencyContactName?: SortOrder
     emergencyContactPhone?: SortOrder
     yearsExperience?: SortOrder
@@ -57862,6 +66607,11 @@ export namespace Prisma {
     punctualityStreak?: SortOrder
     reviewStreak?: SortOrder
     noLeaveStreakDays?: SortOrder
+    baseSalary?: SortOrder
+    homeLat?: SortOrder
+    homeLng?: SortOrder
+    bikeAverageKmPerLitre?: SortOrder
+    fuelRatePerLitre?: SortOrder
     yearsExperience?: SortOrder
   }
 
@@ -57902,6 +66652,13 @@ export namespace Prisma {
     bankIfsc?: SortOrder
     bankName?: SortOrder
     upiId?: SortOrder
+    baseSalary?: SortOrder
+    salaryEffectiveFromMonth?: SortOrder
+    homeAddress?: SortOrder
+    homeLat?: SortOrder
+    homeLng?: SortOrder
+    bikeAverageKmPerLitre?: SortOrder
+    fuelRatePerLitre?: SortOrder
     emergencyContactName?: SortOrder
     emergencyContactPhone?: SortOrder
     yearsExperience?: SortOrder
@@ -57947,6 +66704,13 @@ export namespace Prisma {
     bankIfsc?: SortOrder
     bankName?: SortOrder
     upiId?: SortOrder
+    baseSalary?: SortOrder
+    salaryEffectiveFromMonth?: SortOrder
+    homeAddress?: SortOrder
+    homeLat?: SortOrder
+    homeLng?: SortOrder
+    bikeAverageKmPerLitre?: SortOrder
+    fuelRatePerLitre?: SortOrder
     emergencyContactName?: SortOrder
     emergencyContactPhone?: SortOrder
     yearsExperience?: SortOrder
@@ -57970,12 +66734,402 @@ export namespace Prisma {
     punctualityStreak?: SortOrder
     reviewStreak?: SortOrder
     noLeaveStreakDays?: SortOrder
+    baseSalary?: SortOrder
+    homeLat?: SortOrder
+    homeLng?: SortOrder
+    bikeAverageKmPerLitre?: SortOrder
+    fuelRatePerLitre?: SortOrder
     yearsExperience?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type TeamMemberScalarRelationFilter = {
     is?: TeamMemberWhereInput
     isNot?: TeamMemberWhereInput
+  }
+
+  export type GroomerLedgerEntrySourceTypeSourceIdTypeCompoundUniqueInput = {
+    sourceType: string
+    sourceId: string
+    type: string
+  }
+
+  export type GroomerLedgerEntryCountOrderByAggregateInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    monthBucket?: SortOrder
+    type?: SortOrder
+    direction?: SortOrder
+    amount?: SortOrder
+    sourceType?: SortOrder
+    sourceId?: SortOrder
+    description?: SortOrder
+    metadataJson?: SortOrder
+    createdBy?: SortOrder
+    occurredAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroomerLedgerEntryAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type GroomerLedgerEntryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    monthBucket?: SortOrder
+    type?: SortOrder
+    direction?: SortOrder
+    amount?: SortOrder
+    sourceType?: SortOrder
+    sourceId?: SortOrder
+    description?: SortOrder
+    metadataJson?: SortOrder
+    createdBy?: SortOrder
+    occurredAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroomerLedgerEntryMinOrderByAggregateInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    monthBucket?: SortOrder
+    type?: SortOrder
+    direction?: SortOrder
+    amount?: SortOrder
+    sourceType?: SortOrder
+    sourceId?: SortOrder
+    description?: SortOrder
+    metadataJson?: SortOrder
+    createdBy?: SortOrder
+    occurredAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroomerLedgerEntrySumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type GroomerCashDepositCountOrderByAggregateInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    amount?: SortOrder
+    depositMode?: SortOrder
+    referenceId?: SortOrder
+    notes?: SortOrder
+    recordedBy?: SortOrder
+    depositedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroomerCashDepositAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type GroomerCashDepositMaxOrderByAggregateInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    amount?: SortOrder
+    depositMode?: SortOrder
+    referenceId?: SortOrder
+    notes?: SortOrder
+    recordedBy?: SortOrder
+    depositedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroomerCashDepositMinOrderByAggregateInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    amount?: SortOrder
+    depositMode?: SortOrder
+    referenceId?: SortOrder
+    notes?: SortOrder
+    recordedBy?: SortOrder
+    depositedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroomerCashDepositSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type BookingNullableScalarRelationFilter = {
+    is?: BookingWhereInput | null
+    isNot?: BookingWhereInput | null
+  }
+
+  export type GroomerExpenseCountOrderByAggregateInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    bookingId?: SortOrder
+    category?: SortOrder
+    amount?: SortOrder
+    billDate?: SortOrder
+    billPhotoUrl?: SortOrder
+    storageKey?: SortOrder
+    notes?: SortOrder
+    status?: SortOrder
+    reviewNote?: SortOrder
+    reviewedBy?: SortOrder
+    reviewedAt?: SortOrder
+    submittedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroomerExpenseAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type GroomerExpenseMaxOrderByAggregateInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    bookingId?: SortOrder
+    category?: SortOrder
+    amount?: SortOrder
+    billDate?: SortOrder
+    billPhotoUrl?: SortOrder
+    storageKey?: SortOrder
+    notes?: SortOrder
+    status?: SortOrder
+    reviewNote?: SortOrder
+    reviewedBy?: SortOrder
+    reviewedAt?: SortOrder
+    submittedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroomerExpenseMinOrderByAggregateInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    bookingId?: SortOrder
+    category?: SortOrder
+    amount?: SortOrder
+    billDate?: SortOrder
+    billPhotoUrl?: SortOrder
+    storageKey?: SortOrder
+    notes?: SortOrder
+    status?: SortOrder
+    reviewNote?: SortOrder
+    reviewedBy?: SortOrder
+    reviewedAt?: SortOrder
+    submittedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroomerExpenseSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type GroomerFuelTripCountOrderByAggregateInput = {
+    id?: SortOrder
+    bookingId?: SortOrder
+    groomerMemberId?: SortOrder
+    fromType?: SortOrder
+    fromBookingId?: SortOrder
+    fromLat?: SortOrder
+    fromLng?: SortOrder
+    toLat?: SortOrder
+    toLng?: SortOrder
+    distanceKm?: SortOrder
+    roadMultiplier?: SortOrder
+    litres?: SortOrder
+    ratePerLitre?: SortOrder
+    fuelCost?: SortOrder
+    isEstimate?: SortOrder
+    isManuallyAdjusted?: SortOrder
+    originalDistanceKm?: SortOrder
+    originalFuelCost?: SortOrder
+    adjustmentReason?: SortOrder
+    calculatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroomerFuelTripAvgOrderByAggregateInput = {
+    fromLat?: SortOrder
+    fromLng?: SortOrder
+    toLat?: SortOrder
+    toLng?: SortOrder
+    distanceKm?: SortOrder
+    roadMultiplier?: SortOrder
+    litres?: SortOrder
+    ratePerLitre?: SortOrder
+    fuelCost?: SortOrder
+    originalDistanceKm?: SortOrder
+    originalFuelCost?: SortOrder
+  }
+
+  export type GroomerFuelTripMaxOrderByAggregateInput = {
+    id?: SortOrder
+    bookingId?: SortOrder
+    groomerMemberId?: SortOrder
+    fromType?: SortOrder
+    fromBookingId?: SortOrder
+    fromLat?: SortOrder
+    fromLng?: SortOrder
+    toLat?: SortOrder
+    toLng?: SortOrder
+    distanceKm?: SortOrder
+    roadMultiplier?: SortOrder
+    litres?: SortOrder
+    ratePerLitre?: SortOrder
+    fuelCost?: SortOrder
+    isEstimate?: SortOrder
+    isManuallyAdjusted?: SortOrder
+    originalDistanceKm?: SortOrder
+    originalFuelCost?: SortOrder
+    adjustmentReason?: SortOrder
+    calculatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroomerFuelTripMinOrderByAggregateInput = {
+    id?: SortOrder
+    bookingId?: SortOrder
+    groomerMemberId?: SortOrder
+    fromType?: SortOrder
+    fromBookingId?: SortOrder
+    fromLat?: SortOrder
+    fromLng?: SortOrder
+    toLat?: SortOrder
+    toLng?: SortOrder
+    distanceKm?: SortOrder
+    roadMultiplier?: SortOrder
+    litres?: SortOrder
+    ratePerLitre?: SortOrder
+    fuelCost?: SortOrder
+    isEstimate?: SortOrder
+    isManuallyAdjusted?: SortOrder
+    originalDistanceKm?: SortOrder
+    originalFuelCost?: SortOrder
+    adjustmentReason?: SortOrder
+    calculatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroomerFuelTripSumOrderByAggregateInput = {
+    fromLat?: SortOrder
+    fromLng?: SortOrder
+    toLat?: SortOrder
+    toLng?: SortOrder
+    distanceKm?: SortOrder
+    roadMultiplier?: SortOrder
+    litres?: SortOrder
+    ratePerLitre?: SortOrder
+    fuelCost?: SortOrder
+    originalDistanceKm?: SortOrder
+    originalFuelCost?: SortOrder
+  }
+
+  export type GroomerPayrollSnapshotGroomerMemberIdMonthBucketCompoundUniqueInput = {
+    groomerMemberId: string
+    monthBucket: string
+  }
+
+  export type GroomerPayrollSnapshotCountOrderByAggregateInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    monthBucket?: SortOrder
+    baseSalary?: SortOrder
+    fuelReimbursements?: SortOrder
+    otherReimbursements?: SortOrder
+    incentives?: SortOrder
+    payrollAdjustments?: SortOrder
+    advanceRecovery?: SortOrder
+    netPayable?: SortOrder
+    cashHeldSeparate?: SortOrder
+    frozenBy?: SortOrder
+    frozenAt?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroomerPayrollSnapshotAvgOrderByAggregateInput = {
+    baseSalary?: SortOrder
+    fuelReimbursements?: SortOrder
+    otherReimbursements?: SortOrder
+    incentives?: SortOrder
+    payrollAdjustments?: SortOrder
+    advanceRecovery?: SortOrder
+    netPayable?: SortOrder
+    cashHeldSeparate?: SortOrder
+  }
+
+  export type GroomerPayrollSnapshotMaxOrderByAggregateInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    monthBucket?: SortOrder
+    baseSalary?: SortOrder
+    fuelReimbursements?: SortOrder
+    otherReimbursements?: SortOrder
+    incentives?: SortOrder
+    payrollAdjustments?: SortOrder
+    advanceRecovery?: SortOrder
+    netPayable?: SortOrder
+    cashHeldSeparate?: SortOrder
+    frozenBy?: SortOrder
+    frozenAt?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroomerPayrollSnapshotMinOrderByAggregateInput = {
+    id?: SortOrder
+    groomerMemberId?: SortOrder
+    monthBucket?: SortOrder
+    baseSalary?: SortOrder
+    fuelReimbursements?: SortOrder
+    otherReimbursements?: SortOrder
+    incentives?: SortOrder
+    payrollAdjustments?: SortOrder
+    advanceRecovery?: SortOrder
+    netPayable?: SortOrder
+    cashHeldSeparate?: SortOrder
+    frozenBy?: SortOrder
+    frozenAt?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroomerPayrollSnapshotSumOrderByAggregateInput = {
+    baseSalary?: SortOrder
+    fuelReimbursements?: SortOrder
+    otherReimbursements?: SortOrder
+    incentives?: SortOrder
+    payrollAdjustments?: SortOrder
+    advanceRecovery?: SortOrder
+    netPayable?: SortOrder
+    cashHeldSeparate?: SortOrder
   }
 
   export type TeamLeaderboardSnapshotTeamMemberIdSnapshotDateCompoundUniqueInput = {
@@ -58034,11 +67188,6 @@ export namespace Prisma {
     currentXp?: SortOrder
     performanceScore?: SortOrder
     trustScore?: SortOrder
-  }
-
-  export type BookingNullableScalarRelationFilter = {
-    is?: BookingWhereInput | null
-    isNot?: BookingWhereInput | null
   }
 
   export type GroomerRewardEventTeamMemberIdBookingIdEventTypeCompoundUniqueInput = {
@@ -58168,6 +67317,7 @@ export namespace Prisma {
     trustScoreSnapshot?: SortOrder
     performanceSnapshot?: SortOrder
     nextEligibleAt?: SortOrder
+    recoverFromMonth?: SortOrder
     reviewNote?: SortOrder
     requestedBy?: SortOrder
     reviewedBy?: SortOrder
@@ -58195,6 +67345,7 @@ export namespace Prisma {
     trustScoreSnapshot?: SortOrder
     performanceSnapshot?: SortOrder
     nextEligibleAt?: SortOrder
+    recoverFromMonth?: SortOrder
     reviewNote?: SortOrder
     requestedBy?: SortOrder
     reviewedBy?: SortOrder
@@ -58215,6 +67366,7 @@ export namespace Prisma {
     trustScoreSnapshot?: SortOrder
     performanceSnapshot?: SortOrder
     nextEligibleAt?: SortOrder
+    recoverFromMonth?: SortOrder
     reviewNote?: SortOrder
     requestedBy?: SortOrder
     reviewedBy?: SortOrder
@@ -60085,6 +69237,20 @@ export namespace Prisma {
     connect?: GroomerRewardEventWhereUniqueInput | GroomerRewardEventWhereUniqueInput[]
   }
 
+  export type GroomerExpenseCreateNestedManyWithoutBookingInput = {
+    create?: XOR<GroomerExpenseCreateWithoutBookingInput, GroomerExpenseUncheckedCreateWithoutBookingInput> | GroomerExpenseCreateWithoutBookingInput[] | GroomerExpenseUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: GroomerExpenseCreateOrConnectWithoutBookingInput | GroomerExpenseCreateOrConnectWithoutBookingInput[]
+    createMany?: GroomerExpenseCreateManyBookingInputEnvelope
+    connect?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+  }
+
+  export type GroomerFuelTripCreateNestedManyWithoutBookingInput = {
+    create?: XOR<GroomerFuelTripCreateWithoutBookingInput, GroomerFuelTripUncheckedCreateWithoutBookingInput> | GroomerFuelTripCreateWithoutBookingInput[] | GroomerFuelTripUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: GroomerFuelTripCreateOrConnectWithoutBookingInput | GroomerFuelTripCreateOrConnectWithoutBookingInput[]
+    createMany?: GroomerFuelTripCreateManyBookingInputEnvelope
+    connect?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+  }
+
   export type CouponRedemptionCreateNestedManyWithoutBookingInput = {
     create?: XOR<CouponRedemptionCreateWithoutBookingInput, CouponRedemptionUncheckedCreateWithoutBookingInput> | CouponRedemptionCreateWithoutBookingInput[] | CouponRedemptionUncheckedCreateWithoutBookingInput[]
     connectOrCreate?: CouponRedemptionCreateOrConnectWithoutBookingInput | CouponRedemptionCreateOrConnectWithoutBookingInput[]
@@ -60166,6 +69332,20 @@ export namespace Prisma {
     connectOrCreate?: GroomerRewardEventCreateOrConnectWithoutBookingInput | GroomerRewardEventCreateOrConnectWithoutBookingInput[]
     createMany?: GroomerRewardEventCreateManyBookingInputEnvelope
     connect?: GroomerRewardEventWhereUniqueInput | GroomerRewardEventWhereUniqueInput[]
+  }
+
+  export type GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput = {
+    create?: XOR<GroomerExpenseCreateWithoutBookingInput, GroomerExpenseUncheckedCreateWithoutBookingInput> | GroomerExpenseCreateWithoutBookingInput[] | GroomerExpenseUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: GroomerExpenseCreateOrConnectWithoutBookingInput | GroomerExpenseCreateOrConnectWithoutBookingInput[]
+    createMany?: GroomerExpenseCreateManyBookingInputEnvelope
+    connect?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+  }
+
+  export type GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput = {
+    create?: XOR<GroomerFuelTripCreateWithoutBookingInput, GroomerFuelTripUncheckedCreateWithoutBookingInput> | GroomerFuelTripCreateWithoutBookingInput[] | GroomerFuelTripUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: GroomerFuelTripCreateOrConnectWithoutBookingInput | GroomerFuelTripCreateOrConnectWithoutBookingInput[]
+    createMany?: GroomerFuelTripCreateManyBookingInputEnvelope
+    connect?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
   }
 
   export type CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput = {
@@ -60369,6 +69549,34 @@ export namespace Prisma {
     deleteMany?: GroomerRewardEventScalarWhereInput | GroomerRewardEventScalarWhereInput[]
   }
 
+  export type GroomerExpenseUpdateManyWithoutBookingNestedInput = {
+    create?: XOR<GroomerExpenseCreateWithoutBookingInput, GroomerExpenseUncheckedCreateWithoutBookingInput> | GroomerExpenseCreateWithoutBookingInput[] | GroomerExpenseUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: GroomerExpenseCreateOrConnectWithoutBookingInput | GroomerExpenseCreateOrConnectWithoutBookingInput[]
+    upsert?: GroomerExpenseUpsertWithWhereUniqueWithoutBookingInput | GroomerExpenseUpsertWithWhereUniqueWithoutBookingInput[]
+    createMany?: GroomerExpenseCreateManyBookingInputEnvelope
+    set?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    disconnect?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    delete?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    connect?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    update?: GroomerExpenseUpdateWithWhereUniqueWithoutBookingInput | GroomerExpenseUpdateWithWhereUniqueWithoutBookingInput[]
+    updateMany?: GroomerExpenseUpdateManyWithWhereWithoutBookingInput | GroomerExpenseUpdateManyWithWhereWithoutBookingInput[]
+    deleteMany?: GroomerExpenseScalarWhereInput | GroomerExpenseScalarWhereInput[]
+  }
+
+  export type GroomerFuelTripUpdateManyWithoutBookingNestedInput = {
+    create?: XOR<GroomerFuelTripCreateWithoutBookingInput, GroomerFuelTripUncheckedCreateWithoutBookingInput> | GroomerFuelTripCreateWithoutBookingInput[] | GroomerFuelTripUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: GroomerFuelTripCreateOrConnectWithoutBookingInput | GroomerFuelTripCreateOrConnectWithoutBookingInput[]
+    upsert?: GroomerFuelTripUpsertWithWhereUniqueWithoutBookingInput | GroomerFuelTripUpsertWithWhereUniqueWithoutBookingInput[]
+    createMany?: GroomerFuelTripCreateManyBookingInputEnvelope
+    set?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    disconnect?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    delete?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    connect?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    update?: GroomerFuelTripUpdateWithWhereUniqueWithoutBookingInput | GroomerFuelTripUpdateWithWhereUniqueWithoutBookingInput[]
+    updateMany?: GroomerFuelTripUpdateManyWithWhereWithoutBookingInput | GroomerFuelTripUpdateManyWithWhereWithoutBookingInput[]
+    deleteMany?: GroomerFuelTripScalarWhereInput | GroomerFuelTripScalarWhereInput[]
+  }
+
   export type CouponRedemptionUpdateManyWithoutBookingNestedInput = {
     create?: XOR<CouponRedemptionCreateWithoutBookingInput, CouponRedemptionUncheckedCreateWithoutBookingInput> | CouponRedemptionCreateWithoutBookingInput[] | CouponRedemptionUncheckedCreateWithoutBookingInput[]
     connectOrCreate?: CouponRedemptionCreateOrConnectWithoutBookingInput | CouponRedemptionCreateOrConnectWithoutBookingInput[]
@@ -60533,6 +69741,34 @@ export namespace Prisma {
     deleteMany?: GroomerRewardEventScalarWhereInput | GroomerRewardEventScalarWhereInput[]
   }
 
+  export type GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput = {
+    create?: XOR<GroomerExpenseCreateWithoutBookingInput, GroomerExpenseUncheckedCreateWithoutBookingInput> | GroomerExpenseCreateWithoutBookingInput[] | GroomerExpenseUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: GroomerExpenseCreateOrConnectWithoutBookingInput | GroomerExpenseCreateOrConnectWithoutBookingInput[]
+    upsert?: GroomerExpenseUpsertWithWhereUniqueWithoutBookingInput | GroomerExpenseUpsertWithWhereUniqueWithoutBookingInput[]
+    createMany?: GroomerExpenseCreateManyBookingInputEnvelope
+    set?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    disconnect?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    delete?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    connect?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    update?: GroomerExpenseUpdateWithWhereUniqueWithoutBookingInput | GroomerExpenseUpdateWithWhereUniqueWithoutBookingInput[]
+    updateMany?: GroomerExpenseUpdateManyWithWhereWithoutBookingInput | GroomerExpenseUpdateManyWithWhereWithoutBookingInput[]
+    deleteMany?: GroomerExpenseScalarWhereInput | GroomerExpenseScalarWhereInput[]
+  }
+
+  export type GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput = {
+    create?: XOR<GroomerFuelTripCreateWithoutBookingInput, GroomerFuelTripUncheckedCreateWithoutBookingInput> | GroomerFuelTripCreateWithoutBookingInput[] | GroomerFuelTripUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: GroomerFuelTripCreateOrConnectWithoutBookingInput | GroomerFuelTripCreateOrConnectWithoutBookingInput[]
+    upsert?: GroomerFuelTripUpsertWithWhereUniqueWithoutBookingInput | GroomerFuelTripUpsertWithWhereUniqueWithoutBookingInput[]
+    createMany?: GroomerFuelTripCreateManyBookingInputEnvelope
+    set?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    disconnect?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    delete?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    connect?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    update?: GroomerFuelTripUpdateWithWhereUniqueWithoutBookingInput | GroomerFuelTripUpdateWithWhereUniqueWithoutBookingInput[]
+    updateMany?: GroomerFuelTripUpdateManyWithWhereWithoutBookingInput | GroomerFuelTripUpdateManyWithWhereWithoutBookingInput[]
+    deleteMany?: GroomerFuelTripScalarWhereInput | GroomerFuelTripScalarWhereInput[]
+  }
+
   export type CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput = {
     create?: XOR<CouponRedemptionCreateWithoutBookingInput, CouponRedemptionUncheckedCreateWithoutBookingInput> | CouponRedemptionCreateWithoutBookingInput[] | CouponRedemptionUncheckedCreateWithoutBookingInput[]
     connectOrCreate?: CouponRedemptionCreateOrConnectWithoutBookingInput | CouponRedemptionCreateOrConnectWithoutBookingInput[]
@@ -60586,6 +69822,41 @@ export namespace Prisma {
     connectOrCreate?: WorkforceSalaryAdvanceRequestCreateOrConnectWithoutTeamMemberInput | WorkforceSalaryAdvanceRequestCreateOrConnectWithoutTeamMemberInput[]
     createMany?: WorkforceSalaryAdvanceRequestCreateManyTeamMemberInputEnvelope
     connect?: WorkforceSalaryAdvanceRequestWhereUniqueInput | WorkforceSalaryAdvanceRequestWhereUniqueInput[]
+  }
+
+  export type GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput = {
+    create?: XOR<GroomerLedgerEntryCreateWithoutGroomerMemberInput, GroomerLedgerEntryUncheckedCreateWithoutGroomerMemberInput> | GroomerLedgerEntryCreateWithoutGroomerMemberInput[] | GroomerLedgerEntryUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerLedgerEntryCreateOrConnectWithoutGroomerMemberInput | GroomerLedgerEntryCreateOrConnectWithoutGroomerMemberInput[]
+    createMany?: GroomerLedgerEntryCreateManyGroomerMemberInputEnvelope
+    connect?: GroomerLedgerEntryWhereUniqueInput | GroomerLedgerEntryWhereUniqueInput[]
+  }
+
+  export type GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput = {
+    create?: XOR<GroomerCashDepositCreateWithoutGroomerMemberInput, GroomerCashDepositUncheckedCreateWithoutGroomerMemberInput> | GroomerCashDepositCreateWithoutGroomerMemberInput[] | GroomerCashDepositUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerCashDepositCreateOrConnectWithoutGroomerMemberInput | GroomerCashDepositCreateOrConnectWithoutGroomerMemberInput[]
+    createMany?: GroomerCashDepositCreateManyGroomerMemberInputEnvelope
+    connect?: GroomerCashDepositWhereUniqueInput | GroomerCashDepositWhereUniqueInput[]
+  }
+
+  export type GroomerExpenseCreateNestedManyWithoutGroomerMemberInput = {
+    create?: XOR<GroomerExpenseCreateWithoutGroomerMemberInput, GroomerExpenseUncheckedCreateWithoutGroomerMemberInput> | GroomerExpenseCreateWithoutGroomerMemberInput[] | GroomerExpenseUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerExpenseCreateOrConnectWithoutGroomerMemberInput | GroomerExpenseCreateOrConnectWithoutGroomerMemberInput[]
+    createMany?: GroomerExpenseCreateManyGroomerMemberInputEnvelope
+    connect?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+  }
+
+  export type GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput = {
+    create?: XOR<GroomerFuelTripCreateWithoutGroomerMemberInput, GroomerFuelTripUncheckedCreateWithoutGroomerMemberInput> | GroomerFuelTripCreateWithoutGroomerMemberInput[] | GroomerFuelTripUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerFuelTripCreateOrConnectWithoutGroomerMemberInput | GroomerFuelTripCreateOrConnectWithoutGroomerMemberInput[]
+    createMany?: GroomerFuelTripCreateManyGroomerMemberInputEnvelope
+    connect?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+  }
+
+  export type GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput = {
+    create?: XOR<GroomerPayrollSnapshotCreateWithoutGroomerMemberInput, GroomerPayrollSnapshotUncheckedCreateWithoutGroomerMemberInput> | GroomerPayrollSnapshotCreateWithoutGroomerMemberInput[] | GroomerPayrollSnapshotUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerPayrollSnapshotCreateOrConnectWithoutGroomerMemberInput | GroomerPayrollSnapshotCreateOrConnectWithoutGroomerMemberInput[]
+    createMany?: GroomerPayrollSnapshotCreateManyGroomerMemberInputEnvelope
+    connect?: GroomerPayrollSnapshotWhereUniqueInput | GroomerPayrollSnapshotWhereUniqueInput[]
   }
 
   export type WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput = {
@@ -60651,6 +69922,41 @@ export namespace Prisma {
     connect?: WorkforceSalaryAdvanceRequestWhereUniqueInput | WorkforceSalaryAdvanceRequestWhereUniqueInput[]
   }
 
+  export type GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput = {
+    create?: XOR<GroomerLedgerEntryCreateWithoutGroomerMemberInput, GroomerLedgerEntryUncheckedCreateWithoutGroomerMemberInput> | GroomerLedgerEntryCreateWithoutGroomerMemberInput[] | GroomerLedgerEntryUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerLedgerEntryCreateOrConnectWithoutGroomerMemberInput | GroomerLedgerEntryCreateOrConnectWithoutGroomerMemberInput[]
+    createMany?: GroomerLedgerEntryCreateManyGroomerMemberInputEnvelope
+    connect?: GroomerLedgerEntryWhereUniqueInput | GroomerLedgerEntryWhereUniqueInput[]
+  }
+
+  export type GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput = {
+    create?: XOR<GroomerCashDepositCreateWithoutGroomerMemberInput, GroomerCashDepositUncheckedCreateWithoutGroomerMemberInput> | GroomerCashDepositCreateWithoutGroomerMemberInput[] | GroomerCashDepositUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerCashDepositCreateOrConnectWithoutGroomerMemberInput | GroomerCashDepositCreateOrConnectWithoutGroomerMemberInput[]
+    createMany?: GroomerCashDepositCreateManyGroomerMemberInputEnvelope
+    connect?: GroomerCashDepositWhereUniqueInput | GroomerCashDepositWhereUniqueInput[]
+  }
+
+  export type GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput = {
+    create?: XOR<GroomerExpenseCreateWithoutGroomerMemberInput, GroomerExpenseUncheckedCreateWithoutGroomerMemberInput> | GroomerExpenseCreateWithoutGroomerMemberInput[] | GroomerExpenseUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerExpenseCreateOrConnectWithoutGroomerMemberInput | GroomerExpenseCreateOrConnectWithoutGroomerMemberInput[]
+    createMany?: GroomerExpenseCreateManyGroomerMemberInputEnvelope
+    connect?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+  }
+
+  export type GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput = {
+    create?: XOR<GroomerFuelTripCreateWithoutGroomerMemberInput, GroomerFuelTripUncheckedCreateWithoutGroomerMemberInput> | GroomerFuelTripCreateWithoutGroomerMemberInput[] | GroomerFuelTripUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerFuelTripCreateOrConnectWithoutGroomerMemberInput | GroomerFuelTripCreateOrConnectWithoutGroomerMemberInput[]
+    createMany?: GroomerFuelTripCreateManyGroomerMemberInputEnvelope
+    connect?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+  }
+
+  export type GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput = {
+    create?: XOR<GroomerPayrollSnapshotCreateWithoutGroomerMemberInput, GroomerPayrollSnapshotUncheckedCreateWithoutGroomerMemberInput> | GroomerPayrollSnapshotCreateWithoutGroomerMemberInput[] | GroomerPayrollSnapshotUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerPayrollSnapshotCreateOrConnectWithoutGroomerMemberInput | GroomerPayrollSnapshotCreateOrConnectWithoutGroomerMemberInput[]
+    createMany?: GroomerPayrollSnapshotCreateManyGroomerMemberInputEnvelope
+    connect?: GroomerPayrollSnapshotWhereUniqueInput | GroomerPayrollSnapshotWhereUniqueInput[]
+  }
+
   export type WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput = {
     create?: XOR<WorkforceReferralRecordCreateWithoutReferrerMemberInput, WorkforceReferralRecordUncheckedCreateWithoutReferrerMemberInput> | WorkforceReferralRecordCreateWithoutReferrerMemberInput[] | WorkforceReferralRecordUncheckedCreateWithoutReferrerMemberInput[]
     connectOrCreate?: WorkforceReferralRecordCreateOrConnectWithoutReferrerMemberInput | WorkforceReferralRecordCreateOrConnectWithoutReferrerMemberInput[]
@@ -60677,6 +69983,14 @@ export namespace Prisma {
     connectOrCreate?: WorkforceRewardRedemptionRequestCreateOrConnectWithoutTeamMemberInput | WorkforceRewardRedemptionRequestCreateOrConnectWithoutTeamMemberInput[]
     createMany?: WorkforceRewardRedemptionRequestCreateManyTeamMemberInputEnvelope
     connect?: WorkforceRewardRedemptionRequestWhereUniqueInput | WorkforceRewardRedemptionRequestWhereUniqueInput[]
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type TeamUpdateOneRequiredWithoutMembersNestedInput = {
@@ -60755,6 +70069,76 @@ export namespace Prisma {
     update?: WorkforceSalaryAdvanceRequestUpdateWithWhereUniqueWithoutTeamMemberInput | WorkforceSalaryAdvanceRequestUpdateWithWhereUniqueWithoutTeamMemberInput[]
     updateMany?: WorkforceSalaryAdvanceRequestUpdateManyWithWhereWithoutTeamMemberInput | WorkforceSalaryAdvanceRequestUpdateManyWithWhereWithoutTeamMemberInput[]
     deleteMany?: WorkforceSalaryAdvanceRequestScalarWhereInput | WorkforceSalaryAdvanceRequestScalarWhereInput[]
+  }
+
+  export type GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput = {
+    create?: XOR<GroomerLedgerEntryCreateWithoutGroomerMemberInput, GroomerLedgerEntryUncheckedCreateWithoutGroomerMemberInput> | GroomerLedgerEntryCreateWithoutGroomerMemberInput[] | GroomerLedgerEntryUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerLedgerEntryCreateOrConnectWithoutGroomerMemberInput | GroomerLedgerEntryCreateOrConnectWithoutGroomerMemberInput[]
+    upsert?: GroomerLedgerEntryUpsertWithWhereUniqueWithoutGroomerMemberInput | GroomerLedgerEntryUpsertWithWhereUniqueWithoutGroomerMemberInput[]
+    createMany?: GroomerLedgerEntryCreateManyGroomerMemberInputEnvelope
+    set?: GroomerLedgerEntryWhereUniqueInput | GroomerLedgerEntryWhereUniqueInput[]
+    disconnect?: GroomerLedgerEntryWhereUniqueInput | GroomerLedgerEntryWhereUniqueInput[]
+    delete?: GroomerLedgerEntryWhereUniqueInput | GroomerLedgerEntryWhereUniqueInput[]
+    connect?: GroomerLedgerEntryWhereUniqueInput | GroomerLedgerEntryWhereUniqueInput[]
+    update?: GroomerLedgerEntryUpdateWithWhereUniqueWithoutGroomerMemberInput | GroomerLedgerEntryUpdateWithWhereUniqueWithoutGroomerMemberInput[]
+    updateMany?: GroomerLedgerEntryUpdateManyWithWhereWithoutGroomerMemberInput | GroomerLedgerEntryUpdateManyWithWhereWithoutGroomerMemberInput[]
+    deleteMany?: GroomerLedgerEntryScalarWhereInput | GroomerLedgerEntryScalarWhereInput[]
+  }
+
+  export type GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput = {
+    create?: XOR<GroomerCashDepositCreateWithoutGroomerMemberInput, GroomerCashDepositUncheckedCreateWithoutGroomerMemberInput> | GroomerCashDepositCreateWithoutGroomerMemberInput[] | GroomerCashDepositUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerCashDepositCreateOrConnectWithoutGroomerMemberInput | GroomerCashDepositCreateOrConnectWithoutGroomerMemberInput[]
+    upsert?: GroomerCashDepositUpsertWithWhereUniqueWithoutGroomerMemberInput | GroomerCashDepositUpsertWithWhereUniqueWithoutGroomerMemberInput[]
+    createMany?: GroomerCashDepositCreateManyGroomerMemberInputEnvelope
+    set?: GroomerCashDepositWhereUniqueInput | GroomerCashDepositWhereUniqueInput[]
+    disconnect?: GroomerCashDepositWhereUniqueInput | GroomerCashDepositWhereUniqueInput[]
+    delete?: GroomerCashDepositWhereUniqueInput | GroomerCashDepositWhereUniqueInput[]
+    connect?: GroomerCashDepositWhereUniqueInput | GroomerCashDepositWhereUniqueInput[]
+    update?: GroomerCashDepositUpdateWithWhereUniqueWithoutGroomerMemberInput | GroomerCashDepositUpdateWithWhereUniqueWithoutGroomerMemberInput[]
+    updateMany?: GroomerCashDepositUpdateManyWithWhereWithoutGroomerMemberInput | GroomerCashDepositUpdateManyWithWhereWithoutGroomerMemberInput[]
+    deleteMany?: GroomerCashDepositScalarWhereInput | GroomerCashDepositScalarWhereInput[]
+  }
+
+  export type GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput = {
+    create?: XOR<GroomerExpenseCreateWithoutGroomerMemberInput, GroomerExpenseUncheckedCreateWithoutGroomerMemberInput> | GroomerExpenseCreateWithoutGroomerMemberInput[] | GroomerExpenseUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerExpenseCreateOrConnectWithoutGroomerMemberInput | GroomerExpenseCreateOrConnectWithoutGroomerMemberInput[]
+    upsert?: GroomerExpenseUpsertWithWhereUniqueWithoutGroomerMemberInput | GroomerExpenseUpsertWithWhereUniqueWithoutGroomerMemberInput[]
+    createMany?: GroomerExpenseCreateManyGroomerMemberInputEnvelope
+    set?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    disconnect?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    delete?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    connect?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    update?: GroomerExpenseUpdateWithWhereUniqueWithoutGroomerMemberInput | GroomerExpenseUpdateWithWhereUniqueWithoutGroomerMemberInput[]
+    updateMany?: GroomerExpenseUpdateManyWithWhereWithoutGroomerMemberInput | GroomerExpenseUpdateManyWithWhereWithoutGroomerMemberInput[]
+    deleteMany?: GroomerExpenseScalarWhereInput | GroomerExpenseScalarWhereInput[]
+  }
+
+  export type GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput = {
+    create?: XOR<GroomerFuelTripCreateWithoutGroomerMemberInput, GroomerFuelTripUncheckedCreateWithoutGroomerMemberInput> | GroomerFuelTripCreateWithoutGroomerMemberInput[] | GroomerFuelTripUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerFuelTripCreateOrConnectWithoutGroomerMemberInput | GroomerFuelTripCreateOrConnectWithoutGroomerMemberInput[]
+    upsert?: GroomerFuelTripUpsertWithWhereUniqueWithoutGroomerMemberInput | GroomerFuelTripUpsertWithWhereUniqueWithoutGroomerMemberInput[]
+    createMany?: GroomerFuelTripCreateManyGroomerMemberInputEnvelope
+    set?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    disconnect?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    delete?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    connect?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    update?: GroomerFuelTripUpdateWithWhereUniqueWithoutGroomerMemberInput | GroomerFuelTripUpdateWithWhereUniqueWithoutGroomerMemberInput[]
+    updateMany?: GroomerFuelTripUpdateManyWithWhereWithoutGroomerMemberInput | GroomerFuelTripUpdateManyWithWhereWithoutGroomerMemberInput[]
+    deleteMany?: GroomerFuelTripScalarWhereInput | GroomerFuelTripScalarWhereInput[]
+  }
+
+  export type GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput = {
+    create?: XOR<GroomerPayrollSnapshotCreateWithoutGroomerMemberInput, GroomerPayrollSnapshotUncheckedCreateWithoutGroomerMemberInput> | GroomerPayrollSnapshotCreateWithoutGroomerMemberInput[] | GroomerPayrollSnapshotUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerPayrollSnapshotCreateOrConnectWithoutGroomerMemberInput | GroomerPayrollSnapshotCreateOrConnectWithoutGroomerMemberInput[]
+    upsert?: GroomerPayrollSnapshotUpsertWithWhereUniqueWithoutGroomerMemberInput | GroomerPayrollSnapshotUpsertWithWhereUniqueWithoutGroomerMemberInput[]
+    createMany?: GroomerPayrollSnapshotCreateManyGroomerMemberInputEnvelope
+    set?: GroomerPayrollSnapshotWhereUniqueInput | GroomerPayrollSnapshotWhereUniqueInput[]
+    disconnect?: GroomerPayrollSnapshotWhereUniqueInput | GroomerPayrollSnapshotWhereUniqueInput[]
+    delete?: GroomerPayrollSnapshotWhereUniqueInput | GroomerPayrollSnapshotWhereUniqueInput[]
+    connect?: GroomerPayrollSnapshotWhereUniqueInput | GroomerPayrollSnapshotWhereUniqueInput[]
+    update?: GroomerPayrollSnapshotUpdateWithWhereUniqueWithoutGroomerMemberInput | GroomerPayrollSnapshotUpdateWithWhereUniqueWithoutGroomerMemberInput[]
+    updateMany?: GroomerPayrollSnapshotUpdateManyWithWhereWithoutGroomerMemberInput | GroomerPayrollSnapshotUpdateManyWithWhereWithoutGroomerMemberInput[]
+    deleteMany?: GroomerPayrollSnapshotScalarWhereInput | GroomerPayrollSnapshotScalarWhereInput[]
   }
 
   export type WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput = {
@@ -60883,6 +70267,76 @@ export namespace Prisma {
     deleteMany?: WorkforceSalaryAdvanceRequestScalarWhereInput | WorkforceSalaryAdvanceRequestScalarWhereInput[]
   }
 
+  export type GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput = {
+    create?: XOR<GroomerLedgerEntryCreateWithoutGroomerMemberInput, GroomerLedgerEntryUncheckedCreateWithoutGroomerMemberInput> | GroomerLedgerEntryCreateWithoutGroomerMemberInput[] | GroomerLedgerEntryUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerLedgerEntryCreateOrConnectWithoutGroomerMemberInput | GroomerLedgerEntryCreateOrConnectWithoutGroomerMemberInput[]
+    upsert?: GroomerLedgerEntryUpsertWithWhereUniqueWithoutGroomerMemberInput | GroomerLedgerEntryUpsertWithWhereUniqueWithoutGroomerMemberInput[]
+    createMany?: GroomerLedgerEntryCreateManyGroomerMemberInputEnvelope
+    set?: GroomerLedgerEntryWhereUniqueInput | GroomerLedgerEntryWhereUniqueInput[]
+    disconnect?: GroomerLedgerEntryWhereUniqueInput | GroomerLedgerEntryWhereUniqueInput[]
+    delete?: GroomerLedgerEntryWhereUniqueInput | GroomerLedgerEntryWhereUniqueInput[]
+    connect?: GroomerLedgerEntryWhereUniqueInput | GroomerLedgerEntryWhereUniqueInput[]
+    update?: GroomerLedgerEntryUpdateWithWhereUniqueWithoutGroomerMemberInput | GroomerLedgerEntryUpdateWithWhereUniqueWithoutGroomerMemberInput[]
+    updateMany?: GroomerLedgerEntryUpdateManyWithWhereWithoutGroomerMemberInput | GroomerLedgerEntryUpdateManyWithWhereWithoutGroomerMemberInput[]
+    deleteMany?: GroomerLedgerEntryScalarWhereInput | GroomerLedgerEntryScalarWhereInput[]
+  }
+
+  export type GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput = {
+    create?: XOR<GroomerCashDepositCreateWithoutGroomerMemberInput, GroomerCashDepositUncheckedCreateWithoutGroomerMemberInput> | GroomerCashDepositCreateWithoutGroomerMemberInput[] | GroomerCashDepositUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerCashDepositCreateOrConnectWithoutGroomerMemberInput | GroomerCashDepositCreateOrConnectWithoutGroomerMemberInput[]
+    upsert?: GroomerCashDepositUpsertWithWhereUniqueWithoutGroomerMemberInput | GroomerCashDepositUpsertWithWhereUniqueWithoutGroomerMemberInput[]
+    createMany?: GroomerCashDepositCreateManyGroomerMemberInputEnvelope
+    set?: GroomerCashDepositWhereUniqueInput | GroomerCashDepositWhereUniqueInput[]
+    disconnect?: GroomerCashDepositWhereUniqueInput | GroomerCashDepositWhereUniqueInput[]
+    delete?: GroomerCashDepositWhereUniqueInput | GroomerCashDepositWhereUniqueInput[]
+    connect?: GroomerCashDepositWhereUniqueInput | GroomerCashDepositWhereUniqueInput[]
+    update?: GroomerCashDepositUpdateWithWhereUniqueWithoutGroomerMemberInput | GroomerCashDepositUpdateWithWhereUniqueWithoutGroomerMemberInput[]
+    updateMany?: GroomerCashDepositUpdateManyWithWhereWithoutGroomerMemberInput | GroomerCashDepositUpdateManyWithWhereWithoutGroomerMemberInput[]
+    deleteMany?: GroomerCashDepositScalarWhereInput | GroomerCashDepositScalarWhereInput[]
+  }
+
+  export type GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput = {
+    create?: XOR<GroomerExpenseCreateWithoutGroomerMemberInput, GroomerExpenseUncheckedCreateWithoutGroomerMemberInput> | GroomerExpenseCreateWithoutGroomerMemberInput[] | GroomerExpenseUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerExpenseCreateOrConnectWithoutGroomerMemberInput | GroomerExpenseCreateOrConnectWithoutGroomerMemberInput[]
+    upsert?: GroomerExpenseUpsertWithWhereUniqueWithoutGroomerMemberInput | GroomerExpenseUpsertWithWhereUniqueWithoutGroomerMemberInput[]
+    createMany?: GroomerExpenseCreateManyGroomerMemberInputEnvelope
+    set?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    disconnect?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    delete?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    connect?: GroomerExpenseWhereUniqueInput | GroomerExpenseWhereUniqueInput[]
+    update?: GroomerExpenseUpdateWithWhereUniqueWithoutGroomerMemberInput | GroomerExpenseUpdateWithWhereUniqueWithoutGroomerMemberInput[]
+    updateMany?: GroomerExpenseUpdateManyWithWhereWithoutGroomerMemberInput | GroomerExpenseUpdateManyWithWhereWithoutGroomerMemberInput[]
+    deleteMany?: GroomerExpenseScalarWhereInput | GroomerExpenseScalarWhereInput[]
+  }
+
+  export type GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput = {
+    create?: XOR<GroomerFuelTripCreateWithoutGroomerMemberInput, GroomerFuelTripUncheckedCreateWithoutGroomerMemberInput> | GroomerFuelTripCreateWithoutGroomerMemberInput[] | GroomerFuelTripUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerFuelTripCreateOrConnectWithoutGroomerMemberInput | GroomerFuelTripCreateOrConnectWithoutGroomerMemberInput[]
+    upsert?: GroomerFuelTripUpsertWithWhereUniqueWithoutGroomerMemberInput | GroomerFuelTripUpsertWithWhereUniqueWithoutGroomerMemberInput[]
+    createMany?: GroomerFuelTripCreateManyGroomerMemberInputEnvelope
+    set?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    disconnect?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    delete?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    connect?: GroomerFuelTripWhereUniqueInput | GroomerFuelTripWhereUniqueInput[]
+    update?: GroomerFuelTripUpdateWithWhereUniqueWithoutGroomerMemberInput | GroomerFuelTripUpdateWithWhereUniqueWithoutGroomerMemberInput[]
+    updateMany?: GroomerFuelTripUpdateManyWithWhereWithoutGroomerMemberInput | GroomerFuelTripUpdateManyWithWhereWithoutGroomerMemberInput[]
+    deleteMany?: GroomerFuelTripScalarWhereInput | GroomerFuelTripScalarWhereInput[]
+  }
+
+  export type GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput = {
+    create?: XOR<GroomerPayrollSnapshotCreateWithoutGroomerMemberInput, GroomerPayrollSnapshotUncheckedCreateWithoutGroomerMemberInput> | GroomerPayrollSnapshotCreateWithoutGroomerMemberInput[] | GroomerPayrollSnapshotUncheckedCreateWithoutGroomerMemberInput[]
+    connectOrCreate?: GroomerPayrollSnapshotCreateOrConnectWithoutGroomerMemberInput | GroomerPayrollSnapshotCreateOrConnectWithoutGroomerMemberInput[]
+    upsert?: GroomerPayrollSnapshotUpsertWithWhereUniqueWithoutGroomerMemberInput | GroomerPayrollSnapshotUpsertWithWhereUniqueWithoutGroomerMemberInput[]
+    createMany?: GroomerPayrollSnapshotCreateManyGroomerMemberInputEnvelope
+    set?: GroomerPayrollSnapshotWhereUniqueInput | GroomerPayrollSnapshotWhereUniqueInput[]
+    disconnect?: GroomerPayrollSnapshotWhereUniqueInput | GroomerPayrollSnapshotWhereUniqueInput[]
+    delete?: GroomerPayrollSnapshotWhereUniqueInput | GroomerPayrollSnapshotWhereUniqueInput[]
+    connect?: GroomerPayrollSnapshotWhereUniqueInput | GroomerPayrollSnapshotWhereUniqueInput[]
+    update?: GroomerPayrollSnapshotUpdateWithWhereUniqueWithoutGroomerMemberInput | GroomerPayrollSnapshotUpdateWithWhereUniqueWithoutGroomerMemberInput[]
+    updateMany?: GroomerPayrollSnapshotUpdateManyWithWhereWithoutGroomerMemberInput | GroomerPayrollSnapshotUpdateManyWithWhereWithoutGroomerMemberInput[]
+    deleteMany?: GroomerPayrollSnapshotScalarWhereInput | GroomerPayrollSnapshotScalarWhereInput[]
+  }
+
   export type WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput = {
     create?: XOR<WorkforceReferralRecordCreateWithoutReferrerMemberInput, WorkforceReferralRecordUncheckedCreateWithoutReferrerMemberInput> | WorkforceReferralRecordCreateWithoutReferrerMemberInput[] | WorkforceReferralRecordUncheckedCreateWithoutReferrerMemberInput[]
     connectOrCreate?: WorkforceReferralRecordCreateOrConnectWithoutReferrerMemberInput | WorkforceReferralRecordCreateOrConnectWithoutReferrerMemberInput[]
@@ -60937,6 +70391,106 @@ export namespace Prisma {
     update?: WorkforceRewardRedemptionRequestUpdateWithWhereUniqueWithoutTeamMemberInput | WorkforceRewardRedemptionRequestUpdateWithWhereUniqueWithoutTeamMemberInput[]
     updateMany?: WorkforceRewardRedemptionRequestUpdateManyWithWhereWithoutTeamMemberInput | WorkforceRewardRedemptionRequestUpdateManyWithWhereWithoutTeamMemberInput[]
     deleteMany?: WorkforceRewardRedemptionRequestScalarWhereInput | WorkforceRewardRedemptionRequestScalarWhereInput[]
+  }
+
+  export type TeamMemberCreateNestedOneWithoutLedgerEntriesInput = {
+    create?: XOR<TeamMemberCreateWithoutLedgerEntriesInput, TeamMemberUncheckedCreateWithoutLedgerEntriesInput>
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutLedgerEntriesInput
+    connect?: TeamMemberWhereUniqueInput
+  }
+
+  export type TeamMemberUpdateOneRequiredWithoutLedgerEntriesNestedInput = {
+    create?: XOR<TeamMemberCreateWithoutLedgerEntriesInput, TeamMemberUncheckedCreateWithoutLedgerEntriesInput>
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutLedgerEntriesInput
+    upsert?: TeamMemberUpsertWithoutLedgerEntriesInput
+    connect?: TeamMemberWhereUniqueInput
+    update?: XOR<XOR<TeamMemberUpdateToOneWithWhereWithoutLedgerEntriesInput, TeamMemberUpdateWithoutLedgerEntriesInput>, TeamMemberUncheckedUpdateWithoutLedgerEntriesInput>
+  }
+
+  export type TeamMemberCreateNestedOneWithoutCashDepositsInput = {
+    create?: XOR<TeamMemberCreateWithoutCashDepositsInput, TeamMemberUncheckedCreateWithoutCashDepositsInput>
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutCashDepositsInput
+    connect?: TeamMemberWhereUniqueInput
+  }
+
+  export type TeamMemberUpdateOneRequiredWithoutCashDepositsNestedInput = {
+    create?: XOR<TeamMemberCreateWithoutCashDepositsInput, TeamMemberUncheckedCreateWithoutCashDepositsInput>
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutCashDepositsInput
+    upsert?: TeamMemberUpsertWithoutCashDepositsInput
+    connect?: TeamMemberWhereUniqueInput
+    update?: XOR<XOR<TeamMemberUpdateToOneWithWhereWithoutCashDepositsInput, TeamMemberUpdateWithoutCashDepositsInput>, TeamMemberUncheckedUpdateWithoutCashDepositsInput>
+  }
+
+  export type TeamMemberCreateNestedOneWithoutExpensesInput = {
+    create?: XOR<TeamMemberCreateWithoutExpensesInput, TeamMemberUncheckedCreateWithoutExpensesInput>
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutExpensesInput
+    connect?: TeamMemberWhereUniqueInput
+  }
+
+  export type BookingCreateNestedOneWithoutGroomerExpensesInput = {
+    create?: XOR<BookingCreateWithoutGroomerExpensesInput, BookingUncheckedCreateWithoutGroomerExpensesInput>
+    connectOrCreate?: BookingCreateOrConnectWithoutGroomerExpensesInput
+    connect?: BookingWhereUniqueInput
+  }
+
+  export type TeamMemberUpdateOneRequiredWithoutExpensesNestedInput = {
+    create?: XOR<TeamMemberCreateWithoutExpensesInput, TeamMemberUncheckedCreateWithoutExpensesInput>
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutExpensesInput
+    upsert?: TeamMemberUpsertWithoutExpensesInput
+    connect?: TeamMemberWhereUniqueInput
+    update?: XOR<XOR<TeamMemberUpdateToOneWithWhereWithoutExpensesInput, TeamMemberUpdateWithoutExpensesInput>, TeamMemberUncheckedUpdateWithoutExpensesInput>
+  }
+
+  export type BookingUpdateOneWithoutGroomerExpensesNestedInput = {
+    create?: XOR<BookingCreateWithoutGroomerExpensesInput, BookingUncheckedCreateWithoutGroomerExpensesInput>
+    connectOrCreate?: BookingCreateOrConnectWithoutGroomerExpensesInput
+    upsert?: BookingUpsertWithoutGroomerExpensesInput
+    disconnect?: BookingWhereInput | boolean
+    delete?: BookingWhereInput | boolean
+    connect?: BookingWhereUniqueInput
+    update?: XOR<XOR<BookingUpdateToOneWithWhereWithoutGroomerExpensesInput, BookingUpdateWithoutGroomerExpensesInput>, BookingUncheckedUpdateWithoutGroomerExpensesInput>
+  }
+
+  export type BookingCreateNestedOneWithoutGroomerFuelTripsInput = {
+    create?: XOR<BookingCreateWithoutGroomerFuelTripsInput, BookingUncheckedCreateWithoutGroomerFuelTripsInput>
+    connectOrCreate?: BookingCreateOrConnectWithoutGroomerFuelTripsInput
+    connect?: BookingWhereUniqueInput
+  }
+
+  export type TeamMemberCreateNestedOneWithoutFuelTripsInput = {
+    create?: XOR<TeamMemberCreateWithoutFuelTripsInput, TeamMemberUncheckedCreateWithoutFuelTripsInput>
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutFuelTripsInput
+    connect?: TeamMemberWhereUniqueInput
+  }
+
+  export type BookingUpdateOneRequiredWithoutGroomerFuelTripsNestedInput = {
+    create?: XOR<BookingCreateWithoutGroomerFuelTripsInput, BookingUncheckedCreateWithoutGroomerFuelTripsInput>
+    connectOrCreate?: BookingCreateOrConnectWithoutGroomerFuelTripsInput
+    upsert?: BookingUpsertWithoutGroomerFuelTripsInput
+    connect?: BookingWhereUniqueInput
+    update?: XOR<XOR<BookingUpdateToOneWithWhereWithoutGroomerFuelTripsInput, BookingUpdateWithoutGroomerFuelTripsInput>, BookingUncheckedUpdateWithoutGroomerFuelTripsInput>
+  }
+
+  export type TeamMemberUpdateOneRequiredWithoutFuelTripsNestedInput = {
+    create?: XOR<TeamMemberCreateWithoutFuelTripsInput, TeamMemberUncheckedCreateWithoutFuelTripsInput>
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutFuelTripsInput
+    upsert?: TeamMemberUpsertWithoutFuelTripsInput
+    connect?: TeamMemberWhereUniqueInput
+    update?: XOR<XOR<TeamMemberUpdateToOneWithWhereWithoutFuelTripsInput, TeamMemberUpdateWithoutFuelTripsInput>, TeamMemberUncheckedUpdateWithoutFuelTripsInput>
+  }
+
+  export type TeamMemberCreateNestedOneWithoutPayrollSnapshotsInput = {
+    create?: XOR<TeamMemberCreateWithoutPayrollSnapshotsInput, TeamMemberUncheckedCreateWithoutPayrollSnapshotsInput>
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutPayrollSnapshotsInput
+    connect?: TeamMemberWhereUniqueInput
+  }
+
+  export type TeamMemberUpdateOneRequiredWithoutPayrollSnapshotsNestedInput = {
+    create?: XOR<TeamMemberCreateWithoutPayrollSnapshotsInput, TeamMemberUncheckedCreateWithoutPayrollSnapshotsInput>
+    connectOrCreate?: TeamMemberCreateOrConnectWithoutPayrollSnapshotsInput
+    upsert?: TeamMemberUpsertWithoutPayrollSnapshotsInput
+    connect?: TeamMemberWhereUniqueInput
+    update?: XOR<XOR<TeamMemberUpdateToOneWithWhereWithoutPayrollSnapshotsInput, TeamMemberUpdateWithoutPayrollSnapshotsInput>, TeamMemberUncheckedUpdateWithoutPayrollSnapshotsInput>
   }
 
   export type TeamCreateNestedOneWithoutLeaderboardSnapshotsInput = {
@@ -61722,6 +71276,22 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type BookingCreateWithoutUserInput = {
     id?: string
     status?: string
@@ -61744,6 +71314,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -61777,6 +71350,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -61803,6 +71378,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -61835,6 +71413,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -61963,6 +71543,9 @@ export namespace Prisma {
     serviceLandmark?: StringNullableFilter<"Booking"> | string | null
     servicePincode?: StringNullableFilter<"Booking"> | string | null
     serviceLocationUrl?: StringNullableFilter<"Booking"> | string | null
+    serviceLat?: FloatNullableFilter<"Booking"> | number | null
+    serviceLng?: FloatNullableFilter<"Booking"> | number | null
+    serviceLocationSource?: StringNullableFilter<"Booking"> | string | null
     addressUpdatedAt?: DateTimeNullableFilter<"Booking"> | Date | string | null
     assignedTeamId?: StringNullableFilter<"Booking"> | string | null
     groomerMemberId?: StringNullableFilter<"Booking"> | string | null
@@ -62340,6 +71923,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -62373,6 +71959,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -62399,6 +71987,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -62431,6 +72022,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -62569,6 +72162,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -62603,6 +72199,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutCouponRedemptionsInput = {
@@ -62629,6 +72227,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -62661,6 +72262,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutCouponRedemptionsInput = {
@@ -62781,6 +72384,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -62815,6 +72421,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutCouponRedemptionsInput = {
@@ -62841,6 +72449,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -62873,6 +72484,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type UserUpsertWithoutCouponRedemptionsInput = {
@@ -63045,6 +72658,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -63078,6 +72694,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -63105,6 +72723,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     groomerMemberId?: string | null
     dispatchState?: string
@@ -63136,6 +72757,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -63245,6 +72868,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -63256,6 +72886,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestCreateNestedManyWithoutTeamMemberInput
@@ -63298,6 +72933,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -63309,6 +72951,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestUncheckedCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionUncheckedCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestUncheckedCreateNestedManyWithoutTeamMemberInput
@@ -63551,6 +73198,13 @@ export namespace Prisma {
     bankIfsc?: StringNullableFilter<"TeamMember"> | string | null
     bankName?: StringNullableFilter<"TeamMember"> | string | null
     upiId?: StringNullableFilter<"TeamMember"> | string | null
+    baseSalary?: IntFilter<"TeamMember"> | number
+    salaryEffectiveFromMonth?: StringNullableFilter<"TeamMember"> | string | null
+    homeAddress?: StringNullableFilter<"TeamMember"> | string | null
+    homeLat?: FloatNullableFilter<"TeamMember"> | number | null
+    homeLng?: FloatNullableFilter<"TeamMember"> | number | null
+    bikeAverageKmPerLitre?: FloatFilter<"TeamMember"> | number
+    fuelRatePerLitre?: FloatFilter<"TeamMember"> | number
     emergencyContactName?: StringNullableFilter<"TeamMember"> | string | null
     emergencyContactPhone?: StringNullableFilter<"TeamMember"> | string | null
     yearsExperience?: IntNullableFilter<"TeamMember"> | number | null
@@ -64070,6 +73724,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -64081,6 +73742,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestCreateNestedManyWithoutTeamMemberInput
@@ -64124,6 +73790,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -64134,6 +73807,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestUncheckedCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionUncheckedCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestUncheckedCreateNestedManyWithoutTeamMemberInput
@@ -64508,6 +74186,110 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type GroomerExpenseCreateWithoutBookingInput = {
+    id?: string
+    category: string
+    amount: number
+    billDate?: Date | string | null
+    billPhotoUrl: string
+    storageKey?: string | null
+    notes?: string | null
+    status?: string
+    reviewNote?: string | null
+    reviewedBy?: string | null
+    reviewedAt?: Date | string | null
+    submittedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    groomerMember: TeamMemberCreateNestedOneWithoutExpensesInput
+  }
+
+  export type GroomerExpenseUncheckedCreateWithoutBookingInput = {
+    id?: string
+    groomerMemberId: string
+    category: string
+    amount: number
+    billDate?: Date | string | null
+    billPhotoUrl: string
+    storageKey?: string | null
+    notes?: string | null
+    status?: string
+    reviewNote?: string | null
+    reviewedBy?: string | null
+    reviewedAt?: Date | string | null
+    submittedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerExpenseCreateOrConnectWithoutBookingInput = {
+    where: GroomerExpenseWhereUniqueInput
+    create: XOR<GroomerExpenseCreateWithoutBookingInput, GroomerExpenseUncheckedCreateWithoutBookingInput>
+  }
+
+  export type GroomerExpenseCreateManyBookingInputEnvelope = {
+    data: GroomerExpenseCreateManyBookingInput | GroomerExpenseCreateManyBookingInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GroomerFuelTripCreateWithoutBookingInput = {
+    id?: string
+    fromType: string
+    fromBookingId?: string | null
+    fromLat: number
+    fromLng: number
+    toLat: number
+    toLng: number
+    distanceKm: number
+    roadMultiplier?: number
+    litres: number
+    ratePerLitre: number
+    fuelCost: number
+    isEstimate?: boolean
+    isManuallyAdjusted?: boolean
+    originalDistanceKm?: number | null
+    originalFuelCost?: number | null
+    adjustmentReason?: string | null
+    calculatedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    groomerMember: TeamMemberCreateNestedOneWithoutFuelTripsInput
+  }
+
+  export type GroomerFuelTripUncheckedCreateWithoutBookingInput = {
+    id?: string
+    groomerMemberId: string
+    fromType: string
+    fromBookingId?: string | null
+    fromLat: number
+    fromLng: number
+    toLat: number
+    toLng: number
+    distanceKm: number
+    roadMultiplier?: number
+    litres: number
+    ratePerLitre: number
+    fuelCost: number
+    isEstimate?: boolean
+    isManuallyAdjusted?: boolean
+    originalDistanceKm?: number | null
+    originalFuelCost?: number | null
+    adjustmentReason?: string | null
+    calculatedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerFuelTripCreateOrConnectWithoutBookingInput = {
+    where: GroomerFuelTripWhereUniqueInput
+    create: XOR<GroomerFuelTripCreateWithoutBookingInput, GroomerFuelTripUncheckedCreateWithoutBookingInput>
+  }
+
+  export type GroomerFuelTripCreateManyBookingInputEnvelope = {
+    data: GroomerFuelTripCreateManyBookingInput | GroomerFuelTripCreateManyBookingInput[]
+    skipDuplicates?: boolean
+  }
+
   export type CouponRedemptionCreateWithoutBookingInput = {
     id?: string
     codeSnapshot: string
@@ -64694,6 +74476,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -64705,6 +74494,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUpdateManyWithoutTeamMemberNestedInput
@@ -64748,6 +74542,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -64758,6 +74559,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUncheckedUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUncheckedUpdateManyWithoutTeamMemberNestedInput
@@ -65062,6 +74868,88 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"GroomerRewardEvent"> | Date | string
   }
 
+  export type GroomerExpenseUpsertWithWhereUniqueWithoutBookingInput = {
+    where: GroomerExpenseWhereUniqueInput
+    update: XOR<GroomerExpenseUpdateWithoutBookingInput, GroomerExpenseUncheckedUpdateWithoutBookingInput>
+    create: XOR<GroomerExpenseCreateWithoutBookingInput, GroomerExpenseUncheckedCreateWithoutBookingInput>
+  }
+
+  export type GroomerExpenseUpdateWithWhereUniqueWithoutBookingInput = {
+    where: GroomerExpenseWhereUniqueInput
+    data: XOR<GroomerExpenseUpdateWithoutBookingInput, GroomerExpenseUncheckedUpdateWithoutBookingInput>
+  }
+
+  export type GroomerExpenseUpdateManyWithWhereWithoutBookingInput = {
+    where: GroomerExpenseScalarWhereInput
+    data: XOR<GroomerExpenseUpdateManyMutationInput, GroomerExpenseUncheckedUpdateManyWithoutBookingInput>
+  }
+
+  export type GroomerExpenseScalarWhereInput = {
+    AND?: GroomerExpenseScalarWhereInput | GroomerExpenseScalarWhereInput[]
+    OR?: GroomerExpenseScalarWhereInput[]
+    NOT?: GroomerExpenseScalarWhereInput | GroomerExpenseScalarWhereInput[]
+    id?: StringFilter<"GroomerExpense"> | string
+    groomerMemberId?: StringFilter<"GroomerExpense"> | string
+    bookingId?: StringNullableFilter<"GroomerExpense"> | string | null
+    category?: StringFilter<"GroomerExpense"> | string
+    amount?: IntFilter<"GroomerExpense"> | number
+    billDate?: DateTimeNullableFilter<"GroomerExpense"> | Date | string | null
+    billPhotoUrl?: StringFilter<"GroomerExpense"> | string
+    storageKey?: StringNullableFilter<"GroomerExpense"> | string | null
+    notes?: StringNullableFilter<"GroomerExpense"> | string | null
+    status?: StringFilter<"GroomerExpense"> | string
+    reviewNote?: StringNullableFilter<"GroomerExpense"> | string | null
+    reviewedBy?: StringNullableFilter<"GroomerExpense"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"GroomerExpense"> | Date | string | null
+    submittedAt?: DateTimeFilter<"GroomerExpense"> | Date | string
+    createdAt?: DateTimeFilter<"GroomerExpense"> | Date | string
+    updatedAt?: DateTimeFilter<"GroomerExpense"> | Date | string
+  }
+
+  export type GroomerFuelTripUpsertWithWhereUniqueWithoutBookingInput = {
+    where: GroomerFuelTripWhereUniqueInput
+    update: XOR<GroomerFuelTripUpdateWithoutBookingInput, GroomerFuelTripUncheckedUpdateWithoutBookingInput>
+    create: XOR<GroomerFuelTripCreateWithoutBookingInput, GroomerFuelTripUncheckedCreateWithoutBookingInput>
+  }
+
+  export type GroomerFuelTripUpdateWithWhereUniqueWithoutBookingInput = {
+    where: GroomerFuelTripWhereUniqueInput
+    data: XOR<GroomerFuelTripUpdateWithoutBookingInput, GroomerFuelTripUncheckedUpdateWithoutBookingInput>
+  }
+
+  export type GroomerFuelTripUpdateManyWithWhereWithoutBookingInput = {
+    where: GroomerFuelTripScalarWhereInput
+    data: XOR<GroomerFuelTripUpdateManyMutationInput, GroomerFuelTripUncheckedUpdateManyWithoutBookingInput>
+  }
+
+  export type GroomerFuelTripScalarWhereInput = {
+    AND?: GroomerFuelTripScalarWhereInput | GroomerFuelTripScalarWhereInput[]
+    OR?: GroomerFuelTripScalarWhereInput[]
+    NOT?: GroomerFuelTripScalarWhereInput | GroomerFuelTripScalarWhereInput[]
+    id?: StringFilter<"GroomerFuelTrip"> | string
+    bookingId?: StringFilter<"GroomerFuelTrip"> | string
+    groomerMemberId?: StringFilter<"GroomerFuelTrip"> | string
+    fromType?: StringFilter<"GroomerFuelTrip"> | string
+    fromBookingId?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    fromLat?: FloatFilter<"GroomerFuelTrip"> | number
+    fromLng?: FloatFilter<"GroomerFuelTrip"> | number
+    toLat?: FloatFilter<"GroomerFuelTrip"> | number
+    toLng?: FloatFilter<"GroomerFuelTrip"> | number
+    distanceKm?: FloatFilter<"GroomerFuelTrip"> | number
+    roadMultiplier?: FloatFilter<"GroomerFuelTrip"> | number
+    litres?: FloatFilter<"GroomerFuelTrip"> | number
+    ratePerLitre?: FloatFilter<"GroomerFuelTrip"> | number
+    fuelCost?: IntFilter<"GroomerFuelTrip"> | number
+    isEstimate?: BoolFilter<"GroomerFuelTrip"> | boolean
+    isManuallyAdjusted?: BoolFilter<"GroomerFuelTrip"> | boolean
+    originalDistanceKm?: FloatNullableFilter<"GroomerFuelTrip"> | number | null
+    originalFuelCost?: IntNullableFilter<"GroomerFuelTrip"> | number | null
+    adjustmentReason?: StringNullableFilter<"GroomerFuelTrip"> | string | null
+    calculatedAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
+    createdAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
+    updatedAt?: DateTimeFilter<"GroomerFuelTrip"> | Date | string
+  }
+
   export type CouponRedemptionUpsertWithWhereUniqueWithoutBookingInput = {
     where: CouponRedemptionWhereUniqueInput
     update: XOR<CouponRedemptionUpdateWithoutBookingInput, CouponRedemptionUncheckedUpdateWithoutBookingInput>
@@ -65141,6 +75029,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -65174,6 +75065,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -65201,6 +75094,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     dispatchState?: string
@@ -65232,6 +75128,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -65369,6 +75267,7 @@ export namespace Prisma {
     trustScoreSnapshot?: number
     performanceSnapshot?: number
     nextEligibleAt?: Date | string | null
+    recoverFromMonth?: string | null
     reviewNote?: string | null
     requestedBy?: string | null
     reviewedBy?: string | null
@@ -65388,6 +75287,7 @@ export namespace Prisma {
     trustScoreSnapshot?: number
     performanceSnapshot?: number
     nextEligibleAt?: Date | string | null
+    recoverFromMonth?: string | null
     reviewNote?: string | null
     requestedBy?: string | null
     reviewedBy?: string | null
@@ -65404,6 +75304,232 @@ export namespace Prisma {
 
   export type WorkforceSalaryAdvanceRequestCreateManyTeamMemberInputEnvelope = {
     data: WorkforceSalaryAdvanceRequestCreateManyTeamMemberInput | WorkforceSalaryAdvanceRequestCreateManyTeamMemberInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GroomerLedgerEntryCreateWithoutGroomerMemberInput = {
+    id?: string
+    monthBucket: string
+    type: string
+    direction: string
+    amount: number
+    sourceType?: string | null
+    sourceId?: string | null
+    description?: string | null
+    metadataJson?: string | null
+    createdBy?: string | null
+    occurredAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerLedgerEntryUncheckedCreateWithoutGroomerMemberInput = {
+    id?: string
+    monthBucket: string
+    type: string
+    direction: string
+    amount: number
+    sourceType?: string | null
+    sourceId?: string | null
+    description?: string | null
+    metadataJson?: string | null
+    createdBy?: string | null
+    occurredAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerLedgerEntryCreateOrConnectWithoutGroomerMemberInput = {
+    where: GroomerLedgerEntryWhereUniqueInput
+    create: XOR<GroomerLedgerEntryCreateWithoutGroomerMemberInput, GroomerLedgerEntryUncheckedCreateWithoutGroomerMemberInput>
+  }
+
+  export type GroomerLedgerEntryCreateManyGroomerMemberInputEnvelope = {
+    data: GroomerLedgerEntryCreateManyGroomerMemberInput | GroomerLedgerEntryCreateManyGroomerMemberInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GroomerCashDepositCreateWithoutGroomerMemberInput = {
+    id?: string
+    amount: number
+    depositMode?: string
+    referenceId?: string | null
+    notes?: string | null
+    recordedBy?: string | null
+    depositedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerCashDepositUncheckedCreateWithoutGroomerMemberInput = {
+    id?: string
+    amount: number
+    depositMode?: string
+    referenceId?: string | null
+    notes?: string | null
+    recordedBy?: string | null
+    depositedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerCashDepositCreateOrConnectWithoutGroomerMemberInput = {
+    where: GroomerCashDepositWhereUniqueInput
+    create: XOR<GroomerCashDepositCreateWithoutGroomerMemberInput, GroomerCashDepositUncheckedCreateWithoutGroomerMemberInput>
+  }
+
+  export type GroomerCashDepositCreateManyGroomerMemberInputEnvelope = {
+    data: GroomerCashDepositCreateManyGroomerMemberInput | GroomerCashDepositCreateManyGroomerMemberInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GroomerExpenseCreateWithoutGroomerMemberInput = {
+    id?: string
+    category: string
+    amount: number
+    billDate?: Date | string | null
+    billPhotoUrl: string
+    storageKey?: string | null
+    notes?: string | null
+    status?: string
+    reviewNote?: string | null
+    reviewedBy?: string | null
+    reviewedAt?: Date | string | null
+    submittedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    booking?: BookingCreateNestedOneWithoutGroomerExpensesInput
+  }
+
+  export type GroomerExpenseUncheckedCreateWithoutGroomerMemberInput = {
+    id?: string
+    bookingId?: string | null
+    category: string
+    amount: number
+    billDate?: Date | string | null
+    billPhotoUrl: string
+    storageKey?: string | null
+    notes?: string | null
+    status?: string
+    reviewNote?: string | null
+    reviewedBy?: string | null
+    reviewedAt?: Date | string | null
+    submittedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerExpenseCreateOrConnectWithoutGroomerMemberInput = {
+    where: GroomerExpenseWhereUniqueInput
+    create: XOR<GroomerExpenseCreateWithoutGroomerMemberInput, GroomerExpenseUncheckedCreateWithoutGroomerMemberInput>
+  }
+
+  export type GroomerExpenseCreateManyGroomerMemberInputEnvelope = {
+    data: GroomerExpenseCreateManyGroomerMemberInput | GroomerExpenseCreateManyGroomerMemberInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GroomerFuelTripCreateWithoutGroomerMemberInput = {
+    id?: string
+    fromType: string
+    fromBookingId?: string | null
+    fromLat: number
+    fromLng: number
+    toLat: number
+    toLng: number
+    distanceKm: number
+    roadMultiplier?: number
+    litres: number
+    ratePerLitre: number
+    fuelCost: number
+    isEstimate?: boolean
+    isManuallyAdjusted?: boolean
+    originalDistanceKm?: number | null
+    originalFuelCost?: number | null
+    adjustmentReason?: string | null
+    calculatedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    booking: BookingCreateNestedOneWithoutGroomerFuelTripsInput
+  }
+
+  export type GroomerFuelTripUncheckedCreateWithoutGroomerMemberInput = {
+    id?: string
+    bookingId: string
+    fromType: string
+    fromBookingId?: string | null
+    fromLat: number
+    fromLng: number
+    toLat: number
+    toLng: number
+    distanceKm: number
+    roadMultiplier?: number
+    litres: number
+    ratePerLitre: number
+    fuelCost: number
+    isEstimate?: boolean
+    isManuallyAdjusted?: boolean
+    originalDistanceKm?: number | null
+    originalFuelCost?: number | null
+    adjustmentReason?: string | null
+    calculatedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerFuelTripCreateOrConnectWithoutGroomerMemberInput = {
+    where: GroomerFuelTripWhereUniqueInput
+    create: XOR<GroomerFuelTripCreateWithoutGroomerMemberInput, GroomerFuelTripUncheckedCreateWithoutGroomerMemberInput>
+  }
+
+  export type GroomerFuelTripCreateManyGroomerMemberInputEnvelope = {
+    data: GroomerFuelTripCreateManyGroomerMemberInput | GroomerFuelTripCreateManyGroomerMemberInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GroomerPayrollSnapshotCreateWithoutGroomerMemberInput = {
+    id?: string
+    monthBucket: string
+    baseSalary: number
+    fuelReimbursements: number
+    otherReimbursements: number
+    incentives: number
+    payrollAdjustments?: number
+    advanceRecovery: number
+    netPayable: number
+    cashHeldSeparate: number
+    frozenBy?: string | null
+    frozenAt?: Date | string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerPayrollSnapshotUncheckedCreateWithoutGroomerMemberInput = {
+    id?: string
+    monthBucket: string
+    baseSalary: number
+    fuelReimbursements: number
+    otherReimbursements: number
+    incentives: number
+    payrollAdjustments?: number
+    advanceRecovery: number
+    netPayable: number
+    cashHeldSeparate: number
+    frozenBy?: string | null
+    frozenAt?: Date | string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerPayrollSnapshotCreateOrConnectWithoutGroomerMemberInput = {
+    where: GroomerPayrollSnapshotWhereUniqueInput
+    create: XOR<GroomerPayrollSnapshotCreateWithoutGroomerMemberInput, GroomerPayrollSnapshotUncheckedCreateWithoutGroomerMemberInput>
+  }
+
+  export type GroomerPayrollSnapshotCreateManyGroomerMemberInputEnvelope = {
+    data: GroomerPayrollSnapshotCreateManyGroomerMemberInput | GroomerPayrollSnapshotCreateManyGroomerMemberInput[]
     skipDuplicates?: boolean
   }
 
@@ -65703,6 +75829,7 @@ export namespace Prisma {
     trustScoreSnapshot?: IntFilter<"WorkforceSalaryAdvanceRequest"> | number
     performanceSnapshot?: IntFilter<"WorkforceSalaryAdvanceRequest"> | number
     nextEligibleAt?: DateTimeNullableFilter<"WorkforceSalaryAdvanceRequest"> | Date | string | null
+    recoverFromMonth?: StringNullableFilter<"WorkforceSalaryAdvanceRequest"> | string | null
     reviewNote?: StringNullableFilter<"WorkforceSalaryAdvanceRequest"> | string | null
     requestedBy?: StringNullableFilter<"WorkforceSalaryAdvanceRequest"> | string | null
     reviewedBy?: StringNullableFilter<"WorkforceSalaryAdvanceRequest"> | string | null
@@ -65710,6 +75837,144 @@ export namespace Prisma {
     reviewedAt?: DateTimeNullableFilter<"WorkforceSalaryAdvanceRequest"> | Date | string | null
     createdAt?: DateTimeFilter<"WorkforceSalaryAdvanceRequest"> | Date | string
     updatedAt?: DateTimeFilter<"WorkforceSalaryAdvanceRequest"> | Date | string
+  }
+
+  export type GroomerLedgerEntryUpsertWithWhereUniqueWithoutGroomerMemberInput = {
+    where: GroomerLedgerEntryWhereUniqueInput
+    update: XOR<GroomerLedgerEntryUpdateWithoutGroomerMemberInput, GroomerLedgerEntryUncheckedUpdateWithoutGroomerMemberInput>
+    create: XOR<GroomerLedgerEntryCreateWithoutGroomerMemberInput, GroomerLedgerEntryUncheckedCreateWithoutGroomerMemberInput>
+  }
+
+  export type GroomerLedgerEntryUpdateWithWhereUniqueWithoutGroomerMemberInput = {
+    where: GroomerLedgerEntryWhereUniqueInput
+    data: XOR<GroomerLedgerEntryUpdateWithoutGroomerMemberInput, GroomerLedgerEntryUncheckedUpdateWithoutGroomerMemberInput>
+  }
+
+  export type GroomerLedgerEntryUpdateManyWithWhereWithoutGroomerMemberInput = {
+    where: GroomerLedgerEntryScalarWhereInput
+    data: XOR<GroomerLedgerEntryUpdateManyMutationInput, GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberInput>
+  }
+
+  export type GroomerLedgerEntryScalarWhereInput = {
+    AND?: GroomerLedgerEntryScalarWhereInput | GroomerLedgerEntryScalarWhereInput[]
+    OR?: GroomerLedgerEntryScalarWhereInput[]
+    NOT?: GroomerLedgerEntryScalarWhereInput | GroomerLedgerEntryScalarWhereInput[]
+    id?: StringFilter<"GroomerLedgerEntry"> | string
+    groomerMemberId?: StringFilter<"GroomerLedgerEntry"> | string
+    monthBucket?: StringFilter<"GroomerLedgerEntry"> | string
+    type?: StringFilter<"GroomerLedgerEntry"> | string
+    direction?: StringFilter<"GroomerLedgerEntry"> | string
+    amount?: IntFilter<"GroomerLedgerEntry"> | number
+    sourceType?: StringNullableFilter<"GroomerLedgerEntry"> | string | null
+    sourceId?: StringNullableFilter<"GroomerLedgerEntry"> | string | null
+    description?: StringNullableFilter<"GroomerLedgerEntry"> | string | null
+    metadataJson?: StringNullableFilter<"GroomerLedgerEntry"> | string | null
+    createdBy?: StringNullableFilter<"GroomerLedgerEntry"> | string | null
+    occurredAt?: DateTimeFilter<"GroomerLedgerEntry"> | Date | string
+    createdAt?: DateTimeFilter<"GroomerLedgerEntry"> | Date | string
+    updatedAt?: DateTimeFilter<"GroomerLedgerEntry"> | Date | string
+  }
+
+  export type GroomerCashDepositUpsertWithWhereUniqueWithoutGroomerMemberInput = {
+    where: GroomerCashDepositWhereUniqueInput
+    update: XOR<GroomerCashDepositUpdateWithoutGroomerMemberInput, GroomerCashDepositUncheckedUpdateWithoutGroomerMemberInput>
+    create: XOR<GroomerCashDepositCreateWithoutGroomerMemberInput, GroomerCashDepositUncheckedCreateWithoutGroomerMemberInput>
+  }
+
+  export type GroomerCashDepositUpdateWithWhereUniqueWithoutGroomerMemberInput = {
+    where: GroomerCashDepositWhereUniqueInput
+    data: XOR<GroomerCashDepositUpdateWithoutGroomerMemberInput, GroomerCashDepositUncheckedUpdateWithoutGroomerMemberInput>
+  }
+
+  export type GroomerCashDepositUpdateManyWithWhereWithoutGroomerMemberInput = {
+    where: GroomerCashDepositScalarWhereInput
+    data: XOR<GroomerCashDepositUpdateManyMutationInput, GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberInput>
+  }
+
+  export type GroomerCashDepositScalarWhereInput = {
+    AND?: GroomerCashDepositScalarWhereInput | GroomerCashDepositScalarWhereInput[]
+    OR?: GroomerCashDepositScalarWhereInput[]
+    NOT?: GroomerCashDepositScalarWhereInput | GroomerCashDepositScalarWhereInput[]
+    id?: StringFilter<"GroomerCashDeposit"> | string
+    groomerMemberId?: StringFilter<"GroomerCashDeposit"> | string
+    amount?: IntFilter<"GroomerCashDeposit"> | number
+    depositMode?: StringFilter<"GroomerCashDeposit"> | string
+    referenceId?: StringNullableFilter<"GroomerCashDeposit"> | string | null
+    notes?: StringNullableFilter<"GroomerCashDeposit"> | string | null
+    recordedBy?: StringNullableFilter<"GroomerCashDeposit"> | string | null
+    depositedAt?: DateTimeFilter<"GroomerCashDeposit"> | Date | string
+    createdAt?: DateTimeFilter<"GroomerCashDeposit"> | Date | string
+    updatedAt?: DateTimeFilter<"GroomerCashDeposit"> | Date | string
+  }
+
+  export type GroomerExpenseUpsertWithWhereUniqueWithoutGroomerMemberInput = {
+    where: GroomerExpenseWhereUniqueInput
+    update: XOR<GroomerExpenseUpdateWithoutGroomerMemberInput, GroomerExpenseUncheckedUpdateWithoutGroomerMemberInput>
+    create: XOR<GroomerExpenseCreateWithoutGroomerMemberInput, GroomerExpenseUncheckedCreateWithoutGroomerMemberInput>
+  }
+
+  export type GroomerExpenseUpdateWithWhereUniqueWithoutGroomerMemberInput = {
+    where: GroomerExpenseWhereUniqueInput
+    data: XOR<GroomerExpenseUpdateWithoutGroomerMemberInput, GroomerExpenseUncheckedUpdateWithoutGroomerMemberInput>
+  }
+
+  export type GroomerExpenseUpdateManyWithWhereWithoutGroomerMemberInput = {
+    where: GroomerExpenseScalarWhereInput
+    data: XOR<GroomerExpenseUpdateManyMutationInput, GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberInput>
+  }
+
+  export type GroomerFuelTripUpsertWithWhereUniqueWithoutGroomerMemberInput = {
+    where: GroomerFuelTripWhereUniqueInput
+    update: XOR<GroomerFuelTripUpdateWithoutGroomerMemberInput, GroomerFuelTripUncheckedUpdateWithoutGroomerMemberInput>
+    create: XOR<GroomerFuelTripCreateWithoutGroomerMemberInput, GroomerFuelTripUncheckedCreateWithoutGroomerMemberInput>
+  }
+
+  export type GroomerFuelTripUpdateWithWhereUniqueWithoutGroomerMemberInput = {
+    where: GroomerFuelTripWhereUniqueInput
+    data: XOR<GroomerFuelTripUpdateWithoutGroomerMemberInput, GroomerFuelTripUncheckedUpdateWithoutGroomerMemberInput>
+  }
+
+  export type GroomerFuelTripUpdateManyWithWhereWithoutGroomerMemberInput = {
+    where: GroomerFuelTripScalarWhereInput
+    data: XOR<GroomerFuelTripUpdateManyMutationInput, GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberInput>
+  }
+
+  export type GroomerPayrollSnapshotUpsertWithWhereUniqueWithoutGroomerMemberInput = {
+    where: GroomerPayrollSnapshotWhereUniqueInput
+    update: XOR<GroomerPayrollSnapshotUpdateWithoutGroomerMemberInput, GroomerPayrollSnapshotUncheckedUpdateWithoutGroomerMemberInput>
+    create: XOR<GroomerPayrollSnapshotCreateWithoutGroomerMemberInput, GroomerPayrollSnapshotUncheckedCreateWithoutGroomerMemberInput>
+  }
+
+  export type GroomerPayrollSnapshotUpdateWithWhereUniqueWithoutGroomerMemberInput = {
+    where: GroomerPayrollSnapshotWhereUniqueInput
+    data: XOR<GroomerPayrollSnapshotUpdateWithoutGroomerMemberInput, GroomerPayrollSnapshotUncheckedUpdateWithoutGroomerMemberInput>
+  }
+
+  export type GroomerPayrollSnapshotUpdateManyWithWhereWithoutGroomerMemberInput = {
+    where: GroomerPayrollSnapshotScalarWhereInput
+    data: XOR<GroomerPayrollSnapshotUpdateManyMutationInput, GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberInput>
+  }
+
+  export type GroomerPayrollSnapshotScalarWhereInput = {
+    AND?: GroomerPayrollSnapshotScalarWhereInput | GroomerPayrollSnapshotScalarWhereInput[]
+    OR?: GroomerPayrollSnapshotScalarWhereInput[]
+    NOT?: GroomerPayrollSnapshotScalarWhereInput | GroomerPayrollSnapshotScalarWhereInput[]
+    id?: StringFilter<"GroomerPayrollSnapshot"> | string
+    groomerMemberId?: StringFilter<"GroomerPayrollSnapshot"> | string
+    monthBucket?: StringFilter<"GroomerPayrollSnapshot"> | string
+    baseSalary?: IntFilter<"GroomerPayrollSnapshot"> | number
+    fuelReimbursements?: IntFilter<"GroomerPayrollSnapshot"> | number
+    otherReimbursements?: IntFilter<"GroomerPayrollSnapshot"> | number
+    incentives?: IntFilter<"GroomerPayrollSnapshot"> | number
+    payrollAdjustments?: IntFilter<"GroomerPayrollSnapshot"> | number
+    advanceRecovery?: IntFilter<"GroomerPayrollSnapshot"> | number
+    netPayable?: IntFilter<"GroomerPayrollSnapshot"> | number
+    cashHeldSeparate?: IntFilter<"GroomerPayrollSnapshot"> | number
+    frozenBy?: StringNullableFilter<"GroomerPayrollSnapshot"> | string | null
+    frozenAt?: DateTimeFilter<"GroomerPayrollSnapshot"> | Date | string
+    notes?: StringNullableFilter<"GroomerPayrollSnapshot"> | string | null
+    createdAt?: DateTimeFilter<"GroomerPayrollSnapshot"> | Date | string
+    updatedAt?: DateTimeFilter<"GroomerPayrollSnapshot"> | Date | string
   }
 
   export type WorkforceReferralRecordUpsertWithWhereUniqueWithoutReferrerMemberInput = {
@@ -65839,6 +76104,1922 @@ export namespace Prisma {
     reviewNote?: StringNullableFilter<"WorkforceRewardRedemptionRequest"> | string | null
   }
 
+  export type TeamMemberCreateWithoutLedgerEntriesInput = {
+    id?: string
+    name: string
+    phone?: string | null
+    passwordHash?: string | null
+    passwordSetAt?: Date | string | null
+    role?: string
+    isActive?: boolean
+    joinedAt?: Date | string
+    currentXp?: number
+    lifetimeXp?: number
+    rewardPoints?: number
+    trustScore?: number
+    performanceScore?: number
+    currentLevel?: number
+    currentRank?: string
+    salaryHikeStage?: number
+    completedCount?: number
+    onTimeCount?: number
+    reviewCount?: number
+    highestReviewStreak?: number
+    punctualityStreak?: number
+    reviewStreak?: number
+    noLeaveStreakDays?: number
+    lastCompletedAt?: Date | string | null
+    lastReviewAt?: Date | string | null
+    lastOnTimeAt?: Date | string | null
+    aadhaarNumber?: string | null
+    aadhaarImageUrl?: string | null
+    panNumber?: string | null
+    panImageUrl?: string | null
+    bankAccountName?: string | null
+    bankAccountNumber?: string | null
+    bankIfsc?: string | null
+    bankName?: string | null
+    upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
+    emergencyContactName?: string | null
+    emergencyContactPhone?: string | null
+    yearsExperience?: number | null
+    experienceNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    team: TeamCreateNestedOneWithoutMembersInput
+    bookings?: BookingCreateNestedManyWithoutGroomerMemberInput
+    rewardEvents?: GroomerRewardEventCreateNestedManyWithoutTeamMemberInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotCreateNestedManyWithoutTeamMemberInput
+    leaveRequests?: WorkforceLeaveRequestCreateNestedManyWithoutTeamMemberInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestCreateNestedManyWithoutTeamMemberInput
+    cashDeposits?: GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput
+    referralsMade?: WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput
+    trainingCompletions?: TrainingCompletionCreateNestedManyWithoutTeamMemberInput
+    trainingInterests?: WorkforceTrainingInterestCreateNestedManyWithoutTeamMemberInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestCreateNestedManyWithoutTeamMemberInput
+  }
+
+  export type TeamMemberUncheckedCreateWithoutLedgerEntriesInput = {
+    id?: string
+    teamId: string
+    name: string
+    phone?: string | null
+    passwordHash?: string | null
+    passwordSetAt?: Date | string | null
+    role?: string
+    isActive?: boolean
+    joinedAt?: Date | string
+    currentXp?: number
+    lifetimeXp?: number
+    rewardPoints?: number
+    trustScore?: number
+    performanceScore?: number
+    currentLevel?: number
+    currentRank?: string
+    salaryHikeStage?: number
+    completedCount?: number
+    onTimeCount?: number
+    reviewCount?: number
+    highestReviewStreak?: number
+    punctualityStreak?: number
+    reviewStreak?: number
+    noLeaveStreakDays?: number
+    lastCompletedAt?: Date | string | null
+    lastReviewAt?: Date | string | null
+    lastOnTimeAt?: Date | string | null
+    aadhaarNumber?: string | null
+    aadhaarImageUrl?: string | null
+    panNumber?: string | null
+    panImageUrl?: string | null
+    bankAccountName?: string | null
+    bankAccountNumber?: string | null
+    bankIfsc?: string | null
+    bankName?: string | null
+    upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
+    emergencyContactName?: string | null
+    emergencyContactPhone?: string | null
+    yearsExperience?: number | null
+    experienceNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bookings?: BookingUncheckedCreateNestedManyWithoutGroomerMemberInput
+    rewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutTeamMemberInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedCreateNestedManyWithoutTeamMemberInput
+    leaveRequests?: WorkforceLeaveRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    cashDeposits?: GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput
+    referralsMade?: WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput
+    trainingCompletions?: TrainingCompletionUncheckedCreateNestedManyWithoutTeamMemberInput
+    trainingInterests?: WorkforceTrainingInterestUncheckedCreateNestedManyWithoutTeamMemberInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+  }
+
+  export type TeamMemberCreateOrConnectWithoutLedgerEntriesInput = {
+    where: TeamMemberWhereUniqueInput
+    create: XOR<TeamMemberCreateWithoutLedgerEntriesInput, TeamMemberUncheckedCreateWithoutLedgerEntriesInput>
+  }
+
+  export type TeamMemberUpsertWithoutLedgerEntriesInput = {
+    update: XOR<TeamMemberUpdateWithoutLedgerEntriesInput, TeamMemberUncheckedUpdateWithoutLedgerEntriesInput>
+    create: XOR<TeamMemberCreateWithoutLedgerEntriesInput, TeamMemberUncheckedCreateWithoutLedgerEntriesInput>
+    where?: TeamMemberWhereInput
+  }
+
+  export type TeamMemberUpdateToOneWithWhereWithoutLedgerEntriesInput = {
+    where?: TeamMemberWhereInput
+    data: XOR<TeamMemberUpdateWithoutLedgerEntriesInput, TeamMemberUncheckedUpdateWithoutLedgerEntriesInput>
+  }
+
+  export type TeamMemberUpdateWithoutLedgerEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordSetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentXp?: IntFieldUpdateOperationsInput | number
+    lifetimeXp?: IntFieldUpdateOperationsInput | number
+    rewardPoints?: IntFieldUpdateOperationsInput | number
+    trustScore?: IntFieldUpdateOperationsInput | number
+    performanceScore?: IntFieldUpdateOperationsInput | number
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    currentRank?: StringFieldUpdateOperationsInput | string
+    salaryHikeStage?: IntFieldUpdateOperationsInput | number
+    completedCount?: IntFieldUpdateOperationsInput | number
+    onTimeCount?: IntFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    highestReviewStreak?: IntFieldUpdateOperationsInput | number
+    punctualityStreak?: IntFieldUpdateOperationsInput | number
+    reviewStreak?: IntFieldUpdateOperationsInput | number
+    noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    aadhaarNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    aadhaarImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    panNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    panImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
+    emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    experienceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutMembersNestedInput
+    bookings?: BookingUpdateManyWithoutGroomerMemberNestedInput
+    rewardEvents?: GroomerRewardEventUpdateManyWithoutTeamMemberNestedInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotUpdateManyWithoutTeamMemberNestedInput
+    leaveRequests?: WorkforceLeaveRequestUpdateManyWithoutTeamMemberNestedInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUpdateManyWithoutTeamMemberNestedInput
+    cashDeposits?: GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput
+    referralsMade?: WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput
+    trainingCompletions?: TrainingCompletionUpdateManyWithoutTeamMemberNestedInput
+    trainingInterests?: WorkforceTrainingInterestUpdateManyWithoutTeamMemberNestedInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUpdateManyWithoutTeamMemberNestedInput
+  }
+
+  export type TeamMemberUncheckedUpdateWithoutLedgerEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordSetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentXp?: IntFieldUpdateOperationsInput | number
+    lifetimeXp?: IntFieldUpdateOperationsInput | number
+    rewardPoints?: IntFieldUpdateOperationsInput | number
+    trustScore?: IntFieldUpdateOperationsInput | number
+    performanceScore?: IntFieldUpdateOperationsInput | number
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    currentRank?: StringFieldUpdateOperationsInput | string
+    salaryHikeStage?: IntFieldUpdateOperationsInput | number
+    completedCount?: IntFieldUpdateOperationsInput | number
+    onTimeCount?: IntFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    highestReviewStreak?: IntFieldUpdateOperationsInput | number
+    punctualityStreak?: IntFieldUpdateOperationsInput | number
+    reviewStreak?: IntFieldUpdateOperationsInput | number
+    noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    aadhaarNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    aadhaarImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    panNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    panImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
+    emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    experienceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookings?: BookingUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    rewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutTeamMemberNestedInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedUpdateManyWithoutTeamMemberNestedInput
+    leaveRequests?: WorkforceLeaveRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    cashDeposits?: GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    referralsMade?: WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput
+    trainingCompletions?: TrainingCompletionUncheckedUpdateManyWithoutTeamMemberNestedInput
+    trainingInterests?: WorkforceTrainingInterestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+  }
+
+  export type TeamMemberCreateWithoutCashDepositsInput = {
+    id?: string
+    name: string
+    phone?: string | null
+    passwordHash?: string | null
+    passwordSetAt?: Date | string | null
+    role?: string
+    isActive?: boolean
+    joinedAt?: Date | string
+    currentXp?: number
+    lifetimeXp?: number
+    rewardPoints?: number
+    trustScore?: number
+    performanceScore?: number
+    currentLevel?: number
+    currentRank?: string
+    salaryHikeStage?: number
+    completedCount?: number
+    onTimeCount?: number
+    reviewCount?: number
+    highestReviewStreak?: number
+    punctualityStreak?: number
+    reviewStreak?: number
+    noLeaveStreakDays?: number
+    lastCompletedAt?: Date | string | null
+    lastReviewAt?: Date | string | null
+    lastOnTimeAt?: Date | string | null
+    aadhaarNumber?: string | null
+    aadhaarImageUrl?: string | null
+    panNumber?: string | null
+    panImageUrl?: string | null
+    bankAccountName?: string | null
+    bankAccountNumber?: string | null
+    bankIfsc?: string | null
+    bankName?: string | null
+    upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
+    emergencyContactName?: string | null
+    emergencyContactPhone?: string | null
+    yearsExperience?: number | null
+    experienceNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    team: TeamCreateNestedOneWithoutMembersInput
+    bookings?: BookingCreateNestedManyWithoutGroomerMemberInput
+    rewardEvents?: GroomerRewardEventCreateNestedManyWithoutTeamMemberInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotCreateNestedManyWithoutTeamMemberInput
+    leaveRequests?: WorkforceLeaveRequestCreateNestedManyWithoutTeamMemberInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput
+    referralsMade?: WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput
+    trainingCompletions?: TrainingCompletionCreateNestedManyWithoutTeamMemberInput
+    trainingInterests?: WorkforceTrainingInterestCreateNestedManyWithoutTeamMemberInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestCreateNestedManyWithoutTeamMemberInput
+  }
+
+  export type TeamMemberUncheckedCreateWithoutCashDepositsInput = {
+    id?: string
+    teamId: string
+    name: string
+    phone?: string | null
+    passwordHash?: string | null
+    passwordSetAt?: Date | string | null
+    role?: string
+    isActive?: boolean
+    joinedAt?: Date | string
+    currentXp?: number
+    lifetimeXp?: number
+    rewardPoints?: number
+    trustScore?: number
+    performanceScore?: number
+    currentLevel?: number
+    currentRank?: string
+    salaryHikeStage?: number
+    completedCount?: number
+    onTimeCount?: number
+    reviewCount?: number
+    highestReviewStreak?: number
+    punctualityStreak?: number
+    reviewStreak?: number
+    noLeaveStreakDays?: number
+    lastCompletedAt?: Date | string | null
+    lastReviewAt?: Date | string | null
+    lastOnTimeAt?: Date | string | null
+    aadhaarNumber?: string | null
+    aadhaarImageUrl?: string | null
+    panNumber?: string | null
+    panImageUrl?: string | null
+    bankAccountName?: string | null
+    bankAccountNumber?: string | null
+    bankIfsc?: string | null
+    bankName?: string | null
+    upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
+    emergencyContactName?: string | null
+    emergencyContactPhone?: string | null
+    yearsExperience?: number | null
+    experienceNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bookings?: BookingUncheckedCreateNestedManyWithoutGroomerMemberInput
+    rewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutTeamMemberInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedCreateNestedManyWithoutTeamMemberInput
+    leaveRequests?: WorkforceLeaveRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput
+    referralsMade?: WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput
+    trainingCompletions?: TrainingCompletionUncheckedCreateNestedManyWithoutTeamMemberInput
+    trainingInterests?: WorkforceTrainingInterestUncheckedCreateNestedManyWithoutTeamMemberInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+  }
+
+  export type TeamMemberCreateOrConnectWithoutCashDepositsInput = {
+    where: TeamMemberWhereUniqueInput
+    create: XOR<TeamMemberCreateWithoutCashDepositsInput, TeamMemberUncheckedCreateWithoutCashDepositsInput>
+  }
+
+  export type TeamMemberUpsertWithoutCashDepositsInput = {
+    update: XOR<TeamMemberUpdateWithoutCashDepositsInput, TeamMemberUncheckedUpdateWithoutCashDepositsInput>
+    create: XOR<TeamMemberCreateWithoutCashDepositsInput, TeamMemberUncheckedCreateWithoutCashDepositsInput>
+    where?: TeamMemberWhereInput
+  }
+
+  export type TeamMemberUpdateToOneWithWhereWithoutCashDepositsInput = {
+    where?: TeamMemberWhereInput
+    data: XOR<TeamMemberUpdateWithoutCashDepositsInput, TeamMemberUncheckedUpdateWithoutCashDepositsInput>
+  }
+
+  export type TeamMemberUpdateWithoutCashDepositsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordSetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentXp?: IntFieldUpdateOperationsInput | number
+    lifetimeXp?: IntFieldUpdateOperationsInput | number
+    rewardPoints?: IntFieldUpdateOperationsInput | number
+    trustScore?: IntFieldUpdateOperationsInput | number
+    performanceScore?: IntFieldUpdateOperationsInput | number
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    currentRank?: StringFieldUpdateOperationsInput | string
+    salaryHikeStage?: IntFieldUpdateOperationsInput | number
+    completedCount?: IntFieldUpdateOperationsInput | number
+    onTimeCount?: IntFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    highestReviewStreak?: IntFieldUpdateOperationsInput | number
+    punctualityStreak?: IntFieldUpdateOperationsInput | number
+    reviewStreak?: IntFieldUpdateOperationsInput | number
+    noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    aadhaarNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    aadhaarImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    panNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    panImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
+    emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    experienceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutMembersNestedInput
+    bookings?: BookingUpdateManyWithoutGroomerMemberNestedInput
+    rewardEvents?: GroomerRewardEventUpdateManyWithoutTeamMemberNestedInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotUpdateManyWithoutTeamMemberNestedInput
+    leaveRequests?: WorkforceLeaveRequestUpdateManyWithoutTeamMemberNestedInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput
+    referralsMade?: WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput
+    trainingCompletions?: TrainingCompletionUpdateManyWithoutTeamMemberNestedInput
+    trainingInterests?: WorkforceTrainingInterestUpdateManyWithoutTeamMemberNestedInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUpdateManyWithoutTeamMemberNestedInput
+  }
+
+  export type TeamMemberUncheckedUpdateWithoutCashDepositsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordSetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentXp?: IntFieldUpdateOperationsInput | number
+    lifetimeXp?: IntFieldUpdateOperationsInput | number
+    rewardPoints?: IntFieldUpdateOperationsInput | number
+    trustScore?: IntFieldUpdateOperationsInput | number
+    performanceScore?: IntFieldUpdateOperationsInput | number
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    currentRank?: StringFieldUpdateOperationsInput | string
+    salaryHikeStage?: IntFieldUpdateOperationsInput | number
+    completedCount?: IntFieldUpdateOperationsInput | number
+    onTimeCount?: IntFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    highestReviewStreak?: IntFieldUpdateOperationsInput | number
+    punctualityStreak?: IntFieldUpdateOperationsInput | number
+    reviewStreak?: IntFieldUpdateOperationsInput | number
+    noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    aadhaarNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    aadhaarImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    panNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    panImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
+    emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    experienceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookings?: BookingUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    rewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutTeamMemberNestedInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedUpdateManyWithoutTeamMemberNestedInput
+    leaveRequests?: WorkforceLeaveRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    referralsMade?: WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput
+    trainingCompletions?: TrainingCompletionUncheckedUpdateManyWithoutTeamMemberNestedInput
+    trainingInterests?: WorkforceTrainingInterestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+  }
+
+  export type TeamMemberCreateWithoutExpensesInput = {
+    id?: string
+    name: string
+    phone?: string | null
+    passwordHash?: string | null
+    passwordSetAt?: Date | string | null
+    role?: string
+    isActive?: boolean
+    joinedAt?: Date | string
+    currentXp?: number
+    lifetimeXp?: number
+    rewardPoints?: number
+    trustScore?: number
+    performanceScore?: number
+    currentLevel?: number
+    currentRank?: string
+    salaryHikeStage?: number
+    completedCount?: number
+    onTimeCount?: number
+    reviewCount?: number
+    highestReviewStreak?: number
+    punctualityStreak?: number
+    reviewStreak?: number
+    noLeaveStreakDays?: number
+    lastCompletedAt?: Date | string | null
+    lastReviewAt?: Date | string | null
+    lastOnTimeAt?: Date | string | null
+    aadhaarNumber?: string | null
+    aadhaarImageUrl?: string | null
+    panNumber?: string | null
+    panImageUrl?: string | null
+    bankAccountName?: string | null
+    bankAccountNumber?: string | null
+    bankIfsc?: string | null
+    bankName?: string | null
+    upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
+    emergencyContactName?: string | null
+    emergencyContactPhone?: string | null
+    yearsExperience?: number | null
+    experienceNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    team: TeamCreateNestedOneWithoutMembersInput
+    bookings?: BookingCreateNestedManyWithoutGroomerMemberInput
+    rewardEvents?: GroomerRewardEventCreateNestedManyWithoutTeamMemberInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotCreateNestedManyWithoutTeamMemberInput
+    leaveRequests?: WorkforceLeaveRequestCreateNestedManyWithoutTeamMemberInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput
+    referralsMade?: WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput
+    trainingCompletions?: TrainingCompletionCreateNestedManyWithoutTeamMemberInput
+    trainingInterests?: WorkforceTrainingInterestCreateNestedManyWithoutTeamMemberInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestCreateNestedManyWithoutTeamMemberInput
+  }
+
+  export type TeamMemberUncheckedCreateWithoutExpensesInput = {
+    id?: string
+    teamId: string
+    name: string
+    phone?: string | null
+    passwordHash?: string | null
+    passwordSetAt?: Date | string | null
+    role?: string
+    isActive?: boolean
+    joinedAt?: Date | string
+    currentXp?: number
+    lifetimeXp?: number
+    rewardPoints?: number
+    trustScore?: number
+    performanceScore?: number
+    currentLevel?: number
+    currentRank?: string
+    salaryHikeStage?: number
+    completedCount?: number
+    onTimeCount?: number
+    reviewCount?: number
+    highestReviewStreak?: number
+    punctualityStreak?: number
+    reviewStreak?: number
+    noLeaveStreakDays?: number
+    lastCompletedAt?: Date | string | null
+    lastReviewAt?: Date | string | null
+    lastOnTimeAt?: Date | string | null
+    aadhaarNumber?: string | null
+    aadhaarImageUrl?: string | null
+    panNumber?: string | null
+    panImageUrl?: string | null
+    bankAccountName?: string | null
+    bankAccountNumber?: string | null
+    bankIfsc?: string | null
+    bankName?: string | null
+    upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
+    emergencyContactName?: string | null
+    emergencyContactPhone?: string | null
+    yearsExperience?: number | null
+    experienceNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bookings?: BookingUncheckedCreateNestedManyWithoutGroomerMemberInput
+    rewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutTeamMemberInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedCreateNestedManyWithoutTeamMemberInput
+    leaveRequests?: WorkforceLeaveRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput
+    referralsMade?: WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput
+    trainingCompletions?: TrainingCompletionUncheckedCreateNestedManyWithoutTeamMemberInput
+    trainingInterests?: WorkforceTrainingInterestUncheckedCreateNestedManyWithoutTeamMemberInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+  }
+
+  export type TeamMemberCreateOrConnectWithoutExpensesInput = {
+    where: TeamMemberWhereUniqueInput
+    create: XOR<TeamMemberCreateWithoutExpensesInput, TeamMemberUncheckedCreateWithoutExpensesInput>
+  }
+
+  export type BookingCreateWithoutGroomerExpensesInput = {
+    id?: string
+    status?: string
+    paymentMethod?: string | null
+    paymentStatus?: string
+    couponCode?: string | null
+    originalAmount: number
+    finalAmount: number
+    razorpayOrderId?: string | null
+    razorpayPaymentId?: string | null
+    paymentPendingReason?: string | null
+    paymentGatewayError?: string | null
+    paymentExpiresAt?: Date | string | null
+    paymentFailedAt?: Date | string | null
+    paymentExpiredAt?: Date | string | null
+    selectedDate?: string | null
+    bookingWindowId?: string | null
+    bookingSource?: string
+    serviceAddress?: string | null
+    serviceLandmark?: string | null
+    servicePincode?: string | null
+    serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
+    addressUpdatedAt?: Date | string | null
+    dispatchState?: string
+    adminNote?: string | null
+    loyaltyEligible?: boolean
+    loyaltyCompletedCountBefore?: number | null
+    loyaltyCompletedCountAfter?: number | null
+    loyaltyRewardApplied?: boolean
+    loyaltyRewardLabel?: string | null
+    loyaltyCountedAt?: Date | string | null
+    loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutBookingsInput
+    service: ServiceCreateNestedOneWithoutBookingsInput
+    assignedTeam?: TeamCreateNestedOneWithoutAssignedBookingsInput
+    groomerMember?: TeamMemberCreateNestedOneWithoutBookingsInput
+    pets?: BookingPetCreateNestedManyWithoutBookingInput
+    slots?: BookingSlotCreateNestedManyWithoutBookingInput
+    relayCalls?: RelayCallSessionCreateNestedManyWithoutBookingInput
+    dispatchAlerts?: DispatchAlertCreateNestedManyWithoutBookingInput
+    customerMessages?: BookingCustomerMessageCreateNestedManyWithoutBookingInput
+    supportCases?: BookingSupportCaseCreateNestedManyWithoutBookingInput
+    events?: BookingEventCreateNestedManyWithoutBookingInput
+    sopSteps?: BookingSopStepCreateNestedManyWithoutBookingInput
+    sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
+    paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
+    groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
+  }
+
+  export type BookingUncheckedCreateWithoutGroomerExpensesInput = {
+    id?: string
+    userId: string
+    serviceId: string
+    status?: string
+    paymentMethod?: string | null
+    paymentStatus?: string
+    couponCode?: string | null
+    originalAmount: number
+    finalAmount: number
+    razorpayOrderId?: string | null
+    razorpayPaymentId?: string | null
+    paymentPendingReason?: string | null
+    paymentGatewayError?: string | null
+    paymentExpiresAt?: Date | string | null
+    paymentFailedAt?: Date | string | null
+    paymentExpiredAt?: Date | string | null
+    selectedDate?: string | null
+    bookingWindowId?: string | null
+    bookingSource?: string
+    serviceAddress?: string | null
+    serviceLandmark?: string | null
+    servicePincode?: string | null
+    serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
+    addressUpdatedAt?: Date | string | null
+    assignedTeamId?: string | null
+    groomerMemberId?: string | null
+    dispatchState?: string
+    adminNote?: string | null
+    loyaltyEligible?: boolean
+    loyaltyCompletedCountBefore?: number | null
+    loyaltyCompletedCountAfter?: number | null
+    loyaltyRewardApplied?: boolean
+    loyaltyRewardLabel?: string | null
+    loyaltyCountedAt?: Date | string | null
+    loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
+    slots?: BookingSlotUncheckedCreateNestedManyWithoutBookingInput
+    relayCalls?: RelayCallSessionUncheckedCreateNestedManyWithoutBookingInput
+    dispatchAlerts?: DispatchAlertUncheckedCreateNestedManyWithoutBookingInput
+    customerMessages?: BookingCustomerMessageUncheckedCreateNestedManyWithoutBookingInput
+    supportCases?: BookingSupportCaseUncheckedCreateNestedManyWithoutBookingInput
+    events?: BookingEventUncheckedCreateNestedManyWithoutBookingInput
+    sopSteps?: BookingSopStepUncheckedCreateNestedManyWithoutBookingInput
+    sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
+    paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
+    groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
+  }
+
+  export type BookingCreateOrConnectWithoutGroomerExpensesInput = {
+    where: BookingWhereUniqueInput
+    create: XOR<BookingCreateWithoutGroomerExpensesInput, BookingUncheckedCreateWithoutGroomerExpensesInput>
+  }
+
+  export type TeamMemberUpsertWithoutExpensesInput = {
+    update: XOR<TeamMemberUpdateWithoutExpensesInput, TeamMemberUncheckedUpdateWithoutExpensesInput>
+    create: XOR<TeamMemberCreateWithoutExpensesInput, TeamMemberUncheckedCreateWithoutExpensesInput>
+    where?: TeamMemberWhereInput
+  }
+
+  export type TeamMemberUpdateToOneWithWhereWithoutExpensesInput = {
+    where?: TeamMemberWhereInput
+    data: XOR<TeamMemberUpdateWithoutExpensesInput, TeamMemberUncheckedUpdateWithoutExpensesInput>
+  }
+
+  export type TeamMemberUpdateWithoutExpensesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordSetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentXp?: IntFieldUpdateOperationsInput | number
+    lifetimeXp?: IntFieldUpdateOperationsInput | number
+    rewardPoints?: IntFieldUpdateOperationsInput | number
+    trustScore?: IntFieldUpdateOperationsInput | number
+    performanceScore?: IntFieldUpdateOperationsInput | number
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    currentRank?: StringFieldUpdateOperationsInput | string
+    salaryHikeStage?: IntFieldUpdateOperationsInput | number
+    completedCount?: IntFieldUpdateOperationsInput | number
+    onTimeCount?: IntFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    highestReviewStreak?: IntFieldUpdateOperationsInput | number
+    punctualityStreak?: IntFieldUpdateOperationsInput | number
+    reviewStreak?: IntFieldUpdateOperationsInput | number
+    noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    aadhaarNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    aadhaarImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    panNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    panImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
+    emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    experienceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutMembersNestedInput
+    bookings?: BookingUpdateManyWithoutGroomerMemberNestedInput
+    rewardEvents?: GroomerRewardEventUpdateManyWithoutTeamMemberNestedInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotUpdateManyWithoutTeamMemberNestedInput
+    leaveRequests?: WorkforceLeaveRequestUpdateManyWithoutTeamMemberNestedInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput
+    referralsMade?: WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput
+    trainingCompletions?: TrainingCompletionUpdateManyWithoutTeamMemberNestedInput
+    trainingInterests?: WorkforceTrainingInterestUpdateManyWithoutTeamMemberNestedInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUpdateManyWithoutTeamMemberNestedInput
+  }
+
+  export type TeamMemberUncheckedUpdateWithoutExpensesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordSetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentXp?: IntFieldUpdateOperationsInput | number
+    lifetimeXp?: IntFieldUpdateOperationsInput | number
+    rewardPoints?: IntFieldUpdateOperationsInput | number
+    trustScore?: IntFieldUpdateOperationsInput | number
+    performanceScore?: IntFieldUpdateOperationsInput | number
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    currentRank?: StringFieldUpdateOperationsInput | string
+    salaryHikeStage?: IntFieldUpdateOperationsInput | number
+    completedCount?: IntFieldUpdateOperationsInput | number
+    onTimeCount?: IntFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    highestReviewStreak?: IntFieldUpdateOperationsInput | number
+    punctualityStreak?: IntFieldUpdateOperationsInput | number
+    reviewStreak?: IntFieldUpdateOperationsInput | number
+    noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    aadhaarNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    aadhaarImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    panNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    panImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
+    emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    experienceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookings?: BookingUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    rewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutTeamMemberNestedInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedUpdateManyWithoutTeamMemberNestedInput
+    leaveRequests?: WorkforceLeaveRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    referralsMade?: WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput
+    trainingCompletions?: TrainingCompletionUncheckedUpdateManyWithoutTeamMemberNestedInput
+    trainingInterests?: WorkforceTrainingInterestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+  }
+
+  export type BookingUpsertWithoutGroomerExpensesInput = {
+    update: XOR<BookingUpdateWithoutGroomerExpensesInput, BookingUncheckedUpdateWithoutGroomerExpensesInput>
+    create: XOR<BookingCreateWithoutGroomerExpensesInput, BookingUncheckedCreateWithoutGroomerExpensesInput>
+    where?: BookingWhereInput
+  }
+
+  export type BookingUpdateToOneWithWhereWithoutGroomerExpensesInput = {
+    where?: BookingWhereInput
+    data: XOR<BookingUpdateWithoutGroomerExpensesInput, BookingUncheckedUpdateWithoutGroomerExpensesInput>
+  }
+
+  export type BookingUpdateWithoutGroomerExpensesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    couponCode?: NullableStringFieldUpdateOperationsInput | string | null
+    originalAmount?: IntFieldUpdateOperationsInput | number
+    finalAmount?: IntFieldUpdateOperationsInput | number
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentPendingReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentGatewayError?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentFailedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentExpiredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    selectedDate?: NullableStringFieldUpdateOperationsInput | string | null
+    bookingWindowId?: NullableStringFieldUpdateOperationsInput | string | null
+    bookingSource?: StringFieldUpdateOperationsInput | string
+    serviceAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
+    servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
+    addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dispatchState?: StringFieldUpdateOperationsInput | string
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
+    loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
+    loyaltyCompletedCountAfter?: NullableIntFieldUpdateOperationsInput | number | null
+    loyaltyRewardApplied?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutBookingsNestedInput
+    service?: ServiceUpdateOneRequiredWithoutBookingsNestedInput
+    assignedTeam?: TeamUpdateOneWithoutAssignedBookingsNestedInput
+    groomerMember?: TeamMemberUpdateOneWithoutBookingsNestedInput
+    pets?: BookingPetUpdateManyWithoutBookingNestedInput
+    slots?: BookingSlotUpdateManyWithoutBookingNestedInput
+    relayCalls?: RelayCallSessionUpdateManyWithoutBookingNestedInput
+    dispatchAlerts?: DispatchAlertUpdateManyWithoutBookingNestedInput
+    customerMessages?: BookingCustomerMessageUpdateManyWithoutBookingNestedInput
+    supportCases?: BookingSupportCaseUpdateManyWithoutBookingNestedInput
+    events?: BookingEventUpdateManyWithoutBookingNestedInput
+    sopSteps?: BookingSopStepUpdateManyWithoutBookingNestedInput
+    sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
+    paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
+    groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
+  }
+
+  export type BookingUncheckedUpdateWithoutGroomerExpensesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    serviceId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    couponCode?: NullableStringFieldUpdateOperationsInput | string | null
+    originalAmount?: IntFieldUpdateOperationsInput | number
+    finalAmount?: IntFieldUpdateOperationsInput | number
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentPendingReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentGatewayError?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentFailedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentExpiredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    selectedDate?: NullableStringFieldUpdateOperationsInput | string | null
+    bookingWindowId?: NullableStringFieldUpdateOperationsInput | string | null
+    bookingSource?: StringFieldUpdateOperationsInput | string
+    serviceAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
+    servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
+    addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
+    groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchState?: StringFieldUpdateOperationsInput | string
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
+    loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
+    loyaltyCompletedCountAfter?: NullableIntFieldUpdateOperationsInput | number | null
+    loyaltyRewardApplied?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
+    slots?: BookingSlotUncheckedUpdateManyWithoutBookingNestedInput
+    relayCalls?: RelayCallSessionUncheckedUpdateManyWithoutBookingNestedInput
+    dispatchAlerts?: DispatchAlertUncheckedUpdateManyWithoutBookingNestedInput
+    customerMessages?: BookingCustomerMessageUncheckedUpdateManyWithoutBookingNestedInput
+    supportCases?: BookingSupportCaseUncheckedUpdateManyWithoutBookingNestedInput
+    events?: BookingEventUncheckedUpdateManyWithoutBookingNestedInput
+    sopSteps?: BookingSopStepUncheckedUpdateManyWithoutBookingNestedInput
+    sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
+    paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
+    groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
+  }
+
+  export type BookingCreateWithoutGroomerFuelTripsInput = {
+    id?: string
+    status?: string
+    paymentMethod?: string | null
+    paymentStatus?: string
+    couponCode?: string | null
+    originalAmount: number
+    finalAmount: number
+    razorpayOrderId?: string | null
+    razorpayPaymentId?: string | null
+    paymentPendingReason?: string | null
+    paymentGatewayError?: string | null
+    paymentExpiresAt?: Date | string | null
+    paymentFailedAt?: Date | string | null
+    paymentExpiredAt?: Date | string | null
+    selectedDate?: string | null
+    bookingWindowId?: string | null
+    bookingSource?: string
+    serviceAddress?: string | null
+    serviceLandmark?: string | null
+    servicePincode?: string | null
+    serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
+    addressUpdatedAt?: Date | string | null
+    dispatchState?: string
+    adminNote?: string | null
+    loyaltyEligible?: boolean
+    loyaltyCompletedCountBefore?: number | null
+    loyaltyCompletedCountAfter?: number | null
+    loyaltyRewardApplied?: boolean
+    loyaltyRewardLabel?: string | null
+    loyaltyCountedAt?: Date | string | null
+    loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutBookingsInput
+    service: ServiceCreateNestedOneWithoutBookingsInput
+    assignedTeam?: TeamCreateNestedOneWithoutAssignedBookingsInput
+    groomerMember?: TeamMemberCreateNestedOneWithoutBookingsInput
+    pets?: BookingPetCreateNestedManyWithoutBookingInput
+    slots?: BookingSlotCreateNestedManyWithoutBookingInput
+    relayCalls?: RelayCallSessionCreateNestedManyWithoutBookingInput
+    dispatchAlerts?: DispatchAlertCreateNestedManyWithoutBookingInput
+    customerMessages?: BookingCustomerMessageCreateNestedManyWithoutBookingInput
+    supportCases?: BookingSupportCaseCreateNestedManyWithoutBookingInput
+    events?: BookingEventCreateNestedManyWithoutBookingInput
+    sopSteps?: BookingSopStepCreateNestedManyWithoutBookingInput
+    sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
+    paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
+    groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
+  }
+
+  export type BookingUncheckedCreateWithoutGroomerFuelTripsInput = {
+    id?: string
+    userId: string
+    serviceId: string
+    status?: string
+    paymentMethod?: string | null
+    paymentStatus?: string
+    couponCode?: string | null
+    originalAmount: number
+    finalAmount: number
+    razorpayOrderId?: string | null
+    razorpayPaymentId?: string | null
+    paymentPendingReason?: string | null
+    paymentGatewayError?: string | null
+    paymentExpiresAt?: Date | string | null
+    paymentFailedAt?: Date | string | null
+    paymentExpiredAt?: Date | string | null
+    selectedDate?: string | null
+    bookingWindowId?: string | null
+    bookingSource?: string
+    serviceAddress?: string | null
+    serviceLandmark?: string | null
+    servicePincode?: string | null
+    serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
+    addressUpdatedAt?: Date | string | null
+    assignedTeamId?: string | null
+    groomerMemberId?: string | null
+    dispatchState?: string
+    adminNote?: string | null
+    loyaltyEligible?: boolean
+    loyaltyCompletedCountBefore?: number | null
+    loyaltyCompletedCountAfter?: number | null
+    loyaltyRewardApplied?: boolean
+    loyaltyRewardLabel?: string | null
+    loyaltyCountedAt?: Date | string | null
+    loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
+    slots?: BookingSlotUncheckedCreateNestedManyWithoutBookingInput
+    relayCalls?: RelayCallSessionUncheckedCreateNestedManyWithoutBookingInput
+    dispatchAlerts?: DispatchAlertUncheckedCreateNestedManyWithoutBookingInput
+    customerMessages?: BookingCustomerMessageUncheckedCreateNestedManyWithoutBookingInput
+    supportCases?: BookingSupportCaseUncheckedCreateNestedManyWithoutBookingInput
+    events?: BookingEventUncheckedCreateNestedManyWithoutBookingInput
+    sopSteps?: BookingSopStepUncheckedCreateNestedManyWithoutBookingInput
+    sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
+    paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
+    groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
+  }
+
+  export type BookingCreateOrConnectWithoutGroomerFuelTripsInput = {
+    where: BookingWhereUniqueInput
+    create: XOR<BookingCreateWithoutGroomerFuelTripsInput, BookingUncheckedCreateWithoutGroomerFuelTripsInput>
+  }
+
+  export type TeamMemberCreateWithoutFuelTripsInput = {
+    id?: string
+    name: string
+    phone?: string | null
+    passwordHash?: string | null
+    passwordSetAt?: Date | string | null
+    role?: string
+    isActive?: boolean
+    joinedAt?: Date | string
+    currentXp?: number
+    lifetimeXp?: number
+    rewardPoints?: number
+    trustScore?: number
+    performanceScore?: number
+    currentLevel?: number
+    currentRank?: string
+    salaryHikeStage?: number
+    completedCount?: number
+    onTimeCount?: number
+    reviewCount?: number
+    highestReviewStreak?: number
+    punctualityStreak?: number
+    reviewStreak?: number
+    noLeaveStreakDays?: number
+    lastCompletedAt?: Date | string | null
+    lastReviewAt?: Date | string | null
+    lastOnTimeAt?: Date | string | null
+    aadhaarNumber?: string | null
+    aadhaarImageUrl?: string | null
+    panNumber?: string | null
+    panImageUrl?: string | null
+    bankAccountName?: string | null
+    bankAccountNumber?: string | null
+    bankIfsc?: string | null
+    bankName?: string | null
+    upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
+    emergencyContactName?: string | null
+    emergencyContactPhone?: string | null
+    yearsExperience?: number | null
+    experienceNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    team: TeamCreateNestedOneWithoutMembersInput
+    bookings?: BookingCreateNestedManyWithoutGroomerMemberInput
+    rewardEvents?: GroomerRewardEventCreateNestedManyWithoutTeamMemberInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotCreateNestedManyWithoutTeamMemberInput
+    leaveRequests?: WorkforceLeaveRequestCreateNestedManyWithoutTeamMemberInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput
+    referralsMade?: WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput
+    trainingCompletions?: TrainingCompletionCreateNestedManyWithoutTeamMemberInput
+    trainingInterests?: WorkforceTrainingInterestCreateNestedManyWithoutTeamMemberInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestCreateNestedManyWithoutTeamMemberInput
+  }
+
+  export type TeamMemberUncheckedCreateWithoutFuelTripsInput = {
+    id?: string
+    teamId: string
+    name: string
+    phone?: string | null
+    passwordHash?: string | null
+    passwordSetAt?: Date | string | null
+    role?: string
+    isActive?: boolean
+    joinedAt?: Date | string
+    currentXp?: number
+    lifetimeXp?: number
+    rewardPoints?: number
+    trustScore?: number
+    performanceScore?: number
+    currentLevel?: number
+    currentRank?: string
+    salaryHikeStage?: number
+    completedCount?: number
+    onTimeCount?: number
+    reviewCount?: number
+    highestReviewStreak?: number
+    punctualityStreak?: number
+    reviewStreak?: number
+    noLeaveStreakDays?: number
+    lastCompletedAt?: Date | string | null
+    lastReviewAt?: Date | string | null
+    lastOnTimeAt?: Date | string | null
+    aadhaarNumber?: string | null
+    aadhaarImageUrl?: string | null
+    panNumber?: string | null
+    panImageUrl?: string | null
+    bankAccountName?: string | null
+    bankAccountNumber?: string | null
+    bankIfsc?: string | null
+    bankName?: string | null
+    upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
+    emergencyContactName?: string | null
+    emergencyContactPhone?: string | null
+    yearsExperience?: number | null
+    experienceNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bookings?: BookingUncheckedCreateNestedManyWithoutGroomerMemberInput
+    rewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutTeamMemberInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedCreateNestedManyWithoutTeamMemberInput
+    leaveRequests?: WorkforceLeaveRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput
+    referralsMade?: WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput
+    trainingCompletions?: TrainingCompletionUncheckedCreateNestedManyWithoutTeamMemberInput
+    trainingInterests?: WorkforceTrainingInterestUncheckedCreateNestedManyWithoutTeamMemberInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+  }
+
+  export type TeamMemberCreateOrConnectWithoutFuelTripsInput = {
+    where: TeamMemberWhereUniqueInput
+    create: XOR<TeamMemberCreateWithoutFuelTripsInput, TeamMemberUncheckedCreateWithoutFuelTripsInput>
+  }
+
+  export type BookingUpsertWithoutGroomerFuelTripsInput = {
+    update: XOR<BookingUpdateWithoutGroomerFuelTripsInput, BookingUncheckedUpdateWithoutGroomerFuelTripsInput>
+    create: XOR<BookingCreateWithoutGroomerFuelTripsInput, BookingUncheckedCreateWithoutGroomerFuelTripsInput>
+    where?: BookingWhereInput
+  }
+
+  export type BookingUpdateToOneWithWhereWithoutGroomerFuelTripsInput = {
+    where?: BookingWhereInput
+    data: XOR<BookingUpdateWithoutGroomerFuelTripsInput, BookingUncheckedUpdateWithoutGroomerFuelTripsInput>
+  }
+
+  export type BookingUpdateWithoutGroomerFuelTripsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    couponCode?: NullableStringFieldUpdateOperationsInput | string | null
+    originalAmount?: IntFieldUpdateOperationsInput | number
+    finalAmount?: IntFieldUpdateOperationsInput | number
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentPendingReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentGatewayError?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentFailedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentExpiredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    selectedDate?: NullableStringFieldUpdateOperationsInput | string | null
+    bookingWindowId?: NullableStringFieldUpdateOperationsInput | string | null
+    bookingSource?: StringFieldUpdateOperationsInput | string
+    serviceAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
+    servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
+    addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dispatchState?: StringFieldUpdateOperationsInput | string
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
+    loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
+    loyaltyCompletedCountAfter?: NullableIntFieldUpdateOperationsInput | number | null
+    loyaltyRewardApplied?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutBookingsNestedInput
+    service?: ServiceUpdateOneRequiredWithoutBookingsNestedInput
+    assignedTeam?: TeamUpdateOneWithoutAssignedBookingsNestedInput
+    groomerMember?: TeamMemberUpdateOneWithoutBookingsNestedInput
+    pets?: BookingPetUpdateManyWithoutBookingNestedInput
+    slots?: BookingSlotUpdateManyWithoutBookingNestedInput
+    relayCalls?: RelayCallSessionUpdateManyWithoutBookingNestedInput
+    dispatchAlerts?: DispatchAlertUpdateManyWithoutBookingNestedInput
+    customerMessages?: BookingCustomerMessageUpdateManyWithoutBookingNestedInput
+    supportCases?: BookingSupportCaseUpdateManyWithoutBookingNestedInput
+    events?: BookingEventUpdateManyWithoutBookingNestedInput
+    sopSteps?: BookingSopStepUpdateManyWithoutBookingNestedInput
+    sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
+    paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
+    groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
+  }
+
+  export type BookingUncheckedUpdateWithoutGroomerFuelTripsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    serviceId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    couponCode?: NullableStringFieldUpdateOperationsInput | string | null
+    originalAmount?: IntFieldUpdateOperationsInput | number
+    finalAmount?: IntFieldUpdateOperationsInput | number
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentPendingReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentGatewayError?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentFailedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentExpiredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    selectedDate?: NullableStringFieldUpdateOperationsInput | string | null
+    bookingWindowId?: NullableStringFieldUpdateOperationsInput | string | null
+    bookingSource?: StringFieldUpdateOperationsInput | string
+    serviceAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
+    servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
+    addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
+    groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchState?: StringFieldUpdateOperationsInput | string
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
+    loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
+    loyaltyCompletedCountAfter?: NullableIntFieldUpdateOperationsInput | number | null
+    loyaltyRewardApplied?: BoolFieldUpdateOperationsInput | boolean
+    loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
+    slots?: BookingSlotUncheckedUpdateManyWithoutBookingNestedInput
+    relayCalls?: RelayCallSessionUncheckedUpdateManyWithoutBookingNestedInput
+    dispatchAlerts?: DispatchAlertUncheckedUpdateManyWithoutBookingNestedInput
+    customerMessages?: BookingCustomerMessageUncheckedUpdateManyWithoutBookingNestedInput
+    supportCases?: BookingSupportCaseUncheckedUpdateManyWithoutBookingNestedInput
+    events?: BookingEventUncheckedUpdateManyWithoutBookingNestedInput
+    sopSteps?: BookingSopStepUncheckedUpdateManyWithoutBookingNestedInput
+    sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
+    paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
+    groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
+  }
+
+  export type TeamMemberUpsertWithoutFuelTripsInput = {
+    update: XOR<TeamMemberUpdateWithoutFuelTripsInput, TeamMemberUncheckedUpdateWithoutFuelTripsInput>
+    create: XOR<TeamMemberCreateWithoutFuelTripsInput, TeamMemberUncheckedCreateWithoutFuelTripsInput>
+    where?: TeamMemberWhereInput
+  }
+
+  export type TeamMemberUpdateToOneWithWhereWithoutFuelTripsInput = {
+    where?: TeamMemberWhereInput
+    data: XOR<TeamMemberUpdateWithoutFuelTripsInput, TeamMemberUncheckedUpdateWithoutFuelTripsInput>
+  }
+
+  export type TeamMemberUpdateWithoutFuelTripsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordSetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentXp?: IntFieldUpdateOperationsInput | number
+    lifetimeXp?: IntFieldUpdateOperationsInput | number
+    rewardPoints?: IntFieldUpdateOperationsInput | number
+    trustScore?: IntFieldUpdateOperationsInput | number
+    performanceScore?: IntFieldUpdateOperationsInput | number
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    currentRank?: StringFieldUpdateOperationsInput | string
+    salaryHikeStage?: IntFieldUpdateOperationsInput | number
+    completedCount?: IntFieldUpdateOperationsInput | number
+    onTimeCount?: IntFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    highestReviewStreak?: IntFieldUpdateOperationsInput | number
+    punctualityStreak?: IntFieldUpdateOperationsInput | number
+    reviewStreak?: IntFieldUpdateOperationsInput | number
+    noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    aadhaarNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    aadhaarImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    panNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    panImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
+    emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    experienceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutMembersNestedInput
+    bookings?: BookingUpdateManyWithoutGroomerMemberNestedInput
+    rewardEvents?: GroomerRewardEventUpdateManyWithoutTeamMemberNestedInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotUpdateManyWithoutTeamMemberNestedInput
+    leaveRequests?: WorkforceLeaveRequestUpdateManyWithoutTeamMemberNestedInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput
+    referralsMade?: WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput
+    trainingCompletions?: TrainingCompletionUpdateManyWithoutTeamMemberNestedInput
+    trainingInterests?: WorkforceTrainingInterestUpdateManyWithoutTeamMemberNestedInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUpdateManyWithoutTeamMemberNestedInput
+  }
+
+  export type TeamMemberUncheckedUpdateWithoutFuelTripsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordSetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentXp?: IntFieldUpdateOperationsInput | number
+    lifetimeXp?: IntFieldUpdateOperationsInput | number
+    rewardPoints?: IntFieldUpdateOperationsInput | number
+    trustScore?: IntFieldUpdateOperationsInput | number
+    performanceScore?: IntFieldUpdateOperationsInput | number
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    currentRank?: StringFieldUpdateOperationsInput | string
+    salaryHikeStage?: IntFieldUpdateOperationsInput | number
+    completedCount?: IntFieldUpdateOperationsInput | number
+    onTimeCount?: IntFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    highestReviewStreak?: IntFieldUpdateOperationsInput | number
+    punctualityStreak?: IntFieldUpdateOperationsInput | number
+    reviewStreak?: IntFieldUpdateOperationsInput | number
+    noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    aadhaarNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    aadhaarImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    panNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    panImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
+    emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    experienceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookings?: BookingUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    rewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutTeamMemberNestedInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedUpdateManyWithoutTeamMemberNestedInput
+    leaveRequests?: WorkforceLeaveRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    referralsMade?: WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput
+    trainingCompletions?: TrainingCompletionUncheckedUpdateManyWithoutTeamMemberNestedInput
+    trainingInterests?: WorkforceTrainingInterestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+  }
+
+  export type TeamMemberCreateWithoutPayrollSnapshotsInput = {
+    id?: string
+    name: string
+    phone?: string | null
+    passwordHash?: string | null
+    passwordSetAt?: Date | string | null
+    role?: string
+    isActive?: boolean
+    joinedAt?: Date | string
+    currentXp?: number
+    lifetimeXp?: number
+    rewardPoints?: number
+    trustScore?: number
+    performanceScore?: number
+    currentLevel?: number
+    currentRank?: string
+    salaryHikeStage?: number
+    completedCount?: number
+    onTimeCount?: number
+    reviewCount?: number
+    highestReviewStreak?: number
+    punctualityStreak?: number
+    reviewStreak?: number
+    noLeaveStreakDays?: number
+    lastCompletedAt?: Date | string | null
+    lastReviewAt?: Date | string | null
+    lastOnTimeAt?: Date | string | null
+    aadhaarNumber?: string | null
+    aadhaarImageUrl?: string | null
+    panNumber?: string | null
+    panImageUrl?: string | null
+    bankAccountName?: string | null
+    bankAccountNumber?: string | null
+    bankIfsc?: string | null
+    bankName?: string | null
+    upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
+    emergencyContactName?: string | null
+    emergencyContactPhone?: string | null
+    yearsExperience?: number | null
+    experienceNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    team: TeamCreateNestedOneWithoutMembersInput
+    bookings?: BookingCreateNestedManyWithoutGroomerMemberInput
+    rewardEvents?: GroomerRewardEventCreateNestedManyWithoutTeamMemberInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotCreateNestedManyWithoutTeamMemberInput
+    leaveRequests?: WorkforceLeaveRequestCreateNestedManyWithoutTeamMemberInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput
+    referralsMade?: WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput
+    trainingCompletions?: TrainingCompletionCreateNestedManyWithoutTeamMemberInput
+    trainingInterests?: WorkforceTrainingInterestCreateNestedManyWithoutTeamMemberInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestCreateNestedManyWithoutTeamMemberInput
+  }
+
+  export type TeamMemberUncheckedCreateWithoutPayrollSnapshotsInput = {
+    id?: string
+    teamId: string
+    name: string
+    phone?: string | null
+    passwordHash?: string | null
+    passwordSetAt?: Date | string | null
+    role?: string
+    isActive?: boolean
+    joinedAt?: Date | string
+    currentXp?: number
+    lifetimeXp?: number
+    rewardPoints?: number
+    trustScore?: number
+    performanceScore?: number
+    currentLevel?: number
+    currentRank?: string
+    salaryHikeStage?: number
+    completedCount?: number
+    onTimeCount?: number
+    reviewCount?: number
+    highestReviewStreak?: number
+    punctualityStreak?: number
+    reviewStreak?: number
+    noLeaveStreakDays?: number
+    lastCompletedAt?: Date | string | null
+    lastReviewAt?: Date | string | null
+    lastOnTimeAt?: Date | string | null
+    aadhaarNumber?: string | null
+    aadhaarImageUrl?: string | null
+    panNumber?: string | null
+    panImageUrl?: string | null
+    bankAccountName?: string | null
+    bankAccountNumber?: string | null
+    bankIfsc?: string | null
+    bankName?: string | null
+    upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
+    emergencyContactName?: string | null
+    emergencyContactPhone?: string | null
+    yearsExperience?: number | null
+    experienceNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bookings?: BookingUncheckedCreateNestedManyWithoutGroomerMemberInput
+    rewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutTeamMemberInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedCreateNestedManyWithoutTeamMemberInput
+    leaveRequests?: WorkforceLeaveRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput
+    referralsMade?: WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput
+    trainingCompletions?: TrainingCompletionUncheckedCreateNestedManyWithoutTeamMemberInput
+    trainingInterests?: WorkforceTrainingInterestUncheckedCreateNestedManyWithoutTeamMemberInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+  }
+
+  export type TeamMemberCreateOrConnectWithoutPayrollSnapshotsInput = {
+    where: TeamMemberWhereUniqueInput
+    create: XOR<TeamMemberCreateWithoutPayrollSnapshotsInput, TeamMemberUncheckedCreateWithoutPayrollSnapshotsInput>
+  }
+
+  export type TeamMemberUpsertWithoutPayrollSnapshotsInput = {
+    update: XOR<TeamMemberUpdateWithoutPayrollSnapshotsInput, TeamMemberUncheckedUpdateWithoutPayrollSnapshotsInput>
+    create: XOR<TeamMemberCreateWithoutPayrollSnapshotsInput, TeamMemberUncheckedCreateWithoutPayrollSnapshotsInput>
+    where?: TeamMemberWhereInput
+  }
+
+  export type TeamMemberUpdateToOneWithWhereWithoutPayrollSnapshotsInput = {
+    where?: TeamMemberWhereInput
+    data: XOR<TeamMemberUpdateWithoutPayrollSnapshotsInput, TeamMemberUncheckedUpdateWithoutPayrollSnapshotsInput>
+  }
+
+  export type TeamMemberUpdateWithoutPayrollSnapshotsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordSetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentXp?: IntFieldUpdateOperationsInput | number
+    lifetimeXp?: IntFieldUpdateOperationsInput | number
+    rewardPoints?: IntFieldUpdateOperationsInput | number
+    trustScore?: IntFieldUpdateOperationsInput | number
+    performanceScore?: IntFieldUpdateOperationsInput | number
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    currentRank?: StringFieldUpdateOperationsInput | string
+    salaryHikeStage?: IntFieldUpdateOperationsInput | number
+    completedCount?: IntFieldUpdateOperationsInput | number
+    onTimeCount?: IntFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    highestReviewStreak?: IntFieldUpdateOperationsInput | number
+    punctualityStreak?: IntFieldUpdateOperationsInput | number
+    reviewStreak?: IntFieldUpdateOperationsInput | number
+    noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    aadhaarNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    aadhaarImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    panNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    panImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
+    emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    experienceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    team?: TeamUpdateOneRequiredWithoutMembersNestedInput
+    bookings?: BookingUpdateManyWithoutGroomerMemberNestedInput
+    rewardEvents?: GroomerRewardEventUpdateManyWithoutTeamMemberNestedInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotUpdateManyWithoutTeamMemberNestedInput
+    leaveRequests?: WorkforceLeaveRequestUpdateManyWithoutTeamMemberNestedInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput
+    referralsMade?: WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput
+    trainingCompletions?: TrainingCompletionUpdateManyWithoutTeamMemberNestedInput
+    trainingInterests?: WorkforceTrainingInterestUpdateManyWithoutTeamMemberNestedInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUpdateManyWithoutTeamMemberNestedInput
+  }
+
+  export type TeamMemberUncheckedUpdateWithoutPayrollSnapshotsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    teamId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordSetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentXp?: IntFieldUpdateOperationsInput | number
+    lifetimeXp?: IntFieldUpdateOperationsInput | number
+    rewardPoints?: IntFieldUpdateOperationsInput | number
+    trustScore?: IntFieldUpdateOperationsInput | number
+    performanceScore?: IntFieldUpdateOperationsInput | number
+    currentLevel?: IntFieldUpdateOperationsInput | number
+    currentRank?: StringFieldUpdateOperationsInput | string
+    salaryHikeStage?: IntFieldUpdateOperationsInput | number
+    completedCount?: IntFieldUpdateOperationsInput | number
+    onTimeCount?: IntFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    highestReviewStreak?: IntFieldUpdateOperationsInput | number
+    punctualityStreak?: IntFieldUpdateOperationsInput | number
+    reviewStreak?: IntFieldUpdateOperationsInput | number
+    noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    aadhaarNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    aadhaarImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    panNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    panImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
+    emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    experienceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookings?: BookingUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    rewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutTeamMemberNestedInput
+    leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedUpdateManyWithoutTeamMemberNestedInput
+    leaveRequests?: WorkforceLeaveRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    referralsMade?: WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput
+    trainingCompletions?: TrainingCompletionUncheckedUpdateManyWithoutTeamMemberNestedInput
+    trainingInterests?: WorkforceTrainingInterestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+  }
+
   export type TeamCreateWithoutLeaderboardSnapshotsInput = {
     id?: string
     name: string
@@ -65916,6 +78097,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -65927,6 +78115,11 @@ export namespace Prisma {
     rewardEvents?: GroomerRewardEventCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestCreateNestedManyWithoutTeamMemberInput
@@ -65970,6 +78163,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -65980,6 +78180,11 @@ export namespace Prisma {
     rewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestUncheckedCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionUncheckedCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestUncheckedCreateNestedManyWithoutTeamMemberInput
@@ -66085,6 +78290,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -66096,6 +78308,11 @@ export namespace Prisma {
     rewardEvents?: GroomerRewardEventUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUpdateManyWithoutTeamMemberNestedInput
@@ -66139,6 +78356,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -66149,6 +78373,11 @@ export namespace Prisma {
     rewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUncheckedUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUncheckedUpdateManyWithoutTeamMemberNestedInput
@@ -66191,6 +78420,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -66202,6 +78438,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestCreateNestedManyWithoutTeamMemberInput
@@ -66245,6 +78486,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -66255,6 +78503,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestUncheckedCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionUncheckedCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestUncheckedCreateNestedManyWithoutTeamMemberInput
@@ -66288,6 +78541,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -66321,6 +78577,8 @@ export namespace Prisma {
     sopSteps?: BookingSopStepCreateNestedManyWithoutBookingInput
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -66348,6 +78606,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -66379,6 +78640,8 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUncheckedCreateNestedManyWithoutBookingInput
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -66434,6 +78697,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -66445,6 +78715,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUpdateManyWithoutTeamMemberNestedInput
@@ -66488,6 +78763,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -66498,6 +78780,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUncheckedUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUncheckedUpdateManyWithoutTeamMemberNestedInput
@@ -66537,6 +78824,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66570,6 +78860,8 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUpdateManyWithoutBookingNestedInput
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -66597,6 +78889,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66628,6 +78923,8 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUncheckedUpdateManyWithoutBookingNestedInput
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -66667,6 +78964,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -66678,6 +78982,11 @@ export namespace Prisma {
     rewardEvents?: GroomerRewardEventCreateNestedManyWithoutTeamMemberInput
     leaderboardSnapshots?: TeamLeaderboardSnapshotCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestCreateNestedManyWithoutTeamMemberInput
@@ -66721,6 +79030,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -66731,6 +79047,11 @@ export namespace Prisma {
     rewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutTeamMemberInput
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionUncheckedCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestUncheckedCreateNestedManyWithoutTeamMemberInput
@@ -66789,6 +79110,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -66800,6 +79128,11 @@ export namespace Prisma {
     rewardEvents?: GroomerRewardEventUpdateManyWithoutTeamMemberNestedInput
     leaderboardSnapshots?: TeamLeaderboardSnapshotUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUpdateManyWithoutTeamMemberNestedInput
@@ -66843,6 +79176,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -66853,6 +79193,11 @@ export namespace Prisma {
     rewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutTeamMemberNestedInput
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUncheckedUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUncheckedUpdateManyWithoutTeamMemberNestedInput
@@ -66895,6 +79240,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -66906,6 +79258,11 @@ export namespace Prisma {
     rewardEvents?: GroomerRewardEventCreateNestedManyWithoutTeamMemberInput
     leaderboardSnapshots?: TeamLeaderboardSnapshotCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestCreateNestedManyWithoutTeamMemberInput
@@ -66949,6 +79306,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -66959,6 +79323,11 @@ export namespace Prisma {
     rewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutTeamMemberInput
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionUncheckedCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestUncheckedCreateNestedManyWithoutTeamMemberInput
@@ -67017,6 +79386,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -67028,6 +79404,11 @@ export namespace Prisma {
     rewardEvents?: GroomerRewardEventUpdateManyWithoutTeamMemberNestedInput
     leaderboardSnapshots?: TeamLeaderboardSnapshotUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUpdateManyWithoutTeamMemberNestedInput
@@ -67071,6 +79452,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -67081,6 +79469,11 @@ export namespace Prisma {
     rewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutTeamMemberNestedInput
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUncheckedUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUncheckedUpdateManyWithoutTeamMemberNestedInput
@@ -67123,6 +79516,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -67135,6 +79535,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput
     trainingCompletions?: TrainingCompletionCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestCreateNestedManyWithoutTeamMemberInput
     rewardRedemptionRequests?: WorkforceRewardRedemptionRequestCreateNestedManyWithoutTeamMemberInput
@@ -67177,6 +79582,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -67188,6 +79600,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestUncheckedCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput
     trainingCompletions?: TrainingCompletionUncheckedCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestUncheckedCreateNestedManyWithoutTeamMemberInput
     rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedCreateNestedManyWithoutTeamMemberInput
@@ -67245,6 +79662,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -67257,6 +79681,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput
     trainingCompletions?: TrainingCompletionUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUpdateManyWithoutTeamMemberNestedInput
     rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUpdateManyWithoutTeamMemberNestedInput
@@ -67299,6 +79728,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -67310,6 +79746,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput
     trainingCompletions?: TrainingCompletionUncheckedUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUncheckedUpdateManyWithoutTeamMemberNestedInput
     rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
@@ -67445,6 +79886,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -67457,6 +79905,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionCreateNestedManyWithoutTeamMemberInput
     rewardRedemptionRequests?: WorkforceRewardRedemptionRequestCreateNestedManyWithoutTeamMemberInput
@@ -67499,6 +79952,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -67510,6 +79970,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestUncheckedCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionUncheckedCreateNestedManyWithoutTeamMemberInput
     rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedCreateNestedManyWithoutTeamMemberInput
@@ -67598,6 +80063,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -67610,6 +80082,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUpdateManyWithoutTeamMemberNestedInput
     rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUpdateManyWithoutTeamMemberNestedInput
@@ -67652,6 +80129,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -67663,6 +80147,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUncheckedUpdateManyWithoutTeamMemberNestedInput
     rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
@@ -67741,6 +80230,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -67753,6 +80249,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestCreateNestedManyWithoutTeamMemberInput
@@ -67795,6 +80296,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -67806,6 +80314,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestUncheckedCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput
     trainingCompletions?: TrainingCompletionUncheckedCreateNestedManyWithoutTeamMemberInput
     trainingInterests?: WorkforceTrainingInterestUncheckedCreateNestedManyWithoutTeamMemberInput
@@ -67863,6 +80376,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -67875,6 +80395,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUpdateManyWithoutTeamMemberNestedInput
@@ -67917,6 +80442,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -67928,6 +80460,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUncheckedUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUncheckedUpdateManyWithoutTeamMemberNestedInput
@@ -68000,6 +80537,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -68012,6 +80556,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordCreateNestedManyWithoutReferrerMemberInput
     trainingInterests?: WorkforceTrainingInterestCreateNestedManyWithoutTeamMemberInput
     rewardRedemptionRequests?: WorkforceRewardRedemptionRequestCreateNestedManyWithoutTeamMemberInput
@@ -68054,6 +80603,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -68065,6 +80621,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedCreateNestedManyWithoutTeamMemberInput
     leaveRequests?: WorkforceLeaveRequestUncheckedCreateNestedManyWithoutTeamMemberInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedCreateNestedManyWithoutTeamMemberInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedCreateNestedManyWithoutGroomerMemberInput
+    cashDeposits?: GroomerCashDepositUncheckedCreateNestedManyWithoutGroomerMemberInput
+    expenses?: GroomerExpenseUncheckedCreateNestedManyWithoutGroomerMemberInput
+    fuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutGroomerMemberInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedCreateNestedManyWithoutGroomerMemberInput
     referralsMade?: WorkforceReferralRecordUncheckedCreateNestedManyWithoutReferrerMemberInput
     trainingInterests?: WorkforceTrainingInterestUncheckedCreateNestedManyWithoutTeamMemberInput
     rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedCreateNestedManyWithoutTeamMemberInput
@@ -68159,6 +80720,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -68171,6 +80739,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUpdateManyWithoutTeamMemberNestedInput
     rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUpdateManyWithoutTeamMemberNestedInput
@@ -68213,6 +80786,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -68224,6 +80804,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUncheckedUpdateManyWithoutTeamMemberNestedInput
     rewardRedemptionRequests?: WorkforceRewardRedemptionRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
@@ -68251,6 +80836,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -68284,6 +80872,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -68311,6 +80901,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -68342,6 +80935,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -68383,6 +80978,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68416,6 +81014,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -68443,6 +81043,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68474,6 +81077,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -68499,6 +81104,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -68532,6 +81140,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -68559,6 +81169,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -68590,6 +81203,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -68667,6 +81282,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68700,6 +81318,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -68727,6 +81347,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68758,6 +81381,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -68799,6 +81424,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -68832,6 +81460,8 @@ export namespace Prisma {
     sopSteps?: BookingSopStepCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -68859,6 +81489,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -68890,6 +81523,8 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -68960,6 +81595,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68993,6 +81631,8 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -69020,6 +81660,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -69051,6 +81694,8 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -69111,6 +81756,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -69144,6 +81792,8 @@ export namespace Prisma {
     sopSteps?: BookingSopStepCreateNestedManyWithoutBookingInput
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -69171,6 +81821,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -69202,6 +81855,8 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUncheckedCreateNestedManyWithoutBookingInput
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -69243,6 +81898,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -69276,6 +81934,8 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUpdateManyWithoutBookingNestedInput
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -69303,6 +81963,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -69334,6 +81997,8 @@ export namespace Prisma {
     sopSteps?: BookingSopStepUncheckedUpdateManyWithoutBookingNestedInput
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -69359,6 +82024,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -69392,6 +82060,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -69419,6 +82089,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -69450,6 +82123,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -69556,6 +82231,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -69589,6 +82267,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -69616,6 +82296,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -69647,6 +82330,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -69744,6 +82429,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -69777,6 +82465,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -69804,6 +82494,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -69835,6 +82528,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -69909,6 +82604,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -69942,6 +82640,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -69969,6 +82669,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70000,6 +82703,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -70120,6 +82825,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -70153,6 +82861,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -70180,6 +82890,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -70211,6 +82924,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -70293,6 +83008,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70326,6 +83044,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -70353,6 +83073,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70384,6 +83107,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -70456,6 +83181,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -70489,6 +83217,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -70516,6 +83246,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -70547,6 +83280,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -70629,6 +83364,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70662,6 +83400,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -70689,6 +83429,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70720,6 +83463,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -70792,6 +83537,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -70825,6 +83573,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -70852,6 +83602,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -70883,6 +83636,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -70924,6 +83679,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70957,6 +83715,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -70984,6 +83744,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71015,6 +83778,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -71040,6 +83805,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
     adminNote?: string | null
@@ -71073,6 +83841,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutBookingInput
   }
 
@@ -71100,6 +83870,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -71131,6 +83904,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedCreateNestedManyWithoutBookingInput
     paymentCollection?: BookingPaymentCollectionUncheckedCreateNestedOneWithoutBookingInput
     groomerRewardEvents?: GroomerRewardEventUncheckedCreateNestedManyWithoutBookingInput
+    groomerExpenses?: GroomerExpenseUncheckedCreateNestedManyWithoutBookingInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedCreateNestedManyWithoutBookingInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutBookingInput
   }
 
@@ -71172,6 +83947,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71205,6 +83983,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -71232,6 +84012,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71263,6 +84046,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -71289,6 +84074,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -71358,6 +84146,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71391,6 +84182,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -71417,6 +84210,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71449,6 +84245,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -71475,6 +84273,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71671,6 +84472,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     groomerMemberId?: string | null
@@ -71716,6 +84520,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71749,6 +84556,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -71775,6 +84584,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71807,6 +84619,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -71833,6 +84647,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71960,6 +84777,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     groomerMemberId?: string | null
     dispatchState?: string
@@ -72038,6 +84858,13 @@ export namespace Prisma {
     bankIfsc?: string | null
     bankName?: string | null
     upiId?: string | null
+    baseSalary?: number
+    salaryEffectiveFromMonth?: string | null
+    homeAddress?: string | null
+    homeLat?: number | null
+    homeLng?: number | null
+    bikeAverageKmPerLitre?: number
+    fuelRatePerLitre?: number
     emergencyContactName?: string | null
     emergencyContactPhone?: string | null
     yearsExperience?: number | null
@@ -72144,6 +84971,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -72177,6 +85007,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -72204,6 +85036,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
@@ -72235,6 +85070,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -72262,6 +85099,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
@@ -72380,6 +85220,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -72391,6 +85238,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUpdateManyWithoutTeamMemberNestedInput
@@ -72433,6 +85285,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -72444,6 +85303,11 @@ export namespace Prisma {
     leaderboardSnapshots?: TeamLeaderboardSnapshotUncheckedUpdateManyWithoutTeamMemberNestedInput
     leaveRequests?: WorkforceLeaveRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
     salaryAdvanceRequests?: WorkforceSalaryAdvanceRequestUncheckedUpdateManyWithoutTeamMemberNestedInput
+    ledgerEntries?: GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    cashDeposits?: GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    expenses?: GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    fuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberNestedInput
+    payrollSnapshots?: GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberNestedInput
     referralsMade?: WorkforceReferralRecordUncheckedUpdateManyWithoutReferrerMemberNestedInput
     trainingCompletions?: TrainingCompletionUncheckedUpdateManyWithoutTeamMemberNestedInput
     trainingInterests?: WorkforceTrainingInterestUncheckedUpdateManyWithoutTeamMemberNestedInput
@@ -72486,6 +85350,13 @@ export namespace Prisma {
     bankIfsc?: NullableStringFieldUpdateOperationsInput | string | null
     bankName?: NullableStringFieldUpdateOperationsInput | string | null
     upiId?: NullableStringFieldUpdateOperationsInput | string | null
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    salaryEffectiveFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
+    homeAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    homeLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    homeLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    bikeAverageKmPerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelRatePerLitre?: FloatFieldUpdateOperationsInput | number
     emergencyContactName?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
@@ -72688,6 +85559,48 @@ export namespace Prisma {
     performanceDelta?: number
     metadataJson?: string | null
     createdAt?: Date | string
+  }
+
+  export type GroomerExpenseCreateManyBookingInput = {
+    id?: string
+    groomerMemberId: string
+    category: string
+    amount: number
+    billDate?: Date | string | null
+    billPhotoUrl: string
+    storageKey?: string | null
+    notes?: string | null
+    status?: string
+    reviewNote?: string | null
+    reviewedBy?: string | null
+    reviewedAt?: Date | string | null
+    submittedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerFuelTripCreateManyBookingInput = {
+    id?: string
+    groomerMemberId: string
+    fromType: string
+    fromBookingId?: string | null
+    fromLat: number
+    fromLng: number
+    toLat: number
+    toLng: number
+    distanceKm: number
+    roadMultiplier?: number
+    litres: number
+    ratePerLitre: number
+    fuelCost: number
+    isEstimate?: boolean
+    isManuallyAdjusted?: boolean
+    originalDistanceKm?: number | null
+    originalFuelCost?: number | null
+    adjustmentReason?: string | null
+    calculatedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CouponRedemptionCreateManyBookingInput = {
@@ -73052,6 +85965,132 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type GroomerExpenseUpdateWithoutBookingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    billDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billPhotoUrl?: StringFieldUpdateOperationsInput | string
+    storageKey?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    groomerMember?: TeamMemberUpdateOneRequiredWithoutExpensesNestedInput
+  }
+
+  export type GroomerExpenseUncheckedUpdateWithoutBookingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groomerMemberId?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    billDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billPhotoUrl?: StringFieldUpdateOperationsInput | string
+    storageKey?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerExpenseUncheckedUpdateManyWithoutBookingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groomerMemberId?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    billDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billPhotoUrl?: StringFieldUpdateOperationsInput | string
+    storageKey?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerFuelTripUpdateWithoutBookingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromType?: StringFieldUpdateOperationsInput | string
+    fromBookingId?: NullableStringFieldUpdateOperationsInput | string | null
+    fromLat?: FloatFieldUpdateOperationsInput | number
+    fromLng?: FloatFieldUpdateOperationsInput | number
+    toLat?: FloatFieldUpdateOperationsInput | number
+    toLng?: FloatFieldUpdateOperationsInput | number
+    distanceKm?: FloatFieldUpdateOperationsInput | number
+    roadMultiplier?: FloatFieldUpdateOperationsInput | number
+    litres?: FloatFieldUpdateOperationsInput | number
+    ratePerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelCost?: IntFieldUpdateOperationsInput | number
+    isEstimate?: BoolFieldUpdateOperationsInput | boolean
+    isManuallyAdjusted?: BoolFieldUpdateOperationsInput | boolean
+    originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
+    adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    groomerMember?: TeamMemberUpdateOneRequiredWithoutFuelTripsNestedInput
+  }
+
+  export type GroomerFuelTripUncheckedUpdateWithoutBookingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groomerMemberId?: StringFieldUpdateOperationsInput | string
+    fromType?: StringFieldUpdateOperationsInput | string
+    fromBookingId?: NullableStringFieldUpdateOperationsInput | string | null
+    fromLat?: FloatFieldUpdateOperationsInput | number
+    fromLng?: FloatFieldUpdateOperationsInput | number
+    toLat?: FloatFieldUpdateOperationsInput | number
+    toLng?: FloatFieldUpdateOperationsInput | number
+    distanceKm?: FloatFieldUpdateOperationsInput | number
+    roadMultiplier?: FloatFieldUpdateOperationsInput | number
+    litres?: FloatFieldUpdateOperationsInput | number
+    ratePerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelCost?: IntFieldUpdateOperationsInput | number
+    isEstimate?: BoolFieldUpdateOperationsInput | boolean
+    isManuallyAdjusted?: BoolFieldUpdateOperationsInput | boolean
+    originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
+    adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerFuelTripUncheckedUpdateManyWithoutBookingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    groomerMemberId?: StringFieldUpdateOperationsInput | string
+    fromType?: StringFieldUpdateOperationsInput | string
+    fromBookingId?: NullableStringFieldUpdateOperationsInput | string | null
+    fromLat?: FloatFieldUpdateOperationsInput | number
+    fromLng?: FloatFieldUpdateOperationsInput | number
+    toLat?: FloatFieldUpdateOperationsInput | number
+    toLng?: FloatFieldUpdateOperationsInput | number
+    distanceKm?: FloatFieldUpdateOperationsInput | number
+    roadMultiplier?: FloatFieldUpdateOperationsInput | number
+    litres?: FloatFieldUpdateOperationsInput | number
+    ratePerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelCost?: IntFieldUpdateOperationsInput | number
+    isEstimate?: BoolFieldUpdateOperationsInput | boolean
+    isManuallyAdjusted?: BoolFieldUpdateOperationsInput | boolean
+    originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
+    adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CouponRedemptionUpdateWithoutBookingInput = {
     id?: StringFieldUpdateOperationsInput | string
     codeSnapshot?: StringFieldUpdateOperationsInput | string
@@ -73106,6 +86145,9 @@ export namespace Prisma {
     serviceLandmark?: string | null
     servicePincode?: string | null
     serviceLocationUrl?: string | null
+    serviceLat?: number | null
+    serviceLng?: number | null
+    serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     dispatchState?: string
@@ -73180,11 +86222,100 @@ export namespace Prisma {
     trustScoreSnapshot?: number
     performanceSnapshot?: number
     nextEligibleAt?: Date | string | null
+    recoverFromMonth?: string | null
     reviewNote?: string | null
     requestedBy?: string | null
     reviewedBy?: string | null
     requestedAt?: Date | string
     reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerLedgerEntryCreateManyGroomerMemberInput = {
+    id?: string
+    monthBucket: string
+    type: string
+    direction: string
+    amount: number
+    sourceType?: string | null
+    sourceId?: string | null
+    description?: string | null
+    metadataJson?: string | null
+    createdBy?: string | null
+    occurredAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerCashDepositCreateManyGroomerMemberInput = {
+    id?: string
+    amount: number
+    depositMode?: string
+    referenceId?: string | null
+    notes?: string | null
+    recordedBy?: string | null
+    depositedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerExpenseCreateManyGroomerMemberInput = {
+    id?: string
+    bookingId?: string | null
+    category: string
+    amount: number
+    billDate?: Date | string | null
+    billPhotoUrl: string
+    storageKey?: string | null
+    notes?: string | null
+    status?: string
+    reviewNote?: string | null
+    reviewedBy?: string | null
+    reviewedAt?: Date | string | null
+    submittedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerFuelTripCreateManyGroomerMemberInput = {
+    id?: string
+    bookingId: string
+    fromType: string
+    fromBookingId?: string | null
+    fromLat: number
+    fromLng: number
+    toLat: number
+    toLng: number
+    distanceKm: number
+    roadMultiplier?: number
+    litres: number
+    ratePerLitre: number
+    fuelCost: number
+    isEstimate?: boolean
+    isManuallyAdjusted?: boolean
+    originalDistanceKm?: number | null
+    originalFuelCost?: number | null
+    adjustmentReason?: string | null
+    calculatedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GroomerPayrollSnapshotCreateManyGroomerMemberInput = {
+    id?: string
+    monthBucket: string
+    baseSalary: number
+    fuelReimbursements: number
+    otherReimbursements: number
+    incentives: number
+    payrollAdjustments?: number
+    advanceRecovery: number
+    netPayable: number
+    cashHeldSeparate: number
+    frozenBy?: string | null
+    frozenAt?: Date | string
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -73258,6 +86389,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73291,6 +86425,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutBookingNestedInput
   }
 
@@ -73318,6 +86454,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
@@ -73349,6 +86488,8 @@ export namespace Prisma {
     sopProofs?: BookingSopProofUncheckedUpdateManyWithoutBookingNestedInput
     paymentCollection?: BookingPaymentCollectionUncheckedUpdateOneWithoutBookingNestedInput
     groomerRewardEvents?: GroomerRewardEventUncheckedUpdateManyWithoutBookingNestedInput
+    groomerExpenses?: GroomerExpenseUncheckedUpdateManyWithoutBookingNestedInput
+    groomerFuelTrips?: GroomerFuelTripUncheckedUpdateManyWithoutBookingNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutBookingNestedInput
   }
 
@@ -73376,6 +86517,9 @@ export namespace Prisma {
     serviceLandmark?: NullableStringFieldUpdateOperationsInput | string | null
     servicePincode?: NullableStringFieldUpdateOperationsInput | string | null
     serviceLocationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
@@ -73534,6 +86678,7 @@ export namespace Prisma {
     trustScoreSnapshot?: IntFieldUpdateOperationsInput | number
     performanceSnapshot?: IntFieldUpdateOperationsInput | number
     nextEligibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recoverFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
     reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     requestedBy?: NullableStringFieldUpdateOperationsInput | string | null
     reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73553,6 +86698,7 @@ export namespace Prisma {
     trustScoreSnapshot?: IntFieldUpdateOperationsInput | number
     performanceSnapshot?: IntFieldUpdateOperationsInput | number
     nextEligibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recoverFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
     reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     requestedBy?: NullableStringFieldUpdateOperationsInput | string | null
     reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73572,11 +86718,276 @@ export namespace Prisma {
     trustScoreSnapshot?: IntFieldUpdateOperationsInput | number
     performanceSnapshot?: IntFieldUpdateOperationsInput | number
     nextEligibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recoverFromMonth?: NullableStringFieldUpdateOperationsInput | string | null
     reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
     requestedBy?: NullableStringFieldUpdateOperationsInput | string | null
     reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerLedgerEntryUpdateWithoutGroomerMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthBucket?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    direction?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    sourceType?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    metadataJson?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerLedgerEntryUncheckedUpdateWithoutGroomerMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthBucket?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    direction?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    sourceType?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    metadataJson?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerLedgerEntryUncheckedUpdateManyWithoutGroomerMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthBucket?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    direction?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    sourceType?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    metadataJson?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerCashDepositUpdateWithoutGroomerMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    depositMode?: StringFieldUpdateOperationsInput | string
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    depositedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerCashDepositUncheckedUpdateWithoutGroomerMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    depositMode?: StringFieldUpdateOperationsInput | string
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    depositedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerCashDepositUncheckedUpdateManyWithoutGroomerMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    depositMode?: StringFieldUpdateOperationsInput | string
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    depositedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerExpenseUpdateWithoutGroomerMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    billDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billPhotoUrl?: StringFieldUpdateOperationsInput | string
+    storageKey?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    booking?: BookingUpdateOneWithoutGroomerExpensesNestedInput
+  }
+
+  export type GroomerExpenseUncheckedUpdateWithoutGroomerMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bookingId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    billDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billPhotoUrl?: StringFieldUpdateOperationsInput | string
+    storageKey?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerExpenseUncheckedUpdateManyWithoutGroomerMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bookingId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    billDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billPhotoUrl?: StringFieldUpdateOperationsInput | string
+    storageKey?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    reviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerFuelTripUpdateWithoutGroomerMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromType?: StringFieldUpdateOperationsInput | string
+    fromBookingId?: NullableStringFieldUpdateOperationsInput | string | null
+    fromLat?: FloatFieldUpdateOperationsInput | number
+    fromLng?: FloatFieldUpdateOperationsInput | number
+    toLat?: FloatFieldUpdateOperationsInput | number
+    toLng?: FloatFieldUpdateOperationsInput | number
+    distanceKm?: FloatFieldUpdateOperationsInput | number
+    roadMultiplier?: FloatFieldUpdateOperationsInput | number
+    litres?: FloatFieldUpdateOperationsInput | number
+    ratePerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelCost?: IntFieldUpdateOperationsInput | number
+    isEstimate?: BoolFieldUpdateOperationsInput | boolean
+    isManuallyAdjusted?: BoolFieldUpdateOperationsInput | boolean
+    originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
+    adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    booking?: BookingUpdateOneRequiredWithoutGroomerFuelTripsNestedInput
+  }
+
+  export type GroomerFuelTripUncheckedUpdateWithoutGroomerMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bookingId?: StringFieldUpdateOperationsInput | string
+    fromType?: StringFieldUpdateOperationsInput | string
+    fromBookingId?: NullableStringFieldUpdateOperationsInput | string | null
+    fromLat?: FloatFieldUpdateOperationsInput | number
+    fromLng?: FloatFieldUpdateOperationsInput | number
+    toLat?: FloatFieldUpdateOperationsInput | number
+    toLng?: FloatFieldUpdateOperationsInput | number
+    distanceKm?: FloatFieldUpdateOperationsInput | number
+    roadMultiplier?: FloatFieldUpdateOperationsInput | number
+    litres?: FloatFieldUpdateOperationsInput | number
+    ratePerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelCost?: IntFieldUpdateOperationsInput | number
+    isEstimate?: BoolFieldUpdateOperationsInput | boolean
+    isManuallyAdjusted?: BoolFieldUpdateOperationsInput | boolean
+    originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
+    adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerFuelTripUncheckedUpdateManyWithoutGroomerMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bookingId?: StringFieldUpdateOperationsInput | string
+    fromType?: StringFieldUpdateOperationsInput | string
+    fromBookingId?: NullableStringFieldUpdateOperationsInput | string | null
+    fromLat?: FloatFieldUpdateOperationsInput | number
+    fromLng?: FloatFieldUpdateOperationsInput | number
+    toLat?: FloatFieldUpdateOperationsInput | number
+    toLng?: FloatFieldUpdateOperationsInput | number
+    distanceKm?: FloatFieldUpdateOperationsInput | number
+    roadMultiplier?: FloatFieldUpdateOperationsInput | number
+    litres?: FloatFieldUpdateOperationsInput | number
+    ratePerLitre?: FloatFieldUpdateOperationsInput | number
+    fuelCost?: IntFieldUpdateOperationsInput | number
+    isEstimate?: BoolFieldUpdateOperationsInput | boolean
+    isManuallyAdjusted?: BoolFieldUpdateOperationsInput | boolean
+    originalDistanceKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalFuelCost?: NullableIntFieldUpdateOperationsInput | number | null
+    adjustmentReason?: NullableStringFieldUpdateOperationsInput | string | null
+    calculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerPayrollSnapshotUpdateWithoutGroomerMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthBucket?: StringFieldUpdateOperationsInput | string
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    fuelReimbursements?: IntFieldUpdateOperationsInput | number
+    otherReimbursements?: IntFieldUpdateOperationsInput | number
+    incentives?: IntFieldUpdateOperationsInput | number
+    payrollAdjustments?: IntFieldUpdateOperationsInput | number
+    advanceRecovery?: IntFieldUpdateOperationsInput | number
+    netPayable?: IntFieldUpdateOperationsInput | number
+    cashHeldSeparate?: IntFieldUpdateOperationsInput | number
+    frozenBy?: NullableStringFieldUpdateOperationsInput | string | null
+    frozenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerPayrollSnapshotUncheckedUpdateWithoutGroomerMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthBucket?: StringFieldUpdateOperationsInput | string
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    fuelReimbursements?: IntFieldUpdateOperationsInput | number
+    otherReimbursements?: IntFieldUpdateOperationsInput | number
+    incentives?: IntFieldUpdateOperationsInput | number
+    payrollAdjustments?: IntFieldUpdateOperationsInput | number
+    advanceRecovery?: IntFieldUpdateOperationsInput | number
+    netPayable?: IntFieldUpdateOperationsInput | number
+    cashHeldSeparate?: IntFieldUpdateOperationsInput | number
+    frozenBy?: NullableStringFieldUpdateOperationsInput | string | null
+    frozenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroomerPayrollSnapshotUncheckedUpdateManyWithoutGroomerMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthBucket?: StringFieldUpdateOperationsInput | string
+    baseSalary?: IntFieldUpdateOperationsInput | number
+    fuelReimbursements?: IntFieldUpdateOperationsInput | number
+    otherReimbursements?: IntFieldUpdateOperationsInput | number
+    incentives?: IntFieldUpdateOperationsInput | number
+    payrollAdjustments?: IntFieldUpdateOperationsInput | number
+    advanceRecovery?: IntFieldUpdateOperationsInput | number
+    netPayable?: IntFieldUpdateOperationsInput | number
+    cashHeldSeparate?: IntFieldUpdateOperationsInput | number
+    frozenBy?: NullableStringFieldUpdateOperationsInput | string | null
+    frozenAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

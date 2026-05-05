@@ -3,6 +3,7 @@ import { randomUUID } from "crypto";
 import { adminPrisma, ensureBookingSopSteps, logBookingEvent } from "../../../../admin/_lib/bookingAdmin";
 import { assertGroomerAccess } from "../../../_lib/assertGroomerAccess";
 import { putBookingAsset } from "../../../../../../lib/storage/putBookingAsset";
+import { syncCashCollectionLedgerForBooking } from "../../../../../../lib/finance/groomerLedger";
 
 export const runtime = "nodejs";
 
@@ -134,6 +135,8 @@ export async function POST(
           },
         });
       }
+
+      await syncCashCollectionLedgerForBooking(tx, bookingId);
 
       await tx.bookingSopStep.update({
         where: { bookingId_stepKey: { bookingId, stepKey: "payment_proof" } },

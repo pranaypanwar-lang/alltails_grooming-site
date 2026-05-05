@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const FaqSection = dynamic(() => import("./components/landing/FaqSection"));
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { User, Star, Home, CalendarCheck, Layers, Package, ChevronLeft, ChevronRight, X, CalendarDays } from "lucide-react";
+import { User, Star, Home, CalendarCheck, Layers, Package, ChevronLeft, ChevronRight, X, CalendarDays, Navigation } from "lucide-react";
 import {
   buildAttemptEventId,
   buildBookingEventId,
@@ -65,6 +65,9 @@ type BookingCreateResponse = {
   serviceLandmark: string;
   servicePincode: string;
   serviceLocationUrl: string;
+  serviceLat?: number | null;
+  serviceLng?: number | null;
+  serviceLocationSource?: string | null;
   addressStatus: "missing" | "partial" | "complete";
   selectedDate: string;
   bookingWindowId: string;
@@ -1411,6 +1414,9 @@ setIsSlotsModalOpen(true);
     serviceLandmark: string;
     servicePincode: string;
     serviceLocationUrl: string;
+    serviceLat?: number | null;
+    serviceLng?: number | null;
+    serviceLocationSource?: string | null;
     addressStatus: "missing" | "partial" | "complete";
   } | null>(null);
   const [confirmedAddressDraft, setConfirmedAddressDraft] = useState({
@@ -1418,8 +1424,12 @@ setIsSlotsModalOpen(true);
     serviceLandmark: "",
     servicePincode: "",
     serviceLocationUrl: "",
+    serviceLat: null as number | null,
+    serviceLng: null as number | null,
+    serviceLocationSource: "",
   });
 const [confirmedAddressSaving, setConfirmedAddressSaving] = useState(false);
+  const [confirmedLocationCapturing, setConfirmedLocationCapturing] = useState(false);
   const [confirmedAddressError, setConfirmedAddressError] = useState("");
   const [confirmedAddressSuccess, setConfirmedAddressSuccess] = useState("");
   const mobileBookingModalRef = useRef<HTMLDivElement | null>(null);
@@ -2538,6 +2548,9 @@ const getSavedPetAvatar = (pet: { imageUrl: string | null; species: "dog" | "cat
             serviceLandmark: verifyData.serviceLandmark ?? "",
             servicePincode: verifyData.servicePincode ?? "",
             serviceLocationUrl: verifyData.serviceLocationUrl ?? "",
+            serviceLat: verifyData.serviceLat ?? null,
+            serviceLng: verifyData.serviceLng ?? null,
+            serviceLocationSource: verifyData.serviceLocationSource ?? null,
             addressStatus: verifyData.addressStatus ?? "missing",
           });
           setConfirmedAddressDraft({
@@ -2545,6 +2558,9 @@ const getSavedPetAvatar = (pet: { imageUrl: string | null; species: "dog" | "cat
             serviceLandmark: verifyData.serviceLandmark ?? "",
             servicePincode: verifyData.servicePincode ?? "",
             serviceLocationUrl: verifyData.serviceLocationUrl ?? "",
+            serviceLat: verifyData.serviceLat ?? null,
+            serviceLng: verifyData.serviceLng ?? null,
+            serviceLocationSource: verifyData.serviceLocationSource ?? "",
           });
           setConfirmedAddressError("");
           setConfirmedAddressSuccess("");
@@ -3185,6 +3201,9 @@ const closeRescheduleFlow = () => {
           serviceLandmark: confirmedAddressDraft.serviceLandmark,
           servicePincode: confirmedAddressDraft.servicePincode,
           serviceLocationUrl: confirmedAddressDraft.serviceLocationUrl,
+          serviceLat: confirmedAddressDraft.serviceLat,
+          serviceLng: confirmedAddressDraft.serviceLng,
+          serviceLocationSource: confirmedAddressDraft.serviceLocationSource,
         }),
       });
 
@@ -3201,6 +3220,9 @@ const closeRescheduleFlow = () => {
               serviceLandmark: data.addressInfo?.serviceLandmark ?? prev.serviceLandmark,
               servicePincode: data.addressInfo?.servicePincode ?? prev.servicePincode,
               serviceLocationUrl: data.addressInfo?.serviceLocationUrl ?? prev.serviceLocationUrl,
+              serviceLat: data.addressInfo?.serviceLat ?? prev.serviceLat,
+              serviceLng: data.addressInfo?.serviceLng ?? prev.serviceLng,
+              serviceLocationSource: data.addressInfo?.serviceLocationSource ?? prev.serviceLocationSource,
               addressStatus: data.addressInfo?.status ?? "complete",
             }
           : prev
@@ -3212,6 +3234,10 @@ const closeRescheduleFlow = () => {
         servicePincode: data.addressInfo?.servicePincode ?? confirmedAddressDraft.servicePincode,
         serviceLocationUrl:
           data.addressInfo?.serviceLocationUrl ?? confirmedAddressDraft.serviceLocationUrl,
+        serviceLat: data.addressInfo?.serviceLat ?? confirmedAddressDraft.serviceLat,
+        serviceLng: data.addressInfo?.serviceLng ?? confirmedAddressDraft.serviceLng,
+        serviceLocationSource:
+          data.addressInfo?.serviceLocationSource ?? confirmedAddressDraft.serviceLocationSource,
       });
       setConfirmedAddressSuccess("Address saved. Our team can now reach you smoothly.");
       scrollBookingFlowToTop();
@@ -3221,6 +3247,51 @@ const closeRescheduleFlow = () => {
       );
     } finally {
       setConfirmedAddressSaving(false);
+    }
+  };
+
+  const handleCaptureConfirmedLocation = async () => {
+    try {
+      setConfirmedLocationCapturing(true);
+      setConfirmedAddressError("");
+      setConfirmedAddressSuccess("");
+
+      if (!navigator.geolocation) {
+        throw new Error("Location capture is not supported on this browser.");
+      }
+
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 60_000,
+        });
+      });
+
+      const serviceLat = Number(position.coords.latitude.toFixed(7));
+      const serviceLng = Number(position.coords.longitude.toFixed(7));
+      setConfirmedAddressDraft((prev) => ({
+        ...prev,
+        serviceLat,
+        serviceLng,
+        serviceLocationSource: "browser_geolocation",
+        serviceLocationUrl: `https://www.google.com/maps?q=${serviceLat},${serviceLng}`,
+      }));
+      setConfirmedAddressSuccess("Location captured. Add the address and landmark, then save.");
+    } catch (error) {
+      const geolocationError =
+        typeof error === "object" && error !== null && "code" in error
+          ? (error as { code?: number })
+          : null;
+      const message =
+        geolocationError?.code === 1
+          ? "Location permission was denied. Please allow location access or paste a Google Maps link."
+          : error instanceof Error
+            ? error.message
+            : "Could not capture location.";
+      setConfirmedAddressError(message);
+    } finally {
+      setConfirmedLocationCapturing(false);
     }
   };
 
@@ -3669,6 +3740,9 @@ const uploadBookingAsset = async (
         serviceLandmark: bookingData.serviceLandmark ?? "",
         servicePincode: bookingData.servicePincode ?? "",
         serviceLocationUrl: bookingData.serviceLocationUrl ?? "",
+        serviceLat: bookingData.serviceLat ?? null,
+        serviceLng: bookingData.serviceLng ?? null,
+        serviceLocationSource: bookingData.serviceLocationSource ?? null,
         addressStatus: bookingData.addressStatus ?? "missing",
       });
       setConfirmedAddressDraft({
@@ -3676,6 +3750,9 @@ const uploadBookingAsset = async (
         serviceLandmark: bookingData.serviceLandmark ?? "",
         servicePincode: bookingData.servicePincode ?? "",
         serviceLocationUrl: bookingData.serviceLocationUrl ?? "",
+        serviceLat: bookingData.serviceLat ?? null,
+        serviceLng: bookingData.serviceLng ?? null,
+        serviceLocationSource: bookingData.serviceLocationSource ?? "",
       });
       setConfirmedAddressError("");
       setConfirmedAddressSuccess("");
@@ -3780,6 +3857,9 @@ const uploadBookingAsset = async (
             serviceLandmark: bookingData.serviceLandmark ?? "",
             servicePincode: bookingData.servicePincode ?? "",
             serviceLocationUrl: bookingData.serviceLocationUrl ?? "",
+            serviceLat: bookingData.serviceLat ?? null,
+            serviceLng: bookingData.serviceLng ?? null,
+            serviceLocationSource: bookingData.serviceLocationSource ?? null,
             addressStatus: bookingData.addressStatus ?? "missing",
           });
           setConfirmedAddressDraft({
@@ -3787,6 +3867,9 @@ const uploadBookingAsset = async (
             serviceLandmark: bookingData.serviceLandmark ?? "",
             servicePincode: bookingData.servicePincode ?? "",
             serviceLocationUrl: bookingData.serviceLocationUrl ?? "",
+            serviceLat: bookingData.serviceLat ?? null,
+            serviceLng: bookingData.serviceLng ?? null,
+            serviceLocationSource: bookingData.serviceLocationSource ?? "",
           });
           setConfirmedAddressError("");
           setConfirmedAddressSuccess("");
@@ -3873,11 +3956,31 @@ const canSaveConfirmedAddressDraft =
   Boolean(
     confirmedAddressDraft.serviceAddress.trim() &&
       confirmedAddressDraft.serviceLandmark.trim() &&
-      confirmedAddressDraft.servicePincode.trim()
+      (confirmedAddressDraft.servicePincode.trim() ||
+        (typeof confirmedAddressDraft.serviceLat === "number" &&
+          typeof confirmedAddressDraft.serviceLng === "number"))
   );
 const hasSavedConfirmedAddress = !confirmedBooking || confirmedBooking.addressStatus === "complete";
 const isAddressCaptureRequired = Boolean(confirmedBooking && !hasSavedConfirmedAddress);
 const isCompactTrackEntry = trackedBookings.length === 0;
+const renderLocationCaptureButton = () => (
+  <div className="rounded-[16px] border border-[#e8e1fb] bg-[#fbfaff] p-3 md:col-span-2">
+    <button
+      type="button"
+      onClick={handleCaptureConfirmedLocation}
+      disabled={confirmedLocationCapturing}
+      className="flex h-[44px] w-full items-center justify-center gap-2 rounded-[14px] bg-[#1f1f2c] text-[13px] font-semibold text-white disabled:opacity-60"
+    >
+      <Navigation className="h-4 w-4" />
+      {confirmedLocationCapturing ? "Capturing location..." : confirmedAddressDraft.serviceLat && confirmedAddressDraft.serviceLng ? "Update current location" : "Use current location"}
+    </button>
+    <div className="mt-2 text-[11px] leading-[1.5] text-[#7c8499]">
+      {confirmedAddressDraft.serviceLat && confirmedAddressDraft.serviceLng
+        ? `Location captured: ${confirmedAddressDraft.serviceLat.toFixed(5)}, ${confirmedAddressDraft.serviceLng.toFixed(5)}`
+        : "This saves precise coordinates for smoother dispatch and estimated travel reimbursement."}
+    </div>
+  </div>
+);
   return (
   <main className="min-h-screen bg-white pb-[88px] text-slate-900 lg:pb-0">
 
@@ -4106,6 +4209,7 @@ onClick={() => {
                     placeholder="Google Maps link (optional)"
                     className="h-[46px] w-full rounded-[16px] border border-[#e4dcf8] px-4 text-[13px] outline-none focus:border-[#6d5bd0]"
                   />
+                  {renderLocationCaptureButton()}
                 </div>
 
                 {confirmedAddressError ? (
@@ -4230,6 +4334,7 @@ onClick={() => {
                       placeholder="Google Maps link (optional)"
                       className="h-[46px] w-full rounded-[16px] border border-[#e4dcf8] px-4 text-[13px] outline-none focus:border-[#6d5bd0]"
                     />
+                    {renderLocationCaptureButton()}
                   </div>
 
                   {confirmedAddressError ? (
@@ -5120,6 +5225,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                     placeholder="Google Maps link (optional)"
                     className="h-[52px] rounded-[18px] border border-[#e4dcf8] px-4 text-[14px] outline-none focus:border-[#6d5bd0] md:col-span-2"
                   />
+                  {renderLocationCaptureButton()}
                 </div>
 
                 {confirmedAddressError ? (
@@ -5285,6 +5391,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                   placeholder="Google Maps link (optional)"
                   className="h-[52px] rounded-[18px] border border-[#e4dcf8] px-4 text-[14px] outline-none focus:border-[#6d5bd0] md:col-span-2"
                 />
+                {renderLocationCaptureButton()}
               </div>
 
               {confirmedAddressError ? (

@@ -7,6 +7,10 @@ import {
 } from "../_lib/assertBookingAccess";
 import {
   getAddressReadinessSummary,
+  extractCoordinatesFromLocationUrl,
+  makeGoogleMapsUrl,
+  normalizeLatitude,
+  normalizeLongitude,
   normalizeOptionalText,
   normalizePincode,
 } from "../../../../lib/booking/addressCapture";
@@ -52,11 +56,24 @@ export async function PATCH(request: Request) {
     const serviceAddress = normalizeOptionalText(body.serviceAddress);
     const serviceLandmark = normalizeOptionalText(body.serviceLandmark);
     const servicePincode = normalizePincode(body.servicePincode);
-    const serviceLocationUrl = normalizeLocationUrl(body.serviceLocationUrl);
+    const submittedLocationUrl = normalizeLocationUrl(body.serviceLocationUrl);
+    const extractedCoordinates = extractCoordinatesFromLocationUrl(submittedLocationUrl);
+    const serviceLat = normalizeLatitude(body.serviceLat) ?? extractedCoordinates?.lat ?? null;
+    const serviceLng = normalizeLongitude(body.serviceLng) ?? extractedCoordinates?.lng ?? null;
+    const hasCoordinates = serviceLat !== null && serviceLng !== null;
+    const serviceLocationUrl = submittedLocationUrl ?? (hasCoordinates ? makeGoogleMapsUrl(serviceLat, serviceLng) : null);
+    const serviceLocationSource =
+      typeof body.serviceLocationSource === "string" && body.serviceLocationSource.trim()
+        ? body.serviceLocationSource.trim()
+        : hasCoordinates && !extractedCoordinates
+          ? "browser_geolocation"
+          : extractedCoordinates
+            ? "google_maps_url"
+          : null;
 
-    if (!serviceAddress || !serviceLandmark || !servicePincode) {
+    if (!serviceAddress || !serviceLandmark || (!servicePincode && !hasCoordinates)) {
       return NextResponse.json(
-        { error: "Full address, landmark, and pin code are required" },
+        { error: "Full address, landmark, and either pin code or current location are required" },
         { status: 400 }
       );
     }
@@ -68,6 +85,9 @@ export async function PATCH(request: Request) {
         serviceLandmark,
         servicePincode,
         serviceLocationUrl,
+        serviceLat,
+        serviceLng,
+        serviceLocationSource,
         addressUpdatedAt: new Date(),
       },
     });
@@ -82,6 +102,9 @@ export async function PATCH(request: Request) {
         serviceLandmark: updated.serviceLandmark,
         servicePincode: updated.servicePincode,
         serviceLocationUrl: updated.serviceLocationUrl,
+        serviceLat: updated.serviceLat,
+        serviceLng: updated.serviceLng,
+        serviceLocationSource: updated.serviceLocationSource,
         addressUpdatedAt: updated.addressUpdatedAt?.toISOString() ?? null,
         ...summary,
       },

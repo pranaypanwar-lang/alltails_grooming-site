@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { assertAdminSession } from "../../../../_lib/assertAdmin";
 import { adminPrisma, ensureBookingSopSteps, logAdminBookingEvent } from "../../../../_lib/bookingAdmin";
+import { syncCashCollectionLedgerForBooking } from "../../../../../../../lib/finance/groomerLedger";
 
 export const runtime = "nodejs";
 
@@ -83,6 +84,8 @@ export async function POST(
           },
         });
       }
+
+      await syncCashCollectionLedgerForBooking(tx, bookingId);
 
       await tx.bookingSopStep.update({
         where: { bookingId_stepKey: { bookingId, stepKey: "payment_proof" } },

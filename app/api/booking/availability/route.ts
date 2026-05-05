@@ -11,6 +11,15 @@ export const runtime = "nodejs";
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
 
+const getTodayIstDateKey = () => {
+  const now = new Date();
+  const ist = new Date(now.getTime() + 330 * 60_000);
+  const year = ist.getUTCFullYear();
+  const month = String(ist.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(ist.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 // ─── Booking-window builder ───────────────────────────────────────────────────
 
 function buildBookingWindows(
@@ -143,6 +152,13 @@ export async function POST(request: Request) {
     if (!city || !startDate) {
       return NextResponse.json(
         { error: "city and startDate are required" },
+        { status: 400 }
+      );
+    }
+
+    if (startDate < getTodayIstDateKey()) {
+      return NextResponse.json(
+        { error: "Past dates are not available." },
         { status: 400 }
       );
     }

@@ -121,7 +121,15 @@ export async function POST(request: Request) {
         id: { not: result.booking.id },
         serviceAddress: { not: null },
         serviceLandmark: { not: null },
-        servicePincode: { not: null },
+        OR: [
+          { servicePincode: { not: null } },
+          {
+            AND: [
+              { serviceLat: { not: null } },
+              { serviceLng: { not: null } },
+            ],
+          },
+        ],
       },
       orderBy: [{ addressUpdatedAt: "desc" }, { createdAt: "desc" }],
       select: {
@@ -129,6 +137,9 @@ export async function POST(request: Request) {
         serviceLandmark: true,
         servicePincode: true,
         serviceLocationUrl: true,
+        serviceLat: true,
+        serviceLng: true,
+        serviceLocationSource: true,
         addressUpdatedAt: true,
       },
     });
@@ -138,15 +149,19 @@ export async function POST(request: Request) {
     if (
       latestSavedAddress?.serviceAddress?.trim() &&
       latestSavedAddress.serviceLandmark?.trim() &&
-      latestSavedAddress.servicePincode?.trim()
+      (latestSavedAddress.servicePincode?.trim() ||
+        (typeof latestSavedAddress.serviceLat === "number" && typeof latestSavedAddress.serviceLng === "number"))
     ) {
       bookingWithAddress = await prisma.booking.update({
         where: { id: result.booking.id },
         data: {
           serviceAddress: latestSavedAddress.serviceAddress.trim(),
           serviceLandmark: latestSavedAddress.serviceLandmark.trim(),
-          servicePincode: latestSavedAddress.servicePincode.trim(),
+          servicePincode: latestSavedAddress.servicePincode?.trim() || null,
           serviceLocationUrl: latestSavedAddress.serviceLocationUrl?.trim() || null,
+          serviceLat: latestSavedAddress.serviceLat,
+          serviceLng: latestSavedAddress.serviceLng,
+          serviceLocationSource: latestSavedAddress.serviceLocationSource,
           addressUpdatedAt: latestSavedAddress.addressUpdatedAt ?? new Date(),
         },
       });
@@ -283,6 +298,9 @@ export async function POST(request: Request) {
       serviceLandmark: bookingWithAddress.serviceLandmark ?? "",
       servicePincode: bookingWithAddress.servicePincode ?? "",
       serviceLocationUrl: bookingWithAddress.serviceLocationUrl ?? "",
+      serviceLat: bookingWithAddress.serviceLat,
+      serviceLng: bookingWithAddress.serviceLng,
+      serviceLocationSource: bookingWithAddress.serviceLocationSource,
       addressStatus: addressInfo.status,
       loyalty: result.loyalty,
     });

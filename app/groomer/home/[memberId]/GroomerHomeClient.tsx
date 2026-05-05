@@ -25,6 +25,7 @@ import {
   BookOpen,
   TrendingUp,
   Medal,
+  ReceiptText,
 } from "lucide-react";
 import type { serializeGroomerHome } from "../../../../lib/groomerHome";
 
@@ -384,17 +385,25 @@ export function GroomerHomeClient({
 
               <div className="flex items-center gap-2">
                 {sessionMode ? (
-                  <button
-                    type="button"
-                    onClick={() => void run("logout", async () => {
-                      const response = await fetch("/api/groomer/logout", { method: "POST" });
-                      if (!response.ok) throw new Error("Logout fail ho gaya.");
-                      window.location.href = "/groomer-login";
-                    })}
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10"
-                  >
-                    <LogOut className="h-4 w-4" />
-                  </button>
+                  <>
+                    <Link
+                      href="/groomer/finance"
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10"
+                    >
+                      <ReceiptText className="h-4 w-4" />
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => void run("logout", async () => {
+                        const response = await fetch("/api/groomer/logout", { method: "POST" });
+                        if (!response.ok) throw new Error("Logout fail ho gaya.");
+                        window.location.href = "/groomer-login";
+                      })}
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10"
+                    >
+                      <LogOut className="h-4 w-4" />
+                    </button>
+                  </>
                 ) : (
                   <Link
                     href={sessionJobHref(bookingId ?? "")}

@@ -226,6 +226,9 @@ model Booking {
   serviceLandmark String?
   servicePincode  String?
   serviceLocationUrl String?
+  serviceLat      Float?
+  serviceLng      Float?
+  serviceLocationSource String?
   addressUpdatedAt DateTime?
 
   // Dispatch
@@ -270,6 +273,8 @@ model Booking {
   sopProofs      BookingSopProof[]
   paymentCollection BookingPaymentCollection?
   groomerRewardEvents GroomerRewardEvent[]
+  groomerExpenses GroomerExpense[]
+  groomerFuelTrips GroomerFuelTrip[]
   couponRedemptions CouponRedemption[]
 
   @@index([selectedDate, status])
@@ -319,6 +324,13 @@ model TeamMember {
   bankIfsc               String?
   bankName               String?
   upiId                  String?
+  baseSalary             Int     @default(0)
+  salaryEffectiveFromMonth String?
+  homeAddress            String?
+  homeLat                Float?
+  homeLng                Float?
+  bikeAverageKmPerLitre  Float   @default(35)
+  fuelRatePerLitre       Float   @default(95)
   emergencyContactName   String?
   emergencyContactPhone  String?
   yearsExperience        Int?
@@ -332,12 +344,139 @@ model TeamMember {
   leaderboardSnapshots TeamLeaderboardSnapshot[]
   leaveRequests WorkforceLeaveRequest[]
   salaryAdvanceRequests WorkforceSalaryAdvanceRequest[]
+  ledgerEntries GroomerLedgerEntry[]
+  cashDeposits GroomerCashDeposit[]
+  expenses GroomerExpense[]
+  fuelTrips GroomerFuelTrip[]
+  payrollSnapshots GroomerPayrollSnapshot[]
   referralsMade WorkforceReferralRecord[] @relation("ReferralReferrer")
   trainingCompletions TrainingCompletion[]
   trainingInterests WorkforceTrainingInterest[]
   rewardRedemptionRequests WorkforceRewardRedemptionRequest[]
 
   @@index([teamId, isActive])
+}
+
+model GroomerLedgerEntry {
+  id              String     @id @default(uuid())
+  groomerMemberId String
+  groomerMember   TeamMember @relation(fields: [groomerMemberId], references: [id], onDelete: Cascade)
+
+  monthBucket String
+  type        String
+  direction   String
+  amount      Int
+
+  sourceType String?
+  sourceId   String?
+  description String?
+  metadataJson String?
+  createdBy   String?
+  occurredAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@unique([sourceType, sourceId, type])
+  @@index([groomerMemberId, monthBucket])
+  @@index([type, direction, occurredAt])
+}
+
+model GroomerCashDeposit {
+  id              String     @id @default(uuid())
+  groomerMemberId String
+  groomerMember   TeamMember @relation(fields: [groomerMemberId], references: [id], onDelete: Cascade)
+
+  amount      Int
+  depositMode String @default("cash")
+  referenceId String?
+  notes       String?
+  recordedBy  String?
+  depositedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@index([groomerMemberId, depositedAt])
+}
+
+model GroomerExpense {
+  id              String     @id @default(uuid())
+  groomerMemberId String
+  groomerMember   TeamMember @relation(fields: [groomerMemberId], references: [id], onDelete: Cascade)
+  bookingId       String?
+  booking         Booking?   @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  category     String
+  amount       Int
+  billDate     DateTime?
+  billPhotoUrl String
+  storageKey   String?
+  notes        String?
+  status       String @default("pending")
+  reviewNote   String?
+  reviewedBy   String?
+  reviewedAt   DateTime?
+  submittedAt  DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  @@index([groomerMemberId, status, submittedAt])
+  @@index([status, submittedAt])
+  @@index([bookingId])
+}
+
+model GroomerFuelTrip {
+  id              String     @id @default(uuid())
+  bookingId       String     @unique
+  booking         Booking    @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  groomerMemberId String
+  groomerMember   TeamMember @relation(fields: [groomerMemberId], references: [id], onDelete: Cascade)
+
+  fromType      String
+  fromBookingId String?
+  fromLat       Float
+  fromLng       Float
+  toLat         Float
+  toLng         Float
+  distanceKm    Float
+  roadMultiplier Float @default(1.3)
+  litres        Float
+  ratePerLitre  Float
+  fuelCost      Int
+  isEstimate    Boolean @default(true)
+  isManuallyAdjusted Boolean @default(false)
+  originalDistanceKm Float?
+  originalFuelCost   Int?
+  adjustmentReason   String?
+  calculatedAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  @@index([groomerMemberId, calculatedAt])
+  @@index([bookingId])
+}
+
+model GroomerPayrollSnapshot {
+  id              String     @id @default(uuid())
+  groomerMemberId String
+  groomerMember   TeamMember @relation(fields: [groomerMemberId], references: [id], onDelete: Cascade)
+
+  monthBucket String
+  baseSalary  Int
+  fuelReimbursements Int
+  otherReimbursements Int
+  incentives Int
+  payrollAdjustments Int @default(0)
+  advanceRecovery Int
+  netPayable Int
+  cashHeldSeparate Int
+  frozenBy String?
+  frozenAt DateTime @default(now())
+  notes String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([groomerMemberId, monthBucket])
+  @@index([monthBucket, frozenAt])
 }
 
 model TeamLeaderboardSnapshot {
@@ -417,6 +556,7 @@ model WorkforceSalaryAdvanceRequest {
   trustScoreSnapshot  Int        @default(0)
   performanceSnapshot Int        @default(0)
   nextEligibleAt      DateTime?
+  recoverFromMonth    String?
   reviewNote          String?
   requestedBy         String?
   reviewedBy          String?

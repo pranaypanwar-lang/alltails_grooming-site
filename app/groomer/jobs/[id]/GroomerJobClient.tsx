@@ -912,21 +912,13 @@ export function GroomerJobClient({
     file: File,
     options?: { skipClientValidation?: boolean }
   ) => {
-    const normalizedFile =
-      file.type.startsWith("video/")
-        ? new File([file], file.name || `live-proof-${Date.now()}.webm`, {
-            type: normalizeRecordedVideoMimeType(file.type),
-            lastModified: file.lastModified || Date.now(),
-          })
-        : file;
-
     if (!options?.skipClientValidation) {
-      await validateCapture(normalizedFile);
+      await validateCapture(file);
     }
 
     const formData = new FormData();
     formData.set("stepKey", stepKey);
-    formData.set("file", normalizedFile, normalizedFile.name);
+    formData.set("file", file, file.name);
 
     const res = await fetch(`/api/groomer/bookings/${booking.id}/sop/proof${tokenQuery}`, {
       method: "POST",

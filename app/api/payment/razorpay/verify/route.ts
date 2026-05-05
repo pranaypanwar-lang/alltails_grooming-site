@@ -202,6 +202,9 @@ export async function POST(request: Request) {
       serviceLandmark: updatedBooking.serviceLandmark ?? "",
       servicePincode: updatedBooking.servicePincode ?? "",
       serviceLocationUrl: updatedBooking.serviceLocationUrl ?? "",
+      serviceLat: updatedBooking.serviceLat,
+      serviceLng: updatedBooking.serviceLng,
+      serviceLocationSource: updatedBooking.serviceLocationSource,
       addressStatus: addressInfo.status,
     });
   } catch (error) {

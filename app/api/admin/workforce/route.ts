@@ -228,6 +228,7 @@ export async function GET() {
         trustScoreSnapshot: request.trustScoreSnapshot,
         performanceSnapshot: request.performanceSnapshot,
         nextEligibleAt: request.nextEligibleAt?.toISOString() ?? null,
+        recoverFromMonth: request.recoverFromMonth,
         reviewNote: request.reviewNote,
         requestedAt: request.requestedAt.toISOString(),
         reviewedAt: request.reviewedAt?.toISOString() ?? null,
