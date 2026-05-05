@@ -156,29 +156,71 @@ export async function sendMetaConversionsEvent(
     test_event_code: META_CAPI_TEST_EVENT_CODE || undefined,
   };
 
-  const response = await fetch(
-    `https://graph.facebook.com/${META_GRAPH_API_VERSION}/${getPixelId()}/events`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...payload,
-        access_token: META_CAPI_ACCESS_TOKEN,
-      }),
+  const requestBody = JSON.stringify({
+    ...payload,
+    access_token: META_CAPI_ACCESS_TOKEN,
+  });
+
+  // Two attempts: original + one retry on transient failure (timeout / 5xx / network).
+  // Total max time ~9s so the booking endpoint isn't blocked too long.
+  let lastError: Error | null = null;
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    try {
+      const response = await fetch(
+        `https://graph.facebook.com/${META_GRAPH_API_VERSION}/${getPixelId()}/events`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: requestBody,
+          signal: controller.signal,
+        }
+      );
+      clearTimeout(timeout);
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const message =
+          typeof data?.error?.message === "string"
+            ? data.error.message
+            : `Meta Conversions API request failed (status ${response.status})`;
+        // Retry only on 5xx — 4xx is a payload problem and won't fix itself.
+        if (response.status >= 500 && attempt === 1) {
+          lastError = new Error(message);
+          await new Promise((r) => setTimeout(r, 600));
+          continue;
+        }
+        throw new Error(message);
+      }
+
+      console.log("[meta-capi]", JSON.stringify({
+        eventName: input.eventName,
+        eventId,
+        bookingId: input.bookingId,
+        attempt,
+        fbtrace: data?.fbtrace_id ?? null,
+        eventsReceived: data?.events_received ?? null,
+      }));
+
+      return { skipped: false as const, eventId, response: data };
+    } catch (error) {
+      clearTimeout(timeout);
+      const message = error instanceof Error ? error.message : "Unknown CAPI error";
+      // Retry once for AbortError (timeout) or network errors.
+      const isTransient =
+        (error instanceof Error && error.name === "AbortError") ||
+        message.toLowerCase().includes("fetch") ||
+        message.toLowerCase().includes("network");
+      if (attempt === 1 && isTransient) {
+        lastError = error instanceof Error ? error : new Error(message);
+        await new Promise((r) => setTimeout(r, 600));
+        continue;
+      }
+      throw error;
     }
-  );
-
-  const data = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    throw new Error(
-      typeof data?.error?.message === "string"
-        ? data.error.message
-        : "Meta Conversions API request failed."
-    );
   }
 
-  return { skipped: false as const, eventId, response: data };
+  throw lastError ?? new Error("Meta Conversions API exhausted retries");
 }

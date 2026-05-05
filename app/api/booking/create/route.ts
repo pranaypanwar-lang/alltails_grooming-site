@@ -185,6 +185,50 @@ export async function POST(request: Request) {
 
     const shouldSendImmediateConfirmation = bookingWithAddress.status === "confirmed";
 
+    // Fire CAPI Lead + Qualified BEFORE the slower WhatsApp/Telegram side-effects so
+    // a stalled message queue or admin alert doesn't delay or starve the CAPI call.
+    // Browser pixel fires after the response — both share the same event_id for dedup.
+    try {
+      await sendMetaConversionsEvent({
+        request,
+        eventName: "Lead",
+        bookingId: bookingWithAddress.id,
+        phone: result.user.phone,
+        externalId: result.user.id,
+        name: result.user.name,
+        city: result.user.city,
+        serviceName: result.service.name,
+        value: bookingWithAddress.finalAmount,
+        currency: "INR",
+        petCount: pets.length,
+        selectedDate,
+        paymentMethod: bookingWithAddress.paymentMethod,
+      });
+    } catch (error) {
+      console.error("Meta Conversions API Lead event failed:", error);
+    }
+
+    try {
+      await sendMetaConversionsEvent({
+        request,
+        eventName: "Qualified",
+        qualifiedStage: "initiated",
+        bookingId: bookingWithAddress.id,
+        phone: result.user.phone,
+        externalId: result.user.id,
+        name: result.user.name,
+        city: result.user.city,
+        serviceName: result.service.name,
+        value: bookingWithAddress.finalAmount,
+        currency: "INR",
+        petCount: pets.length,
+        selectedDate,
+        paymentMethod: bookingWithAddress.paymentMethod,
+      });
+    } catch (error) {
+      console.error("Meta Conversions API Qualified event failed:", error);
+    }
+
     if (shouldSendImmediateConfirmation) {
       try {
         await supersedeQueuedBookingLifecycleMessages(prisma, bookingWithAddress.id, {
@@ -209,49 +253,6 @@ export async function POST(request: Request) {
       } catch (error) {
         console.error("Admin Telegram booking alert failed:", error);
       }
-    }
-
-    // Lead fires for ALL bookings — mirrors the browser pixel Lead event for deduplication
-    try {
-      await sendMetaConversionsEvent({
-        request,
-        eventName: "Lead",
-        bookingId: bookingWithAddress.id,
-        phone: result.user.phone,
-        externalId: result.user.id,
-        name: result.user.name,
-        city: result.user.city,
-        serviceName: result.service.name,
-        value: bookingWithAddress.finalAmount,
-        currency: "INR",
-        petCount: pets.length,
-        selectedDate,
-        paymentMethod: bookingWithAddress.paymentMethod,
-      });
-    } catch (error) {
-      console.error("Meta Conversions API Lead event failed:", error);
-    }
-
-    // Qualified fires for ALL bookings — person submitted the booking form
-    try {
-      await sendMetaConversionsEvent({
-        request,
-        eventName: "Qualified",
-        qualifiedStage: "initiated",
-        bookingId: bookingWithAddress.id,
-        phone: result.user.phone,
-        externalId: result.user.id,
-        name: result.user.name,
-        city: result.user.city,
-        serviceName: result.service.name,
-        value: bookingWithAddress.finalAmount,
-        currency: "INR",
-        petCount: pets.length,
-        selectedDate,
-        paymentMethod: bookingWithAddress.paymentMethod,
-      });
-    } catch (error) {
-      console.error("Meta Conversions API Qualified event failed:", error);
     }
 
     let paymentOrder: { orderId: string; amount: number; currency: string } | null = null;
