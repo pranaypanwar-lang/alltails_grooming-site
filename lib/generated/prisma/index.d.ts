@@ -17497,6 +17497,7 @@ export namespace Prisma {
     finalAmount: number | null
     loyaltyCompletedCountBefore: number | null
     loyaltyCompletedCountAfter: number | null
+    refundAmount: number | null
   }
 
   export type BookingSumAggregateOutputType = {
@@ -17504,6 +17505,7 @@ export namespace Prisma {
     finalAmount: number | null
     loyaltyCompletedCountBefore: number | null
     loyaltyCompletedCountAfter: number | null
+    refundAmount: number | null
   }
 
   export type BookingMinAggregateOutputType = {
@@ -17542,6 +17544,13 @@ export namespace Prisma {
     loyaltyRewardLabel: string | null
     loyaltyCountedAt: Date | null
     loyaltyRewardRestored: boolean | null
+    refundStatus: string | null
+    refundMode: string | null
+    refundReason: string | null
+    refundNotes: string | null
+    refundAmount: number | null
+    refundedAt: Date | null
+    razorpayRefundId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -17582,6 +17591,13 @@ export namespace Prisma {
     loyaltyRewardLabel: string | null
     loyaltyCountedAt: Date | null
     loyaltyRewardRestored: boolean | null
+    refundStatus: string | null
+    refundMode: string | null
+    refundReason: string | null
+    refundNotes: string | null
+    refundAmount: number | null
+    refundedAt: Date | null
+    razorpayRefundId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -17622,6 +17638,13 @@ export namespace Prisma {
     loyaltyRewardLabel: number
     loyaltyCountedAt: number
     loyaltyRewardRestored: number
+    refundStatus: number
+    refundMode: number
+    refundReason: number
+    refundNotes: number
+    refundAmount: number
+    refundedAt: number
+    razorpayRefundId: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -17633,6 +17656,7 @@ export namespace Prisma {
     finalAmount?: true
     loyaltyCompletedCountBefore?: true
     loyaltyCompletedCountAfter?: true
+    refundAmount?: true
   }
 
   export type BookingSumAggregateInputType = {
@@ -17640,6 +17664,7 @@ export namespace Prisma {
     finalAmount?: true
     loyaltyCompletedCountBefore?: true
     loyaltyCompletedCountAfter?: true
+    refundAmount?: true
   }
 
   export type BookingMinAggregateInputType = {
@@ -17678,6 +17703,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: true
     loyaltyCountedAt?: true
     loyaltyRewardRestored?: true
+    refundStatus?: true
+    refundMode?: true
+    refundReason?: true
+    refundNotes?: true
+    refundAmount?: true
+    refundedAt?: true
+    razorpayRefundId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -17718,6 +17750,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: true
     loyaltyCountedAt?: true
     loyaltyRewardRestored?: true
+    refundStatus?: true
+    refundMode?: true
+    refundReason?: true
+    refundNotes?: true
+    refundAmount?: true
+    refundedAt?: true
+    razorpayRefundId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -17758,6 +17797,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: true
     loyaltyCountedAt?: true
     loyaltyRewardRestored?: true
+    refundStatus?: true
+    refundMode?: true
+    refundReason?: true
+    refundNotes?: true
+    refundAmount?: true
+    refundedAt?: true
+    razorpayRefundId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -17885,6 +17931,13 @@ export namespace Prisma {
     loyaltyRewardLabel: string | null
     loyaltyCountedAt: Date | null
     loyaltyRewardRestored: boolean
+    refundStatus: string | null
+    refundMode: string | null
+    refundReason: string | null
+    refundNotes: string | null
+    refundAmount: number | null
+    refundedAt: Date | null
+    razorpayRefundId: string | null
     createdAt: Date
     updatedAt: Date
     _count: BookingCountAggregateOutputType | null
@@ -17944,6 +17997,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: boolean
     loyaltyCountedAt?: boolean
     loyaltyRewardRestored?: boolean
+    refundStatus?: boolean
+    refundMode?: boolean
+    refundReason?: boolean
+    refundNotes?: boolean
+    refundAmount?: boolean
+    refundedAt?: boolean
+    razorpayRefundId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -18001,6 +18061,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: boolean
     loyaltyCountedAt?: boolean
     loyaltyRewardRestored?: boolean
+    refundStatus?: boolean
+    refundMode?: boolean
+    refundReason?: boolean
+    refundNotes?: boolean
+    refundAmount?: boolean
+    refundedAt?: boolean
+    razorpayRefundId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -18045,6 +18112,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: boolean
     loyaltyCountedAt?: boolean
     loyaltyRewardRestored?: boolean
+    refundStatus?: boolean
+    refundMode?: boolean
+    refundReason?: boolean
+    refundNotes?: boolean
+    refundAmount?: boolean
+    refundedAt?: boolean
+    razorpayRefundId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -18089,11 +18163,18 @@ export namespace Prisma {
     loyaltyRewardLabel?: boolean
     loyaltyCountedAt?: boolean
     loyaltyRewardRestored?: boolean
+    refundStatus?: boolean
+    refundMode?: boolean
+    refundReason?: boolean
+    refundNotes?: boolean
+    refundAmount?: boolean
+    refundedAt?: boolean
+    razorpayRefundId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type BookingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "serviceId" | "status" | "paymentMethod" | "paymentStatus" | "couponCode" | "originalAmount" | "finalAmount" | "razorpayOrderId" | "razorpayPaymentId" | "paymentPendingReason" | "paymentGatewayError" | "paymentExpiresAt" | "paymentFailedAt" | "paymentExpiredAt" | "selectedDate" | "bookingWindowId" | "bookingSource" | "serviceAddress" | "serviceLandmark" | "servicePincode" | "serviceLocationUrl" | "addressUpdatedAt" | "assignedTeamId" | "groomerMemberId" | "dispatchState" | "adminNote" | "loyaltyEligible" | "loyaltyCompletedCountBefore" | "loyaltyCompletedCountAfter" | "loyaltyRewardApplied" | "loyaltyRewardLabel" | "loyaltyCountedAt" | "loyaltyRewardRestored" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
+  export type BookingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "serviceId" | "status" | "paymentMethod" | "paymentStatus" | "couponCode" | "originalAmount" | "finalAmount" | "razorpayOrderId" | "razorpayPaymentId" | "paymentPendingReason" | "paymentGatewayError" | "paymentExpiresAt" | "paymentFailedAt" | "paymentExpiredAt" | "selectedDate" | "bookingWindowId" | "bookingSource" | "serviceAddress" | "serviceLandmark" | "servicePincode" | "serviceLocationUrl" | "addressUpdatedAt" | "assignedTeamId" | "groomerMemberId" | "dispatchState" | "adminNote" | "loyaltyEligible" | "loyaltyCompletedCountBefore" | "loyaltyCompletedCountAfter" | "loyaltyRewardApplied" | "loyaltyRewardLabel" | "loyaltyCountedAt" | "loyaltyRewardRestored" | "refundStatus" | "refundMode" | "refundReason" | "refundNotes" | "refundAmount" | "refundedAt" | "razorpayRefundId" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
   export type BookingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     service?: boolean | ServiceDefaultArgs<ExtArgs>
@@ -18182,6 +18263,13 @@ export namespace Prisma {
       loyaltyRewardLabel: string | null
       loyaltyCountedAt: Date | null
       loyaltyRewardRestored: boolean
+      refundStatus: string | null
+      refundMode: string | null
+      refundReason: string | null
+      refundNotes: string | null
+      refundAmount: number | null
+      refundedAt: Date | null
+      razorpayRefundId: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["booking"]>
@@ -18658,6 +18746,13 @@ export namespace Prisma {
     readonly loyaltyRewardLabel: FieldRef<"Booking", 'String'>
     readonly loyaltyCountedAt: FieldRef<"Booking", 'DateTime'>
     readonly loyaltyRewardRestored: FieldRef<"Booking", 'Boolean'>
+    readonly refundStatus: FieldRef<"Booking", 'String'>
+    readonly refundMode: FieldRef<"Booking", 'String'>
+    readonly refundReason: FieldRef<"Booking", 'String'>
+    readonly refundNotes: FieldRef<"Booking", 'String'>
+    readonly refundAmount: FieldRef<"Booking", 'Float'>
+    readonly refundedAt: FieldRef<"Booking", 'DateTime'>
+    readonly razorpayRefundId: FieldRef<"Booking", 'String'>
     readonly createdAt: FieldRef<"Booking", 'DateTime'>
     readonly updatedAt: FieldRef<"Booking", 'DateTime'>
   }
@@ -48944,6 +49039,13 @@ export namespace Prisma {
     loyaltyRewardLabel: 'loyaltyRewardLabel',
     loyaltyCountedAt: 'loyaltyCountedAt',
     loyaltyRewardRestored: 'loyaltyRewardRestored',
+    refundStatus: 'refundStatus',
+    refundMode: 'refundMode',
+    refundReason: 'refundReason',
+    refundNotes: 'refundNotes',
+    refundAmount: 'refundAmount',
+    refundedAt: 'refundedAt',
+    razorpayRefundId: 'razorpayRefundId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -50334,6 +50436,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: StringNullableFilter<"Booking"> | string | null
     loyaltyCountedAt?: DateTimeNullableFilter<"Booking"> | Date | string | null
     loyaltyRewardRestored?: BoolFilter<"Booking"> | boolean
+    refundStatus?: StringNullableFilter<"Booking"> | string | null
+    refundMode?: StringNullableFilter<"Booking"> | string | null
+    refundReason?: StringNullableFilter<"Booking"> | string | null
+    refundNotes?: StringNullableFilter<"Booking"> | string | null
+    refundAmount?: FloatNullableFilter<"Booking"> | number | null
+    refundedAt?: DateTimeNullableFilter<"Booking"> | Date | string | null
+    razorpayRefundId?: StringNullableFilter<"Booking"> | string | null
     createdAt?: DateTimeFilter<"Booking"> | Date | string
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -50390,6 +50499,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: SortOrderInput | SortOrder
     loyaltyCountedAt?: SortOrderInput | SortOrder
     loyaltyRewardRestored?: SortOrder
+    refundStatus?: SortOrderInput | SortOrder
+    refundMode?: SortOrderInput | SortOrder
+    refundReason?: SortOrderInput | SortOrder
+    refundNotes?: SortOrderInput | SortOrder
+    refundAmount?: SortOrderInput | SortOrder
+    refundedAt?: SortOrderInput | SortOrder
+    razorpayRefundId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -50449,6 +50565,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: StringNullableFilter<"Booking"> | string | null
     loyaltyCountedAt?: DateTimeNullableFilter<"Booking"> | Date | string | null
     loyaltyRewardRestored?: BoolFilter<"Booking"> | boolean
+    refundStatus?: StringNullableFilter<"Booking"> | string | null
+    refundMode?: StringNullableFilter<"Booking"> | string | null
+    refundReason?: StringNullableFilter<"Booking"> | string | null
+    refundNotes?: StringNullableFilter<"Booking"> | string | null
+    refundAmount?: FloatNullableFilter<"Booking"> | number | null
+    refundedAt?: DateTimeNullableFilter<"Booking"> | Date | string | null
+    razorpayRefundId?: StringNullableFilter<"Booking"> | string | null
     createdAt?: DateTimeFilter<"Booking"> | Date | string
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -50505,6 +50628,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: SortOrderInput | SortOrder
     loyaltyCountedAt?: SortOrderInput | SortOrder
     loyaltyRewardRestored?: SortOrder
+    refundStatus?: SortOrderInput | SortOrder
+    refundMode?: SortOrderInput | SortOrder
+    refundReason?: SortOrderInput | SortOrder
+    refundNotes?: SortOrderInput | SortOrder
+    refundAmount?: SortOrderInput | SortOrder
+    refundedAt?: SortOrderInput | SortOrder
+    razorpayRefundId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: BookingCountOrderByAggregateInput
@@ -50553,6 +50683,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     loyaltyCountedAt?: DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
     loyaltyRewardRestored?: BoolWithAggregatesFilter<"Booking"> | boolean
+    refundStatus?: StringNullableWithAggregatesFilter<"Booking"> | string | null
+    refundMode?: StringNullableWithAggregatesFilter<"Booking"> | string | null
+    refundReason?: StringNullableWithAggregatesFilter<"Booking"> | string | null
+    refundNotes?: StringNullableWithAggregatesFilter<"Booking"> | string | null
+    refundAmount?: FloatNullableWithAggregatesFilter<"Booking"> | number | null
+    refundedAt?: DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
+    razorpayRefundId?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
   }
@@ -53716,6 +53853,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -53772,6 +53916,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -53820,6 +53971,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -53876,6 +54034,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -53928,6 +54093,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -53964,6 +54136,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -54004,6 +54183,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -57292,6 +57478,17 @@ export namespace Prisma {
     blockedByAdminUser?: SortOrder
   }
 
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type ServiceScalarRelationFilter = {
     is?: ServiceWhereInput
     isNot?: ServiceWhereInput
@@ -57408,6 +57605,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: SortOrder
     loyaltyCountedAt?: SortOrder
     loyaltyRewardRestored?: SortOrder
+    refundStatus?: SortOrder
+    refundMode?: SortOrder
+    refundReason?: SortOrder
+    refundNotes?: SortOrder
+    refundAmount?: SortOrder
+    refundedAt?: SortOrder
+    razorpayRefundId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -57417,6 +57621,7 @@ export namespace Prisma {
     finalAmount?: SortOrder
     loyaltyCompletedCountBefore?: SortOrder
     loyaltyCompletedCountAfter?: SortOrder
+    refundAmount?: SortOrder
   }
 
   export type BookingMaxOrderByAggregateInput = {
@@ -57455,6 +57660,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: SortOrder
     loyaltyCountedAt?: SortOrder
     loyaltyRewardRestored?: SortOrder
+    refundStatus?: SortOrder
+    refundMode?: SortOrder
+    refundReason?: SortOrder
+    refundNotes?: SortOrder
+    refundAmount?: SortOrder
+    refundedAt?: SortOrder
+    razorpayRefundId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -57495,6 +57707,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: SortOrder
     loyaltyCountedAt?: SortOrder
     loyaltyRewardRestored?: SortOrder
+    refundStatus?: SortOrder
+    refundMode?: SortOrder
+    refundReason?: SortOrder
+    refundNotes?: SortOrder
+    refundAmount?: SortOrder
+    refundedAt?: SortOrder
+    razorpayRefundId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -57504,6 +57723,23 @@ export namespace Prisma {
     finalAmount?: SortOrder
     loyaltyCompletedCountBefore?: SortOrder
     loyaltyCompletedCountAfter?: SortOrder
+    refundAmount?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type WorkforceLeaveRequestListRelationFilter = {
@@ -59939,6 +60175,14 @@ export namespace Prisma {
     connect?: CouponRedemptionWhereUniqueInput | CouponRedemptionWhereUniqueInput[]
   }
 
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type UserUpdateOneRequiredWithoutBookingsNestedInput = {
     create?: XOR<UserCreateWithoutBookingsInput, UserUncheckedCreateWithoutBookingsInput>
     connectOrCreate?: UserCreateOrConnectWithoutBookingsInput
@@ -61462,6 +61706,22 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type BookingCreateWithoutUserInput = {
     id?: string
     status?: string
@@ -61494,6 +61754,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     service: ServiceCreateNestedOneWithoutBookingsInput
@@ -61548,6 +61815,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -61701,6 +61975,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: StringNullableFilter<"Booking"> | string | null
     loyaltyCountedAt?: DateTimeNullableFilter<"Booking"> | Date | string | null
     loyaltyRewardRestored?: BoolFilter<"Booking"> | boolean
+    refundStatus?: StringNullableFilter<"Booking"> | string | null
+    refundMode?: StringNullableFilter<"Booking"> | string | null
+    refundReason?: StringNullableFilter<"Booking"> | string | null
+    refundNotes?: StringNullableFilter<"Booking"> | string | null
+    refundAmount?: FloatNullableFilter<"Booking"> | number | null
+    refundedAt?: DateTimeNullableFilter<"Booking"> | Date | string | null
+    razorpayRefundId?: StringNullableFilter<"Booking"> | string | null
     createdAt?: DateTimeFilter<"Booking"> | Date | string
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
   }
@@ -62069,6 +62350,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -62123,6 +62411,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -62284,6 +62579,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -62339,6 +62641,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -62482,6 +62791,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -62537,6 +62853,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -62732,6 +63055,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -62786,6 +63116,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -64814,6 +65151,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -64868,6 +65212,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -65947,6 +66298,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -66002,6 +66360,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -66182,6 +66547,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -66237,6 +66609,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -67882,6 +68261,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -67937,6 +68323,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -68000,6 +68393,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -68055,6 +68455,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -68102,6 +68509,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -68157,6 +68571,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -68256,6 +68677,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -68311,6 +68739,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -68374,6 +68809,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -68429,6 +68871,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -68521,6 +68970,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -68576,6 +69032,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -68658,6 +69121,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -68713,6 +69183,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -68776,6 +69253,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -68831,6 +69315,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -68878,6 +69369,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -68933,6 +69431,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     slots?: BookingSlotUncheckedCreateNestedManyWithoutBookingInput
@@ -69061,6 +69566,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -69116,6 +69628,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     slots?: BookingSlotUncheckedUpdateManyWithoutBookingNestedInput
@@ -69235,6 +69754,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -69290,6 +69816,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -69386,6 +69919,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -69441,6 +69981,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -69583,6 +70130,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -69638,6 +70192,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -69742,6 +70303,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -69797,6 +70365,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -69891,6 +70466,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -69946,6 +70528,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -70050,6 +70639,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -70105,6 +70701,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -70199,6 +70802,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -70254,6 +70864,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -70317,6 +70934,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -70372,6 +70996,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -70419,6 +71050,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookingsInput
@@ -70474,6 +71112,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pets?: BookingPetUncheckedCreateNestedManyWithoutBookingInput
@@ -70537,6 +71182,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -70592,6 +71244,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -70642,6 +71301,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -70702,6 +71368,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     service?: ServiceUpdateOneRequiredWithoutBookingsNestedInput
@@ -70756,6 +71429,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -70807,6 +71487,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -70996,6 +71683,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -71032,6 +71726,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -71086,6 +71787,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -71137,6 +71845,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -71256,6 +71971,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -71432,6 +72154,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -71486,6 +72215,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -71537,6 +72273,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -72374,6 +73117,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: string | null
     loyaltyCountedAt?: Date | string | null
     loyaltyRewardRestored?: boolean
+    refundStatus?: string | null
+    refundMode?: string | null
+    refundReason?: string | null
+    refundNotes?: string | null
+    refundAmount?: number | null
+    refundedAt?: Date | string | null
+    razorpayRefundId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -72518,6 +73268,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
@@ -72572,6 +73329,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pets?: BookingPetUncheckedUpdateManyWithoutBookingNestedInput
@@ -72623,6 +73387,13 @@ export namespace Prisma {
     loyaltyRewardLabel?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyCountedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     loyaltyRewardRestored?: BoolFieldUpdateOperationsInput | boolean
+    refundStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    refundMode?: NullableStringFieldUpdateOperationsInput | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    refundNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

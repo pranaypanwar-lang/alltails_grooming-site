@@ -245,6 +245,17 @@ model Booking {
   loyaltyCountedAt            DateTime?
   loyaltyRewardRestored       Boolean   @default(false)
 
+  // Refund tracking — populated when a paid booking is cancelled or a refund is issued retroactively
+  // refundStatus: pending | completed | failed | waived
+  // refundMode:   manual_refund | razorpay_refund | waived
+  refundStatus     String?
+  refundMode       String?
+  refundReason     String?
+  refundNotes      String?
+  refundAmount     Float?
+  refundedAt       DateTime?
+  razorpayRefundId String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 

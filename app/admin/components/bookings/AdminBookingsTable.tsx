@@ -224,6 +224,15 @@ export function AdminBookingsTable({
                         Cancel
                       </button>
                     )}
+                    {row.availableActions.includes("issue_refund") && (
+                      <button
+                        type="button"
+                        onClick={() => onActionClick(row, "issue_refund")}
+                        className="rounded-[10px] bg-[#c24134] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#a93528] transition-colors whitespace-nowrap"
+                      >
+                        Issue refund
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>

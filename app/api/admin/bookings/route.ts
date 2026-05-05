@@ -63,7 +63,13 @@ function getPaymentMethodLabel(m: string | null) {
   return null;
 }
 
-function getAvailableActions(status: DerivedBookingStatus, teamId: string | null, groomerMemberId: string | null) {
+function getAvailableActions(
+  status: DerivedBookingStatus,
+  teamId: string | null,
+  groomerMemberId: string | null,
+  paymentStatus: string,
+  refundStatus: string | null
+) {
   const actions: string[] = ["view_details"];
   if (status === "confirmed") {
     actions.push("mark_completed", "cancel", "reschedule", "relay_call", "send_customer_message");
@@ -74,6 +80,9 @@ function getAvailableActions(status: DerivedBookingStatus, teamId: string | null
     actions.push("cancel", "retry_payment_support");
     if (teamId) actions.push("reassign_team"); else actions.push("assign_team");
     if (teamId) actions.push(groomerMemberId ? "reassign_groomer" : "assign_groomer");
+  }
+  if (status === "cancelled" && paymentStatus === "paid" && refundStatus !== "completed") {
+    actions.push("issue_refund");
   }
   return actions;
 }
@@ -185,7 +194,13 @@ function buildListItem(booking: BookingListRecord, now: Date, includeFullPhone =
       paymentExpiringSoon,
       needsAssignment: !team && (derivedStatus === "confirmed" || derivedStatus === "pending_payment"),
     },
-    availableActions: getAvailableActions(derivedStatus, team?.id ?? null, booking.groomerMemberId ?? null),
+    availableActions: getAvailableActions(
+      derivedStatus,
+      team?.id ?? null,
+      booking.groomerMemberId ?? null,
+      booking.paymentStatus,
+      booking.refundStatus ?? null
+    ),
   };
 }
 

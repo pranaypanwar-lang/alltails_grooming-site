@@ -189,6 +189,15 @@ export function AdminBookingDetailDrawer({
                       Cancel booking
                     </button>
                   )}
+                  {booking.availableActions.includes("issue_refund") && (
+                    <button
+                      type="button"
+                      onClick={() => onAction("issue_refund")}
+                      className="rounded-[12px] bg-[#c24134] px-4 py-2 text-[12px] font-semibold text-white hover:bg-[#a93528] transition-colors"
+                    >
+                      Issue refund
+                    </button>
+                  )}
                   {booking.availableActions.includes("relay_call") && (
                     <button
                       type="button"

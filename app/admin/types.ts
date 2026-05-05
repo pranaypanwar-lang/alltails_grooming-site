@@ -36,7 +36,8 @@ export type AdminBookingActionId =
   | "edit_metadata"
   | "send_customer_message"
   | "relay_call"
-  | "send_same_day_alert";
+  | "send_same_day_alert"
+  | "issue_refund";
 
 export type AdminDispatchActionId =
   | "assign_team"

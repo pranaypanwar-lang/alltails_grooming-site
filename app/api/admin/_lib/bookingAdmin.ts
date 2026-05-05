@@ -82,3 +82,105 @@ export function getPublicAppUrl(request: Request) {
   const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "localhost:3000";
   return `${proto}://${host}`.replace(/\/$/, "");
 }
+
+export type RefundMode = "manual_refund" | "razorpay_refund" | "waived";
+
+export type RefundOutcome = {
+  refundStatus: "completed" | "failed" | "waived";
+  refundMode: RefundMode;
+  razorpayRefundId: string | null;
+  refundAmount: number | null;
+  refundedAt: Date | null;
+  errorMessage: string | null;
+};
+
+/**
+ * Processes a refund for a paid booking.
+ *
+ * razorpay_refund — calls Razorpay refund API. On failure returns refundStatus=failed
+ *   so the caller can still cancel the booking and retry the refund later.
+ * manual_refund — admin processes externally (UPI, bank transfer). Marked completed
+ *   immediately because the admin is asserting they will/have done it.
+ * waived — no refund issued (e.g. policy violation).
+ */
+export async function processBookingRefund(input: {
+  refundMode: RefundMode;
+  razorpayPaymentId: string | null;
+  amount: number;
+}): Promise<RefundOutcome> {
+  if (input.refundMode === "waived") {
+    return {
+      refundStatus: "waived",
+      refundMode: "waived",
+      razorpayRefundId: null,
+      refundAmount: 0,
+      refundedAt: new Date(),
+      errorMessage: null,
+    };
+  }
+
+  if (input.refundMode === "manual_refund") {
+    return {
+      refundStatus: "completed",
+      refundMode: "manual_refund",
+      razorpayRefundId: null,
+      refundAmount: input.amount,
+      refundedAt: new Date(),
+      errorMessage: null,
+    };
+  }
+
+  // razorpay_refund
+  if (!adminRazorpay) {
+    return {
+      refundStatus: "failed",
+      refundMode: "razorpay_refund",
+      razorpayRefundId: null,
+      refundAmount: null,
+      refundedAt: null,
+      errorMessage: "Razorpay is not configured on this environment.",
+    };
+  }
+
+  if (!input.razorpayPaymentId) {
+    return {
+      refundStatus: "failed",
+      refundMode: "razorpay_refund",
+      razorpayRefundId: null,
+      refundAmount: null,
+      refundedAt: null,
+      errorMessage: "Booking has no Razorpay payment ID — cannot auto-refund.",
+    };
+  }
+
+  try {
+    const refund = await adminRazorpay.payments.refund(input.razorpayPaymentId, {
+      amount: Math.round(input.amount * 100),
+      speed: "normal",
+    });
+
+    return {
+      refundStatus: "completed",
+      refundMode: "razorpay_refund",
+      razorpayRefundId: typeof refund.id === "string" ? refund.id : null,
+      refundAmount: input.amount,
+      refundedAt: new Date(),
+      errorMessage: null,
+    };
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : typeof error === "object" && error && "error" in error
+          ? JSON.stringify((error as { error: unknown }).error)
+          : "Razorpay refund failed";
+    return {
+      refundStatus: "failed",
+      refundMode: "razorpay_refund",
+      razorpayRefundId: null,
+      refundAmount: null,
+      refundedAt: null,
+      errorMessage: message,
+    };
+  }
+}

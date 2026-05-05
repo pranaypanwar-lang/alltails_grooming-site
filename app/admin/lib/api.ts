@@ -380,7 +380,38 @@ export async function cancelPaidAdminBooking(bookingId: string, payload: PaidCan
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(getApiErrorMessage(data, "Failed to cancel paid booking"));
-  return data;
+  return data as {
+    success: boolean;
+    refundStatus: "completed" | "failed" | "waived";
+    refundMode: PaidCancelPayload["refundMode"];
+    refundError: string | null;
+    razorpayRefundId: string | null;
+    loyaltyRewardRestored: boolean;
+  };
+}
+
+export type IssueRefundPayload = {
+  refundMode: "manual_refund" | "razorpay_refund" | "waived";
+  refundNotes?: string;
+  force?: boolean;
+};
+
+export async function issueAdminBookingRefund(bookingId: string, payload: IssueRefundPayload) {
+  const res = await fetch(`/api/admin/bookings/${bookingId}/refund`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(getApiErrorMessage(data, "Failed to issue refund"));
+  return data as {
+    success: boolean;
+    refundStatus: "completed" | "failed" | "waived";
+    refundMode: IssueRefundPayload["refundMode"];
+    razorpayRefundId: string | null;
+    refundAmount: number | null;
+    refundError: string | null;
+  };
 }
 
 export async function assignAdminBookingTeam(bookingId: string, teamId: string): Promise<AdminAssignTeamResponse> {

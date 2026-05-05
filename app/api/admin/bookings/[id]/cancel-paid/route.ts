@@ -1,13 +1,19 @@
 import { NextResponse } from "next/server";
 import { assertAdminSession } from "../../../_lib/assertAdmin";
-import { adminPrisma, logAdminBookingEvent } from "../../../_lib/bookingAdmin";
+import {
+  adminPrisma,
+  logAdminBookingEvent,
+  processBookingRefund,
+  type RefundMode,
+} from "../../../_lib/bookingAdmin";
 
 export const runtime = "nodejs";
 
 // Refund modes:
-// manual_refund   — refund processed outside the system (bank transfer, UPI, etc.)
-// razorpay_refund — refund to be raised on Razorpay dashboard
-// waived          — no refund, booking cancelled without refund (e.g. policy violation)
+// manual_refund   — admin processes refund externally (bank transfer, UPI). Marked complete on submit.
+// razorpay_refund — system calls Razorpay refund API. Marks complete on success, failed on error
+//                   (booking is still cancelled — admin can retry refund via /refund endpoint).
+// waived          — no refund (e.g. policy violation).
 
 export async function POST(
   request: Request,
@@ -20,7 +26,7 @@ export async function POST(
     const { id: bookingId } = await params;
     const body = await request.json().catch(() => ({}));
 
-    const refundMode: string = body.refundMode ?? "";
+    const refundMode = body.refundMode as RefundMode;
     const reason: string = body.reason ?? "";
     const refundNotes: string = body.refundNotes ?? "";
 
@@ -51,6 +57,9 @@ export async function POST(
 
     const shouldRestoreReward = booking.loyaltyRewardApplied && !booking.loyaltyRewardRestored;
 
+    // 1. Cancel the booking + release slots first. Refund attempt comes after — if Razorpay
+    //    fails, we still want the booking cancelled and the slots released; the admin can
+    //    retry the refund without the booking being stuck in a half-cancelled state.
     await adminPrisma.$transaction(async (tx) => {
       await tx.booking.update({
         where: { id: bookingId },
@@ -77,12 +86,35 @@ export async function POST(
       }
     });
 
+    // 2. Process refund (calls Razorpay if mode is razorpay_refund).
+    const refund = await processBookingRefund({
+      refundMode,
+      razorpayPaymentId: booking.razorpayPaymentId,
+      amount: booking.finalAmount,
+    });
+
+    // 3. Persist refund state on the booking.
+    await adminPrisma.booking.update({
+      where: { id: bookingId },
+      data: {
+        refundStatus: refund.refundStatus,
+        refundMode: refund.refundMode,
+        refundReason: reason,
+        refundNotes: refundNotes.trim() || null,
+        refundAmount: refund.refundAmount,
+        refundedAt: refund.refundedAt,
+        razorpayRefundId: refund.razorpayRefundId,
+      },
+    });
+
     const refundLabel =
       refundMode === "manual_refund"
         ? "Manual refund"
         : refundMode === "razorpay_refund"
-        ? "Razorpay refund"
-        : "Waived (no refund)";
+          ? refund.refundStatus === "completed"
+            ? "Razorpay refund — processed"
+            : "Razorpay refund — FAILED, retry needed"
+          : "Waived (no refund)";
 
     await logAdminBookingEvent({
       bookingId,
@@ -90,6 +122,9 @@ export async function POST(
       summary: `Paid booking cancelled — ${refundLabel}`,
       metadata: {
         refundMode,
+        refundStatus: refund.refundStatus,
+        razorpayRefundId: refund.razorpayRefundId,
+        refundError: refund.errorMessage,
         reason,
         refundNotes: refundNotes || null,
         originalAmount: booking.originalAmount,
@@ -105,6 +140,9 @@ export async function POST(
       bookingId,
       status: "cancelled",
       refundMode,
+      refundStatus: refund.refundStatus,
+      refundError: refund.errorMessage,
+      razorpayRefundId: refund.razorpayRefundId,
       loyaltyRewardRestored: shouldRestoreReward,
     });
   } catch (error) {

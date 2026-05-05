@@ -8,6 +8,8 @@ import {
   fetchAdminBookingDetail,
   completeAdminBooking,
   cancelAdminBooking,
+  cancelPaidAdminBooking,
+  issueAdminBookingRefund,
   sendSameDayDispatchAlert,
   assignAdminBookingTeam,
   assignAdminBookingGroomer,
@@ -20,6 +22,7 @@ import {
   updateAdminDispatchState,
   updateAdminBookingMetadata,
   type AdminTeamRow,
+  type PaidCancelPayload,
 } from "../lib/api";
 import type {
   AdminBookingActionId,
@@ -34,6 +37,7 @@ import { AdminActionConfirmModal } from "../components/common/AdminActionConfirm
 import { AdminTeamAssignModal } from "../components/common/AdminTeamAssignModal";
 import { AdminGroomerAssignModal } from "../components/common/AdminGroomerAssignModal";
 import { AdminBookingRescheduleModal } from "../components/common/AdminBookingRescheduleModal";
+import { AdminPaidCancelModal } from "../components/common/AdminPaidCancelModal";
 import { AdminPaymentLinkModal } from "../components/common/AdminPaymentLinkModal";
 import { AdminBookingMetadataModal } from "../components/common/AdminBookingMetadataModal";
 import { AdminCustomerMessageModal } from "../components/common/AdminCustomerMessageModal";
@@ -140,6 +144,13 @@ export default function AdminBookingsPage() {
   } | null>(null);
   const [rescheduleState, setRescheduleState] = useState<{ bookingId: string; bookingLabel: string; city: string; petCount: number; date: string | null } | null>(null);
   const [paymentLinkState, setPaymentLinkState] = useState<{ bookingId: string; paymentLinkUrl: string; expiresAt?: string | null } | null>(null);
+  const [paidCancelState, setPaidCancelState] = useState<{
+    mode: "cancel" | "refund_only";
+    bookingId: string;
+    bookingLabel: string;
+    finalAmount: number;
+  } | null>(null);
+  const [paidCancelLoading, setPaidCancelLoading] = useState(false);
   const [customerMessageState, setCustomerMessageState] = useState<{
     bookingId: string;
     bookingLabel: string;
@@ -248,6 +259,24 @@ export default function AdminBookingsPage() {
 
   const handleTableAction = useCallback(async (row: AdminBookingListItem, action: AdminBookingActionId) => {
     if (action === "view_details") { openDrawer(row.id); return; }
+    if (action === "cancel" && row.paymentStatus === "paid") {
+      setPaidCancelState({
+        mode: "cancel",
+        bookingId: row.id,
+        bookingLabel: `${row.service.name} · ${row.customer.name}`,
+        finalAmount: row.financials.finalAmount,
+      });
+      return;
+    }
+    if (action === "issue_refund") {
+      setPaidCancelState({
+        mode: "refund_only",
+        bookingId: row.id,
+        bookingLabel: `${row.service.name} · ${row.customer.name}`,
+        finalAmount: row.financials.finalAmount,
+      });
+      return;
+    }
     if (action === "mark_completed" || action === "cancel") {
       setModal({ action, bookingId: row.id });
       return;
@@ -330,6 +359,24 @@ export default function AdminBookingsPage() {
 
   const handleDrawerAction = useCallback((action: AdminBookingActionId) => {
     if (!drawerBooking) return;
+    if (action === "cancel" && drawerBooking.paymentStatus === "paid") {
+      setPaidCancelState({
+        mode: "cancel",
+        bookingId: drawerBooking.id,
+        bookingLabel: `${drawerBooking.service.name} · ${drawerBooking.customer.name}`,
+        finalAmount: drawerBooking.financials.finalAmount,
+      });
+      return;
+    }
+    if (action === "issue_refund") {
+      setPaidCancelState({
+        mode: "refund_only",
+        bookingId: drawerBooking.id,
+        bookingLabel: `${drawerBooking.service.name} · ${drawerBooking.customer.name}`,
+        finalAmount: drawerBooking.financials.finalAmount,
+      });
+      return;
+    }
     if (action === "mark_completed" || action === "cancel") {
       setModal({ action, bookingId: drawerBooking.id });
       return;
@@ -503,6 +550,50 @@ export default function AdminBookingsPage() {
       showToast(getErrorMessage(error, "Failed to assign groomer."), false);
     } finally {
       setActionLoading(false);
+    }
+  };
+
+  const submitPaidCancelOrRefund = async (payload: PaidCancelPayload) => {
+    if (!paidCancelState) return;
+    setPaidCancelLoading(true);
+    try {
+      if (paidCancelState.mode === "cancel") {
+        const result = await cancelPaidAdminBooking(paidCancelState.bookingId, payload);
+        if (result.refundStatus === "failed") {
+          showToast(
+            `Booking cancelled. Refund FAILED: ${result.refundError ?? "unknown error"}. Retry from the booking drawer.`,
+            false
+          );
+        } else {
+          showToast(
+            `Booking cancelled. Refund: ${result.refundStatus}.${result.razorpayRefundId ? ` Razorpay ref ${result.razorpayRefundId}` : ""}`,
+            true
+          );
+        }
+      } else {
+        const result = await issueAdminBookingRefund(paidCancelState.bookingId, {
+          refundMode: payload.refundMode,
+          refundNotes: payload.refundNotes,
+        });
+        if (result.refundStatus === "failed") {
+          showToast(
+            `Refund FAILED: ${result.refundError ?? "unknown error"}. Try a different refund mode.`,
+            false
+          );
+        } else {
+          showToast(
+            `Refund ${result.refundStatus}.${result.razorpayRefundId ? ` Razorpay ref ${result.razorpayRefundId}` : ""}`,
+            true
+          );
+        }
+      }
+      setPaidCancelState(null);
+      setDrawerOpen(false);
+      await load(filters, page, true);
+    } catch (error: unknown) {
+      showToast(getErrorMessage(error, "Failed to process refund."), false);
+    } finally {
+      setPaidCancelLoading(false);
     }
   };
 
@@ -729,6 +820,16 @@ export default function AdminBookingsPage() {
         paymentLinkUrl={paymentLinkState?.paymentLinkUrl ?? ""}
         expiresAt={paymentLinkState?.expiresAt}
         onClose={() => setPaymentLinkState(null)}
+      />
+
+      <AdminPaidCancelModal
+        isOpen={!!paidCancelState}
+        mode={paidCancelState?.mode}
+        bookingLabel={paidCancelState?.bookingLabel}
+        finalAmount={paidCancelState?.finalAmount}
+        isSubmitting={paidCancelLoading}
+        onClose={() => setPaidCancelState(null)}
+        onSubmit={(p) => void submitPaidCancelOrRefund(p)}
       />
 
       <AdminBookingMetadataModal

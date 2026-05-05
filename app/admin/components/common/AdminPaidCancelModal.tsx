@@ -12,8 +12,11 @@ const REFUND_MODES: { value: RefundMode; label: string; desc: string }[] = [
   { value: "waived", label: "No refund (waived)", desc: "Cancel without issuing any refund" },
 ];
 
+type Mode = "cancel" | "refund_only";
+
 type Props = {
   isOpen: boolean;
+  mode?: Mode;
   bookingLabel?: string;
   finalAmount?: number;
   isSubmitting: boolean;
@@ -21,14 +24,22 @@ type Props = {
   onSubmit: (payload: PaidCancelPayload) => void;
 };
 
-export function AdminPaidCancelModal({ isOpen, bookingLabel, finalAmount, isSubmitting, onClose, onSubmit }: Props) {
+export function AdminPaidCancelModal({ isOpen, mode = "cancel", bookingLabel, finalAmount, isSubmitting, onClose, onSubmit }: Props) {
   const [refundMode, setRefundMode] = useState<RefundMode>("manual_refund");
   const [reason, setReason] = useState("");
   const [refundNotes, setRefundNotes] = useState("");
 
   if (!isOpen) return null;
 
-  const canSubmit = reason.trim().length > 0 && !isSubmitting;
+  const isRefundOnly = mode === "refund_only";
+  // Refund-only flow doesn't need a fresh cancellation reason since the booking is
+  // already cancelled — use refundNotes as the audit field instead.
+  const canSubmit = (isRefundOnly || reason.trim().length > 0) && !isSubmitting;
+  const title = isRefundOnly ? "Issue refund" : "Cancel paid booking";
+  const submitLabel = isRefundOnly
+    ? isSubmitting ? "Issuing refund…" : "Issue refund"
+    : isSubmitting ? "Cancelling…" : "Cancel booking";
+  const amountLabel = isRefundOnly ? "Refundable amount" : "Paid amount";
 
   return (
     <div className="fixed inset-0 z-[400] flex items-center justify-center bg-black/30 p-4">
@@ -38,7 +49,7 @@ export function AdminPaidCancelModal({ isOpen, bookingLabel, finalAmount, isSubm
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fef2f2]">
               <AlertTriangle className="w-4 h-4 text-[#b42318]" />
             </div>
-            <h3 className="text-[17px] font-black tracking-[-0.02em] text-[#1f1f2c]">Cancel paid booking</h3>
+            <h3 className="text-[17px] font-black tracking-[-0.02em] text-[#1f1f2c]">{title}</h3>
           </div>
           <button type="button" onClick={onClose}
             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#ece8f5] text-[#8a90a6] hover:bg-[#f6f4fd]">
@@ -49,7 +60,7 @@ export function AdminPaidCancelModal({ isOpen, bookingLabel, finalAmount, isSubm
         {finalAmount != null && (
           <div className="mb-4 ml-10 rounded-[10px] border border-[#fee2e2] bg-[#fff5f5] px-3 py-2">
             <p className="text-[12px] font-semibold text-[#b42318]">
-              Paid amount: ₹{finalAmount.toLocaleString("en-IN")} — select refund handling below
+              {amountLabel}: ₹{finalAmount.toLocaleString("en-IN")} — select refund handling below
             </p>
           </div>
         )}
@@ -66,18 +77,20 @@ export function AdminPaidCancelModal({ isOpen, bookingLabel, finalAmount, isSubm
           ))}
         </div>
 
-        <div className="mb-3">
-          <label className="block text-[11px] font-semibold uppercase tracking-wide text-[#6b7280] mb-1">
-            Cancellation reason <span className="text-[#b42318]">*</span>
-          </label>
-          <textarea
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            placeholder="Why is this booking being cancelled?"
-            rows={2}
-            className="w-full rounded-[12px] border border-[#ece8f5] px-3 py-2 text-[13px] text-[#1f1f2c] placeholder:text-[#c4c9d4] focus:border-[#6d5bd0] focus:outline-none resize-none"
-          />
-        </div>
+        {!isRefundOnly && (
+          <div className="mb-3">
+            <label className="block text-[11px] font-semibold uppercase tracking-wide text-[#6b7280] mb-1">
+              Cancellation reason <span className="text-[#b42318]">*</span>
+            </label>
+            <textarea
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Why is this booking being cancelled?"
+              rows={2}
+              className="w-full rounded-[12px] border border-[#ece8f5] px-3 py-2 text-[13px] text-[#1f1f2c] placeholder:text-[#c4c9d4] focus:border-[#6d5bd0] focus:outline-none resize-none"
+            />
+          </div>
+        )}
 
         {refundMode !== "waived" && (
           <div className="mb-4">
@@ -99,10 +112,10 @@ export function AdminPaidCancelModal({ isOpen, bookingLabel, finalAmount, isSubm
             className="rounded-[12px] border border-[#ece8f5] px-4 py-2 text-[13px] font-semibold text-[#6b7280] hover:bg-[#f6f4fd]">
             Back
           </button>
-          <button type="button" onClick={() => onSubmit({ refundMode, reason, refundNotes })}
+          <button type="button" onClick={() => onSubmit({ refundMode, reason: isRefundOnly ? "" : reason, refundNotes })}
             disabled={!canSubmit}
             className="rounded-[12px] bg-[#c24134] px-4 py-2 text-[13px] font-semibold text-white disabled:opacity-50 hover:bg-[#a93528] transition-colors">
-            {isSubmitting ? "Cancelling…" : "Cancel booking"}
+            {submitLabel}
           </button>
         </div>
       </div>

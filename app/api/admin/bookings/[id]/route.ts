@@ -139,7 +139,9 @@ function getAvailableActions(
   status: DerivedBookingStatus,
   teamId: string | null,
   dispatchState: string,
-  groomerMemberId: string | null
+  groomerMemberId: string | null,
+  paymentStatus: string,
+  refundStatus: string | null
 ): string[] {
   const actions: string[] = [];
   if (status === "confirmed") {
@@ -162,6 +164,9 @@ function getAvailableActions(
     actions.push("cancel", "relay_call", "retry_payment_support", "send_payment_link", "edit_metadata");
     actions.push(teamId ? "reassign_team" : "assign_team");
     if (teamId) actions.push(groomerMemberId ? "reassign_groomer" : "assign_groomer");
+  }
+  if (status === "cancelled" && paymentStatus === "paid" && refundStatus !== "completed") {
+    actions.push("issue_refund");
   }
   return actions;
 }
@@ -465,7 +470,14 @@ export async function GET(
       }),
       qaReview,
       timeline: buildTimeline(booking, derivedStatus, derivedPaymentStatus),
-      availableActions: getAvailableActions(derivedStatus, team?.id ?? null, booking.dispatchState, booking.groomerMemberId ?? null),
+      availableActions: getAvailableActions(
+        derivedStatus,
+        team?.id ?? null,
+        booking.dispatchState,
+        booking.groomerMemberId ?? null,
+        booking.paymentStatus,
+        booking.refundStatus ?? null
+      ),
     };
 
     return NextResponse.json({ booking: detail });
