@@ -3,7 +3,7 @@ import "dotenv/config";
 import Razorpay from "razorpay";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../lib/generated/prisma";
-import { createBookingAccessToken } from "../../../../lib/auth/bookingAccess";
+import { canIssueBookingAccessTokens, createBookingAccessToken } from "../../../../lib/auth/bookingAccess";
 import {
   createBookingWithBusinessRules,
   type BookingCreatePetInput,
@@ -93,6 +93,13 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!canIssueBookingAccessTokens()) {
+      return NextResponse.json(
+        { error: "Booking access token configuration is missing." },
+        { status: 500 }
+      );
+    }
+
     const invalidPet = pets.some((pet) => !pet.breed?.trim());
     if (invalidPet) {
       return NextResponse.json(
@@ -168,18 +175,29 @@ export async function POST(request: Request) {
     }
 
     const addressInfo = getAddressReadinessSummary(bookingWithAddress);
+    const accessToken = createBookingAccessToken(bookingWithAddress.id, result.user.phone);
+    if (!accessToken) {
+      return NextResponse.json(
+        { error: "Booking access token configuration is missing." },
+        { status: 500 }
+      );
+    }
 
     const shouldSendImmediateConfirmation = bookingWithAddress.status === "confirmed";
 
     if (shouldSendImmediateConfirmation) {
-      await supersedeQueuedBookingLifecycleMessages(prisma, bookingWithAddress.id, {
-        keepMessageTypes: ["booking_confirmation"],
-      });
-      const prepared = await prepareCustomerMessageForBooking(prisma, bookingWithAddress.id, "booking_confirmation", {
-        skipIfPreparedAfter: new Date(Date.now() - 5 * 60 * 1000),
-        deliveryStatus: "queued",
-      });
-      await processQueuedCustomerMessages(prisma, { limit: 10, messageIds: [prepared.message.id] });
+      try {
+        await supersedeQueuedBookingLifecycleMessages(prisma, bookingWithAddress.id, {
+          keepMessageTypes: ["booking_confirmation"],
+        });
+        const prepared = await prepareCustomerMessageForBooking(prisma, bookingWithAddress.id, "booking_confirmation", {
+          skipIfPreparedAfter: new Date(Date.now() - 5 * 60 * 1000),
+          deliveryStatus: "queued",
+        });
+        await processQueuedCustomerMessages(prisma, { limit: 10, messageIds: [prepared.message.id] });
+      } catch (error) {
+        console.error("Customer booking confirmation message failed:", error);
+      }
 
       try {
         await sendNewBookingAdminAlert({
@@ -270,14 +288,6 @@ export async function POST(request: Request) {
   amount: Number(order.amount),
   currency: String(order.currency),
 };
-    }
-
-    const accessToken = createBookingAccessToken(bookingWithAddress.id, result.user.phone);
-    if (!accessToken) {
-      return NextResponse.json(
-        { error: "Booking access token configuration is missing." },
-        { status: 500 }
-      );
     }
 
     return NextResponse.json({

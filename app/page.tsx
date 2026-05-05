@@ -3703,22 +3703,6 @@ const uploadBookingAsset = async (
     });
 
     if (!bookingData.paymentOrder) {
-      trackGoogleAdsBookingConversion(bookingData.finalAmount, heroForm.phone);
-      trackMetaEvent(
-        "Lead",
-        buildServiceMeta(heroForm.service, {
-          value: bookingData.finalAmount,
-          currency: "INR",
-          city: heroForm.city,
-          selected_date: selectedDate,
-          booking_window: getBookingWindowLabel(selectedBookingWindow),
-          pet_count: pets.length,
-          payment_method: bookingData.paymentMethod,
-          booking_id: bookingData.bookingId,
-        }),
-        { eventID: buildBookingEventId("lead", bookingData.bookingId) }
-      );
-      resetBookingAttemptId();
       setConfirmationLoyaltyProgress(
         getAnimatedConfirmationLoyaltyProgress({ loyalty: bookingData.loyalty })
       );
@@ -3758,6 +3742,28 @@ const uploadBookingAsset = async (
       setConfirmedAddressSuccess("");
       const confirmPhone = heroForm.phone || trackPhone;
       if (confirmPhone.trim()) fetchLoyaltyStatus(confirmPhone);
+      setBookingCreateError("");
+      scrollBookingFlowToTop("smooth");
+      try {
+        trackGoogleAdsBookingConversion(bookingData.finalAmount, heroForm.phone);
+        trackMetaEvent(
+          "Lead",
+          buildServiceMeta(heroForm.service, {
+            value: bookingData.finalAmount,
+            currency: "INR",
+            city: heroForm.city,
+            selected_date: selectedDate,
+            booking_window: getBookingWindowLabel(selectedBookingWindow),
+            pet_count: pets.length,
+            payment_method: bookingData.paymentMethod,
+            booking_id: bookingData.bookingId,
+          }),
+          { eventID: buildBookingEventId("lead", bookingData.bookingId) }
+        );
+        resetBookingAttemptId();
+      } catch (trackingError) {
+        console.error("Post-booking tracking failed", trackingError);
+      }
       return;
     }
 
