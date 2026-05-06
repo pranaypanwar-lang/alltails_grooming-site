@@ -106,6 +106,22 @@ export function articleSchema(input: ArticleSchemaInput) {
   };
 }
 
+type FaqItem = { q: string; a: string };
+export function faqPageSchema(items: FaqItem[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  };
+}
+
 type Crumb = { name: string; path: string };
 export function breadcrumbSchema(items: Crumb[]) {
   return {

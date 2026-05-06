@@ -3,7 +3,7 @@ import Link from "next/link";
 import { JsonLd } from "../components/seo/JsonLd";
 import { SeoPageShell } from "../components/seo/SeoPageShell";
 import { pageMetadata } from "@/lib/seo/metadata";
-import { breadcrumbSchema } from "@/lib/seo/schema";
+import { breadcrumbSchema, faqPageSchema } from "@/lib/seo/schema";
 
 export const metadata = pageMetadata({
   title: "Pet Grooming FAQs",
@@ -98,9 +98,13 @@ export default function FaqPage() {
     { name: "FAQs", path: "/faq" },
   ]);
 
+  const faqSchema = faqPageSchema(
+    FAQ_GROUPS.flatMap((group) => group.items)
+  );
+
   return (
     <SeoPageShell>
-      <JsonLd data={breadcrumbs} />
+      <JsonLd data={[faqSchema, breadcrumbs]} />
 
       <section className="mx-auto max-w-[860px] px-5 py-14 lg:px-8 lg:py-20">
         <div className="text-center">
