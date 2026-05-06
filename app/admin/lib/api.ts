@@ -172,7 +172,7 @@ export async function fetchAdminDispatch(filters: AdminDispatchFilters): Promise
   const res = await fetch(`/api/admin/dispatch?${toQueryString({
     date: filters.date,
     city: filters.city,
-    includeCompleted: filters.includeCompleted,
+    statusScope: filters.statusScope,
     addressPendingOnly: filters.addressPendingOnly,
   })}`, { cache: "no-store" });
   if (!res.ok) throw new Error("Failed to load dispatch board");

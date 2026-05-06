@@ -19,6 +19,56 @@ const maskPhone = (phone: string) => {
 };
 
 type DerivedBookingStatus = "pending_payment" | "confirmed" | "completed" | "cancelled" | "payment_expired";
+type DispatchStatusScope = "confirmed" | "expired" | "pending_payment" | "completed" | "all";
+
+const dispatchStatusScopes = new Set<DispatchStatusScope>([
+  "confirmed",
+  "expired",
+  "pending_payment",
+  "completed",
+  "all",
+]);
+
+function parseStatusScope(value: string | null): DispatchStatusScope {
+  if (value && dispatchStatusScopes.has(value as DispatchStatusScope)) {
+    return value as DispatchStatusScope;
+  }
+  return "confirmed";
+}
+
+function getQueryableStatuses(statusScope: DispatchStatusScope): string[] {
+  if (statusScope === "confirmed") return ["confirmed"];
+  if (statusScope === "expired") return ["pending_payment", "payment_expired"];
+  if (statusScope === "pending_payment") return ["pending_payment"];
+  if (statusScope === "completed") return ["completed"];
+  return ["pending_payment", "confirmed", "completed", "payment_expired"];
+}
+
+function matchesStatusScope(status: DerivedBookingStatus, statusScope: DispatchStatusScope): boolean {
+  if (statusScope === "confirmed") return status === "confirmed";
+  if (statusScope === "expired") return status === "payment_expired";
+  if (statusScope === "pending_payment") return status === "pending_payment";
+  if (statusScope === "completed") return status === "completed";
+  return status !== "cancelled";
+}
+
+function getCardStartMs(card: { bookingWindow: { startTime: string } | null }) {
+  if (!card.bookingWindow?.startTime) return Number.POSITIVE_INFINITY;
+  const ms = new Date(card.bookingWindow.startTime).getTime();
+  return Number.isFinite(ms) ? ms : Number.POSITIVE_INFINITY;
+}
+
+function sortDispatchCards<T extends { bookingWindow: { startTime: string } | null; customer: { name: string }; serviceName: string; bookingId: string }>(cards: T[]): T[] {
+  return cards.slice().sort((a, b) => {
+    const startDiff = getCardStartMs(a) - getCardStartMs(b);
+    if (startDiff !== 0) return startDiff;
+    const nameDiff = a.customer.name.localeCompare(b.customer.name);
+    if (nameDiff !== 0) return nameDiff;
+    const serviceDiff = a.serviceName.localeCompare(b.serviceName);
+    if (serviceDiff !== 0) return serviceDiff;
+    return a.bookingId.localeCompare(b.bookingId);
+  });
+}
 
 function getDerivedStatus(booking: { status: string; paymentMethod: string | null; paymentStatus: string; paymentExpiresAt?: Date | null }, now: Date): DerivedBookingStatus {
   if (booking.paymentMethod === "pay_now" && booking.paymentStatus !== "paid" && booking.paymentExpiresAt && booking.paymentExpiresAt <= now) return "payment_expired";
@@ -213,17 +263,14 @@ export async function GET(req: NextRequest) {
     if (!date) return NextResponse.json({ error: "date query param is required (YYYY-MM-DD)" }, { status: 400 });
 
     const city = q.get("city") ?? undefined;
-    const includeCompleted = q.get("includeCompleted") !== "false";
+    const statusScope = parseStatusScope(q.get("statusScope"));
     const addressPendingOnly = q.get("addressPendingOnly") === "true";
 
     const now = new Date();
 
-    const statusFilter: string[] = ["pending_payment", "confirmed"];
-    if (includeCompleted) statusFilter.push("completed");
-
     const where: Prisma.BookingWhereInput = {
       selectedDate: date,
-      status: { in: statusFilter },
+      status: { in: getQueryableStatuses(statusScope) },
     };
     if (city) where.user = { city: { contains: city, mode: "insensitive" } };
 
@@ -237,16 +284,19 @@ export async function GET(req: NextRequest) {
         pets: { include: { pet: true } },
         slots: { include: { slot: { include: { team: true } } } },
       },
-      orderBy: { createdAt: "asc" },
+      orderBy: [{ selectedDate: "asc" }, { createdAt: "asc" }],
     });
 
-    const cards = bookings.map((b) => buildDispatchCard(b, now));
+    const cards = bookings
+      .map((b) => buildDispatchCard(b, now))
+      .filter((card) => matchesStatusScope(card.status, statusScope));
     const filteredCards = addressPendingOnly
       ? cards.filter((card) => card.addressInfo.status !== "complete")
       : cards;
 
-    const unassigned = filteredCards.filter((c) => c.dispatchState === "unassigned");
-    const assigned = filteredCards.filter((c) =>
+    const chronologicalCards = sortDispatchCards(filteredCards);
+    const unassigned = sortDispatchCards(chronologicalCards.filter((c) => c.dispatchState === "unassigned"));
+    const assigned = chronologicalCards.filter((c) =>
       c.dispatchState === "assigned" ||
       c.dispatchState === "en_route" ||
       c.dispatchState === "started" ||
@@ -288,12 +338,18 @@ export async function GET(req: NextRequest) {
         freeWindows: null,
         overload: teamCards.length > 8,
       },
-      bookings: teamCards,
-    }));
+      bookings: sortDispatchCards(teamCards),
+    })).sort((a, b) => {
+      const firstA = a.bookings[0] ? getCardStartMs(a.bookings[0]) : Number.POSITIVE_INFINITY;
+      const firstB = b.bookings[0] ? getCardStartMs(b.bookings[0]) : Number.POSITIVE_INFINITY;
+      if (firstA !== firstB) return firstA - firstB;
+      return a.team.name.localeCompare(b.team.name);
+    });
 
     const sameDayCount = filteredCards.filter((c) => c.urgency.sameDay).length;
     const issueCount = filteredCards.filter((c) => c.urgency.issueFlag).length;
     const pendingPaymentCount = filteredCards.filter((c) => c.status === "pending_payment").length;
+    const expiredPaymentCount = filteredCards.filter((c) => c.status === "payment_expired").length;
     const completedCount = filteredCards.filter((c) => c.status === "completed").length;
     const addressPendingCount = filteredCards.filter((c) => c.addressInfo.status !== "complete").length;
     const delayRiskCount = filteredCards.filter((c) => c.urgency.delayRisk).length;
@@ -308,6 +364,7 @@ export async function GET(req: NextRequest) {
         completedCount,
         issueCount,
         pendingPaymentCount,
+        expiredPaymentCount,
         sameDayLateFillCount: sameDayCount,
         addressPendingCount,
         delayRiskCount,

@@ -71,7 +71,7 @@ const INITIAL_DISPATCH_FILTERS: AdminDispatchFilters = {
   viewMode: "today",
   date: todayStr(),
   city: "",
-  includeCompleted: false,
+  statusScope: "confirmed",
   addressPendingOnly: false,
 };
 
@@ -1028,7 +1028,7 @@ export default function AdminDispatchPage() {
           }
         />
 
-        <div className="mb-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-9">
+        <div className="mb-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-10">
           <AdminSummaryCard label="Total"       value={summary?.totalBookings ?? "—"}          />
           <AdminSummaryCard label="Unassigned"  value={summary?.unassignedCount ?? "—"}   tone="warning" />
           <AdminSummaryCard label="Assigned"    value={summary?.assignedCount ?? "—"}     tone="success" />
@@ -1036,6 +1036,7 @@ export default function AdminDispatchPage() {
           <AdminSummaryCard label="Issues"      value={summary?.issueCount ?? "—"}        tone="danger"  />
           <AdminSummaryCard label="Delay risk"  value={summary?.delayRiskCount ?? "—"}    tone="danger"  />
           <AdminSummaryCard label="Pending pay" value={summary?.pendingPaymentCount ?? "—"} tone="warning" />
+          <AdminSummaryCard label="Expired pay" value={summary?.expiredPaymentCount ?? "—"} tone="danger" />
           <AdminSummaryCard label="Address pending" value={summary?.addressPendingCount ?? "—"} tone="warning" />
           <AdminSummaryCard label="Late fills"  value={summary?.sameDayLateFillCount ?? "—"}   />
         </div>

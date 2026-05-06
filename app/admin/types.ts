@@ -565,6 +565,7 @@ export type AdminDispatchSummary = {
   completedCount: number;
   issueCount: number;
   pendingPaymentCount: number;
+  expiredPaymentCount: number;
   sameDayLateFillCount: number;
   addressPendingCount: number;
   delayRiskCount: number;
@@ -1200,6 +1201,6 @@ export type AdminDispatchFilters = {
   viewMode: "today" | "tomorrow" | "custom_date";
   date: string;
   city: string;
-  includeCompleted: boolean;
+  statusScope: "confirmed" | "expired" | "pending_payment" | "completed" | "all";
   addressPendingOnly: boolean;
 };

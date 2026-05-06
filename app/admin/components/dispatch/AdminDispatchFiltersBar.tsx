@@ -36,15 +36,17 @@ export function AdminDispatchFiltersBar({ filters, onChange }: Props) {
           className="h-[44px] rounded-[14px] border border-[#ddd1fb] px-4 text-[13px] outline-none"
         />
 
-        <label className="inline-flex h-[44px] cursor-pointer items-center gap-2.5 rounded-[14px] border border-[#ddd1fb] px-4 text-[13px] text-[#4b5563]">
-          <input
-            type="checkbox"
-            checked={filters.includeCompleted}
-            onChange={(e) => onChange({ includeCompleted: e.target.checked })}
-            className="w-4 h-4 accent-[#6d5bd0]"
-          />
-          Include completed
-        </label>
+        <select
+          value={filters.statusScope}
+          onChange={(e) => onChange({ statusScope: e.target.value as AdminDispatchFilters["statusScope"] })}
+          className="h-[44px] rounded-[14px] border border-[#ddd1fb] px-4 text-[13px] outline-none"
+        >
+          <option value="confirmed">Confirmed only</option>
+          <option value="expired">Expired payments</option>
+          <option value="pending_payment">Pending payment</option>
+          <option value="completed">Completed</option>
+          <option value="all">All active</option>
+        </select>
 
         <label className="inline-flex h-[44px] cursor-pointer items-center gap-2.5 rounded-[14px] border border-[#ddd1fb] px-4 text-[13px] text-[#4b5563]">
           <input
