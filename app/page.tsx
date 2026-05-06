@@ -7547,11 +7547,11 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
         </div>
 
         <div className="mt-7">
-          <h1 className="bg-gradient-to-r from-[#9fe7e3] via-[#7dd3fc] to-[#a78bfa] bg-clip-text text-[68px] font-black uppercase leading-[0.92] tracking-[-0.04em] text-transparent drop-shadow-[0_4px_0_rgba(20,10,50,0.8)] xl:text-[84px]">
+          <h2 className="bg-gradient-to-r from-[#9fe7e3] via-[#7dd3fc] to-[#a78bfa] bg-clip-text text-[68px] font-black uppercase leading-[0.92] tracking-[-0.04em] text-transparent drop-shadow-[0_4px_0_rgba(20,10,50,0.8)] xl:text-[84px]">
             Professional
             <br />
             Home Grooming
-          </h1>
+          </h2>
 
           <h2 className="mt-4 bg-gradient-to-r from-[#ff5ea8] via-[#ff7ea1] to-[#ffb15c] bg-clip-text text-[58px] font-black uppercase leading-[0.92] tracking-[-0.04em] text-transparent drop-shadow-[0_4px_0_rgba(20,10,50,0.8)] xl:text-[72px]">
             Handled
