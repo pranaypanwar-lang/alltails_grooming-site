@@ -67,6 +67,45 @@ export function serviceSchema() {
   };
 }
 
+type ArticleSchemaInput = {
+  slug: string;
+  title: string;
+  description: string;
+  publishedAt: Date | null;
+  updatedAt: Date;
+  coverImageUrl?: string | null;
+};
+
+export function articleSchema(input: ArticleSchemaInput) {
+  const url = `${SITE_URL}/blogs/${input.slug}`;
+  const image = input.coverImageUrl
+    ? input.coverImageUrl.startsWith("http")
+      ? input.coverImageUrl
+      : `${SITE_URL}${input.coverImageUrl}`
+    : `${SITE_URL}/images/Banner.jpg`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: input.title,
+    description: input.description,
+    datePublished: (input.publishedAt ?? input.updatedAt).toISOString(),
+    dateModified: input.updatedAt.toISOString(),
+    image: [image],
+    author: {
+      "@type": "Organization",
+      name: BUSINESS_INFO.name,
+      url: `${SITE_URL}/`,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: BUSINESS_INFO.name,
+      url: `${SITE_URL}/`,
+    },
+    mainEntityOfPage: url,
+  };
+}
+
 type Crumb = { name: string; path: string };
 export function breadcrumbSchema(items: Crumb[]) {
   return {

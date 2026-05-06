@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
 
 import { SITE_URL } from "@/lib/seo/businessInfo";
+import { getPublishedBlogPosts } from "@/lib/content/server";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -18,5 +19,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/cancellation-policy`, lastModified, changeFrequency: "yearly", priority: 0.3 },
   ];
 
-  return staticRoutes;
+  let blogRoutes: MetadataRoute.Sitemap = [];
+  try {
+    const posts = await getPublishedBlogPosts();
+    blogRoutes = posts.map((post) => ({
+      url: `${SITE_URL}/blogs/${post.slug}`,
+      lastModified: post.updatedAt,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    }));
+  } catch {
+    // If the database is unreachable at build time, fall back to static
+    // routes only — the next deploy will pick up posts.
+  }
+
+  return [...staticRoutes, ...blogRoutes];
 }

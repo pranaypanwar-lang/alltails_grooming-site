@@ -10172,7 +10172,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           >
             Request style mockup
           </button>
-          <span className="text-[11px] text-white/40">Book Complete Pampring to get your mock up</span>
+          <span className="text-[11px] text-white/40">Book Complete Pampering to get your mock up</span>
         </div>
       </div>
 
