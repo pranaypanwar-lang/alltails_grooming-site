@@ -9858,88 +9858,6 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
 </section>
 </div>{/* end mobile section order wrapper */}
 
-{/* FINAL CTA BANNER — retired, replaced by style-preview banner */}
-<div className="hidden"><div className="mx-auto mt-20 max-w-[1120px] px-4 sm:px-0">
-  <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[linear-gradient(135deg,#6f5bd2_0%,#5d49c5_52%,#4a379f_100%)] px-6 py-8 shadow-[0_28px_80px_rgba(77,47,122,0.18)] md:px-10 md:py-9 lg:px-14">
-    {/* DEPTH */}
-    <div className="pointer-events-none absolute inset-0 rounded-[32px] ring-1 ring-white/10" />
-    <div className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-white/20" />
-
-    {/* GLOWS */}
-    <div className="pointer-events-none absolute inset-0">
-      <div className="absolute left-[-60px] top-1/2 h-[220px] w-[220px] -translate-y-1/2 rounded-full bg-[#8e7be8]/35 blur-[85px]" />
-      <div className="absolute right-[-40px] top-1/2 h-[200px] w-[200px] -translate-y-1/2 rounded-full bg-[#ffb58d]/18 blur-[80px]" />
-      <div className="absolute left-[24%] top-[22%] h-2 w-2 rounded-full bg-white/20" />
-      <div className="absolute right-[22%] top-[28%] h-2.5 w-2.5 rounded-full bg-white/16" />
-      <div className="absolute left-[20%] bottom-[24%] h-1.5 w-1.5 rounded-full bg-white/16" />
-      <div className="absolute right-[18%] bottom-[22%] h-2 w-2 rounded-full bg-white/18" />
-    </div>
-
-    {/* LEFT PET CLUSTER */}
-    <div className="pointer-events-none absolute bottom-0 left-0 hidden lg:block">
-      <Image
-        src="/images/cat-cta.png"
-        alt="Pet cluster"
-        width={235}
-        height={170}
-        className="h-[138px] w-auto object-contain object-bottom"
-      />
-    </div>
-
-    {/* RIGHT PET */}
-    <div className="pointer-events-none absolute bottom-0 right-0 hidden lg:block">
-      <Image
-        src="/images/dog-cta.png"
-        alt="Dog"
-        width={250}
-        height={250}
-        className="h-[178px] w-auto object-contain object-bottom"
-      />
-    </div>
-
-    {/* CONTENT */}
-    <div className="relative z-10 mx-auto max-w-[680px] text-center">
-      <div className="inline-flex rounded-full border border-white/14 bg-white/10 px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-white/85 backdrop-blur-sm">
-        Premium At-Home Grooming
-      </div>
-
-      <h3 className="mt-5 text-[31px] font-black leading-[1.14] tracking-[-0.035em] text-white md:text-[40px]">
-        Your pet
-        <br />
-        <span className="bg-gradient-to-r from-[#ff8a5b] via-[#ffb15c] to-[#ffd166] bg-clip-text text-transparent">
-          deserves more
-        </span>
-        <span className="text-white"> than a basic groom.</span>
-      </h3>
-
-      <p className="mx-auto mt-3 max-w-[560px] text-[16px] leading-[1.8] text-white/82 md:text-[17px]">
-        Premium at-home care, handled gently by experts they can trust.
-      </p>
-
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-        <span className="rounded-full border border-white/12 bg-white/10 px-4 py-2 text-[13px] font-medium text-white/86 backdrop-blur-sm">
-          4.9 rated
-        </span>
-        <span className="rounded-full border border-white/12 bg-white/10 px-4 py-2 text-[13px] font-medium text-white/86 backdrop-blur-sm">
-          5000+ sessions
-        </span>
-        <span className="rounded-full border border-white/12 bg-white/10 px-4 py-2 text-[13px] font-medium text-white/86 backdrop-blur-sm">
-          In-house teams only
-        </span>
-      </div>
-
-      <div className="mt-7 flex justify-center">
-  <button
-    type="button"
-    onClick={openBookingFlow}
-    className="inline-flex h-[52px] items-center justify-center rounded-full bg-white px-8 text-[15px] font-semibold text-[#2f2550] shadow-[0_14px_30px_rgba(25,18,47,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_38px_rgba(25,18,47,0.28)]"
-  >
-    Book a Session
-  </button>
-</div>
-    </div>
-  </div>
-</div></div>
 {/* STYLE PREVIEW BANNER */}
 <div className="px-4 py-10 sm:px-6 lg:py-16">
   <div className="mx-auto max-w-[1000px]">
@@ -10141,43 +10059,6 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
     </div>
   </div>
 </section>
-
-{/* FINAL CTA BANNER — removed from mobile */}
-<div className="hidden">
-  <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[linear-gradient(135deg,#6f5bd2_0%,#5d49c5_52%,#4a379f_100%)] px-6 py-8 shadow-[0_28px_80px_rgba(77,47,122,0.18)]">
-    <div className="pointer-events-none absolute inset-0 rounded-[32px] ring-1 ring-white/10" />
-    <div className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-white/20" />
-    <div className="pointer-events-none absolute inset-0">
-      <div className="absolute left-[-60px] top-1/2 h-[220px] w-[220px] -translate-y-1/2 rounded-full bg-[#8e7be8]/35 blur-[85px]" />
-      <div className="absolute right-[-40px] top-1/2 h-[200px] w-[200px] -translate-y-1/2 rounded-full bg-[#ffb58d]/18 blur-[80px]" />
-    </div>
-    <div className="relative z-10 mx-auto max-w-[680px] text-center">
-      <div className="inline-flex rounded-full border border-white/14 bg-white/10 px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-white/85 backdrop-blur-sm">
-        Premium At-Home Grooming
-      </div>
-      <h3 className="mt-5 text-[28px] font-black leading-[1.14] tracking-[-0.035em] text-white">
-        Your pet
-        <br />
-        <span className="bg-gradient-to-r from-[#ff8a5b] via-[#ffb15c] to-[#ffd166] bg-clip-text text-transparent">
-          deserves more
-        </span>
-        <span className="text-white"> than a basic groom.</span>
-      </h3>
-      <p className="mx-auto mt-3 max-w-[560px] text-[15px] leading-[1.8] text-white/82">
-        Premium at-home care, handled gently by experts they can trust.
-      </p>
-      <div className="mt-7 flex justify-center">
-        <button
-          type="button"
-          onClick={openBookingFlow}
-          className="inline-flex h-[52px] items-center justify-center rounded-full bg-white px-8 text-[15px] font-semibold text-[#2f2550] shadow-[0_14px_30px_rgba(25,18,47,0.22)] transition-all duration-300 active:scale-95"
-        >
-          Book a Session
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
 
 {/* PACKAGE INCLUSIONS MODAL */}
 {inclusionsPackage && (() => {
