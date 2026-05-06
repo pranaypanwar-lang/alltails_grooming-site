@@ -10623,20 +10623,15 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           </svg>
         </summary>
         <div className="flex flex-col gap-3 pb-3.5">
-          <button
-            type="button"
-            onClick={() => scrollToSection("home-section")}
-            className="text-left text-[14px] text-white/72"
-          >
+          <Link href="/" className="text-left text-[14px] text-white/72">
             Home
-          </button>
-          <button
-            type="button"
-            onClick={() => scrollToSection("packages-section")}
-            className="text-left text-[14px] text-white/72"
-          >
+          </Link>
+          <Link href="/packages" className="text-left text-[14px] text-white/72">
             Grooming Plans
-          </button>
+          </Link>
+          <Link href="/booking" className="text-left text-[14px] text-white/72">
+            Book a Session
+          </Link>
           <button
             type="button"
             onClick={() => scrollToSection("why-trust-us-section")}
@@ -10644,20 +10639,15 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           >
             How It Works
           </button>
-          <button
-            type="button"
-            onClick={() => scrollToSection("faqs-section")}
-            className="text-left text-[14px] text-white/72"
-          >
+          <Link href="/faq" className="text-left text-[14px] text-white/72">
             FAQs
-          </button>
-          <button
-            type="button"
-            onClick={() => scrollToSection("contact-section")}
-            className="text-left text-[14px] text-white/72"
-          >
+          </Link>
+          <Link href="/blogs" className="text-left text-[14px] text-white/72">
+            Guides
+          </Link>
+          <Link href="/contact" className="text-left text-[14px] text-white/72">
             Contact
-          </button>
+          </Link>
         </div>
       </details>
 
@@ -10796,21 +10786,26 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
               </div>
 
               <div className="mt-5 space-y-3">
-                <button
-                  type="button"
-                  onClick={() => scrollToSection("home-section")}
+                <Link
+                  href="/"
                   className="block text-left text-[16px] text-white/82 transition duration-300 hover:translate-x-[2px] hover:text-white/95"
                 >
                   Home
-                </button>
+                </Link>
 
-                <button
-                  type="button"
-                  onClick={() => scrollToSection("packages-section")}
+                <Link
+                  href="/packages"
                   className="block text-left text-[16px] text-white/82 transition duration-300 hover:translate-x-[2px] hover:text-white/95"
                 >
                   Grooming Plans
-                </button>
+                </Link>
+
+                <Link
+                  href="/booking"
+                  className="block text-left text-[16px] text-white/82 transition duration-300 hover:translate-x-[2px] hover:text-white/95"
+                >
+                  Book a Session
+                </Link>
 
                 <button
                   type="button"
@@ -10820,21 +10815,26 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                   How It Works
                 </button>
 
-                <button
-                  type="button"
-                  onClick={() => scrollToSection("faqs-section")}
+                <Link
+                  href="/faq"
                   className="block text-left text-[16px] text-white/82 transition duration-300 hover:translate-x-[2px] hover:text-white/95"
                 >
                   FAQs
-                </button>
+                </Link>
 
-                <button
-                  type="button"
-                  onClick={() => scrollToSection("contact-section")}
+                <Link
+                  href="/blogs"
+                  className="block text-left text-[16px] text-white/82 transition duration-300 hover:translate-x-[2px] hover:text-white/95"
+                >
+                  Guides
+                </Link>
+
+                <Link
+                  href="/contact"
                   className="block text-left text-[16px] text-white/82 transition duration-300 hover:translate-x-[2px] hover:text-white/95"
                 >
                   Contact
-                </button>
+                </Link>
               </div>
             </div>
 
