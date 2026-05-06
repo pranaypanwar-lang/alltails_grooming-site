@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 type FaqSectionProps = {
   onTalkToUs: (message: string) => void;
@@ -94,7 +95,7 @@ export default function FaqSection({ onTalkToUs }: FaqSectionProps) {
               </summary>
               <div className="mt-3 h-px w-full bg-[linear-gradient(to_right,transparent,#f4dfcf,transparent)]" />
               <p className="mt-3 text-[13px] leading-[1.75] text-[#6b7280]">
-                Basic sessions ~60 min, Hygiene ~90 min, Luxury ~120 min. We never rush — patience is central to calm, quality grooming.
+                Session time depends on the package, coat condition, and your pet&apos;s comfort. We do not rush the process.
               </p>
             </details>
 
@@ -126,55 +127,7 @@ export default function FaqSection({ onTalkToUs }: FaqSectionProps) {
               </summary>
               <div className="mt-3 h-px w-full bg-[linear-gradient(to_right,transparent,#dff3ec,transparent)]" />
               <p className="mt-3 text-[13px] leading-[1.75] text-[#6b7280]">
-                Yes. We use vet-approved, breed-specific, skin-safe products tailored to your pet&apos;s coat and condition.
-              </p>
-            </details>
-
-            <details className="group rounded-[18px] border border-[#ebe5ff] bg-white p-3 shadow-[0_4px_14px_rgba(73,44,120,0.05)]">
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="inline-flex rounded-full bg-[#f4efff] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6d5bd0]">Handling</div>
-                  <div className="mt-1 text-[14px] font-bold leading-[1.3] tracking-[-0.01em] text-[#2a2346]">What if my pet is very scared or difficult to handle?</div>
-                </div>
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180">
-                  <span className="text-[13px] leading-none">⌄</span>
-                </div>
-              </summary>
-              <div className="mt-3 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-              <p className="mt-3 text-[13px] leading-[1.75] text-[#6b7280]">
-                Our groomers are trained to handle anxious pets with patience. If needed, we adapt or slow down. Your pet&apos;s comfort always comes before speed.
-              </p>
-            </details>
-
-            <details className="group rounded-[18px] border border-[#ebe5ff] bg-white p-3 shadow-[0_4px_14px_rgba(73,44,120,0.05)]">
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="inline-flex rounded-full bg-[#f4efff] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6d5bd0]">Quality</div>
-                  <div className="mt-1 text-[14px] font-bold leading-[1.3] tracking-[-0.01em] text-[#2a2346]">How do you ensure quality during the session?</div>
-                </div>
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180">
-                  <span className="text-[13px] leading-none">⌄</span>
-                </div>
-              </summary>
-              <div className="mt-3 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-              <p className="mt-3 text-[13px] leading-[1.75] text-[#6b7280]">
-                Every session is monitored by our QA team of senior groomers via photos and videos reviewed in real time.
-              </p>
-            </details>
-
-            <details className="group rounded-[18px] border border-[#ebe5ff] bg-white p-3 shadow-[0_4px_14px_rgba(73,44,120,0.05)]">
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="inline-flex rounded-full bg-[#f4efff] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6d5bd0]">Scheduling</div>
-                  <div className="mt-1 text-[14px] font-bold leading-[1.3] tracking-[-0.01em] text-[#2a2346]">How often should I book grooming?</div>
-                </div>
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180">
-                  <span className="text-[13px] leading-none">⌄</span>
-                </div>
-              </summary>
-              <div className="mt-3 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-              <p className="mt-3 text-[13px] leading-[1.75] text-[#6b7280]">
-                Most pets benefit from grooming every 3–5 weeks depending on breed and coat length. Our team can recommend the best schedule.
+                Yes. We use pet-care products selected for everyday coat and skin care, matched to your pet&apos;s needs where possible.
               </p>
             </details>
           </div>
@@ -193,6 +146,13 @@ export default function FaqSection({ onTalkToUs }: FaqSectionProps) {
               →
             </button>
           </div>
+
+          <Link
+            href="/faq"
+            className="mt-4 flex h-[44px] items-center justify-center rounded-full border border-[#d9cef6] bg-white text-[13px] font-semibold text-[#5f4fc2]"
+          >
+            Read all pet grooming FAQs
+          </Link>
         </div>
 
         {/* DESKTOP FAQ */}
@@ -326,13 +286,9 @@ export default function FaqSection({ onTalkToUs }: FaqSectionProps) {
               </summary>
               <div className="mt-5 h-px w-full bg-[linear-gradient(to_right,transparent,#f4dfcf,transparent)]" />
               <p className="mt-5 text-[16px] leading-[1.95] text-[#6b7280]">
-                It depends on the package selected. Basic sessions usually take around
-                <span className="font-semibold text-[#2a2346]"> 60 minutes</span>,
-                Hygiene sessions around
-                <span className="font-semibold text-[#2a2346]"> 90 minutes</span>, and
-                Luxury sessions around
-                <span className="font-semibold text-[#2a2346]"> 120 minutes</span>.
-                We never rush—patience is the key to anxiety-free grooming and finesse.
+                Session length depends on the package selected, coat condition, and
+                your pet&apos;s comfort. We keep the flow calm and avoid rushing the
+                grooming process.
               </p>
             </details>
 
@@ -375,76 +331,17 @@ export default function FaqSection({ onTalkToUs }: FaqSectionProps) {
               </summary>
               <div className="mt-5 h-px w-full bg-[linear-gradient(to_right,transparent,#dff3ec,transparent)]" />
               <p className="mt-5 text-[16px] leading-[1.95] text-[#6b7280]">
-                Absolutely. We use vet-approved, breed-specific, and skin-safe
-                products tailored to your pet&apos;s coat and condition.
+                Yes. We use pet-care products selected for everyday coat and skin
+                care, matched to your pet&apos;s needs where possible.
               </p>
             </details>
 
-            <details className="group rounded-[24px] border border-[#ebe5ff] bg-white/95 p-4 shadow-[0_20px_60px_rgba(73,44,120,0.06)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_75px_rgba(73,44,120,0.09)] open:shadow-[0_30px_80px_rgba(73,44,120,0.10)] sm:rounded-[28px] sm:p-6 md:p-7">
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-5">
-                <div>
-                  <div className="inline-flex rounded-full bg-[#f4efff] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6d5bd0]">
-                    Handling
-                  </div>
-                  <div className="mt-2 text-[15px] font-bold leading-[1.35] tracking-[-0.01em] text-[#2a2346] sm:mt-4 sm:text-[24px] sm:font-black sm:leading-[1.25] sm:tracking-[-0.02em]">
-                    What if my pet is very scared or difficult to handle?
-                  </div>
-                </div>
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180 sm:mt-1 sm:h-10 sm:w-10">
-                  <span className="text-[16px] leading-none sm:text-[18px]">⌄</span>
-                </div>
-              </summary>
-              <div className="mt-5 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-              <p className="mt-5 text-[16px] leading-[1.95] text-[#6b7280]">
-                Our groomers are trained to handle anxious pets with patience and
-                care. If needed, we adapt the session or slow down further. Your pet&apos;s
-                comfort always comes before speed.
-              </p>
-            </details>
-
-            <details className="group rounded-[24px] border border-[#ebe5ff] bg-white/95 p-4 shadow-[0_20px_60px_rgba(73,44,120,0.06)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_75px_rgba(73,44,120,0.09)] open:shadow-[0_30px_80px_rgba(73,44,120,0.10)] sm:rounded-[28px] sm:p-6 md:p-7">
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-5">
-                <div>
-                  <div className="inline-flex rounded-full bg-[#f4efff] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6d5bd0]">
-                    Quality
-                  </div>
-                  <div className="mt-2 text-[15px] font-bold leading-[1.35] tracking-[-0.01em] text-[#2a2346] sm:mt-4 sm:text-[24px] sm:font-black sm:leading-[1.25] sm:tracking-[-0.02em]">
-                    How do you ensure quality during the session?
-                  </div>
-                </div>
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180 sm:mt-1 sm:h-10 sm:w-10">
-                  <span className="text-[16px] leading-none sm:text-[18px]">⌄</span>
-                </div>
-              </summary>
-              <div className="mt-5 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-              <p className="mt-5 text-[16px] leading-[1.95] text-[#6b7280]">
-                Every session is monitored by our QA team of senior groomers. Photos
-                and videos are reviewed in real time so we can maintain consistent,
-                premium-quality grooming standards.
-              </p>
-            </details>
-
-            <details className="group rounded-[24px] border border-[#ebe5ff] bg-white/95 p-4 shadow-[0_20px_60px_rgba(73,44,120,0.06)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_75px_rgba(73,44,120,0.09)] open:shadow-[0_30px_80px_rgba(73,44,120,0.10)] sm:rounded-[28px] sm:p-6 md:p-7">
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-5">
-                <div>
-                  <div className="inline-flex rounded-full bg-[#f4efff] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6d5bd0]">
-                    Scheduling
-                  </div>
-                  <div className="mt-2 text-[15px] font-bold leading-[1.35] tracking-[-0.01em] text-[#2a2346] sm:mt-4 sm:text-[24px] sm:font-black sm:leading-[1.25] sm:tracking-[-0.02em]">
-                    How often should I book grooming?
-                  </div>
-                </div>
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f7f3ff] text-[#6d5bd0] transition-all duration-300 group-open:rotate-180 sm:mt-1 sm:h-10 sm:w-10">
-                  <span className="text-[16px] leading-none sm:text-[18px]">⌄</span>
-                </div>
-              </summary>
-              <div className="mt-5 h-px w-full bg-[linear-gradient(to_right,transparent,#e9e1ff,transparent)]" />
-              <p className="mt-5 text-[16px] leading-[1.95] text-[#6b7280]">
-                Most pets benefit from grooming every 3–5 weeks, depending on breed,
-                coat length, and lifestyle. If you&apos;re unsure, our team can recommend
-                the best schedule for your pet.
-              </p>
-            </details>
+            <Link
+              href="/faq"
+              className="inline-flex h-[52px] items-center justify-center rounded-full border border-[#d9cef6] bg-white px-7 text-[15px] font-semibold text-[#5f4fc2] transition hover:bg-[#f6f2ff]"
+            >
+              Read all pet grooming FAQs
+            </Link>
           </div>
         </div>
       </div>

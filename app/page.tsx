@@ -7419,9 +7419,9 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
             <Star key={i} className="h-3.5 w-3.5 fill-[#FACC15] text-[#FACC15]" />
           ))}
         </div>
-        <span className="font-semibold">4.9</span>
+        <span className="font-semibold">Loved by pet parents</span>
         <span className="text-white/55">·</span>
-        <span>5,000+ sessions</span>
+        <span>Doorstep grooming</span>
       </div>
 
       {/* SERVICE CARDS — the new conversion engine */}
@@ -7569,20 +7569,20 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
         <div className="mt-10 grid max-w-[900px] gap-5 sm:grid-cols-3">
           <div className="rounded-[24px] border border-white/10 bg-black/40 px-7 py-6 backdrop-blur-md shadow-[0_18px_40px_rgba(0,0,0,0.18)]">
             <div className="text-[42px] font-black leading-none text-[#4ADE80]">
-              5000+
+              Home
             </div>
             <div className="mt-3 text-[15px] font-medium text-white/92">
-              Sessions Delivered
+              Doorstep Service
             </div>
           </div>
 
           <div className="rounded-[24px] border border-white/10 bg-black/40 px-7 py-6 backdrop-blur-md shadow-[0_18px_40px_rgba(0,0,0,0.18)]">
             <div className="flex items-center gap-2 text-[42px] font-black leading-none text-[#FACC15]">
-              <span>4.9</span>
+              <span>Care</span>
               <Star className="h-8 w-8 fill-[#FACC15] text-[#FACC15]" />
             </div>
             <div className="mt-3 text-[15px] font-medium text-white/92">
-              Rated by Pet Parents
+              Loved by Pet Parents
             </div>
           </div>
 
@@ -7787,7 +7787,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
       </h2>
 
       <p className="mx-auto mt-2 max-w-[300px] text-[13px] leading-[1.65] text-[#6b7280] sm:mt-4 sm:max-w-[430px] sm:text-[16px]">
-        Calm handling, skilled groomers, and premium products — all built around your pet.
+        Calm handling, skilled groomers, and pet-care products — all built around your pet.
       </p>
     </div>
 
@@ -7846,7 +7846,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           </div>
 
           <div className="mt-3 inline-flex rounded-full bg-[#f4eeff] px-3 py-1.5 text-[12px] font-semibold text-[#7154d8]">
-            ⭐ Star Groomers
+            Skilled Groomers
           </div>
 
           <h3 className="mt-2 text-[20px] font-black leading-[1.1] tracking-[-0.03em] text-[#2a2346]">
@@ -7863,7 +7863,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
 
           <div className="mt-3 flex flex-wrap gap-2">
             <span className="rounded-full border border-[#ece5ff] bg-[#faf8ff] px-3 py-1.5 text-[11px] font-medium text-[#5f6673]">
-              10+ years experience
+              Experienced groomers
             </span>
             <span className="rounded-full border border-[#ece5ff] bg-[#faf8ff] px-3 py-1.5 text-[11px] font-medium text-[#5f6673]">
               Breed-aware styling
@@ -7883,7 +7883,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           </div>
 
           <div className="mt-3 inline-flex rounded-full bg-[#f4eeff] px-3 py-1.5 text-[12px] font-semibold text-[#7154d8]">
-            🧴 Highest Quality Products
+            Coat Care Products
           </div>
 
           <h3 className="mt-2 text-[20px] font-black leading-[1.1] tracking-[-0.03em] text-[#2a2346]">
@@ -7895,12 +7895,12 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           </h3>
 
           <p className="mt-2 text-[13px] leading-[1.65] text-[#5f6673]">
-            We use breed-specific, vet-approved products selected for coat health, comfort, and safe grooming.
+            We use pet-care products selected for coat comfort, everyday hygiene, and safe grooming.
           </p>
 
           <div className="mt-3 flex flex-wrap gap-2">
             <span className="rounded-full border border-[#ece5ff] bg-[#faf8ff] px-3 py-1.5 text-[11px] font-medium text-[#5f6673]">
-              Vet-approved products
+              Coat-aware products
             </span>
             <span className="rounded-full border border-[#ece5ff] bg-[#faf8ff] px-3 py-1.5 text-[11px] font-medium text-[#5f6673]">
               Breed-specific care
@@ -8072,7 +8072,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           </div>
 
           <div className="inline-flex rounded-full bg-[#f4eeff] px-4 py-2 text-[14px] font-semibold text-[#7154d8]">
-            ⭐ Star Groomers
+            Skilled Groomers
           </div>
 
           <h3 className="mt-5 text-[30px] font-black leading-[1.12] tracking-[-0.3px] text-[#2a2346] md:text-[34px]">
@@ -8084,14 +8084,14 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           </h3>
 
           <p className="mt-5 max-w-[500px] text-[17px] leading-[1.85] text-[#5f6673]">
-            Our groomers bring 10+ years of experience—so whether it’s a tidy
-            trim or a full makeover, your pet leaves looking and feeling
-            amazing.
+            Our groomers bring calm handling and breed-aware styling, so whether
+            it’s a tidy trim or a full makeover, your pet leaves looking and
+            feeling cared for.
           </p>
 
           <div className="mt-7 flex flex-wrap gap-3">
             <span className="rounded-full border border-[#ece5ff] bg-[#faf8ff] px-4 py-2.5 text-[13px] font-medium text-[#5f6673] shadow-sm">
-              10+ years experience
+              Experienced groomers
             </span>
             <span className="rounded-full border border-[#ece5ff] bg-[#faf8ff] px-4 py-2.5 text-[13px] font-medium text-[#5f6673] shadow-sm">
               Breed-aware styling
@@ -8118,7 +8118,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           </div>
 
           <div className="inline-flex rounded-full bg-[#f4eeff] px-4 py-2 text-[14px] font-semibold text-[#7154d8]">
-            🧴 Highest Quality Products
+            Coat Care Products
           </div>
 
           <h3 className="mt-5 text-[30px] font-black leading-[1.12] tracking-[-0.3px] text-[#2a2346] md:text-[34px]">
@@ -8131,7 +8131,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
 
           <p className="mt-5 max-w-[500px] text-[17px] leading-[1.85] text-[#5f6673]">
             We assess skin and coat type before every session, using
-            breed-specific, vet-approved products tailored just for your pet.
+            coat-aware products selected around your pet&apos;s grooming needs.
           </p>
 
           <div className="mt-7 flex flex-wrap gap-3">
@@ -8139,7 +8139,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
               Skin &amp; coat assessment
             </span>
             <span className="rounded-full border border-[#ece5ff] bg-[#faf8ff] px-4 py-2.5 text-[13px] font-medium text-[#5f6673] shadow-sm">
-              Vet-approved products
+              Coat-aware products
             </span>
             <span className="rounded-full border border-[#ece5ff] bg-[#faf8ff] px-4 py-2.5 text-[13px] font-medium text-[#5f6673] shadow-sm">
               Breed-specific care
@@ -8203,7 +8203,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           </h3>
 
           <p className="mt-5 max-w-[500px] text-[17px] leading-[1.85] text-[#5f6673]">
-            Get a visual preview of your pet’s hairstyle—so you know exactly
+            Get a visual preview of your pet’s hairstyle so expectations feel clear
             how fabulous they’re about to look.
           </p>
 
@@ -8251,10 +8251,13 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
       : "Structured multi-session care for healthier coats over time."}
   </p>
   {packageView === "sessions" ? (
-    <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#e8ddff] bg-[#f9f7ff] px-4 py-2 text-[12px] font-semibold text-[#6d5bd0] sm:text-[13px]">
-      <span>🎁</span>
-      <span>Book 4, get your 5th free — no catch</span>
-    </div>
+    <Link
+      href="/packages"
+      className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#e8ddff] bg-[#f9f7ff] px-4 py-2 text-[12px] font-semibold text-[#6d5bd0] transition hover:bg-[#f4efff] sm:text-[13px]"
+    >
+      <span>Compare all package inclusions</span>
+      <span>→</span>
+    </Link>
   ) : null}
 </div>
 
@@ -9416,11 +9419,11 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
         <div className="shrink-0 flex h-7 w-7 items-center justify-center rounded-[9px] bg-[#f4efff] text-[11px] font-bold text-[#6d5bd0]">04</div>
         <div className="min-w-0">
           <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6d5bd0]">Quality</div>
-          <h3 className="mt-0.5 text-[15px] font-black leading-[1.18] tracking-[-0.02em] text-[#2a2346]">Quality checked in real time</h3>
-          <p className="mt-1.5 text-[12.5px] leading-[1.6] text-[#6b7280]">Senior groomers review the session as it happens to ensure the finish meets standard.</p>
+          <h3 className="mt-0.5 text-[15px] font-black leading-[1.18] tracking-[-0.02em] text-[#2a2346]">Quality-focused process</h3>
+          <p className="mt-1.5 text-[12.5px] leading-[1.6] text-[#6b7280]">The team uses grooming notes and session checks to keep the finish aligned with expectations.</p>
           <div className="mt-2 flex flex-wrap gap-1.5">
-            <span className="rounded-full border border-[#e8ddff] bg-[#faf8ff] px-2.5 py-1 text-[11px] font-medium text-[#5b4bc2]">Live QA checks</span>
-            <span className="rounded-full border border-[#e8ddff] bg-[#faf8ff] px-2.5 py-1 text-[11px] font-medium text-[#5b4bc2]">Senior supervision</span>
+            <span className="rounded-full border border-[#e8ddff] bg-[#faf8ff] px-2.5 py-1 text-[11px] font-medium text-[#5b4bc2]">Session notes</span>
+            <span className="rounded-full border border-[#e8ddff] bg-[#faf8ff] px-2.5 py-1 text-[11px] font-medium text-[#5b4bc2]">Care checks</span>
           </div>
         </div>
       </div>
@@ -9432,7 +9435,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           <span>No rush.</span>{" "}
           <span className="text-[#6d5bd0]">No harsh handling.</span>
         </p>
-        <p className="mt-1 text-[12px] leading-[1.6] text-[#8b90a0]">Just patient professionals and premium products, built around your pet.</p>
+        <p className="mt-1 text-[12px] leading-[1.6] text-[#8b90a0]">Just patient professionals and pet-care products, built around your pet.</p>
       </div>
     </div>
 
@@ -9510,14 +9513,14 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
             <div className="rounded-full bg-[#faf8ff] px-3 py-1.5 text-[12px] font-semibold text-[#6d5bd0]">Quality</div>
           </div>
           <h3 className="mt-6 text-[24px] font-black leading-[1.15] text-[#2a2346]">
-            Every session is monitored for quality
+            Every session follows a quality-focused process
           </h3>
           <p className="mt-4 text-[15px] leading-[1.85] text-[#6b7280]">
-            Throughout the service, our backend QA team of senior groomers reviews photos and videos in real time to ensure every session meets our highest standards.
+            Throughout the service, the team can use grooming notes and session updates to keep the finish aligned with the package and your pet&apos;s needs.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
-            <span className="rounded-full border border-[#e8ddff] bg-[#faf8ff] px-3 py-1.5 text-[12px] font-medium text-[#5b4bc2]">Live QA checks</span>
-            <span className="rounded-full border border-[#e8ddff] bg-[#faf8ff] px-3 py-1.5 text-[12px] font-medium text-[#5b4bc2]">Senior supervision</span>
+            <span className="rounded-full border border-[#e8ddff] bg-[#faf8ff] px-3 py-1.5 text-[12px] font-medium text-[#5b4bc2]">Session notes</span>
+            <span className="rounded-full border border-[#e8ddff] bg-[#faf8ff] px-3 py-1.5 text-[12px] font-medium text-[#5b4bc2]">Care checks</span>
           </div>
         </div>
       </div>
@@ -9532,7 +9535,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
       </div>
       <div className="mx-auto mt-5 h-[1px] w-[80px] bg-gradient-to-r from-transparent via-[#dcd3ff] to-transparent" />
       <p className="mx-auto mt-5 max-w-[720px] text-[16px] leading-[1.9] text-[#6b7280] md:text-[17px]">
-        Just patient professionals, premium products, and a grooming experience built around your pet.
+        Just patient professionals, pet-care products, and a grooming experience built around your pet.
       </p>
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
         <span className="rounded-full border border-[#ece5ff] bg-white px-4 py-1.5 text-[13px] font-medium text-[#4b4370] shadow-sm">Stress-free experience</span>
@@ -9574,10 +9577,10 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
         <div className="flex items-center gap-1 text-[16px] leading-none text-[#f2a11a]">
           {Array.from({ length: 5 }).map((_, i) => <span key={i}>&#9733;</span>)}
         </div>
-        <div className="text-[14px] font-bold text-[#3a3060]">4.9 / 5</div>
+        <div className="text-[14px] font-bold text-[#3a3060]">Customer stories</div>
         <div className="h-4 w-px bg-[#ddd5f5]" />
         <div className="text-[13px] font-medium text-[#7a7394]">
-          150+ 5-star reviews &middot; 11 cities
+          Real experiences from pet parents
         </div>
       </div>
     </div>
@@ -9593,10 +9596,10 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           {Array.from({ length: 5 }).map((_, i) => (
             <Star key={i} className="h-4 w-4 fill-[#f4b740] text-[#f4b740]" />
           ))}
-          <span className="ml-2 text-[18px] font-black text-[#2a2346]">4.9 / 5</span>
+          <span className="ml-2 text-[18px] font-black text-[#2a2346]">Customer stories</span>
         </div>
         <p className="mt-2 text-[14px] font-medium text-[#6b7280]">
-          150+ 5-star reviews &middot; 11 cities
+          Real experiences from pet parents
         </p>
       </div>
 
@@ -10303,7 +10306,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
           Ready to book your pet’s next grooming session?
         </h3>
         <p className="mt-2 text-[13px] leading-[1.7] text-white/68">
-          Calm handling, premium products, and expert care delivered to your doorstep.
+          Calm handling, pet-care products, and experienced care delivered to your doorstep.
         </p>
         <div className="mt-4 flex flex-col gap-2.5">
           <button
@@ -10460,18 +10463,18 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
 
             <p className="mt-5 max-w-[420px] text-[18px] leading-[1.9] text-white/78">
               Premium at-home grooming, designed around your pet — with calm
-              handling, expert care, and a stress-free experience from start to finish.
+              handling, experienced care, and a calmer experience from start to finish.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
               <span className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-[13px] font-medium text-white/82">
-                4.9 rated
+                Pet-parent loved
               </span>
               <span className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-[13px] font-medium text-white/82">
-                5000+ sessions
+                Doorstep sessions
               </span>
               <span className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-[13px] font-medium text-white/82">
-                In-house teams only
+                Coordinated teams
               </span>
             </div>
 
@@ -10482,7 +10485,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
               </div>
 
               <p className="mt-3 max-w-[500px] text-[15px] leading-[1.85] text-white/72">
-                Calm handling, premium products, and expert care delivered right to your doorstep.
+                Calm handling, pet-care products, and experienced care delivered right to your doorstep.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
