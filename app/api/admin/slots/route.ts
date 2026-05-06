@@ -3,6 +3,7 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../lib/generated/prisma";
 import { assertAdminSession } from "../_lib/assertAdmin";
+import { getSlotOccupancyState } from "../../../../lib/slots/occupancy";
 
 export const runtime = "nodejs";
 
@@ -12,13 +13,6 @@ const prisma = new PrismaClient({ adapter });
 function maskPhone(phone: string) {
   if (phone.length <= 4) return "****";
   return phone.slice(0, 2) + "xxxxxx" + phone.slice(-2);
-}
-
-function slotState(slot: { isBlocked: boolean; isBooked: boolean; isHeld: boolean }): "free" | "held" | "booked" | "blocked" {
-  if (slot.isBlocked) return "blocked";
-  if (slot.isBooked) return "booked";
-  if (slot.isHeld) return "held";
-  return "free";
 }
 
 export async function GET(req: NextRequest) {
@@ -46,7 +40,10 @@ export async function GET(req: NextRequest) {
       include: {
         team: { select: { id: true, name: true } },
         bookings: {
-          where: { status: { in: ["confirmed", "hold"] } },
+          where: {
+            status: { in: ["confirmed", "hold"] },
+            booking: { status: { in: ["pending_payment", "confirmed", "completed"] } },
+          },
           take: 1,
           include: {
             booking: {
@@ -63,7 +60,7 @@ export async function GET(req: NextRequest) {
     });
 
     const mappedSlots = slots.map((slot) => {
-      const state = slotState(slot);
+      const state = getSlotOccupancyState(slot);
       const firstBooking = slot.bookings[0];
       return {
         id: slot.id,

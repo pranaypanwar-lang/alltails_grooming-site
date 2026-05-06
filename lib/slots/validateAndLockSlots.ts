@@ -1,4 +1,9 @@
 import { PrismaClient } from "../generated/prisma";
+import {
+  isSlotAvailableForBooking,
+  OCCUPYING_BOOKING_SLOT_STATUSES,
+  OCCUPYING_BOOKING_STATUSES,
+} from "./occupancy";
 import { getSlotLabel, SLOT_ORDER } from "./slotTemplates";
 
 export type ValidationError =
@@ -37,7 +42,16 @@ export async function validateAndLockSlots(
 ): Promise<LockResult> {
   const slots = await tx.slot.findMany({
     where: { id: { in: slotIds } },
-    include: { team: true },
+    include: {
+      team: true,
+      bookings: {
+        where: {
+          status: { in: [...OCCUPYING_BOOKING_SLOT_STATUSES] },
+          booking: { status: { in: [...OCCUPYING_BOOKING_STATUSES] } },
+        },
+        include: { booking: { select: { status: true } } },
+      },
+    },
     orderBy: { startTime: "asc" },
   });
 
@@ -56,7 +70,7 @@ export async function validateAndLockSlots(
     };
   }
 
-  const unavailable = slots.find((s) => s.isBooked || s.isBlocked || s.isHeld);
+  const unavailable = slots.find((s) => !isSlotAvailableForBooking(s));
   if (unavailable) {
     return {
       ok: false,
@@ -85,9 +99,13 @@ export async function validateAndLockSlots(
   const updateResult = await tx.slot.updateMany({
     where: {
       id: { in: slotIds },
-      isBooked: false,
       isBlocked: false,
-      isHeld: false,
+      bookings: {
+        none: {
+          status: { in: [...OCCUPYING_BOOKING_SLOT_STATUSES] },
+          booking: { status: { in: [...OCCUPYING_BOOKING_STATUSES] } },
+        },
+      },
     },
     data:
       reservationMode === "held"

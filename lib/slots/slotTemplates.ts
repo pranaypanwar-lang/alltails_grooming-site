@@ -36,11 +36,16 @@ export function istHourToUtc(
  * The slot's startTime is stored in UTC; this converts to IST hour to match.
  */
 export function getSlotLabel(utcDate: Date): SlotLabel | null {
-  const istMs = utcDate.getTime() + IST_OFFSET_MINUTES * 60_000;
-  const istHour = new Date(istMs).getUTCHours();
+  const utcIstMs = utcDate.getTime() + IST_OFFSET_MINUTES * 60_000;
+  const localParsedIstHour =
+    Math.floor((utcDate.getHours() * 60 + utcDate.getMinutes() + IST_OFFSET_MINUTES) / 60) % 24;
+  const utcParsedIstHour = new Date(utcIstMs).getUTCHours();
 
-  for (const t of SLOT_TEMPLATES) {
-    if (istHour === t.startHour) return t.label;
-  }
+  const localParsedLabel = SLOT_TEMPLATES.find((t) => t.startHour === localParsedIstHour)?.label ?? null;
+  if (localParsedLabel) return localParsedLabel;
+
+  const utcParsedLabel = SLOT_TEMPLATES.find((t) => t.startHour === utcParsedIstHour)?.label ?? null;
+  if (utcParsedLabel) return utcParsedLabel;
+
   return null;
 }

@@ -4,6 +4,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../lib/generated/prisma";
 import { resolveEligibleTeamIds } from "../../../../lib/slots/coverage";
 import { ensureSlotsExistForDateRange } from "../../../../lib/slots/ensureSlots";
+import { isSlotAvailableForBooking } from "../../../../lib/slots/occupancy";
 import { getSlotLabel, SLOT_ORDER, type SlotLabel } from "../../../../lib/slots/slotTemplates";
 
 export const runtime = "nodejs";
@@ -209,16 +210,23 @@ export async function POST(request: Request) {
     const rawSlots = await prisma.slot.findMany({
       where: {
         teamId:    { in: teamIds },
-        isBooked:  false,
         isBlocked: false,
-        isHeld:    false,
         startTime: { gte: startOfDay, lte: endOfDay },
       },
-      include: { team: true },
+      include: {
+        team: true,
+        bookings: {
+          where: {
+            status: { in: ["confirmed", "hold"] },
+            booking: { status: { in: ["pending_payment", "confirmed", "completed"] } },
+          },
+          include: { booking: { select: { status: true } } },
+        },
+      },
       orderBy: { startTime: "asc" },
     });
 
-    const formattedSlots = rawSlots.flatMap((slot) => {
+    const formattedSlots = rawSlots.filter(isSlotAvailableForBooking).flatMap((slot) => {
       const label = getSlotLabel(slot.startTime);
       if (!label) return [];
       return [{

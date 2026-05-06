@@ -6,6 +6,7 @@ import {
   supersedeQueuedBookingLifecycleMessages,
 } from "../../../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../../../lib/customerMessaging/provider";
+import { validateAndLockSlots } from "../../../../../../lib/slots/validateAndLockSlots";
 
 export const runtime = "nodejs";
 
@@ -58,11 +59,6 @@ export async function POST(
       return NextResponse.json({ error: "All selected slots must belong to the same team" }, { status: 400 });
     }
 
-    const unavailableSlot = nextSlots.find((slot) => slot.isBooked || slot.isBlocked || slot.isHeld);
-    if (unavailableSlot) {
-      return NextResponse.json({ error: "One or more selected slots are no longer available" }, { status: 409 });
-    }
-
     const sortedSlots = [...nextSlots].sort(
       (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
     );
@@ -80,6 +76,23 @@ export async function POST(
         });
       }
 
+      const lockResult = await validateAndLockSlots(tx, slotIds, {
+        mode: isPendingPrepaid ? "held" : "booked",
+        holdExpiresAt: isPendingPrepaid ? booking.paymentExpiresAt ?? null : null,
+      });
+
+      if (!lockResult.ok) {
+        const statusMap: Record<string, number> = {
+          SLOTS_NOT_FOUND: 404,
+          MIXED_TEAMS: 400,
+          NOT_CONSECUTIVE: 400,
+          SLOTS_UNAVAILABLE: 409,
+        };
+        throw Object.assign(new Error(lockResult.error.message), {
+          httpStatus: statusMap[lockResult.error.code] ?? 400,
+        });
+      }
+
       for (const slot of sortedSlots) {
         await tx.bookingSlot.create({
           data: {
@@ -87,21 +100,6 @@ export async function POST(
             slotId: slot.id,
             status: isPendingPrepaid ? "hold" : "confirmed",
           },
-        });
-
-        await tx.slot.update({
-          where: { id: slot.id },
-          data: isPendingPrepaid
-            ? {
-                isBooked: false,
-                isHeld: true,
-                holdExpiresAt: booking.paymentExpiresAt ?? null,
-              }
-            : {
-                isBooked: true,
-                isHeld: false,
-                holdExpiresAt: null,
-              },
         });
       }
 
@@ -152,6 +150,13 @@ export async function POST(
       },
     });
   } catch (error) {
+    if (error instanceof Error && "httpStatus" in error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: (error as Error & { httpStatus: number }).httpStatus }
+      );
+    }
+
     console.error("POST /api/admin/bookings/:id/reschedule failed", error);
     return NextResponse.json({ error: "Failed to reschedule booking" }, { status: 500 });
   }
