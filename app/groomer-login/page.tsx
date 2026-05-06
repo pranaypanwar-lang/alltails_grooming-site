@@ -2,6 +2,11 @@ import { redirect } from "next/navigation";
 import { GroomerLoginForm } from "./GroomerLoginForm";
 import { hasGroomerSession } from "../../lib/auth/groomerSession";
 
+export const metadata = {
+  title: "Groomer Login — All Tails",
+  robots: { index: false, follow: false, nocache: true },
+};
+
 export default async function GroomerLoginPage() {
   if (await hasGroomerSession()) {
     redirect("/groomer");

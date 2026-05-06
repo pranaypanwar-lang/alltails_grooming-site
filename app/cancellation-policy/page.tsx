@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Cancellation Policy | All Tails",
   description: "All Tails cancellation and rescheduling expectations for customers.",
+  alternates: { canonical: "/cancellation-policy" },
 };
 
 export default async function CancellationPolicyPage() {

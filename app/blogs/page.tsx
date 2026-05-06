@@ -2,8 +2,16 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { getPublishedBlogPosts } from "@/lib/content/server";
+import { pageMetadata } from "@/lib/seo/metadata";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = pageMetadata({
+  title: "Pet Grooming Guides",
+  description:
+    "Read All Tails guides on pet grooming, coat care, dog haircuts, anxious pets, grooming frequency, and at-home pet care.",
+  path: "/blogs",
+});
 
 export default async function BlogsPage() {
   const posts = await getPublishedBlogPosts();

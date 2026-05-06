@@ -1190,6 +1190,31 @@ setIsSlotsModalOpen(true);
     openBookingFlow();
   };
 
+  // SEO deep-link: /?book=1 opens the booking flow; /?book=<package-slug> opens with a package preselected.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const bookParam = params.get("book");
+    if (!bookParam) return;
+
+    const slugify = (value: string) =>
+      value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+
+    const matched = SERVICE_OPTIONS.find(
+      (service) => slugify(service.name) === bookParam.toLowerCase()
+    );
+
+    const cleanUrl = window.location.pathname + window.location.hash;
+    window.history.replaceState({}, "", cleanUrl);
+
+    if (matched) {
+      openBookingFlowWithService(matched.name);
+    } else {
+      openBookingFlow();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const openHeroInclusions = (serviceName: string) => {
     const sessionKey = `view_content_${serviceName.trim().toLowerCase()}`;
     if (!hasSessionEventFired(sessionKey)) {

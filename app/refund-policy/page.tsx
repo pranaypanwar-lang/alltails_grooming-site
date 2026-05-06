@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Refund Policy | All Tails",
   description: "How All Tails handles refunds and payment reversals.",
+  alternates: { canonical: "/refund-policy" },
 };
 
 export default async function RefundPolicyPage() {

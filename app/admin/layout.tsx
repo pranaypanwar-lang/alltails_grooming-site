@@ -2,7 +2,10 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import { AdminToastProvider } from "./components/common/AdminToastProvider";
 
-export const metadata = { title: "Admin — All Tails" };
+export const metadata = {
+  title: "Admin — All Tails",
+  robots: { index: false, follow: false, nocache: true },
+};
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (

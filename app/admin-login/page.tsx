@@ -2,6 +2,11 @@ import { redirect } from "next/navigation";
 import { AdminLoginForm } from "./AdminLoginForm";
 import { hasAdminSession } from "../../lib/auth/adminSession";
 
+export const metadata = {
+  title: "Admin Login — All Tails",
+  robots: { index: false, follow: false, nocache: true },
+};
+
 export default async function AdminLoginPage() {
   if (await hasAdminSession()) {
     redirect("/admin/bookings");

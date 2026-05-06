@@ -6,6 +6,12 @@ import { Playfair_Display, Inter } from "next/font/google";
 import { MetaPixelPageView } from "./components/analytics/MetaPixelPageView";
 import { META_PIXEL_ID } from "../lib/analytics/metaPixel";
 import { GOOGLE_ADS_ID } from "../lib/analytics/googleAds";
+import { JsonLd } from "./components/seo/JsonLd";
+import { SITE_URL, BUSINESS_INFO } from "../lib/seo/businessInfo";
+import {
+  professionalServiceSchema,
+  websiteSchema,
+} from "../lib/seo/schema";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -19,8 +25,32 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "All Tails",
-  description: "Pet Grooming Services",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "At-Home Pet Grooming in Delhi NCR | All Tails",
+    template: "%s | All Tails",
+  },
+  description:
+    "Book premium at-home pet grooming with All Tails. Gentle groomers, safe products, transparent packages, and convenient doorstep grooming for dogs and cats.",
+  applicationName: BUSINESS_INFO.name,
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "At-Home Pet Grooming in Delhi NCR | All Tails",
+    description:
+      "Premium doorstep grooming for dogs and cats across Delhi NCR, Chandigarh Tricity, Ludhiana, and Patiala.",
+    url: SITE_URL,
+    siteName: BUSINESS_INFO.name,
+    type: "website",
+    images: [{ url: "/images/Banner.jpg" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "At-Home Pet Grooming in Delhi NCR | All Tails",
+    description:
+      "Premium doorstep grooming for dogs and cats across Delhi NCR, Chandigarh Tricity, Ludhiana, and Patiala.",
+    images: ["/images/Banner.jpg"],
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -71,6 +101,8 @@ export default function RootLayout({
           />
         </noscript>
         <MetaPixelPageView />
+        <JsonLd data={websiteSchema()} />
+        <JsonLd data={professionalServiceSchema()} />
         {children}
         <Analytics />
       </body>

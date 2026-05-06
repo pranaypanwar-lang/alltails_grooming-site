@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Terms & Conditions | All Tails",
   description: "General terms governing All Tails bookings and service usage.",
+  alternates: { canonical: "/terms-and-conditions" },
 };
 
 export default async function TermsPage() {
