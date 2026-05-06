@@ -25,6 +25,7 @@ import {
   trackGoogleAdsBookingConversion,
   trackGoogleAdsPurchaseConversion,
 } from "../lib/analytics/googleAds";
+import { BUSINESS_INFO } from "../lib/seo/businessInfo";
 
 /* =========================================================
    01. TYPES
@@ -9950,6 +9951,57 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
     </div>
   </div>
 ) : null}
+
+{/* SERVICE AREA SECTION */}
+<section className="relative overflow-hidden bg-[#fcfbff] px-4 py-12 sm:px-6 lg:py-[100px]">
+  <div className="pointer-events-none absolute inset-0">
+    <div className="absolute left-[-120px] top-[40px] h-[260px] w-[260px] rounded-full bg-[#efe7ff] blur-[95px]" />
+    <div className="absolute right-[-120px] bottom-[40px] h-[250px] w-[250px] rounded-full bg-[#fff1e5] blur-[95px]" />
+  </div>
+
+  <div className="relative z-10 mx-auto max-w-[1120px]">
+    <div className="grid gap-8 rounded-[30px] border border-[#ece5ff] bg-white/88 p-6 shadow-[0_18px_54px_rgba(73,44,120,0.07)] backdrop-blur sm:p-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:p-10">
+      <div>
+        <div className="inline-flex rounded-full border border-[#e8ddff] bg-[#faf8ff] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7a5ce0]">
+          Service areas
+        </div>
+        <h2 className="mt-4 text-[26px] font-black leading-[1.08] tracking-[-0.035em] text-[#2a2346] sm:text-[36px] lg:text-[44px]">
+          At-home pet grooming across your city
+        </h2>
+        <p className="mt-4 text-[14px] leading-[1.8] text-[#6b7280] sm:text-[16px]">
+          All Tails currently offers doorstep pet grooming across Delhi, Gurgaon/Gurugram, Noida,
+          Greater Noida, Ghaziabad, Faridabad, Chandigarh, Mohali, Panchkula, Kharar, Ludhiana,
+          and Patiala.
+        </p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link
+            href="/booking"
+            className="inline-flex h-[48px] items-center justify-center rounded-full bg-[#6d5bd0] px-6 text-[14px] font-semibold text-white shadow-[0_12px_28px_rgba(109,91,208,0.22)] transition hover:bg-[#5f4fc2]"
+          >
+            Check available grooming slots
+          </Link>
+          <Link
+            href="/contact"
+            className="inline-flex h-[48px] items-center justify-center rounded-full border border-[#d9cef6] bg-white px-6 text-[14px] font-semibold text-[#5f4fc2] transition hover:bg-[#f6f2ff]"
+          >
+            Ask about your area
+          </Link>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+        {BUSINESS_INFO.serviceAreas.map((area) => (
+          <div
+            key={area}
+            className="rounded-[18px] border border-[#eee8fb] bg-[#fbf9ff] px-3 py-3 text-[13px] font-semibold text-[#3d3654]"
+          >
+            {area}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
 
 {/* FAQ SECTION — lazy-loaded for code splitting */}
 <FaqSection onTalkToUs={openWhatsAppChat} />
