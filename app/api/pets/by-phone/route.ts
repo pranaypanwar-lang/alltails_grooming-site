@@ -26,16 +26,67 @@ const inferSpecies = (breed: string): "dog" | "cat" | "unknown" => {
   return "dog";
 };
 
+const findLatestSavedAddress = async (userId: string) => {
+  const address = await prisma.booking.findFirst({
+    where: {
+      userId,
+      serviceAddress: { not: null },
+      serviceLandmark: { not: null },
+      OR: [
+        { servicePincode: { not: null } },
+        {
+          AND: [
+            { serviceLat: { not: null } },
+            { serviceLng: { not: null } },
+          ],
+        },
+      ],
+    },
+    orderBy: [{ addressUpdatedAt: "desc" }, { createdAt: "desc" }],
+    select: {
+      serviceAddress: true,
+      serviceLandmark: true,
+      servicePincode: true,
+      serviceLocationUrl: true,
+      serviceLat: true,
+      serviceLng: true,
+      serviceLocationSource: true,
+      addressUpdatedAt: true,
+    },
+  });
+
+  if (!address?.serviceAddress?.trim() || !address.serviceLandmark?.trim()) return null;
+  if (
+    !address.servicePincode?.trim() &&
+    (typeof address.serviceLat !== "number" || typeof address.serviceLng !== "number")
+  ) {
+    return null;
+  }
+
+  return {
+    serviceAddress: address.serviceAddress.trim(),
+    serviceLandmark: address.serviceLandmark.trim(),
+    servicePincode: address.servicePincode?.trim() || "",
+    serviceLocationUrl: address.serviceLocationUrl?.trim() || "",
+    serviceLat: address.serviceLat,
+    serviceLng: address.serviceLng,
+    serviceLocationSource: address.serviceLocationSource,
+    addressUpdatedAt: address.addressUpdatedAt ? address.addressUpdatedAt.toISOString() : null,
+  };
+};
+
 export async function GET(req: NextRequest) {
   try {
     const phone = normalizePhone(req.nextUrl.searchParams.get("phone") || "");
-    if (phone.length < 10) return NextResponse.json({ found: false, pets: [] });
+    if (phone.length < 10) return NextResponse.json({ found: false, pets: [], savedAddress: null });
 
     const user = await prisma.user.findFirst({
       where: { phone: { endsWith: phone } },
       select: { id: true },
     });
-    if (!user) return NextResponse.json({ found: false, pets: [] });
+    if (!user) return NextResponse.json({ found: false, pets: [], savedAddress: null });
+
+    const savedAddress = await findLatestSavedAddress(user.id);
 
     // Canonical pet profiles — active only, most recently booked first.
     const pets = await prisma.pet.findMany({
@@ -82,7 +133,7 @@ export async function GET(req: NextRequest) {
       }
 
       const legacy = Array.from(deduped.values()).slice(0, 8);
-      return NextResponse.json({ found: legacy.length > 0, pets: legacy });
+      return NextResponse.json({ found: legacy.length > 0, pets: legacy, savedAddress });
     }
 
     const dedupedPets = Array.from(
@@ -110,7 +161,7 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    return NextResponse.json({ found: result.length > 0, pets: result });
+    return NextResponse.json({ found: result.length > 0, pets: result, savedAddress });
   } catch (error) {
     console.error("GET /api/pets/by-phone failed", error);
     return NextResponse.json({ error: "Failed to fetch saved pets." }, { status: 500 });

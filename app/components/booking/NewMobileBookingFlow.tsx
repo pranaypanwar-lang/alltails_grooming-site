@@ -93,6 +93,17 @@ type SavedPetLookupItem = {
   temperament?: BookingPet["temperament"];
 };
 
+type SavedServiceAddress = {
+  serviceAddress: string;
+  serviceLandmark: string;
+  servicePincode: string;
+  serviceLocationUrl: string;
+  serviceLat?: number | null;
+  serviceLng?: number | null;
+  serviceLocationSource?: string | null;
+  addressUpdatedAt?: string | null;
+};
+
 type BookingCreateResponse = {
   success: true;
   bookingId: string;
@@ -535,6 +546,8 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
   const [serviceLocationUrl, setServiceLocationUrl] = useState("");
   const [serviceLat, setServiceLat] = useState<number | null>(null);
   const [serviceLng, setServiceLng] = useState<number | null>(null);
+  const [savedServiceAddress, setSavedServiceAddress] = useState<SavedServiceAddress | null>(null);
+  const [addressEditing, setAddressEditing] = useState(true);
   const [locationCapturing, setLocationCapturing] = useState(false);
   const [locationCaptureStatus, setLocationCaptureStatus] = useState<LocationCaptureStatus>({
     tone: "idle",
@@ -629,6 +642,16 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
       setSavedPets([]);
       setSavedPetsError("");
       setSavedPetsLookupDoneForPhone("");
+      if (savedServiceAddress) {
+        setServiceAddress("");
+        setServiceLandmark("");
+        setServicePincode("");
+        setServiceLocationUrl("");
+        setServiceLat(null);
+        setServiceLng(null);
+      }
+      setSavedServiceAddress(null);
+      setAddressEditing(true);
       setSelectedSavedPetIds([]);
       setPets((prev) =>
         prev.map((pet) =>
@@ -673,7 +696,37 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
 
       const lookupPets = Array.isArray(data?.pets) ? (data.pets as SavedPetLookupItem[]) : [];
       const activePets = lookupPets.filter((pet) => pet.petId);
+      const lookupAddress =
+        data?.savedAddress && typeof data.savedAddress === "object"
+          ? (data.savedAddress as SavedServiceAddress)
+          : null;
       setSavedPets(activePets);
+      setSavedServiceAddress(lookupAddress);
+      if (lookupAddress?.serviceAddress?.trim()) {
+        setServiceAddress(lookupAddress.serviceAddress || "");
+        setServiceLandmark(lookupAddress.serviceLandmark || "");
+        setServicePincode(lookupAddress.servicePincode || "");
+        setServiceLocationUrl(lookupAddress.serviceLocationUrl || "");
+        setServiceLat(typeof lookupAddress.serviceLat === "number" ? lookupAddress.serviceLat : null);
+        setServiceLng(typeof lookupAddress.serviceLng === "number" ? lookupAddress.serviceLng : null);
+        setAddressEditing(false);
+        setLocationCaptureStatus(
+          lookupAddress.serviceLocationUrl
+            ? { tone: "success", message: "Saved location pin is ready for this visit." }
+            : { tone: "idle", message: "" }
+        );
+      } else {
+        if (savedServiceAddress) {
+          setServiceAddress("");
+          setServiceLandmark("");
+          setServicePincode("");
+          setServiceLocationUrl("");
+          setServiceLat(null);
+          setServiceLng(null);
+          setLocationCaptureStatus({ tone: "idle", message: "" });
+        }
+        setAddressEditing(true);
+      }
       setSavedPetsLookupDoneForPhone(lookupPhone);
       setSelectedSavedPetIds((prev) => prev.filter((petId) => activePets.some((pet) => pet.petId === petId)));
       setPets((prev) =>
@@ -712,7 +765,7 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
         savedPetsAbortRef.current = null;
       }
     }
-  }, [savedPetsLookupDoneForPhone]);
+  }, [savedPetsLookupDoneForPhone, savedServiceAddress]);
 
   useEffect(() => {
     return () => {
@@ -1499,11 +1552,14 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
             serviceLandmark={serviceLandmark}
             servicePincode={servicePincode}
             serviceLocationUrl={serviceLocationUrl}
+            savedServiceAddress={savedServiceAddress}
+            addressEditing={addressEditing}
             locationCaptureStatus={locationCaptureStatus}
             locationCapturing={locationCapturing}
             onAddressChange={setServiceAddress}
             onLandmarkChange={setServiceLandmark}
             onPincodeChange={setServicePincode}
+            onEditAddress={() => setAddressEditing(true)}
             onLocationUrlChange={(value) => {
               setServiceLocationUrl(value);
               setServiceLat(null);
@@ -1976,13 +2032,13 @@ function ScheduleStep({
         </div>
         <div>
           <FieldLabel>Preferred visit date</FieldLabel>
-          <div className="relative mt-2">
+          <div className="relative mt-2 flex h-[52px] items-center rounded-[18px] border border-[#ded7f1] bg-white shadow-[0_8px_20px_rgba(38,28,70,0.04)] focus-within:border-[#6d5bd0]">
             <input
               type="date"
               min={getTodayDateInputValue()}
               value={selectedDate}
               onChange={(event) => onDateChange(event.target.value)}
-              className="h-[52px] w-full rounded-[16px] border border-[#ded7f1] bg-white px-4 pr-11 text-[15px] font-semibold text-[#272238] outline-none focus:border-[#6d5bd0]"
+              className="h-full min-w-0 flex-1 appearance-none rounded-[18px] bg-transparent px-4 pr-11 text-[15px] font-semibold text-[#272238] outline-none [color-scheme:light] [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-4 [&::-webkit-calendar-picker-indicator]:h-5 [&::-webkit-calendar-picker-indicator]:w-5 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0"
             />
             <CalendarDays className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a80b8]" />
           </div>
@@ -2225,6 +2281,8 @@ function DetailsStep({
   serviceLandmark,
   servicePincode,
   serviceLocationUrl,
+  savedServiceAddress,
+  addressEditing,
   locationCaptureStatus,
   locationCapturing,
   onNameChange,
@@ -2235,6 +2293,7 @@ function DetailsStep({
   onAddressChange,
   onLandmarkChange,
   onPincodeChange,
+  onEditAddress,
   onLocationUrlChange,
   onCaptureLocation,
   onPetPhotoUpload,
@@ -2251,6 +2310,8 @@ function DetailsStep({
   serviceLandmark: string;
   servicePincode: string;
   serviceLocationUrl: string;
+  savedServiceAddress: SavedServiceAddress | null;
+  addressEditing: boolean;
   locationCaptureStatus: LocationCaptureStatus;
   locationCapturing: boolean;
   onNameChange: (name: string) => void;
@@ -2261,6 +2322,7 @@ function DetailsStep({
   onAddressChange: (address: string) => void;
   onLandmarkChange: (landmark: string) => void;
   onPincodeChange: (pincode: string) => void;
+  onEditAddress: () => void;
   onLocationUrlChange: (url: string) => void;
   onCaptureLocation: () => void;
   onPetPhotoUpload: (petId: string, file: File, petIndex: number) => void;
@@ -2303,77 +2365,112 @@ function DetailsStep({
 
       <div className="grid gap-4 rounded-[30px] border border-[#f0ebfb] bg-[#fbfaff]/70 p-5">
         <div>
-          <div className="text-[15px] font-bold tracking-[-0.005em] text-[#3f3760]">Service address</div>
+          <div className="text-[15px] font-bold tracking-[-0.005em] text-[#3f3760]">
+            {savedServiceAddress && !addressEditing ? "Saved service address" : "Service address"}
+          </div>
           <p className="mt-1.5 text-[13px] font-medium leading-[1.55] text-[#8a82a3]">
-            Add the address first. A location pin helps the groomer navigate.
+            {savedServiceAddress && !addressEditing
+              ? "We will use this address for your visit."
+              : "Add the address first. A location pin helps the groomer navigate."}
           </p>
         </div>
-        <input
-          name="address-line1"
-          value={serviceAddress}
-          onChange={(event) => onAddressChange(event.target.value)}
-          placeholder="House / flat, street, society"
-          autoComplete="address-line1"
-          className="h-[52px] rounded-[18px] border border-[#ded7f1] px-4 text-[15px] font-medium outline-none focus:border-[#6d5bd0]"
-        />
-        <div className="grid grid-cols-[1fr_104px] gap-2.5">
-          <input
-            name="address-line2"
-            value={serviceLandmark}
-            onChange={(event) => onLandmarkChange(event.target.value)}
-            placeholder="Landmark"
-            autoComplete="address-line2"
-            className="h-[52px] min-w-0 rounded-[18px] border border-[#ded7f1] px-4 text-[15px] font-medium outline-none focus:border-[#6d5bd0]"
-          />
-          <input
-            name="postal-code"
-            value={servicePincode}
-            onChange={(event) => onPincodeChange(event.target.value.replace(/\D/g, "").slice(0, 6))}
-            inputMode="numeric"
-            maxLength={6}
-            placeholder="Pincode"
-            autoComplete="postal-code"
-            className="h-[52px] min-w-0 rounded-[18px] border border-[#ded7f1] px-3 text-[15px] font-medium outline-none focus:border-[#6d5bd0]"
-          />
-        </div>
-        <button
-          type="button"
-          onClick={onCaptureLocation}
-          disabled={locationCapturing}
-          className={`flex h-12 w-full items-center justify-center gap-2 rounded-[18px] border text-[14px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-75 ${
-            serviceLocationUrl
-              ? "border-[#c7ead8] bg-[#f0fbf5] text-[#14613f]"
-              : "border-[#ded7f1] bg-[#fbf9ff] text-[#5b49c8]"
-          }`}
-        >
-          {locationCapturing ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
-          {serviceLocationUrl ? "Location pin added" : "Use current location"}
-        </button>
-        {locationCaptureStatus.message ? (
-          <div
-            className={`rounded-[16px] border px-4 py-3 text-[13px] font-semibold leading-[1.55] ${
-              locationCaptureStatus.tone === "success"
-                ? "border-[#c7ead8] bg-[#f0fbf5] text-[#14613f]"
-                : locationCaptureStatus.tone === "error"
-                  ? "border-[#ffd0d0] bg-[#fff7f7] text-[#b42318]"
-                  : "border-[#e4dcf7] bg-white text-[#6d5bd0]"
-            }`}
-          >
-            {locationCaptureStatus.message}
+        {savedServiceAddress && !addressEditing ? (
+          <div className="rounded-[24px] border border-[#e5ddf8] bg-white p-4 shadow-[0_10px_28px_rgba(38,28,70,0.05)]">
+            <div className="flex items-start gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f5f1ff] text-[#6d5bd0]">
+                <MapPin className="h-4 w-4" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="text-[14px] font-black leading-[1.35] text-[#241b4b]">{serviceAddress}</div>
+                <div className="mt-1 text-[13px] font-medium leading-[1.45] text-[#7b748f]">
+                  {serviceLandmark ? `Near ${serviceLandmark}` : "Landmark saved"}
+                  {servicePincode ? ` · ${servicePincode}` : ""}
+                </div>
+                {serviceLocationUrl ? (
+                  <div className="mt-2 inline-flex items-center rounded-full bg-[#f0fbf5] px-2.5 py-1 text-[11px] font-bold text-[#14613f]">
+                    Location pin saved
+                  </div>
+                ) : null}
+              </div>
+              <button
+                type="button"
+                onClick={onEditAddress}
+                className="shrink-0 rounded-full bg-[#f6f2ff] px-3 py-1.5 text-[12px] font-bold text-[#6d5bd0]"
+              >
+                Edit
+              </button>
+            </div>
           </div>
-        ) : null}
-        {serviceLocationUrl ? (
-          <input
-            name="service-location-url"
-            value={serviceLocationUrl}
-            onChange={(event) => onLocationUrlChange(event.target.value)}
-            placeholder="Google Maps link or captured location"
-            className="h-[48px] rounded-[16px] border border-[#ded7f1] px-4 text-[13px] font-medium text-[#5f6678] outline-none focus:border-[#6d5bd0]"
-          />
-        ) : null}
-        <p className="text-[12px] font-medium leading-[1.5] text-[#8a82a3]">
-          You can also paste a Google Maps link if browser location permission is off.
-        </p>
+        ) : (
+          <>
+            <input
+              name="address-line1"
+              value={serviceAddress}
+              onChange={(event) => onAddressChange(event.target.value)}
+              placeholder="House / flat, street, society"
+              autoComplete="address-line1"
+              className="h-[52px] rounded-[18px] border border-[#ded7f1] px-4 text-[15px] font-medium outline-none focus:border-[#6d5bd0]"
+            />
+            <div className="grid grid-cols-[1fr_104px] gap-2.5">
+              <input
+                name="address-line2"
+                value={serviceLandmark}
+                onChange={(event) => onLandmarkChange(event.target.value)}
+                placeholder="Landmark"
+                autoComplete="address-line2"
+                className="h-[52px] min-w-0 rounded-[18px] border border-[#ded7f1] px-4 text-[15px] font-medium outline-none focus:border-[#6d5bd0]"
+              />
+              <input
+                name="postal-code"
+                value={servicePincode}
+                onChange={(event) => onPincodeChange(event.target.value.replace(/\D/g, "").slice(0, 6))}
+                inputMode="numeric"
+                maxLength={6}
+                placeholder="Pincode"
+                autoComplete="postal-code"
+                className="h-[52px] min-w-0 rounded-[18px] border border-[#ded7f1] px-3 text-[15px] font-medium outline-none focus:border-[#6d5bd0]"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={onCaptureLocation}
+              disabled={locationCapturing}
+              className={`flex h-12 w-full items-center justify-center gap-2 rounded-[18px] border text-[14px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-75 ${
+                serviceLocationUrl
+                  ? "border-[#c7ead8] bg-[#f0fbf5] text-[#14613f]"
+                  : "border-[#ded7f1] bg-[#fbf9ff] text-[#5b49c8]"
+              }`}
+            >
+              {locationCapturing ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
+              {serviceLocationUrl ? "Location pin added" : "Use current location"}
+            </button>
+            {locationCaptureStatus.message ? (
+              <div
+                className={`rounded-[16px] border px-4 py-3 text-[13px] font-semibold leading-[1.55] ${
+                  locationCaptureStatus.tone === "success"
+                    ? "border-[#c7ead8] bg-[#f0fbf5] text-[#14613f]"
+                    : locationCaptureStatus.tone === "error"
+                      ? "border-[#ffd0d0] bg-[#fff7f7] text-[#b42318]"
+                      : "border-[#e4dcf7] bg-white text-[#6d5bd0]"
+                }`}
+              >
+                {locationCaptureStatus.message}
+              </div>
+            ) : null}
+            {serviceLocationUrl ? (
+              <input
+                name="service-location-url"
+                value={serviceLocationUrl}
+                onChange={(event) => onLocationUrlChange(event.target.value)}
+                placeholder="Google Maps link or captured location"
+                className="h-[48px] rounded-[16px] border border-[#ded7f1] px-4 text-[13px] font-medium text-[#5f6678] outline-none focus:border-[#6d5bd0]"
+              />
+            ) : null}
+            <p className="text-[12px] font-medium leading-[1.5] text-[#8a82a3]">
+              You can also paste a Google Maps link if browser location permission is off.
+            </p>
+          </>
+        )}
       </div>
 
       {savedPetsLoading || savedPetsError || savedPets.length ? (
@@ -2698,8 +2795,8 @@ function PetEditorCard({
           <div className="border-t border-[#ece4f8] px-5 pb-5 pt-4">
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
-                <div className="text-[12px] font-black uppercase text-[#8b82a8]">Style suggestions</div>
-                <div className="mt-1 text-[12px] font-medium text-[#9a93ad]">Tap one, then add notes if needed.</div>
+                <div className="text-[12px] font-black uppercase text-[#8b82a8]">Things to highlight</div>
+                <div className="mt-1 text-[12px] font-medium text-[#9a93ad]">Tap what the groomer should know.</div>
               </div>
               {pet.stylingNotes ? (
                 <span className="rounded-full bg-[#f3efff] px-2.5 py-1 text-[11px] font-black text-[#6d5bd0]">
@@ -2709,7 +2806,7 @@ function PetEditorCard({
             </div>
 
             <div className="grid grid-cols-2 gap-2.5">
-              {["Summer Friendly Style", "Custom Styling", "Teddy Bear", "Asian Fusion", "Puppy Cut"].map((chip) => (
+              {["Tangled Hair", "Matted Fur", "Sensitive Skin", "Custom Styling", "Heavy Shedding", "Deep Clean"].map((chip) => (
                 <button
                   key={chip}
                   type="button"
@@ -2726,11 +2823,12 @@ function PetEditorCard({
             </div>
 
             {serviceName === "Complete Pampering" ? (
-              <label className="mt-3 flex cursor-pointer items-center justify-between gap-3 rounded-[18px] border border-dashed border-[#cfc2ef] bg-white px-4 py-3 text-[13px] font-semibold text-[#6d5bd0]">
-                <span className="flex items-center gap-2">
-                  <Upload className="h-4 w-4" /> Upload current pet picture
+              <label className="mt-3 grid cursor-pointer grid-cols-[auto_1fr_auto] items-center gap-3 rounded-[18px] border border-dashed border-[#cfc2ef] bg-white px-4 py-3 text-[13px] font-semibold text-[#6d5bd0]">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f6f2ff]">
+                  <Upload className="h-4 w-4" />
                 </span>
-                <span className="text-[12px] font-medium text-[#8a80b8]">
+                <span className="min-w-0 leading-[1.35]">Upload current pet picture</span>
+                <span className="shrink-0 rounded-full bg-[#f6f2ff] px-2.5 py-1 text-[11px] font-bold text-[#8a80b8]">
                   {pet.stylingAssets.length ? "Uploaded" : "For mock-up"}
                 </span>
                 <input
