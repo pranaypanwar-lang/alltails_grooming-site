@@ -128,6 +128,11 @@ type BookingCreateResponse = {
   };
 };
 
+type LocationCaptureStatus = {
+  tone: "idle" | "success" | "error";
+  message: string;
+};
+
 type BookingAddOn = {
   id: string;
   name: string;
@@ -531,6 +536,10 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
   const [serviceLat, setServiceLat] = useState<number | null>(null);
   const [serviceLng, setServiceLng] = useState<number | null>(null);
   const [locationCapturing, setLocationCapturing] = useState(false);
+  const [locationCaptureStatus, setLocationCaptureStatus] = useState<LocationCaptureStatus>({
+    tone: "idle",
+    message: "",
+  });
   const [availabilityLoading, setAvailabilityLoading] = useState(false);
   const [bookingLoading, setBookingLoading] = useState(false);
   const [error, setError] = useState("");
@@ -915,6 +924,12 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
     if (!pets.every((pet) => pet.breed.trim())) {
       return "Please add your pet's breed so our team can prepare properly.";
     }
+    if (serviceAddress.trim().length < 8) {
+      return "Please add your full service address before review.";
+    }
+    if (!servicePincode.trim() && !serviceLocationUrl.trim()) {
+      return "Please add a pincode or use current location so the groomer can navigate.";
+    }
 
     setPets((prev) =>
       prev.map((pet) => {
@@ -978,16 +993,32 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
     try {
       setLocationCapturing(true);
       setError("");
+      setLocationCaptureStatus({
+        tone: "idle",
+        message: "Requesting location permission...",
+      });
       if (!navigator.geolocation) {
         throw new Error("Location capture is not supported on this browser.");
       }
       if (typeof window !== "undefined" && !window.isSecureContext) {
         throw new Error("Location capture needs HTTPS on mobile browsers. Use the secure preview link or enter the address manually.");
       }
+      if ("permissions" in navigator && typeof navigator.permissions?.query === "function") {
+        try {
+          const permission = await navigator.permissions.query({ name: "geolocation" as PermissionName });
+          if (permission.state === "denied") {
+            throw new Error("Location access is blocked. Enable location permission for alltails.in in your browser settings, or paste a Google Maps link.");
+          }
+        } catch (permissionError) {
+          if (permissionError instanceof Error && permissionError.message.includes("blocked")) {
+            throw permissionError;
+          }
+        }
+      }
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject, {
           enableHighAccuracy: true,
-          timeout: 15000,
+          timeout: 20000,
           maximumAge: 60_000,
         });
       });
@@ -996,8 +1027,28 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
       setServiceLat(lat);
       setServiceLng(lng);
       setServiceLocationUrl(`https://www.google.com/maps?q=${lat},${lng}`);
+      setLocationCaptureStatus({
+        tone: "success",
+        message: "Location pin captured. Please keep your house / flat details in the address field.",
+      });
     } catch (captureError) {
-      setError(captureError instanceof Error ? captureError.message : "Could not capture location.");
+      let message = "Could not capture location. Please allow location access or paste a Google Maps link.";
+      const geolocationErrorCode =
+        typeof captureError === "object" && captureError !== null && "code" in captureError
+          ? Number((captureError as { code?: unknown }).code)
+          : null;
+      if (geolocationErrorCode) {
+        if (geolocationErrorCode === 1) {
+          message = "Location permission was denied. Enable it for alltails.in, or paste a Google Maps link.";
+        } else if (geolocationErrorCode === 2) {
+          message = "Your device could not detect location right now. Try again outdoors or paste a Google Maps link.";
+        } else if (geolocationErrorCode === 3) {
+          message = "Location capture timed out. Please try again or paste a Google Maps link.";
+        }
+      } else if (captureError instanceof Error) {
+        message = captureError.message;
+      }
+      setLocationCaptureStatus({ tone: "error", message });
     } finally {
       setLocationCapturing(false);
     }
@@ -1181,7 +1232,12 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
           serviceLocationUrl,
           serviceLat,
           serviceLng,
-          serviceLocationSource: serviceLat && serviceLng ? "browser_geolocation" : "",
+          serviceLocationSource:
+            serviceLat !== null && serviceLng !== null
+              ? "browser_geolocation"
+              : serviceLocationUrl.trim()
+                ? "manual_maps_link"
+                : "",
           pets: pets.map((pet) => ({
             sourcePetId: pet.sourcePetId,
             isSavedProfile: Boolean(pet.sourcePetId),
@@ -1443,11 +1499,21 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
             serviceLandmark={serviceLandmark}
             servicePincode={servicePincode}
             serviceLocationUrl={serviceLocationUrl}
+            locationCaptureStatus={locationCaptureStatus}
             locationCapturing={locationCapturing}
             onAddressChange={setServiceAddress}
             onLandmarkChange={setServiceLandmark}
             onPincodeChange={setServicePincode}
-            onLocationUrlChange={setServiceLocationUrl}
+            onLocationUrlChange={(value) => {
+              setServiceLocationUrl(value);
+              setServiceLat(null);
+              setServiceLng(null);
+              setLocationCaptureStatus(
+                value.trim()
+                  ? { tone: "success", message: "Location pin added. Please keep your house / flat details in the address field." }
+                  : { tone: "idle", message: "" }
+              );
+            }}
             onCaptureLocation={handleCaptureLocation}
             onPetPhotoUpload={uploadPetPhoto}
           />
@@ -2159,6 +2225,7 @@ function DetailsStep({
   serviceLandmark,
   servicePincode,
   serviceLocationUrl,
+  locationCaptureStatus,
   locationCapturing,
   onNameChange,
   onPhoneChange,
@@ -2184,6 +2251,7 @@ function DetailsStep({
   serviceLandmark: string;
   servicePincode: string;
   serviceLocationUrl: string;
+  locationCaptureStatus: LocationCaptureStatus;
   locationCapturing: boolean;
   onNameChange: (name: string) => void;
   onPhoneChange: (phone: string) => void;
@@ -2271,11 +2339,29 @@ function DetailsStep({
         <button
           type="button"
           onClick={onCaptureLocation}
-          className="flex h-12 w-full items-center justify-center gap-2 rounded-[18px] border border-[#ded7f1] bg-[#fbf9ff] text-[14px] font-semibold text-[#5b49c8]"
+          disabled={locationCapturing}
+          className={`flex h-12 w-full items-center justify-center gap-2 rounded-[18px] border text-[14px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-75 ${
+            serviceLocationUrl
+              ? "border-[#c7ead8] bg-[#f0fbf5] text-[#14613f]"
+              : "border-[#ded7f1] bg-[#fbf9ff] text-[#5b49c8]"
+          }`}
         >
           {locationCapturing ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
           {serviceLocationUrl ? "Location pin added" : "Use current location"}
         </button>
+        {locationCaptureStatus.message ? (
+          <div
+            className={`rounded-[16px] border px-4 py-3 text-[13px] font-semibold leading-[1.55] ${
+              locationCaptureStatus.tone === "success"
+                ? "border-[#c7ead8] bg-[#f0fbf5] text-[#14613f]"
+                : locationCaptureStatus.tone === "error"
+                  ? "border-[#ffd0d0] bg-[#fff7f7] text-[#b42318]"
+                  : "border-[#e4dcf7] bg-white text-[#6d5bd0]"
+            }`}
+          >
+            {locationCaptureStatus.message}
+          </div>
+        ) : null}
         {serviceLocationUrl ? (
           <input
             name="service-location-url"
@@ -2285,6 +2371,9 @@ function DetailsStep({
             className="h-[48px] rounded-[16px] border border-[#ded7f1] px-4 text-[13px] font-medium text-[#5f6678] outline-none focus:border-[#6d5bd0]"
           />
         ) : null}
+        <p className="text-[12px] font-medium leading-[1.5] text-[#8a82a3]">
+          You can also paste a Google Maps link if browser location permission is off.
+        </p>
       </div>
 
       {savedPetsLoading || savedPetsError || savedPets.length ? (
