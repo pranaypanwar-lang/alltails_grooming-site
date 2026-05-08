@@ -12,6 +12,8 @@ const LOYALTY_CYCLE = 5;
 const PAYMENT_HOLD_MINUTES = 15;
 
 const normalizePhone = (phone: string) => phone.replace(/\D/g, "").slice(-10);
+const normalizePetName = (name?: string | null) => (name || "").trim().toLowerCase();
+const normalizePetBreed = (breed: string) => breed.trim().toLowerCase().replace(/\s+/g, " ");
 
 const isLoyaltyEligibleService = (serviceName: string) =>
   LOYALTY_ELIGIBLE_SERVICES.has(serviceName);
@@ -25,6 +27,19 @@ function getRolePriority(role: string) {
   return 2;
 }
 
+function hasSameNamedPetProfile(
+  pet: { name: string | null; breed: string },
+  input: BookingCreatePetInput
+) {
+  const inputName = normalizePetName(input.name);
+  if (!inputName) return false;
+
+  return (
+    normalizePetName(pet.name) === inputName &&
+    normalizePetBreed(pet.breed) === normalizePetBreed(input.breed)
+  );
+}
+
 export type BookingCreateAssetInput = {
   storageKey: string;
   publicUrl: string;
@@ -36,6 +51,7 @@ export type BookingCreatePetInput = {
   isSavedProfile?: boolean;
   name?: string;
   breed: string;
+  temperament?: string;
   stylingNotes?: string;
   groomingNotes?: string;
   stylingAssets?: BookingCreateAssetInput[];
@@ -249,10 +265,11 @@ export async function createBookingWithBusinessRules(
       typeof input.overrideFinalAmount === "number"
         ? Math.max(0, Math.round(input.overrideFinalAmount))
         : couponEvaluation.finalAmount;
-    let paymentStatus =
-      input.paymentMethod === "pay_now" ? "unpaid" : "pending_cash_collection";
-    let bookingStatus =
-      input.paymentMethod === "pay_now" ? "pending_payment" : "confirmed";
+    // Both pay_now and pay_after_service now hold the slot until a Razorpay
+    // payment is verified (full amount for pay_now, deposit-only for
+    // pay_after_service). The booking only flips to confirmed at verify time.
+    let paymentStatus = "unpaid";
+    let bookingStatus = "pending_payment";
     let loyaltyRewardLabel: string | null = null;
 
     if (loyaltyRewardApplied) {
@@ -267,7 +284,14 @@ export async function createBookingWithBusinessRules(
       bookingStatus = "confirmed";
     }
 
-    const isPrepaidHold = input.paymentMethod === "pay_now" && finalAmount > 0;
+    // Slot is held (not yet booked) whenever a Razorpay payment is required —
+    // full amount for pay_now, deposit for pay_after_service. Loyalty-free
+    // sessions and zero-amount pay_now bookings skip the hold and go straight
+    // to confirmed.
+    const isPrepaidHold =
+      !loyaltyRewardApplied &&
+      ((input.paymentMethod === "pay_now" && finalAmount > 0) ||
+        input.paymentMethod === "pay_after_service");
     const paymentExpiresAt = isPrepaidHold ? getPaymentExpiry() : null;
 
     const lockResult = await validateAndLockSlots(tx, input.slotIds, {
@@ -380,16 +404,39 @@ export async function createBookingWithBusinessRules(
           data: {
             name: petInput.name?.trim() || null,
             breed: petInput.breed.trim(),
+            temperament: petInput.temperament?.trim() || existingPet.temperament,
           },
         });
       } else {
-        petRecord = await tx.pet.create({
-          data: {
-            name: petInput.name?.trim() || null,
-            breed: petInput.breed.trim(),
-            userId: user.id,
-          },
-        });
+        const sameNamedProfile = petInput.name?.trim()
+          ? (await tx.pet.findMany({
+              where: {
+                userId: user.id,
+                isArchived: false,
+              },
+              orderBy: [{ lastBookedAt: "desc" }, { updatedAt: "desc" }],
+            })).find((pet) => hasSameNamedPetProfile(pet, petInput))
+          : null;
+
+        if (sameNamedProfile) {
+          petRecord = await tx.pet.update({
+            where: { id: sameNamedProfile.id },
+            data: {
+              name: petInput.name?.trim() || null,
+              breed: petInput.breed.trim(),
+              temperament: petInput.temperament?.trim() || sameNamedProfile.temperament,
+            },
+          });
+        } else {
+          petRecord = await tx.pet.create({
+            data: {
+              name: petInput.name?.trim() || null,
+              breed: petInput.breed.trim(),
+              temperament: petInput.temperament?.trim() || null,
+              userId: user.id,
+            },
+          });
+        }
       }
 
       const bookingPet = await tx.bookingPet.create({
@@ -400,6 +447,7 @@ export async function createBookingWithBusinessRules(
           isSavedProfile: !!petInput.sourcePetId,
           stylingNotes: petInput.stylingNotes?.trim() || null,
           groomingNotes: petInput.groomingNotes?.trim() || null,
+          temperament: petInput.temperament?.trim() || null,
         },
       });
 

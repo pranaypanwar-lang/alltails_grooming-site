@@ -8,6 +8,7 @@ import {
   createBookingWithBusinessRules,
   type BookingCreatePetInput,
 } from "../../../../lib/booking/createBooking";
+import { SLOT_BLOCK_DEPOSIT_AMOUNT } from "../../../../lib/booking/constants";
 import { getAddressReadinessSummary } from "../../../../lib/booking/addressCapture";
 import {
   prepareCustomerMessageForBooking,
@@ -41,6 +42,25 @@ const razorpay =
       })
     : null;
 
+const BOOKING_ADD_ONS = [
+  { id: "anti_tick_bath", name: "Anti-Tick Bath", price: 399 },
+  { id: "tick_collar", name: "Tick Collar", price: 699 },
+  { id: "gland_cleaning", name: "Gland Cleaning", price: 299 },
+] as const;
+
+type BookingAddOnInput = {
+  id?: string;
+  name?: string;
+  price?: number;
+};
+
+function resolveSelectedAddOns(addOns: BookingAddOnInput[] | undefined) {
+  if (!Array.isArray(addOns)) return [];
+
+  const selectedIds = new Set(addOns.map((addOn) => addOn.id).filter(Boolean));
+  return BOOKING_ADD_ONS.filter((addOn) => selectedIds.has(addOn.id));
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -56,6 +76,15 @@ export async function POST(request: Request) {
       pets,
       paymentMethod,
       couponCode,
+      addOns,
+      serviceAddress,
+      serviceLandmark,
+      servicePincode,
+      serviceLocationUrl,
+      serviceLat,
+      serviceLng,
+      serviceLocationSource,
+      finalAmount,
     }: {
       name?: string;
       phone?: string;
@@ -67,6 +96,15 @@ export async function POST(request: Request) {
       pets?: BookingCreatePetInput[];
       paymentMethod?: "pay_now" | "pay_after_service";
       couponCode?: string;
+      addOns?: BookingAddOnInput[];
+      serviceAddress?: string;
+      serviceLandmark?: string;
+      servicePincode?: string;
+      serviceLocationUrl?: string;
+      serviceLat?: number | null;
+      serviceLng?: number | null;
+      serviceLocationSource?: string;
+      finalAmount?: number;
     } = body;
 
     if (
@@ -108,6 +146,35 @@ export async function POST(request: Request) {
       );
     }
 
+    const selectedAddOns = resolveSelectedAddOns(addOns);
+    const addOnsTotal = selectedAddOns.reduce((total, addOn) => total + addOn.price, 0);
+    const service = await prisma.service.findFirst({
+      where: { name: serviceName.trim() },
+      select: { price: true },
+    });
+
+    if (!service) {
+      return NextResponse.json(
+        { error: "Selected service not found" },
+        { status: 404 }
+      );
+    }
+
+    const requestedFinalAmount =
+      typeof finalAmount === "number" && Number.isFinite(finalAmount)
+        ? Math.max(0, Math.round(finalAmount))
+        : null;
+    const recomputedAmount = service.price * pets.length + addOnsTotal;
+    const overrideFinalAmount =
+      requestedFinalAmount !== null && requestedFinalAmount <= recomputedAmount
+        ? requestedFinalAmount
+        : addOnsTotal > 0
+          ? recomputedAmount
+          : null;
+    const addOnAdminNote = selectedAddOns.length
+      ? `Selected add-ons: ${selectedAddOns.map((addOn) => `${addOn.name} (${addOn.price})`).join(", ")}`
+      : null;
+
     const result = await createBookingWithBusinessRules(prisma, {
       name,
       phone,
@@ -119,10 +186,26 @@ export async function POST(request: Request) {
       pets,
       paymentMethod,
       couponCode,
+      overrideFinalAmount,
+      adminNote: addOnAdminNote,
+      serviceAddress: serviceAddress?.trim() || null,
+      serviceLandmark: serviceLandmark?.trim() || null,
+      servicePincode: servicePincode?.trim() || null,
+      serviceLocationUrl: serviceLocationUrl?.trim() || null,
+      serviceLat: typeof serviceLat === "number" ? serviceLat : null,
+      serviceLng: typeof serviceLng === "number" ? serviceLng : null,
+      serviceLocationSource: serviceLocationSource?.trim() || null,
       bookingSource: "website",
     });
 
-    const latestSavedAddress = await prisma.booking.findFirst({
+    const hasSubmittedAddress =
+      !!serviceAddress?.trim() ||
+      !!serviceLandmark?.trim() ||
+      !!servicePincode?.trim() ||
+      !!serviceLocationUrl?.trim() ||
+      (typeof serviceLat === "number" && typeof serviceLng === "number");
+
+    const latestSavedAddress = hasSubmittedAddress ? null : await prisma.booking.findFirst({
       where: {
         userId: result.user.id,
         id: { not: result.booking.id },
@@ -257,10 +340,11 @@ export async function POST(request: Request) {
 
     let paymentOrder: { orderId: string; amount: number; currency: string } | null = null;
 
-    if (
-      bookingWithAddress.paymentMethod === "pay_now" &&
-      bookingWithAddress.finalAmount > 0
-    ) {
+    const needsPrepaidHold =
+      (bookingWithAddress.paymentMethod === "pay_now" && bookingWithAddress.finalAmount > 0) ||
+      bookingWithAddress.paymentMethod === "pay_after_service";
+
+    if (needsPrepaidHold) {
       if (!razorpay) {
         return NextResponse.json(
           { error: "Razorpay is not configured." },
@@ -268,12 +352,23 @@ export async function POST(request: Request) {
         );
       }
 
+      // Pay-after-service: collect a fixed slot-blocking deposit upfront.
+      // Pay-now: collect the full booking amount.
+      const orderAmountRupees =
+        bookingWithAddress.paymentMethod === "pay_after_service"
+          ? SLOT_BLOCK_DEPOSIT_AMOUNT
+          : bookingWithAddress.finalAmount;
+
       const order = await razorpay.orders.create({
-        amount: Math.round(bookingWithAddress.finalAmount * 100),
+        amount: Math.round(orderAmountRupees * 100),
         currency: "INR",
         receipt: bookingWithAddress.id.slice(0, 40),
         notes: {
           bookingId: bookingWithAddress.id,
+          paymentIntent:
+            bookingWithAddress.paymentMethod === "pay_after_service"
+              ? "slot_block_deposit"
+              : "full_payment",
         },
       });
 
@@ -285,10 +380,10 @@ export async function POST(request: Request) {
       });
 
       paymentOrder = {
-  orderId: order.id,
-  amount: Number(order.amount),
-  currency: String(order.currency),
-};
+        orderId: order.id,
+        amount: Number(order.amount),
+        currency: String(order.currency),
+      };
     }
 
     return NextResponse.json({
@@ -300,8 +395,9 @@ export async function POST(request: Request) {
       paymentMethod,
       paymentStatus: bookingWithAddress.paymentStatus,
       status: bookingWithAddress.status,
-      originalAmount: result.service.price,
+      originalAmount: result.service.price * pets.length + addOnsTotal,
       finalAmount: bookingWithAddress.finalAmount,
+      addOns: selectedAddOns,
       couponCode: result.normalizedCouponCode,
       paymentOrder,
       paymentExpiresAt: bookingWithAddress.paymentExpiresAt,

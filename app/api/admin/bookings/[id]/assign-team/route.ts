@@ -59,9 +59,10 @@ export async function POST(
 
     const targetTeamAlreadyOwnsSlots = activeBookingSlots.every((item) => item.slot.teamId === team.id);
     const isPendingPrepaid =
-      booking.paymentMethod === "pay_now" &&
-      booking.paymentStatus !== "paid" &&
-      booking.finalAmount > 0;
+      booking.status === "pending_payment" &&
+      booking.paymentStatus === "unpaid" &&
+      ((booking.paymentMethod === "pay_now" && booking.finalAmount > 0) ||
+        booking.paymentMethod === "pay_after_service");
     const nextBookingSlotStatus = isPendingPrepaid ? "hold" : "confirmed";
 
     const targetSlots = targetTeamAlreadyOwnsSlots

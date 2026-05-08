@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { assertAdminSession } from "../../../_lib/assertAdmin";
 import {
   adminPrisma,
+  getRefundableAmount,
+  isRefundablePaymentStatus,
   logAdminBookingEvent,
   processBookingRefund,
   type RefundMode,
@@ -47,9 +49,9 @@ export async function POST(
     });
 
     if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
-    if (booking.paymentStatus !== "paid") {
+    if (!isRefundablePaymentStatus(booking.paymentStatus)) {
       return NextResponse.json(
-        { error: "Refunds are only valid for paid bookings." },
+        { error: "Refunds are only valid for paid or deposit-paid bookings." },
         { status: 400 }
       );
     }
@@ -66,7 +68,7 @@ export async function POST(
     const refund = await processBookingRefund({
       refundMode,
       razorpayPaymentId: booking.razorpayPaymentId,
-      amount: booking.finalAmount,
+      amount: getRefundableAmount(booking),
     });
 
     await adminPrisma.booking.update({

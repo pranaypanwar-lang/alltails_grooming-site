@@ -21,10 +21,10 @@ const maskPhone = (phone: string) => {
 };
 
 type DerivedBookingStatus = "pending_payment" | "confirmed" | "completed" | "cancelled" | "payment_expired";
-type DerivedPaymentStatus = "unpaid" | "paid" | "pending_cash_collection" | "covered_by_loyalty" | "expired";
+type DerivedPaymentStatus = "unpaid" | "paid" | "deposit_paid" | "pending_cash_collection" | "covered_by_loyalty" | "expired";
 
 function getDerivedStatus(booking: { status: string; paymentMethod: string | null; paymentStatus: string; paymentExpiresAt?: Date | null }, now: Date): DerivedBookingStatus {
-  if (booking.paymentMethod === "pay_now" && booking.paymentStatus !== "paid" && booking.paymentExpiresAt && booking.paymentExpiresAt <= now) return "payment_expired";
+  if (booking.status === "pending_payment" && booking.paymentStatus === "unpaid" && booking.paymentExpiresAt && booking.paymentExpiresAt <= now) return "payment_expired";
   if (booking.status === "confirmed") return "confirmed";
   if (booking.status === "completed") return "completed";
   if (booking.status === "cancelled") return "cancelled";
@@ -35,6 +35,7 @@ function getDerivedStatus(booking: { status: string; paymentMethod: string | nul
 function getDerivedPaymentStatus(paymentStatus: string, derivedStatus: DerivedBookingStatus): DerivedPaymentStatus {
   if (derivedStatus === "payment_expired") return "expired";
   if (paymentStatus === "paid") return "paid";
+  if (paymentStatus === "deposit_paid") return "deposit_paid";
   if (paymentStatus === "pending_cash_collection") return "pending_cash_collection";
   if (paymentStatus === "covered_by_loyalty") return "covered_by_loyalty";
   return "unpaid";
@@ -46,7 +47,7 @@ function getStatusLabel(s: DerivedBookingStatus) {
 }
 
 function getPaymentStatusLabel(s: DerivedPaymentStatus) {
-  const m = { unpaid: "Pending payment", paid: "Paid", pending_cash_collection: "Pay after service", covered_by_loyalty: "Covered by loyalty", expired: "Expired" };
+  const m = { unpaid: "Pending payment", paid: "Paid", deposit_paid: "Deposit paid", pending_cash_collection: "Pay after service", covered_by_loyalty: "Covered by loyalty", expired: "Expired" };
   return m[s];
 }
 
@@ -58,7 +59,7 @@ function getPaymentMethodLabel(m: string | null) {
 
 function getSupportingText(status: DerivedBookingStatus, paymentMethod: string | null) {
   if (status === "pending_payment") return "Payment pending. Slot is held.";
-  if (status === "confirmed" && paymentMethod === "pay_after_service") return "Confirmed. Payment collected after service.";
+  if (status === "confirmed" && paymentMethod === "pay_after_service") return "Confirmed. Deposit paid; balance collected after service.";
   if (status === "confirmed") return "Confirmed and paid.";
   if (status === "completed") return "Session completed.";
   if (status === "cancelled") return "Booking was cancelled.";
@@ -103,6 +104,9 @@ function buildTimeline(
   }
   if (derivedPaymentStatus === "paid") {
     items.push({ type: "payment_completed", label: "Payment completed", at: null, actor: "system" });
+  }
+  if (derivedPaymentStatus === "deposit_paid") {
+    items.push({ type: "payment_completed", label: "Slot deposit paid", at: null, actor: "system" });
   }
   if (derivedPaymentStatus === "covered_by_loyalty") {
     items.push({ type: "payment_completed", label: "Covered by loyalty reward", at: booking.loyaltyCountedAt?.toISOString() ?? null, actor: "system" });
@@ -165,7 +169,7 @@ function getAvailableActions(
     actions.push(teamId ? "reassign_team" : "assign_team");
     if (teamId) actions.push(groomerMemberId ? "reassign_groomer" : "assign_groomer");
   }
-  if (status === "cancelled" && paymentStatus === "paid" && refundStatus !== "completed") {
+  if (status === "cancelled" && ["paid", "deposit_paid"].includes(paymentStatus) && refundStatus !== "completed") {
     actions.push("issue_refund");
   }
   return actions;

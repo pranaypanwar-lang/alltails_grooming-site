@@ -3,7 +3,7 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../../../lib/generated/prisma";
 import { assertAdminSession } from "../../../_lib/assertAdmin";
-import { logAdminBookingEvent } from "../../../_lib/bookingAdmin";
+import { isRefundablePaymentStatus, logAdminBookingEvent } from "../../../_lib/bookingAdmin";
 import {
   prepareCustomerMessageForBooking,
   supersedeQueuedBookingLifecycleMessages,
@@ -34,7 +34,7 @@ export async function POST(
     if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     if (booking.status === "cancelled") return NextResponse.json({ error: "Booking is already cancelled" }, { status: 400 });
     if (booking.status === "completed") return NextResponse.json({ error: "Completed bookings cannot be cancelled" }, { status: 400 });
-    if (booking.paymentStatus === "paid") return NextResponse.json({ error: "Paid bookings must go through refund handling before cancellation" }, { status: 409 });
+    if (isRefundablePaymentStatus(booking.paymentStatus)) return NextResponse.json({ error: "Paid bookings must go through refund handling before cancellation" }, { status: 409 });
 
     const shouldRestoreReward = booking.loyaltyRewardApplied && !booking.loyaltyRewardRestored;
 

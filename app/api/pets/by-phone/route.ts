@@ -11,6 +11,14 @@ const prisma = new PrismaClient({ adapter });
 const normalizePhone = (phone: string) => phone.replace(/\D/g, "").slice(-10);
 
 const CAT_BREEDS = ["persian", "siamese", "maine coon", "ragdoll", "british shorthair", "bengal", "sphynx", "cat"];
+const normalizePetName = (name: string | null) => (name || "").trim().toLowerCase();
+const normalizePetBreed = (breed: string) => breed.trim().toLowerCase().replace(/\s+/g, " ");
+const buildCompanionKey = (name: string | null, breed: string) => {
+  const normalizedName = normalizePetName(name);
+  const normalizedBreed = normalizePetBreed(breed);
+  return normalizedName ? `${normalizedName}__${normalizedBreed}` : `__breed__${normalizedBreed}`;
+};
+
 const inferSpecies = (breed: string): "dog" | "cat" | "unknown" => {
   const s = breed.trim().toLowerCase();
   if (!s) return "unknown";
@@ -49,7 +57,7 @@ export async function GET(req: NextRequest) {
         orderBy: { booking: { createdAt: "desc" } },
       });
 
-      const deduped = new Map<string, { petId: string; name: string | null; breed: string; imageUrl: string | null; species: "dog" | "cat" | "unknown"; lastBookedAt: string | null; defaultGroomingNotes: null; defaultStylingNotes: null }>();
+      const deduped = new Map<string, { petId: string; name: string | null; breed: string; imageUrl: string | null; species: "dog" | "cat" | "unknown"; lastBookedAt: string | null; defaultGroomingNotes: null; defaultStylingNotes: null; temperament: null }>();
       const normName = (n: string | null) => (n || "").trim().toLowerCase();
       const normBreed = (b: string) => b.trim().toLowerCase().replace(/\s+/g, " ");
 
@@ -68,6 +76,7 @@ export async function GET(req: NextRequest) {
             lastBookedAt: booking.createdAt.toISOString(),
             defaultGroomingNotes: null,
             defaultStylingNotes: null,
+            temperament: null,
           });
         }
       }
@@ -76,7 +85,17 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ found: legacy.length > 0, pets: legacy });
     }
 
-    const result = pets.map((p) => {
+    const dedupedPets = Array.from(
+      pets
+        .reduce((map, pet) => {
+          const key = buildCompanionKey(pet.name, pet.breed);
+          if (!map.has(key)) map.set(key, pet);
+          return map;
+        }, new Map<string, typeof pets[number]>())
+        .values()
+    );
+
+    const result = dedupedPets.map((p) => {
       const avatar = p.assets.find((a) => a.kind === "avatar")?.publicUrl || p.avatarUrl || null;
       return {
         petId: p.id,
@@ -87,6 +106,7 @@ export async function GET(req: NextRequest) {
         lastBookedAt: p.lastBookedAt ? p.lastBookedAt.toISOString() : null,
         defaultGroomingNotes: p.defaultGroomingNotes ?? null,
         defaultStylingNotes: p.defaultStylingNotes ?? null,
+        temperament: p.temperament ?? null,
       };
     });
 

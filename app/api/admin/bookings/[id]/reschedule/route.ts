@@ -41,9 +41,10 @@ export async function POST(
     }
 
     const isPendingPrepaid =
-      booking.paymentMethod === "pay_now" &&
-      booking.paymentStatus !== "paid" &&
-      booking.finalAmount > 0;
+      booking.status === "pending_payment" &&
+      booking.paymentStatus === "unpaid" &&
+      ((booking.paymentMethod === "pay_now" && booking.finalAmount > 0) ||
+        booking.paymentMethod === "pay_after_service");
 
     const nextSlots = await adminPrisma.slot.findMany({
       where: { id: { in: slotIds } },

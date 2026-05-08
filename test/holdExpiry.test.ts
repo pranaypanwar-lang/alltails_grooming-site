@@ -25,7 +25,7 @@ describe("hold expiry helpers", () => {
     });
   });
 
-  test("expires only unpaid pending prepaid bookings past their window", () => {
+  test("expires only unpaid pending online-payment holds past their window", () => {
     const now = new Date("2026-04-20T10:00:00.000Z");
 
     assert.equal(
@@ -64,6 +64,19 @@ describe("hold expiry helpers", () => {
         },
         now
       ),
+      true
+    );
+
+    assert.equal(
+      hasPendingPaymentExpired(
+        {
+          paymentMethod: "pay_after_service",
+          paymentStatus: "deposit_paid",
+          status: "confirmed",
+          paymentExpiresAt: new Date("2026-04-20T09:59:59.000Z"),
+        },
+        now
+      ),
       false
     );
   });
@@ -76,6 +89,7 @@ describe("hold expiry helpers", () => {
       slot: { isHeld: false, holdExpiresAt: null },
       booking: {
         status: "payment_expired",
+        dispatchState: "issue",
         paymentExpiredAt: now,
         paymentPendingReason: "hold_expired",
       },

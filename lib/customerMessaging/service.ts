@@ -68,13 +68,15 @@ export async function prepareCustomerMessageForBooking(
   const paymentStatusLabel =
     booking.paymentStatus === "paid"
       ? "Paid"
-      : booking.paymentStatus === "pending_cash_collection"
-        ? "Pay after service"
-        : booking.paymentStatus === "covered_by_loyalty"
-          ? "Covered by loyalty"
-          : booking.paymentStatus === "expired"
-            ? "Expired"
-            : "Pending payment";
+      : booking.paymentStatus === "deposit_paid"
+        ? "Deposit paid"
+        : booking.paymentStatus === "pending_cash_collection"
+          ? "Pay after service"
+          : booking.paymentStatus === "covered_by_loyalty"
+            ? "Covered by loyalty"
+            : booking.paymentStatus === "expired"
+              ? "Expired"
+              : "Pending payment";
 
   const paymentMethodLabel =
     booking.paymentMethod === "pay_now"

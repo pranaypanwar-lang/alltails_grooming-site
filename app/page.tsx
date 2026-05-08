@@ -1148,34 +1148,10 @@ const SUPPORT_EMAIL_HREF = "mailto:hello@alltails.in";
 const WHATSAPP_HREF = `https://wa.me/${WHATSAPP_NUMBER}`;
 
   const openBookingFlow = () => {
-    setSlotsError("");
-    setSlotsMessage("");
-    setBookingCreateError("");
-    setSelectedBookingWindowId("");
-    setConfirmedBooking(null);
-    setConfirmationLoyaltyProgress(null);
-    setAvailabilityDates([]);
-    setBookingWindows([]);
-    setSelectedDate("");
-    setPetCount(1);
-setPets([createEmptyPet()]);
-setExpandedPetNotes([]);
-setSelectedSavedPetIds([]);
-setSavedPets([]);
-setSavedPetsError("");
-setSavedPetsLookupDoneForPhone("");
-setPaymentMethod("pay_now");
-    setCouponCode("");
-    void updatePricingPreview("");
-    setMobileBookingStep("setup");
-setIsCalendarOpen(false);
-setIsSlotsModalOpen(true);
-    resetBookingAttemptId();
+    window.location.href = "/booking";
   };
 
   const openBookingFlowWithService = (serviceName: string) => {
-    setHeroForm((prev) => ({ ...prev, service: serviceName }));
-
     const sessionKey = `view_content_${serviceName.trim().toLowerCase()}`;
     if (!hasSessionEventFired(sessionKey)) {
       trackMetaEvent(
@@ -1188,7 +1164,8 @@ setIsSlotsModalOpen(true);
       markSessionEventFired(sessionKey);
     }
 
-    openBookingFlow();
+    const slug = serviceName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    window.location.href = `/booking?service=${encodeURIComponent(slug)}`;
   };
 
   // SEO deep-link: /?book=1 opens the booking flow; /?book=<package-slug> opens with a package preselected.
@@ -1231,15 +1208,6 @@ setIsSlotsModalOpen(true);
     setInclusionsPackage(serviceName);
   };
 
-  const viewCoatCarePlans = () => {
-    setPackageView("plans");
-    // wait a tick so the section can render the plans view before scrolling
-    requestAnimationFrame(() => {
-      const el = document.getElementById("packages-section");
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  };
-
   const openWhatsAppChat = (message?: string) => {
     const text =
       message ||
@@ -1263,31 +1231,7 @@ setIsSlotsModalOpen(true);
   };
 
   const handlePackageBookNow = (packageName: string) => {
-    setHeroForm((prev) => ({
-      ...prev,
-      service: packageName,
-    }));
-
-    setSlotsError("");
-    setSlotsMessage("");
-    setBookingCreateError("");
-    setSelectedBookingWindowId("");
-    setConfirmedBooking(null);
-setIsCalendarOpen(false);
-setIsSlotsModalOpen(true);
-    resetBookingAttemptId();
-
-    const sessionKey = `view_content_${packageName.trim().toLowerCase()}`;
-    if (!hasSessionEventFired(sessionKey)) {
-      trackMetaEvent(
-        "ViewContent",
-        buildServiceMeta(packageName, {
-          value: getServicePrice(packageName) * petCount,
-          currency: "INR",
-        })
-      );
-      markSessionEventFired(sessionKey);
-    }
+    openBookingFlowWithService(packageName);
   };
   /* -------------------------------------------------------
      04A. HERO + BASIC FORM STATE
@@ -7474,30 +7418,6 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
               </div>
             </div>
           ))}
-      </div>
-
-      {/* secondary CTAs — soft entry options */}
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          onClick={viewCoatCarePlans}
-          className="inline-flex h-[42px] items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.04] px-4 text-[13px] font-medium text-white/82 transition active:scale-[0.98]"
-        >
-          View Coat Care Plans
-          <ChevronRight className="h-3.5 w-3.5" />
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            openWhatsAppChat(
-              "Hi All Tails, I'd like to know more about home grooming for my pet."
-            )
-          }
-          className="inline-flex h-[42px] items-center gap-1.5 rounded-full border border-[#25D366]/40 bg-[#25D366]/10 px-4 text-[13px] font-semibold text-[#86efac] transition active:scale-[0.98]"
-        >
-          <span className="text-[15px] leading-none">💬</span>
-          Chat on WhatsApp
-        </button>
       </div>
 
       {/* social proof — admin-editable testimonial card, review-style layout */}

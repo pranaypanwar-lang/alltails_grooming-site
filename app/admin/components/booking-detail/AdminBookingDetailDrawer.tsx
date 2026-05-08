@@ -16,6 +16,7 @@ const STATUS_CLS: Record<AdminBookingStatus, string> = {
 const PAYMENT_CLS: Record<AdminPaymentStatus, string> = {
   unpaid:                  "bg-[#fff8eb] text-[#b45309]",
   paid:                    "bg-[#effaf3] text-[#15803d]",
+  deposit_paid:            "bg-[#eef7f2] text-[#047857]",
   pending_cash_collection: "bg-[#f3f4f6] text-[#374151]",
   covered_by_loyalty:      "bg-[#f5f3ff] text-[#6d28d9]",
   expired:                 "bg-[#fff1f2] text-[#be123c]",

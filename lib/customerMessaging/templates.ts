@@ -1,4 +1,5 @@
 import { getAddressReadinessSummary } from "../booking/addressCapture";
+import { SLOT_BLOCK_DEPOSIT_AMOUNT } from "../booking/constants";
 
 export type CustomerMessageType = "booking_confirmation";
 export type ExtendedCustomerMessageType =
@@ -70,6 +71,24 @@ export function buildCustomerMessage(input: CustomerBookingMessageInput, message
   let body = "";
 
   if (messageType === "booking_confirmation") {
+    const isPayAfterService = input.paymentMethodLabel === "Pay after service";
+    const balanceAfterService = Math.max(0, input.finalAmount - SLOT_BLOCK_DEPOSIT_AMOUNT);
+    const englishPaymentLines = isPayAfterService
+      ? [
+          `Payment: Slot deposit paid (${formatAmount(SLOT_BLOCK_DEPOSIT_AMOUNT)})`,
+          `Balance after service: ${formatAmount(balanceAfterService)}`,
+        ]
+      : [
+          `Payment: ${input.paymentStatusLabel}${input.paymentMethodLabel ? ` (${input.paymentMethodLabel})` : ""}`,
+          `Amount: ${formatAmount(input.finalAmount)}`,
+        ];
+    const hindiPaymentLines = isPayAfterService
+      ? [
+          `Payment: Slot deposit paid (${formatAmount(SLOT_BLOCK_DEPOSIT_AMOUNT)})`,
+          `Service ke baad balance: ${formatAmount(balanceAfterService)}`,
+        ]
+      : englishPaymentLines;
+
     body = [
       `Hi ${customerFirstName}, your All Tails booking is confirmed.`,
       "",
@@ -78,8 +97,7 @@ export function buildCustomerMessage(input: CustomerBookingMessageInput, message
       `Date: ${input.selectedDate ?? "TBD"}`,
       `Time: ${input.windowLabel ?? "TBD"}`,
       `Area: ${input.city ?? "TBD"}`,
-      `Payment: ${input.paymentStatusLabel}${input.paymentMethodLabel ? ` (${input.paymentMethodLabel})` : ""}`,
-      `Amount: ${formatAmount(input.finalAmount)}`,
+      ...englishPaymentLines,
       "",
       addressInfo.status === "complete"
         ? "Your service address is already saved with this booking."
@@ -93,8 +111,7 @@ export function buildCustomerMessage(input: CustomerBookingMessageInput, message
       `Date: ${input.selectedDate ?? "TBD"}`,
       `Time: ${input.windowLabel ?? "TBD"}`,
       `Area: ${input.city ?? "TBD"}`,
-      `Payment: ${input.paymentStatusLabel}${input.paymentMethodLabel ? ` (${input.paymentMethodLabel})` : ""}`,
-      `Amount: ${formatAmount(input.finalAmount)}`,
+      ...hindiPaymentLines,
       "",
       addressInfo.status === "complete"
         ? "Aapka service address is booking ke saath save ho chuka hai."

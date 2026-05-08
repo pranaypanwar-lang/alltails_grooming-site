@@ -18,6 +18,7 @@ import {
   supersedeQueuedBookingLifecycleMessages,
 } from "../../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../../lib/customerMessaging/provider";
+import { SLOT_BLOCK_DEPOSIT_AMOUNT } from "../../../../../lib/booking/constants";
 
 export const runtime = "nodejs";
 
@@ -210,7 +211,11 @@ export async function POST(request: Request) {
     let paymentOrder: { orderId: string; amount: number; currency: string } | null =
       null;
 
-    if (result.booking.paymentMethod === "pay_now" && result.booking.finalAmount > 0) {
+    const needsOnlinePayment =
+      (result.booking.paymentMethod === "pay_now" && result.booking.finalAmount > 0) ||
+      result.booking.paymentMethod === "pay_after_service";
+
+    if (needsOnlinePayment) {
       if (!adminRazorpay) {
         return NextResponse.json(
           { error: "Razorpay is not configured." },
@@ -218,13 +223,22 @@ export async function POST(request: Request) {
         );
       }
 
+      const orderAmount =
+        result.booking.paymentMethod === "pay_after_service"
+          ? SLOT_BLOCK_DEPOSIT_AMOUNT
+          : result.booking.finalAmount;
+
       const order = await adminRazorpay.orders.create({
-        amount: Math.round(result.booking.finalAmount * 100),
+        amount: Math.round(orderAmount * 100),
         currency: "INR",
         receipt: result.booking.id.slice(0, 40),
         notes: {
           bookingId: result.booking.id,
           source: "admin_manual_booking",
+          paymentIntent:
+            result.booking.paymentMethod === "pay_after_service"
+              ? "slot_block_deposit"
+              : "full_payment",
         },
       });
 

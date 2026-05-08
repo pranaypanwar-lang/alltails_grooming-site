@@ -115,6 +115,7 @@ export async function serializeGroomerBooking(prisma: DbClient, booking: Groomer
       avatarUrl: item.pet.avatarUrl ?? null,
       groomingNotes: item.groomingNotes ?? item.pet.defaultGroomingNotes ?? null,
       stylingNotes: item.stylingNotes ?? item.pet.defaultStylingNotes ?? null,
+      temperament: item.temperament ?? item.pet.temperament ?? null,
       stylingReferenceUrls: (() => {
         const bookingRefs = item.assets
           .filter((asset) => asset.kind === "styling_reference")

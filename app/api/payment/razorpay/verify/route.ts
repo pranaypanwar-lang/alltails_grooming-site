@@ -116,10 +116,14 @@ export async function POST(request: Request) {
         });
       }
 
+      // Pay-after-service bookings settle a deposit only at this stage; the
+      // balance is collected by the groomer after the visit.
+      const isDepositPayment = booking.paymentMethod === "pay_after_service";
+
       const updated = await tx.booking.update({
         where: { id: bookingId },
         data: {
-          paymentStatus: "paid",
+          paymentStatus: isDepositPayment ? "deposit_paid" : "paid",
           status: "confirmed",
           razorpayOrderId: razorpay_order_id,
           razorpayPaymentId: razorpay_payment_id,
@@ -162,7 +166,7 @@ export async function POST(request: Request) {
       await sendNewBookingAdminAlert({
         prisma,
         bookingId: updatedBooking.id,
-        sourceLabel: "website prepaid",
+        sourceLabel: updatedBooking.paymentMethod === "pay_after_service" ? "website pay-after-service deposit" : "website prepaid",
         baseUrl: getPublicAppUrl(request),
       });
     } catch (error) {

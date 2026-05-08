@@ -3,6 +3,7 @@ import Razorpay from "razorpay";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Prisma, PrismaClient } from "../../../../lib/generated/prisma";
 import { BOOKING_SOP_STEPS } from "../../../../lib/booking/sop";
+import { SLOT_BLOCK_DEPOSIT_AMOUNT } from "../../../../lib/booking/constants";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 export const adminPrisma = new PrismaClient({ adapter });
@@ -84,6 +85,22 @@ export function getPublicAppUrl(request: Request) {
 }
 
 export type RefundMode = "manual_refund" | "razorpay_refund" | "waived";
+
+export function isRefundablePaymentStatus(paymentStatus: string | null) {
+  return paymentStatus === "paid" || paymentStatus === "deposit_paid";
+}
+
+export function getRefundableAmount(booking: {
+  paymentMethod: string | null;
+  paymentStatus: string | null;
+  finalAmount: number;
+}) {
+  if (booking.paymentMethod === "pay_after_service" && booking.paymentStatus === "deposit_paid") {
+    return Math.min(SLOT_BLOCK_DEPOSIT_AMOUNT, booking.finalAmount);
+  }
+
+  return booking.finalAmount;
+}
 
 export type RefundOutcome = {
   refundStatus: "completed" | "failed" | "waived";

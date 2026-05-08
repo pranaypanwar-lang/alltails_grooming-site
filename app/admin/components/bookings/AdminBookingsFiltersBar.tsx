@@ -106,6 +106,7 @@ export function AdminBookingsFiltersBar({ filters, teams, onChange, onReset }: P
             <option value="">All payment states</option>
             <option value="unpaid">Pending payment</option>
             <option value="paid">Paid</option>
+            <option value="deposit_paid">Deposit paid</option>
             <option value="pending_cash_collection">Pay after service</option>
             <option value="covered_by_loyalty">Covered by loyalty</option>
             <option value="expired">Expired</option>

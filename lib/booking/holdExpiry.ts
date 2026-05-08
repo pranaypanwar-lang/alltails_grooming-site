@@ -25,7 +25,7 @@ export function hasPendingPaymentExpired(
   now: Date = new Date()
 ) {
   return (
-    booking.paymentMethod === "pay_now" &&
+    (booking.paymentMethod === "pay_now" || booking.paymentMethod === "pay_after_service") &&
     booking.paymentStatus === "unpaid" &&
     booking.status === "pending_payment" &&
     booking.paymentExpiresAt instanceof Date &&

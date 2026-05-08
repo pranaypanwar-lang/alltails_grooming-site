@@ -24,11 +24,11 @@ export async function POST(
     });
 
     if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
-    if (booking.paymentMethod !== "pay_now") {
-      return NextResponse.json({ error: "Booking is not prepaid" }, { status: 400 });
+    if (booking.paymentMethod !== "pay_now" && booking.paymentMethod !== "pay_after_service") {
+      return NextResponse.json({ error: "Booking is not eligible for online payment" }, { status: 400 });
     }
-    if (booking.paymentStatus === "paid") {
-      return NextResponse.json({ error: "Booking is already paid" }, { status: 400 });
+    if (booking.paymentStatus === "paid" || booking.paymentStatus === "deposit_paid") {
+      return NextResponse.json({ error: "Booking payment is already settled" }, { status: 400 });
     }
 
     const accessToken = createBookingAccessToken(booking.id, booking.user.phone);

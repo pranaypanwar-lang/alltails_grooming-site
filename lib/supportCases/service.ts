@@ -87,7 +87,7 @@ export async function scanAutomatedSupportSignals(prisma: DbClient) {
         { paymentExpiredAt: { not: null } },
         {
           AND: [
-            { paymentStatus: { notIn: ["paid", "covered_by_loyalty", "pending_cash_collection"] } },
+            { paymentStatus: { notIn: ["paid", "deposit_paid", "covered_by_loyalty", "pending_cash_collection"] } },
             { paymentFailedAt: { not: null } },
           ],
         },

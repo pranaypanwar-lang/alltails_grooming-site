@@ -57,6 +57,7 @@ function buildSavedCompanion(pet: any) {
     avatarUrl: avatar,
     defaultGroomingNotes: pet.defaultGroomingNotes ?? null,
     defaultStylingNotes: pet.defaultStylingNotes ?? null,
+    temperament: pet.temperament ?? null,
     defaultStylingReferenceUrls: stylingRefs,
     lastBookedAt: pet.lastBookedAt ? new Date(pet.lastBookedAt).toISOString() : null,
     isArchived: !!pet.isArchived,
@@ -96,8 +97,18 @@ export async function GET(req: NextRequest) {
       orderBy: [{ lastBookedAt: "desc" }, { updatedAt: "desc" }],
     });
 
+    const dedupedPets = Array.from(
+      pets
+        .reduce((map, pet) => {
+          const key = buildCompanionKey(pet.name, pet.breed);
+          if (!map.has(key)) map.set(key, pet);
+          return map;
+        }, new Map<string, typeof pets[number]>())
+        .values()
+    );
+
     return NextResponse.json({
-      companions: pets.map(buildSavedCompanion),
+      companions: dedupedPets.map(buildSavedCompanion),
     });
   } catch (error) {
     console.error("GET /api/pets failed", error);
@@ -119,6 +130,7 @@ export async function POST(request: Request) {
       species,
       defaultGroomingNotes,
       defaultStylingNotes,
+      temperament,
       defaultStylingReferenceUrls,
       avatarUrl,
     }: {
@@ -128,6 +140,7 @@ export async function POST(request: Request) {
       species?: "dog" | "cat" | "unknown";
       defaultGroomingNotes?: string | null;
       defaultStylingNotes?: string | null;
+      temperament?: string | null;
       defaultStylingReferenceUrls?: string[];
       avatarUrl?: string | null;
     } = body;
@@ -198,6 +211,7 @@ export async function POST(request: Request) {
           avatarUrl: avatarUrl?.trim() || null,
           defaultGroomingNotes: defaultGroomingNotes?.trim() || null,
           defaultStylingNotes: defaultStylingNotes?.trim() || null,
+          temperament: temperament?.trim() || null,
         },
       });
 

@@ -6550,6 +6550,7 @@ export namespace Prisma {
     avatarUrl: string | null
     defaultGroomingNotes: string | null
     defaultStylingNotes: string | null
+    temperament: string | null
     isArchived: boolean | null
     lastBookedAt: Date | null
     createdAt: Date | null
@@ -6565,6 +6566,7 @@ export namespace Prisma {
     avatarUrl: string | null
     defaultGroomingNotes: string | null
     defaultStylingNotes: string | null
+    temperament: string | null
     isArchived: boolean | null
     lastBookedAt: Date | null
     createdAt: Date | null
@@ -6580,6 +6582,7 @@ export namespace Prisma {
     avatarUrl: number
     defaultGroomingNotes: number
     defaultStylingNotes: number
+    temperament: number
     isArchived: number
     lastBookedAt: number
     createdAt: number
@@ -6597,6 +6600,7 @@ export namespace Prisma {
     avatarUrl?: true
     defaultGroomingNotes?: true
     defaultStylingNotes?: true
+    temperament?: true
     isArchived?: true
     lastBookedAt?: true
     createdAt?: true
@@ -6612,6 +6616,7 @@ export namespace Prisma {
     avatarUrl?: true
     defaultGroomingNotes?: true
     defaultStylingNotes?: true
+    temperament?: true
     isArchived?: true
     lastBookedAt?: true
     createdAt?: true
@@ -6627,6 +6632,7 @@ export namespace Prisma {
     avatarUrl?: true
     defaultGroomingNotes?: true
     defaultStylingNotes?: true
+    temperament?: true
     isArchived?: true
     lastBookedAt?: true
     createdAt?: true
@@ -6715,6 +6721,7 @@ export namespace Prisma {
     avatarUrl: string | null
     defaultGroomingNotes: string | null
     defaultStylingNotes: string | null
+    temperament: string | null
     isArchived: boolean
     lastBookedAt: Date | null
     createdAt: Date
@@ -6747,6 +6754,7 @@ export namespace Prisma {
     avatarUrl?: boolean
     defaultGroomingNotes?: boolean
     defaultStylingNotes?: boolean
+    temperament?: boolean
     isArchived?: boolean
     lastBookedAt?: boolean
     createdAt?: boolean
@@ -6766,6 +6774,7 @@ export namespace Prisma {
     avatarUrl?: boolean
     defaultGroomingNotes?: boolean
     defaultStylingNotes?: boolean
+    temperament?: boolean
     isArchived?: boolean
     lastBookedAt?: boolean
     createdAt?: boolean
@@ -6782,6 +6791,7 @@ export namespace Prisma {
     avatarUrl?: boolean
     defaultGroomingNotes?: boolean
     defaultStylingNotes?: boolean
+    temperament?: boolean
     isArchived?: boolean
     lastBookedAt?: boolean
     createdAt?: boolean
@@ -6798,13 +6808,14 @@ export namespace Prisma {
     avatarUrl?: boolean
     defaultGroomingNotes?: boolean
     defaultStylingNotes?: boolean
+    temperament?: boolean
     isArchived?: boolean
     lastBookedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type PetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "breed" | "userId" | "species" | "avatarUrl" | "defaultGroomingNotes" | "defaultStylingNotes" | "isArchived" | "lastBookedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["pet"]>
+  export type PetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "breed" | "userId" | "species" | "avatarUrl" | "defaultGroomingNotes" | "defaultStylingNotes" | "temperament" | "isArchived" | "lastBookedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["pet"]>
   export type PetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     bookings?: boolean | Pet$bookingsArgs<ExtArgs>
@@ -6834,6 +6845,7 @@ export namespace Prisma {
       avatarUrl: string | null
       defaultGroomingNotes: string | null
       defaultStylingNotes: string | null
+      temperament: string | null
       isArchived: boolean
       lastBookedAt: Date | null
       createdAt: Date
@@ -7272,6 +7284,7 @@ export namespace Prisma {
     readonly avatarUrl: FieldRef<"Pet", 'String'>
     readonly defaultGroomingNotes: FieldRef<"Pet", 'String'>
     readonly defaultStylingNotes: FieldRef<"Pet", 'String'>
+    readonly temperament: FieldRef<"Pet", 'String'>
     readonly isArchived: FieldRef<"Pet", 'Boolean'>
     readonly lastBookedAt: FieldRef<"Pet", 'DateTime'>
     readonly createdAt: FieldRef<"Pet", 'DateTime'>
@@ -47093,6 +47106,7 @@ export namespace Prisma {
     isSavedProfile: boolean | null
     stylingNotes: string | null
     groomingNotes: string | null
+    temperament: string | null
   }
 
   export type BookingPetMaxAggregateOutputType = {
@@ -47103,6 +47117,7 @@ export namespace Prisma {
     isSavedProfile: boolean | null
     stylingNotes: string | null
     groomingNotes: string | null
+    temperament: string | null
   }
 
   export type BookingPetCountAggregateOutputType = {
@@ -47113,6 +47128,7 @@ export namespace Prisma {
     isSavedProfile: number
     stylingNotes: number
     groomingNotes: number
+    temperament: number
     _all: number
   }
 
@@ -47125,6 +47141,7 @@ export namespace Prisma {
     isSavedProfile?: true
     stylingNotes?: true
     groomingNotes?: true
+    temperament?: true
   }
 
   export type BookingPetMaxAggregateInputType = {
@@ -47135,6 +47152,7 @@ export namespace Prisma {
     isSavedProfile?: true
     stylingNotes?: true
     groomingNotes?: true
+    temperament?: true
   }
 
   export type BookingPetCountAggregateInputType = {
@@ -47145,6 +47163,7 @@ export namespace Prisma {
     isSavedProfile?: true
     stylingNotes?: true
     groomingNotes?: true
+    temperament?: true
     _all?: true
   }
 
@@ -47228,6 +47247,7 @@ export namespace Prisma {
     isSavedProfile: boolean
     stylingNotes: string | null
     groomingNotes: string | null
+    temperament: string | null
     _count: BookingPetCountAggregateOutputType | null
     _min: BookingPetMinAggregateOutputType | null
     _max: BookingPetMaxAggregateOutputType | null
@@ -47255,6 +47275,7 @@ export namespace Prisma {
     isSavedProfile?: boolean
     stylingNotes?: boolean
     groomingNotes?: boolean
+    temperament?: boolean
     booking?: boolean | BookingDefaultArgs<ExtArgs>
     pet?: boolean | PetDefaultArgs<ExtArgs>
     assets?: boolean | BookingPet$assetsArgs<ExtArgs>
@@ -47269,6 +47290,7 @@ export namespace Prisma {
     isSavedProfile?: boolean
     stylingNotes?: boolean
     groomingNotes?: boolean
+    temperament?: boolean
     booking?: boolean | BookingDefaultArgs<ExtArgs>
     pet?: boolean | PetDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["bookingPet"]>
@@ -47281,6 +47303,7 @@ export namespace Prisma {
     isSavedProfile?: boolean
     stylingNotes?: boolean
     groomingNotes?: boolean
+    temperament?: boolean
     booking?: boolean | BookingDefaultArgs<ExtArgs>
     pet?: boolean | PetDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["bookingPet"]>
@@ -47293,9 +47316,10 @@ export namespace Prisma {
     isSavedProfile?: boolean
     stylingNotes?: boolean
     groomingNotes?: boolean
+    temperament?: boolean
   }
 
-  export type BookingPetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bookingId" | "petId" | "sourcePetId" | "isSavedProfile" | "stylingNotes" | "groomingNotes", ExtArgs["result"]["bookingPet"]>
+  export type BookingPetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bookingId" | "petId" | "sourcePetId" | "isSavedProfile" | "stylingNotes" | "groomingNotes" | "temperament", ExtArgs["result"]["bookingPet"]>
   export type BookingPetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     booking?: boolean | BookingDefaultArgs<ExtArgs>
     pet?: boolean | PetDefaultArgs<ExtArgs>
@@ -47326,6 +47350,7 @@ export namespace Prisma {
       isSavedProfile: boolean
       stylingNotes: string | null
       groomingNotes: string | null
+      temperament: string | null
     }, ExtArgs["result"]["bookingPet"]>
     composites: {}
   }
@@ -47759,6 +47784,7 @@ export namespace Prisma {
     readonly isSavedProfile: FieldRef<"BookingPet", 'Boolean'>
     readonly stylingNotes: FieldRef<"BookingPet", 'String'>
     readonly groomingNotes: FieldRef<"BookingPet", 'String'>
+    readonly temperament: FieldRef<"BookingPet", 'String'>
   }
     
 
@@ -56132,6 +56158,7 @@ export namespace Prisma {
     avatarUrl: 'avatarUrl',
     defaultGroomingNotes: 'defaultGroomingNotes',
     defaultStylingNotes: 'defaultStylingNotes',
+    temperament: 'temperament',
     isArchived: 'isArchived',
     lastBookedAt: 'lastBookedAt',
     createdAt: 'createdAt',
@@ -56753,7 +56780,8 @@ export namespace Prisma {
     sourcePetId: 'sourcePetId',
     isSavedProfile: 'isSavedProfile',
     stylingNotes: 'stylingNotes',
-    groomingNotes: 'groomingNotes'
+    groomingNotes: 'groomingNotes',
+    temperament: 'temperament'
   };
 
   export type BookingPetScalarFieldEnum = (typeof BookingPetScalarFieldEnum)[keyof typeof BookingPetScalarFieldEnum]
@@ -57057,6 +57085,7 @@ export namespace Prisma {
     avatarUrl?: StringNullableFilter<"Pet"> | string | null
     defaultGroomingNotes?: StringNullableFilter<"Pet"> | string | null
     defaultStylingNotes?: StringNullableFilter<"Pet"> | string | null
+    temperament?: StringNullableFilter<"Pet"> | string | null
     isArchived?: BoolFilter<"Pet"> | boolean
     lastBookedAt?: DateTimeNullableFilter<"Pet"> | Date | string | null
     createdAt?: DateTimeFilter<"Pet"> | Date | string
@@ -57075,6 +57104,7 @@ export namespace Prisma {
     avatarUrl?: SortOrderInput | SortOrder
     defaultGroomingNotes?: SortOrderInput | SortOrder
     defaultStylingNotes?: SortOrderInput | SortOrder
+    temperament?: SortOrderInput | SortOrder
     isArchived?: SortOrder
     lastBookedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -57096,6 +57126,7 @@ export namespace Prisma {
     avatarUrl?: StringNullableFilter<"Pet"> | string | null
     defaultGroomingNotes?: StringNullableFilter<"Pet"> | string | null
     defaultStylingNotes?: StringNullableFilter<"Pet"> | string | null
+    temperament?: StringNullableFilter<"Pet"> | string | null
     isArchived?: BoolFilter<"Pet"> | boolean
     lastBookedAt?: DateTimeNullableFilter<"Pet"> | Date | string | null
     createdAt?: DateTimeFilter<"Pet"> | Date | string
@@ -57114,6 +57145,7 @@ export namespace Prisma {
     avatarUrl?: SortOrderInput | SortOrder
     defaultGroomingNotes?: SortOrderInput | SortOrder
     defaultStylingNotes?: SortOrderInput | SortOrder
+    temperament?: SortOrderInput | SortOrder
     isArchived?: SortOrder
     lastBookedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -57135,6 +57167,7 @@ export namespace Prisma {
     avatarUrl?: StringNullableWithAggregatesFilter<"Pet"> | string | null
     defaultGroomingNotes?: StringNullableWithAggregatesFilter<"Pet"> | string | null
     defaultStylingNotes?: StringNullableWithAggregatesFilter<"Pet"> | string | null
+    temperament?: StringNullableWithAggregatesFilter<"Pet"> | string | null
     isArchived?: BoolWithAggregatesFilter<"Pet"> | boolean
     lastBookedAt?: DateTimeNullableWithAggregatesFilter<"Pet"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Pet"> | Date | string
@@ -60371,6 +60404,7 @@ export namespace Prisma {
     isSavedProfile?: BoolFilter<"BookingPet"> | boolean
     stylingNotes?: StringNullableFilter<"BookingPet"> | string | null
     groomingNotes?: StringNullableFilter<"BookingPet"> | string | null
+    temperament?: StringNullableFilter<"BookingPet"> | string | null
     booking?: XOR<BookingScalarRelationFilter, BookingWhereInput>
     pet?: XOR<PetScalarRelationFilter, PetWhereInput>
     assets?: BookingPetAssetListRelationFilter
@@ -60384,6 +60418,7 @@ export namespace Prisma {
     isSavedProfile?: SortOrder
     stylingNotes?: SortOrderInput | SortOrder
     groomingNotes?: SortOrderInput | SortOrder
+    temperament?: SortOrderInput | SortOrder
     booking?: BookingOrderByWithRelationInput
     pet?: PetOrderByWithRelationInput
     assets?: BookingPetAssetOrderByRelationAggregateInput
@@ -60400,6 +60435,7 @@ export namespace Prisma {
     isSavedProfile?: BoolFilter<"BookingPet"> | boolean
     stylingNotes?: StringNullableFilter<"BookingPet"> | string | null
     groomingNotes?: StringNullableFilter<"BookingPet"> | string | null
+    temperament?: StringNullableFilter<"BookingPet"> | string | null
     booking?: XOR<BookingScalarRelationFilter, BookingWhereInput>
     pet?: XOR<PetScalarRelationFilter, PetWhereInput>
     assets?: BookingPetAssetListRelationFilter
@@ -60413,6 +60449,7 @@ export namespace Prisma {
     isSavedProfile?: SortOrder
     stylingNotes?: SortOrderInput | SortOrder
     groomingNotes?: SortOrderInput | SortOrder
+    temperament?: SortOrderInput | SortOrder
     _count?: BookingPetCountOrderByAggregateInput
     _max?: BookingPetMaxOrderByAggregateInput
     _min?: BookingPetMinOrderByAggregateInput
@@ -60429,6 +60466,7 @@ export namespace Prisma {
     isSavedProfile?: BoolWithAggregatesFilter<"BookingPet"> | boolean
     stylingNotes?: StringNullableWithAggregatesFilter<"BookingPet"> | string | null
     groomingNotes?: StringNullableWithAggregatesFilter<"BookingPet"> | string | null
+    temperament?: StringNullableWithAggregatesFilter<"BookingPet"> | string | null
   }
 
   export type BookingSlotWhereInput = {
@@ -61085,6 +61123,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     defaultGroomingNotes?: string | null
     defaultStylingNotes?: string | null
+    temperament?: string | null
     isArchived?: boolean
     lastBookedAt?: Date | string | null
     createdAt?: Date | string
@@ -61103,6 +61142,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     defaultGroomingNotes?: string | null
     defaultStylingNotes?: string | null
+    temperament?: string | null
     isArchived?: boolean
     lastBookedAt?: Date | string | null
     createdAt?: Date | string
@@ -61119,6 +61159,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     defaultGroomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     defaultStylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     lastBookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61137,6 +61178,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     defaultGroomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     defaultStylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     lastBookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61154,6 +61196,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     defaultGroomingNotes?: string | null
     defaultStylingNotes?: string | null
+    temperament?: string | null
     isArchived?: boolean
     lastBookedAt?: Date | string | null
     createdAt?: Date | string
@@ -61168,6 +61211,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     defaultGroomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     defaultStylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     lastBookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61183,6 +61227,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     defaultGroomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     defaultStylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     lastBookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -64893,6 +64938,7 @@ export namespace Prisma {
     isSavedProfile?: boolean
     stylingNotes?: string | null
     groomingNotes?: string | null
+    temperament?: string | null
     booking: BookingCreateNestedOneWithoutPetsInput
     pet: PetCreateNestedOneWithoutBookingsInput
     assets?: BookingPetAssetCreateNestedManyWithoutBookingPetInput
@@ -64906,6 +64952,7 @@ export namespace Prisma {
     isSavedProfile?: boolean
     stylingNotes?: string | null
     groomingNotes?: string | null
+    temperament?: string | null
     assets?: BookingPetAssetUncheckedCreateNestedManyWithoutBookingPetInput
   }
 
@@ -64915,6 +64962,7 @@ export namespace Prisma {
     isSavedProfile?: BoolFieldUpdateOperationsInput | boolean
     stylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     groomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     booking?: BookingUpdateOneRequiredWithoutPetsNestedInput
     pet?: PetUpdateOneRequiredWithoutBookingsNestedInput
     assets?: BookingPetAssetUpdateManyWithoutBookingPetNestedInput
@@ -64928,6 +64976,7 @@ export namespace Prisma {
     isSavedProfile?: BoolFieldUpdateOperationsInput | boolean
     stylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     groomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     assets?: BookingPetAssetUncheckedUpdateManyWithoutBookingPetNestedInput
   }
 
@@ -64939,6 +64988,7 @@ export namespace Prisma {
     isSavedProfile?: boolean
     stylingNotes?: string | null
     groomingNotes?: string | null
+    temperament?: string | null
   }
 
   export type BookingPetUpdateManyMutationInput = {
@@ -64947,6 +64997,7 @@ export namespace Prisma {
     isSavedProfile?: BoolFieldUpdateOperationsInput | boolean
     stylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     groomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BookingPetUncheckedUpdateManyInput = {
@@ -64957,6 +65008,7 @@ export namespace Prisma {
     isSavedProfile?: BoolFieldUpdateOperationsInput | boolean
     stylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     groomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BookingSlotCreateInput = {
@@ -65810,6 +65862,7 @@ export namespace Prisma {
     avatarUrl?: SortOrder
     defaultGroomingNotes?: SortOrder
     defaultStylingNotes?: SortOrder
+    temperament?: SortOrder
     isArchived?: SortOrder
     lastBookedAt?: SortOrder
     createdAt?: SortOrder
@@ -65825,6 +65878,7 @@ export namespace Prisma {
     avatarUrl?: SortOrder
     defaultGroomingNotes?: SortOrder
     defaultStylingNotes?: SortOrder
+    temperament?: SortOrder
     isArchived?: SortOrder
     lastBookedAt?: SortOrder
     createdAt?: SortOrder
@@ -65840,6 +65894,7 @@ export namespace Prisma {
     avatarUrl?: SortOrder
     defaultGroomingNotes?: SortOrder
     defaultStylingNotes?: SortOrder
+    temperament?: SortOrder
     isArchived?: SortOrder
     lastBookedAt?: SortOrder
     createdAt?: SortOrder
@@ -68134,6 +68189,7 @@ export namespace Prisma {
     isSavedProfile?: SortOrder
     stylingNotes?: SortOrder
     groomingNotes?: SortOrder
+    temperament?: SortOrder
   }
 
   export type BookingPetMaxOrderByAggregateInput = {
@@ -68144,6 +68200,7 @@ export namespace Prisma {
     isSavedProfile?: SortOrder
     stylingNotes?: SortOrder
     groomingNotes?: SortOrder
+    temperament?: SortOrder
   }
 
   export type BookingPetMinOrderByAggregateInput = {
@@ -68154,6 +68211,7 @@ export namespace Prisma {
     isSavedProfile?: SortOrder
     stylingNotes?: SortOrder
     groomingNotes?: SortOrder
+    temperament?: SortOrder
   }
 
   export type SlotScalarRelationFilter = {
@@ -71645,6 +71703,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     defaultGroomingNotes?: string | null
     defaultStylingNotes?: string | null
+    temperament?: string | null
     isArchived?: boolean
     lastBookedAt?: Date | string | null
     createdAt?: Date | string
@@ -71661,6 +71720,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     defaultGroomingNotes?: string | null
     defaultStylingNotes?: string | null
+    temperament?: string | null
     isArchived?: boolean
     lastBookedAt?: Date | string | null
     createdAt?: Date | string
@@ -71806,6 +71866,7 @@ export namespace Prisma {
     avatarUrl?: StringNullableFilter<"Pet"> | string | null
     defaultGroomingNotes?: StringNullableFilter<"Pet"> | string | null
     defaultStylingNotes?: StringNullableFilter<"Pet"> | string | null
+    temperament?: StringNullableFilter<"Pet"> | string | null
     isArchived?: BoolFilter<"Pet"> | boolean
     lastBookedAt?: DateTimeNullableFilter<"Pet"> | Date | string | null
     createdAt?: DateTimeFilter<"Pet"> | Date | string
@@ -71881,6 +71942,7 @@ export namespace Prisma {
     isSavedProfile?: boolean
     stylingNotes?: string | null
     groomingNotes?: string | null
+    temperament?: string | null
     booking: BookingCreateNestedOneWithoutPetsInput
     assets?: BookingPetAssetCreateNestedManyWithoutBookingPetInput
   }
@@ -71892,6 +71954,7 @@ export namespace Prisma {
     isSavedProfile?: boolean
     stylingNotes?: string | null
     groomingNotes?: string | null
+    temperament?: string | null
     assets?: BookingPetAssetUncheckedCreateNestedManyWithoutBookingPetInput
   }
 
@@ -71999,6 +72062,7 @@ export namespace Prisma {
     isSavedProfile?: BoolFilter<"BookingPet"> | boolean
     stylingNotes?: StringNullableFilter<"BookingPet"> | string | null
     groomingNotes?: StringNullableFilter<"BookingPet"> | string | null
+    temperament?: StringNullableFilter<"BookingPet"> | string | null
   }
 
   export type PetAssetUpsertWithWhereUniqueWithoutPetInput = {
@@ -72038,6 +72102,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     defaultGroomingNotes?: string | null
     defaultStylingNotes?: string | null
+    temperament?: string | null
     isArchived?: boolean
     lastBookedAt?: Date | string | null
     createdAt?: Date | string
@@ -72055,6 +72120,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     defaultGroomingNotes?: string | null
     defaultStylingNotes?: string | null
+    temperament?: string | null
     isArchived?: boolean
     lastBookedAt?: Date | string | null
     createdAt?: Date | string
@@ -72086,6 +72152,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     defaultGroomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     defaultStylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     lastBookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -72103,6 +72170,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     defaultGroomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     defaultStylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     lastBookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -74038,6 +74106,7 @@ export namespace Prisma {
     isSavedProfile?: boolean
     stylingNotes?: string | null
     groomingNotes?: string | null
+    temperament?: string | null
     pet: PetCreateNestedOneWithoutBookingsInput
     assets?: BookingPetAssetCreateNestedManyWithoutBookingPetInput
   }
@@ -74049,6 +74118,7 @@ export namespace Prisma {
     isSavedProfile?: boolean
     stylingNotes?: string | null
     groomingNotes?: string | null
+    temperament?: string | null
     assets?: BookingPetAssetUncheckedCreateNestedManyWithoutBookingPetInput
   }
 
@@ -82385,6 +82455,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     defaultGroomingNotes?: string | null
     defaultStylingNotes?: string | null
+    temperament?: string | null
     isArchived?: boolean
     lastBookedAt?: Date | string | null
     createdAt?: Date | string
@@ -82402,6 +82473,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     defaultGroomingNotes?: string | null
     defaultStylingNotes?: string | null
+    temperament?: string | null
     isArchived?: boolean
     lastBookedAt?: Date | string | null
     createdAt?: Date | string
@@ -82598,6 +82670,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     defaultGroomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     defaultStylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     lastBookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -82615,6 +82688,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     defaultGroomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     defaultStylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     lastBookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -82997,6 +83071,7 @@ export namespace Prisma {
     isSavedProfile?: boolean
     stylingNotes?: string | null
     groomingNotes?: string | null
+    temperament?: string | null
     booking: BookingCreateNestedOneWithoutPetsInput
     pet: PetCreateNestedOneWithoutBookingsInput
   }
@@ -83009,6 +83084,7 @@ export namespace Prisma {
     isSavedProfile?: boolean
     stylingNotes?: string | null
     groomingNotes?: string | null
+    temperament?: string | null
   }
 
   export type BookingPetCreateOrConnectWithoutAssetsInput = {
@@ -83033,6 +83109,7 @@ export namespace Prisma {
     isSavedProfile?: BoolFieldUpdateOperationsInput | boolean
     stylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     groomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     booking?: BookingUpdateOneRequiredWithoutPetsNestedInput
     pet?: PetUpdateOneRequiredWithoutBookingsNestedInput
   }
@@ -83045,6 +83122,7 @@ export namespace Prisma {
     isSavedProfile?: BoolFieldUpdateOperationsInput | boolean
     stylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     groomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BookingCreateWithoutRelayCallsInput = {
@@ -84352,6 +84430,7 @@ export namespace Prisma {
     avatarUrl?: string | null
     defaultGroomingNotes?: string | null
     defaultStylingNotes?: string | null
+    temperament?: string | null
     isArchived?: boolean
     lastBookedAt?: Date | string | null
     createdAt?: Date | string
@@ -84551,6 +84630,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     defaultGroomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     defaultStylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     lastBookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -84567,6 +84647,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     defaultGroomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     defaultStylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     lastBookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -84583,6 +84664,7 @@ export namespace Prisma {
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     defaultGroomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     defaultStylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     isArchived?: BoolFieldUpdateOperationsInput | boolean
     lastBookedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -84626,6 +84708,7 @@ export namespace Prisma {
     isSavedProfile?: boolean
     stylingNotes?: string | null
     groomingNotes?: string | null
+    temperament?: string | null
   }
 
   export type PetAssetCreateManyPetInput = {
@@ -84643,6 +84726,7 @@ export namespace Prisma {
     isSavedProfile?: BoolFieldUpdateOperationsInput | boolean
     stylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     groomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     booking?: BookingUpdateOneRequiredWithoutPetsNestedInput
     assets?: BookingPetAssetUpdateManyWithoutBookingPetNestedInput
   }
@@ -84654,6 +84738,7 @@ export namespace Prisma {
     isSavedProfile?: BoolFieldUpdateOperationsInput | boolean
     stylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     groomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     assets?: BookingPetAssetUncheckedUpdateManyWithoutBookingPetNestedInput
   }
 
@@ -84664,6 +84749,7 @@ export namespace Prisma {
     isSavedProfile?: BoolFieldUpdateOperationsInput | boolean
     stylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     groomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PetAssetUpdateWithoutPetInput = {
@@ -85696,6 +85782,7 @@ export namespace Prisma {
     isSavedProfile?: boolean
     stylingNotes?: string | null
     groomingNotes?: string | null
+    temperament?: string | null
   }
 
   export type BookingSlotCreateManyBookingInput = {
@@ -85870,6 +85957,7 @@ export namespace Prisma {
     isSavedProfile?: BoolFieldUpdateOperationsInput | boolean
     stylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     groomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     pet?: PetUpdateOneRequiredWithoutBookingsNestedInput
     assets?: BookingPetAssetUpdateManyWithoutBookingPetNestedInput
   }
@@ -85881,6 +85969,7 @@ export namespace Prisma {
     isSavedProfile?: BoolFieldUpdateOperationsInput | boolean
     stylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     groomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
     assets?: BookingPetAssetUncheckedUpdateManyWithoutBookingPetNestedInput
   }
 
@@ -85891,6 +85980,7 @@ export namespace Prisma {
     isSavedProfile?: BoolFieldUpdateOperationsInput | boolean
     stylingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     groomingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    temperament?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BookingSlotUpdateWithoutBookingInput = {

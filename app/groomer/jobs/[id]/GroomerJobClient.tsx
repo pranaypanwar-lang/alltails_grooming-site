@@ -9,10 +9,13 @@ import {
   ChevronDown,
   ChevronUp,
   Circle,
+  Heart,
   IndianRupee,
   MapPinned,
   Scissors,
+  ShieldAlert,
   Video,
+  Wind,
 } from "lucide-react";
 import type { GroomerBookingView } from "../../../../lib/groomerPortal";
 import { deriveActionMoment, deriveJobFlowPsychology, resolvePsychologyText } from "../../../../lib/groomerPsychology";
@@ -47,6 +50,100 @@ const PAYMENT_MODE_LABELS: Record<"cash" | "online" | "waived", TextValue> = {
   online: { simple: "Online", hindi: "ऑनलाइन" },
   waived: { simple: "Maaf", hindi: "शुल्क माफ़" },
 };
+
+type GroomerTemperament = "calm" | "anxious" | "can_bite";
+
+type GroomerTemperamentInfo = {
+  key: GroomerTemperament;
+  label: TextValue;
+  briefing: TextValue;
+  badgeBg: string;
+  badgeText: string;
+  badgeBorder: string;
+  Icon: typeof Heart;
+};
+
+const GROOMER_TEMPERAMENT: Record<GroomerTemperament, GroomerTemperamentInfo> = {
+  calm: {
+    key: "calm",
+    label: { simple: "Calm pet", hindi: "शांत पेट" },
+    briefing: {
+      simple: "Calm pet — extra time on finish and styling.",
+      hindi: "शांत पेट — फिनिश और स्टाइलिंग पर समय लीजिए।",
+    },
+    badgeBg: "bg-[#eaf7f1]",
+    badgeText: "text-[#11724f]",
+    badgeBorder: "border-[#bfe5d4]",
+    Icon: Heart,
+  },
+  anxious: {
+    key: "anxious",
+    label: { simple: "Anxious pet", hindi: "घबराया हुआ पेट" },
+    briefing: {
+      simple: "Anxious pet — befriend before starting; go slow.",
+      hindi: "घबराया हुआ पेट — पहले दोस्ती बनाइए, फिर धीरे शुरू करें।",
+    },
+    badgeBg: "bg-[#fff7e8]",
+    badgeText: "text-[#9a5a18]",
+    badgeBorder: "border-[#f1d8a8]",
+    Icon: Wind,
+  },
+  can_bite: {
+    key: "can_bite",
+    label: { simple: "Can bite — safety first", hindi: "काट सकता है — सुरक्षा पहले" },
+    briefing: {
+      simple: "Can bite — ask the parent for help with a muzzle. Safety first; proceed gently.",
+      hindi: "काट सकता है — पेट पैरेंट से मज़ल लगवाने में मदद लीजिए। सुरक्षा पहले, धीरे काम करें।",
+    },
+    badgeBg: "bg-[#fff0f0]",
+    badgeText: "text-[#a44747]",
+    badgeBorder: "border-[#f0c7c7]",
+    Icon: ShieldAlert,
+  },
+};
+
+const TEMPERAMENT_KEY_FROM_RAW: Record<string, GroomerTemperament> = {
+  sweet_soul: "calm",
+  calm: "calm",
+  wiggle_worrier: "anxious",
+  anxious: "anxious",
+  spicy_spark: "can_bite",
+  can_bite: "can_bite",
+  "can bite": "can_bite",
+};
+
+function extractTemperament(notes: string | null | undefined): {
+  info: GroomerTemperamentInfo | null;
+  cleanedNotes: string;
+} {
+  if (!notes) return { info: null, cleanedNotes: "" };
+  const lines = notes.split(/\r?\n/);
+  let foundKey: GroomerTemperament | null = null;
+  const remaining: string[] = [];
+  for (const line of lines) {
+    const match = line.match(/^\s*\[?\s*Temperament\s*[:\-]\s*([^\]]+?)\s*\]?\s*$/i);
+    if (match && !foundKey) {
+      const raw = match[1].trim().toLowerCase().replace(/\s+/g, "_");
+      const key = TEMPERAMENT_KEY_FROM_RAW[raw] ?? TEMPERAMENT_KEY_FROM_RAW[match[1].trim().toLowerCase()];
+      if (key) {
+        foundKey = key;
+        continue;
+      }
+    }
+    remaining.push(line);
+  }
+  return {
+    info: foundKey ? GROOMER_TEMPERAMENT[foundKey] : null,
+    cleanedNotes: remaining.join("\n").trim(),
+  };
+}
+
+function resolveTemperamentInfo(value: string | null | undefined) {
+  if (!value) return null;
+  const raw = value.trim().toLowerCase();
+  const key = TEMPERAMENT_KEY_FROM_RAW[raw.replace(/\s+/g, "_")] ?? TEMPERAMENT_KEY_FROM_RAW[raw];
+  return key ? GROOMER_TEMPERAMENT[key] : null;
+}
 
 function tx(mode: LanguageMode, value: TextValue) {
   return value[mode];
@@ -1311,7 +1408,11 @@ export function GroomerJobClient({
             subtitle={languageMode === "simple" ? "Notes aur photos dekh kar hi cut karein." : "नोट्स और फोटो देखकर ही कट कीजिए।"}
           />
 
-          {booking.pets.map((pet) => (
+          {booking.pets.map((pet) => {
+            const { info: parsedTemperamentInfo, cleanedNotes } = extractTemperament(pet.groomingNotes);
+            const temperamentInfo = resolveTemperamentInfo(pet.temperament) ?? parsedTemperamentInfo;
+            const TemperamentIcon = temperamentInfo?.Icon;
+            return (
             <div key={pet.id} className="rounded-[24px] border border-[#ebe5fb] bg-[#fcfbff] p-4">
               <div className="flex items-start gap-3">
                 {pet.avatarUrl ? (
@@ -1325,13 +1426,32 @@ export function GroomerJobClient({
                     {pet.name ?? (languageMode === "simple" ? "Unnamed pet" : "बिना नाम का पेट")}
                   </div>
                   <div className="mt-1 text-[14px] font-semibold text-[#6d5bd0]">{pet.breed}</div>
+                  {temperamentInfo && TemperamentIcon ? (
+                    <div className={`mt-2 inline-flex items-center gap-1.5 rounded-full border ${temperamentInfo.badgeBorder} ${temperamentInfo.badgeBg} px-2.5 py-1`}>
+                      <TemperamentIcon className={`h-3.5 w-3.5 ${temperamentInfo.badgeText}`} strokeWidth={2.4} />
+                      <span className={`text-[11.5px] font-bold uppercase tracking-[0.08em] ${temperamentInfo.badgeText}`}>
+                        {temperamentInfo.label[languageMode]}
+                      </span>
+                    </div>
+                  ) : null}
                 </div>
               </div>
 
-              {pet.groomingNotes ? (
-                <div className="mt-4 rounded-[18px] border border-[#d9e7fb] bg-[#f4f8ff] px-4 py-3 text-[14px] leading-[1.7] text-[#23415a]">
+              {temperamentInfo ? (
+                <div className={`mt-3 rounded-[18px] border ${temperamentInfo.badgeBorder} ${temperamentInfo.badgeBg} px-4 py-3`}>
+                  <div className={`text-[11px] font-semibold uppercase tracking-[0.16em] ${temperamentInfo.badgeText}`}>
+                    {languageMode === "simple" ? "Handling brief" : "हैंडलिंग ब्रीफ़"}
+                  </div>
+                  <div className={`mt-1 text-[13.5px] font-semibold leading-[1.55] ${temperamentInfo.badgeText}`}>
+                    {temperamentInfo.briefing[languageMode]}
+                  </div>
+                </div>
+              ) : null}
+
+              {cleanedNotes ? (
+                <div className="mt-3 rounded-[18px] border border-[#d9e7fb] bg-[#f4f8ff] px-4 py-3 text-[14px] leading-[1.7] text-[#23415a]">
                   <div className="font-semibold text-[#23415a]">{languageMode === "simple" ? "Grooming notes" : "ग्रूमिंग नोट्स"}</div>
-                  <div className="mt-1">{pet.groomingNotes}</div>
+                  <div className="mt-1">{cleanedNotes}</div>
                 </div>
               ) : null}
 
@@ -1353,7 +1473,8 @@ export function GroomerJobClient({
                 />
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="rounded-[30px] border border-[#eadffd] bg-white p-4 shadow-[0_18px_48px_rgba(73,44,120,0.08)]">

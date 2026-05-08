@@ -44,6 +44,7 @@ import { AdminCustomerMessageModal } from "../components/common/AdminCustomerMes
 import { AdminBookingsFiltersBar } from "../components/bookings/AdminBookingsFiltersBar";
 import { AdminBookingsTable } from "../components/bookings/AdminBookingsTable";
 import { AdminBookingDetailDrawer } from "../components/booking-detail/AdminBookingDetailDrawer";
+import { SLOT_BLOCK_DEPOSIT_AMOUNT } from "../../../lib/booking/constants";
 import { useAdminToast } from "../components/common/AdminToastProvider";
 import { useAdminConfirmAction } from "../hooks/useAdminConfirmAction";
 
@@ -259,12 +260,12 @@ export default function AdminBookingsPage() {
 
   const handleTableAction = useCallback(async (row: AdminBookingListItem, action: AdminBookingActionId) => {
     if (action === "view_details") { openDrawer(row.id); return; }
-    if (action === "cancel" && row.paymentStatus === "paid") {
+    if (action === "cancel" && (row.paymentStatus === "paid" || row.paymentStatus === "deposit_paid")) {
       setPaidCancelState({
         mode: "cancel",
         bookingId: row.id,
         bookingLabel: `${row.service.name} · ${row.customer.name}`,
-        finalAmount: row.financials.finalAmount,
+        finalAmount: row.paymentStatus === "deposit_paid" ? SLOT_BLOCK_DEPOSIT_AMOUNT : row.financials.finalAmount,
       });
       return;
     }
@@ -273,7 +274,7 @@ export default function AdminBookingsPage() {
         mode: "refund_only",
         bookingId: row.id,
         bookingLabel: `${row.service.name} · ${row.customer.name}`,
-        finalAmount: row.financials.finalAmount,
+        finalAmount: row.paymentStatus === "deposit_paid" ? SLOT_BLOCK_DEPOSIT_AMOUNT : row.financials.finalAmount,
       });
       return;
     }
@@ -359,12 +360,12 @@ export default function AdminBookingsPage() {
 
   const handleDrawerAction = useCallback((action: AdminBookingActionId) => {
     if (!drawerBooking) return;
-    if (action === "cancel" && drawerBooking.paymentStatus === "paid") {
+    if (action === "cancel" && (drawerBooking.paymentStatus === "paid" || drawerBooking.paymentStatus === "deposit_paid")) {
       setPaidCancelState({
         mode: "cancel",
         bookingId: drawerBooking.id,
         bookingLabel: `${drawerBooking.service.name} · ${drawerBooking.customer.name}`,
-        finalAmount: drawerBooking.financials.finalAmount,
+        finalAmount: drawerBooking.paymentStatus === "deposit_paid" ? SLOT_BLOCK_DEPOSIT_AMOUNT : drawerBooking.financials.finalAmount,
       });
       return;
     }
@@ -373,7 +374,7 @@ export default function AdminBookingsPage() {
         mode: "refund_only",
         bookingId: drawerBooking.id,
         bookingLabel: `${drawerBooking.service.name} · ${drawerBooking.customer.name}`,
-        finalAmount: drawerBooking.financials.finalAmount,
+        finalAmount: drawerBooking.paymentStatus === "deposit_paid" ? SLOT_BLOCK_DEPOSIT_AMOUNT : drawerBooking.financials.finalAmount,
       });
       return;
     }

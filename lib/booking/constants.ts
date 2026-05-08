@@ -1,3 +1,7 @@
+// Deposit collected upfront for "Pay after service" bookings to block the slot.
+// Customer pays the balance to the groomer after the visit. No discounts apply.
+export const SLOT_BLOCK_DEPOSIT_AMOUNT = 250;
+
 export const SUPPORTED_CITIES = [
   "Chandigarh",
   "Delhi",

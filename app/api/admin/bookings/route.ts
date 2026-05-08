@@ -28,10 +28,10 @@ const maskPhone = (phone: string) => {
 };
 
 type DerivedBookingStatus = "pending_payment" | "confirmed" | "completed" | "cancelled" | "payment_expired";
-type DerivedPaymentStatus = "unpaid" | "paid" | "pending_cash_collection" | "covered_by_loyalty" | "expired";
+type DerivedPaymentStatus = "unpaid" | "paid" | "deposit_paid" | "pending_cash_collection" | "covered_by_loyalty" | "expired";
 
 function getDerivedStatus(booking: { status: string; paymentMethod: string | null; paymentStatus: string; paymentExpiresAt?: Date | null }, now: Date): DerivedBookingStatus {
-  if (booking.paymentMethod === "pay_now" && booking.paymentStatus !== "paid" && booking.paymentExpiresAt && booking.paymentExpiresAt <= now) return "payment_expired";
+  if (booking.status === "pending_payment" && booking.paymentStatus === "unpaid" && booking.paymentExpiresAt && booking.paymentExpiresAt <= now) return "payment_expired";
   if (booking.status === "confirmed") return "confirmed";
   if (booking.status === "completed") return "completed";
   if (booking.status === "cancelled") return "cancelled";
@@ -42,6 +42,7 @@ function getDerivedStatus(booking: { status: string; paymentMethod: string | nul
 function getDerivedPaymentStatus(paymentStatus: string, derivedStatus: DerivedBookingStatus): DerivedPaymentStatus {
   if (derivedStatus === "payment_expired") return "expired";
   if (paymentStatus === "paid") return "paid";
+  if (paymentStatus === "deposit_paid") return "deposit_paid";
   if (paymentStatus === "pending_cash_collection") return "pending_cash_collection";
   if (paymentStatus === "covered_by_loyalty") return "covered_by_loyalty";
   return "unpaid";
@@ -53,7 +54,7 @@ function getStatusLabel(status: DerivedBookingStatus) {
 }
 
 function getPaymentStatusLabel(s: DerivedPaymentStatus) {
-  const map = { unpaid: "Pending payment", paid: "Paid", pending_cash_collection: "Pay after service", covered_by_loyalty: "Covered by loyalty", expired: "Expired" };
+  const map = { unpaid: "Pending payment", paid: "Paid", deposit_paid: "Deposit paid", pending_cash_collection: "Pay after service", covered_by_loyalty: "Covered by loyalty", expired: "Expired" };
   return map[s];
 }
 
@@ -81,7 +82,7 @@ function getAvailableActions(
     if (teamId) actions.push("reassign_team"); else actions.push("assign_team");
     if (teamId) actions.push(groomerMemberId ? "reassign_groomer" : "assign_groomer");
   }
-  if (status === "cancelled" && paymentStatus === "paid" && refundStatus !== "completed") {
+  if (status === "cancelled" && ["paid", "deposit_paid"].includes(paymentStatus) && refundStatus !== "completed") {
     actions.push("issue_refund");
   }
   return actions;
@@ -107,8 +108,8 @@ function buildListItem(booking: BookingListRecord, now: Date, includeFullPhone =
   const sameDay = booking.selectedDate === today;
 
   const paymentExpiringSoon =
-    booking.paymentMethod === "pay_now" &&
-    booking.paymentStatus !== "paid" &&
+    booking.status === "pending_payment" &&
+    booking.paymentStatus === "unpaid" &&
     !!booking.paymentExpiresAt &&
     booking.paymentExpiresAt > now &&
     booking.paymentExpiresAt.getTime() - now.getTime() < 5 * 60 * 1000;
@@ -217,7 +218,7 @@ function getServiceDateSortValue(item: ReturnType<typeof buildListItem>) {
 function getPaymentPriority(item: ReturnType<typeof buildListItem>) {
   if (item.status === "payment_expired") return 0;
   if (item.paymentStatus === "unpaid") return 1;
-  if (item.paymentStatus === "pending_cash_collection") return 2;
+  if (item.paymentStatus === "deposit_paid" || item.paymentStatus === "pending_cash_collection") return 2;
   if (item.paymentStatus === "covered_by_loyalty") return 3;
   return 4;
 }
@@ -314,7 +315,13 @@ export async function GET(req: NextRequest) {
         if (teamId === "unassigned" && item.team) return false;
         if (teamId && teamId !== "unassigned" && item.team?.id !== teamId) return false;
         if (bookingStatus && item.status !== bookingStatus) return false;
-        if (paymentStatus && item.paymentStatus !== paymentStatus) return false;
+        if (paymentStatus) {
+          const matchesPayAfterServiceFilter =
+            paymentStatus === "pending_cash_collection" &&
+            item.paymentMethod === "pay_after_service" &&
+            (item.paymentStatus === "deposit_paid" || item.paymentStatus === "pending_cash_collection");
+          if (!matchesPayAfterServiceFilter && item.paymentStatus !== paymentStatus) return false;
+        }
         if (needsAssignment && !item.urgency.needsAssignment) return false;
         if (paymentExpiringSoon && !item.urgency.paymentExpiringSoon) return false;
         return true;

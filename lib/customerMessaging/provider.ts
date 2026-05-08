@@ -1,5 +1,6 @@
 import type { Prisma, PrismaClient } from "../generated/prisma";
 import { updateCustomerMessageStatus } from "./service";
+import { SLOT_BLOCK_DEPOSIT_AMOUNT } from "../booking/constants";
 
 type DbClient = PrismaClient | Prisma.TransactionClient;
 
@@ -214,7 +215,10 @@ function getCombirdsTemplatePayload(
   const selectedDate = booking.selectedDate ?? "TBD";
   const windowLabel = getBookingWindowLabel(booking);
   const addressLine = getAddressLine(booking);
-  const amountText = formatAmount(booking.finalAmount);
+  const amountText =
+    booking.paymentMethod === "pay_after_service"
+      ? `Deposit ${formatAmount(SLOT_BLOCK_DEPOSIT_AMOUNT)}, balance ${formatAmount(Math.max(0, booking.finalAmount - SLOT_BLOCK_DEPOSIT_AMOUNT))}`
+      : formatAmount(booking.finalAmount);
 
   let campaignName = "";
   let templateParams: string[] = [];

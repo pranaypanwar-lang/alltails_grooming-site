@@ -8,6 +8,7 @@ export type AdminBookingStatus =
 export type AdminPaymentStatus =
   | "unpaid"
   | "paid"
+  | "deposit_paid"
   | "pending_cash_collection"
   | "covered_by_loyalty"
   | "expired";

@@ -57,6 +57,34 @@ function buildBookingWindows(
   for (const [, teamSlots] of byTeam) {
     const sorted = [...teamSlots].sort((a, b) => a.slotOrder - b.slotOrder);
 
+    if (petCount >= 5) {
+      const fullDaySlots = sorted.filter((slot) => slot.slotOrder >= 0);
+      const hasFullDay =
+        fullDaySlots.length >= SLOT_ORDER.length &&
+        SLOT_ORDER.every((label) => fullDaySlots.some((slot) => slot.slotLabel === label));
+
+      if (!hasFullDay) continue;
+
+      const orderedFullDaySlots = SLOT_ORDER.map((label) =>
+        fullDaySlots.find((slot) => slot.slotLabel === label)
+      ).filter(Boolean) as typeof slots;
+      const first = orderedFullDaySlots[0];
+      const last = orderedFullDaySlots[orderedFullDaySlots.length - 1];
+
+      windows.push({
+        bookingWindowId: orderedFullDaySlots.map((s) => s.id).join("__"),
+        teamId: first.teamId,
+        teamName: first.teamName,
+        petCount,
+        startTime: first.startTime.toISOString(),
+        endTime: last.endTime.toISOString(),
+        slotLabels: orderedFullDaySlots.map((s) => s.slotLabel),
+        slotIds: orderedFullDaySlots.map((s) => s.id),
+        displayLabel: "Full day grooming team",
+      });
+      continue;
+    }
+
     for (let i = 0; i <= sorted.length - petCount; i++) {
       const candidate = sorted.slice(i, i + petCount);
 
@@ -167,9 +195,9 @@ export async function POST(request: Request) {
     const normalizedDays     = Math.max(1, Math.min(14, Number(days ?? 5)));
     const normalizedPetCount = Number(petCount ?? 1);
 
-    if (Number.isNaN(normalizedPetCount) || normalizedPetCount < 1 || normalizedPetCount > 4) {
+    if (Number.isNaN(normalizedPetCount) || normalizedPetCount < 1 || normalizedPetCount > 5) {
       return NextResponse.json(
-        { error: "petCount must be between 1 and 4" },
+        { error: "petCount must be between 1 and 5" },
         { status: 400 }
       );
     }

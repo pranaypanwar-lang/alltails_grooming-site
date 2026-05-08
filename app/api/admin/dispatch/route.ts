@@ -71,7 +71,7 @@ function sortDispatchCards<T extends { bookingWindow: { startTime: string } | nu
 }
 
 function getDerivedStatus(booking: { status: string; paymentMethod: string | null; paymentStatus: string; paymentExpiresAt?: Date | null }, now: Date): DerivedBookingStatus {
-  if (booking.paymentMethod === "pay_now" && booking.paymentStatus !== "paid" && booking.paymentExpiresAt && booking.paymentExpiresAt <= now) return "payment_expired";
+  if (booking.status === "pending_payment" && booking.paymentStatus === "unpaid" && booking.paymentExpiresAt && booking.paymentExpiresAt <= now) return "payment_expired";
   if (booking.status === "confirmed") return "confirmed";
   if (booking.status === "completed") return "completed";
   if (booking.status === "cancelled") return "cancelled";
@@ -174,8 +174,8 @@ function buildDispatchCard(
   const dispatchState = getDispatchState(booking, derivedStatus);
 
   const paymentExpiringSoon =
-    booking.paymentMethod === "pay_now" &&
-    booking.paymentStatus !== "paid" &&
+    booking.status === "pending_payment" &&
+    booking.paymentStatus === "unpaid" &&
     !!booking.paymentExpiresAt &&
     booking.paymentExpiresAt > now &&
     booking.paymentExpiresAt.getTime() - now.getTime() < 5 * 60 * 1000;

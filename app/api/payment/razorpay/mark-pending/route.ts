@@ -55,7 +55,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Booking access does not match this booking" }, { status: 403 });
     }
 
-    if (booking.status === "confirmed" || booking.paymentStatus === "paid") {
+    if (booking.status === "confirmed" || booking.paymentStatus === "paid" || booking.paymentStatus === "deposit_paid") {
       return NextResponse.json({
         success: true,
         bookingId: booking.id,

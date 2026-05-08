@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { assertAdminSession } from "../../../_lib/assertAdmin";
 import {
   adminPrisma,
+  getRefundableAmount,
+  isRefundablePaymentStatus,
   logAdminBookingEvent,
   processBookingRefund,
   type RefundMode,
@@ -48,7 +50,7 @@ export async function POST(
     if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     if (booking.status === "cancelled") return NextResponse.json({ error: "Already cancelled" }, { status: 400 });
     if (booking.status === "completed") return NextResponse.json({ error: "Completed bookings cannot be cancelled" }, { status: 400 });
-    if (booking.paymentStatus !== "paid") {
+    if (!isRefundablePaymentStatus(booking.paymentStatus)) {
       return NextResponse.json(
         { error: "Use the regular cancel endpoint for unpaid bookings" },
         { status: 400 }
@@ -90,7 +92,7 @@ export async function POST(
     const refund = await processBookingRefund({
       refundMode,
       razorpayPaymentId: booking.razorpayPaymentId,
-      amount: booking.finalAmount,
+      amount: getRefundableAmount(booking),
     });
 
     // 3. Persist refund state on the booking.

@@ -21,7 +21,7 @@ const maskPhone = (phone: string) => {
 };
 
 type DerivedBookingStatus = "pending_payment" | "confirmed" | "completed" | "cancelled" | "payment_expired";
-type DerivedPaymentStatus = "unpaid" | "paid" | "pending_cash_collection" | "covered_by_loyalty" | "expired";
+type DerivedPaymentStatus = "unpaid" | "paid" | "deposit_paid" | "pending_cash_collection" | "covered_by_loyalty" | "expired";
 type QaStatus = "not_started" | "in_progress" | "complete" | "issue";
 
 function formatTime(value: Date) {
@@ -37,8 +37,8 @@ function getDerivedStatus(
   now: Date
 ): DerivedBookingStatus {
   if (
-    booking.paymentMethod === "pay_now" &&
-    booking.paymentStatus !== "paid" &&
+    booking.status === "pending_payment" &&
+    booking.paymentStatus === "unpaid" &&
     booking.paymentExpiresAt &&
     booking.paymentExpiresAt <= now
   ) {
@@ -54,6 +54,7 @@ function getDerivedStatus(
 function getDerivedPaymentStatus(paymentStatus: string, derivedStatus: DerivedBookingStatus): DerivedPaymentStatus {
   if (derivedStatus === "payment_expired") return "expired";
   if (paymentStatus === "paid") return "paid";
+  if (paymentStatus === "deposit_paid") return "deposit_paid";
   if (paymentStatus === "pending_cash_collection") return "pending_cash_collection";
   if (paymentStatus === "covered_by_loyalty") return "covered_by_loyalty";
   return "unpaid";

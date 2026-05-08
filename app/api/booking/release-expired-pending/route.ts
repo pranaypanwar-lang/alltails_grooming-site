@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
     const expiredBookings = await prisma.booking.findMany({
       where: {
-        paymentMethod: "pay_now",
+        paymentMethod: { in: ["pay_now", "pay_after_service"] },
         paymentStatus: "unpaid",
         status: "pending_payment",
         paymentExpiresAt: { lt: now },

@@ -37,6 +37,7 @@ function buildSavedCompanion(pet: any) {
     avatarUrl: avatar,
     defaultGroomingNotes: pet.defaultGroomingNotes ?? null,
     defaultStylingNotes: pet.defaultStylingNotes ?? null,
+    temperament: pet.temperament ?? null,
     defaultStylingReferenceUrls: stylingRefs,
     lastBookedAt: pet.lastBookedAt ? new Date(pet.lastBookedAt).toISOString() : null,
     isArchived: !!pet.isArchived,
@@ -60,6 +61,7 @@ export async function PATCH(
       avatarUrl,
       defaultGroomingNotes,
       defaultStylingNotes,
+      temperament,
       defaultStylingReferenceUrls,
     }: {
       phone?: string;
@@ -69,6 +71,7 @@ export async function PATCH(
       avatarUrl?: string | null;
       defaultGroomingNotes?: string | null;
       defaultStylingNotes?: string | null;
+      temperament?: string | null;
       defaultStylingReferenceUrls?: string[];
     } = body;
 
@@ -126,6 +129,10 @@ export async function PATCH(
             defaultStylingNotes !== undefined
               ? defaultStylingNotes?.trim() || null
               : existingPet.defaultStylingNotes,
+          temperament:
+            temperament !== undefined
+              ? temperament?.trim() || null
+              : existingPet.temperament,
         },
       });
 

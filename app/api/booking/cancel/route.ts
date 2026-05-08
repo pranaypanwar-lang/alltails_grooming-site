@@ -67,7 +67,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (booking.paymentStatus === "paid") {
+    if (booking.paymentStatus === "paid" || booking.paymentStatus === "deposit_paid") {
       return NextResponse.json(
         { error: "Paid bookings must go through refund handling before cancellation" },
         { status: 409 }

@@ -4,6 +4,7 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../../lib/generated/prisma";
 import { assertBookingAccessToken, bookingAccessMatchesPhone } from "../../../booking/_lib/assertBookingAccess";
+import { SLOT_BLOCK_DEPOSIT_AMOUNT } from "../../../../../lib/booking/constants";
 
 export const runtime = "nodejs";
 
@@ -44,19 +45,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Booking access does not match this booking" }, { status: 403 });
     }
 
-    if (booking.paymentMethod !== "pay_now") {
-      return NextResponse.json({ error: "Booking is not prepaid" }, { status: 400 });
+    if (booking.paymentMethod !== "pay_now" && booking.paymentMethod !== "pay_after_service") {
+      return NextResponse.json({ error: "Booking is not eligible for online payment" }, { status: 400 });
     }
 
-    if (booking.paymentStatus === "paid") {
-      return NextResponse.json({ error: "Booking is already paid" }, { status: 400 });
+    if (booking.paymentStatus === "paid" || booking.paymentStatus === "deposit_paid") {
+      return NextResponse.json({ error: "Booking payment is already settled" }, { status: 400 });
     }
 
     if (booking.status === "cancelled" || booking.status === "completed") {
       return NextResponse.json({ error: "Booking can no longer be paid" }, { status: 400 });
     }
 
-    if (booking.finalAmount <= 0) {
+    const isDepositPayment = booking.paymentMethod === "pay_after_service";
+    const retryAmountRupees = isDepositPayment ? SLOT_BLOCK_DEPOSIT_AMOUNT : booking.finalAmount;
+
+    if (retryAmountRupees <= 0) {
       return NextResponse.json({ error: "Zero-amount booking cannot retry payment" }, { status: 400 });
     }
 
@@ -93,10 +97,13 @@ export async function POST(request: Request) {
     }
 
     const order = await razorpay.orders.create({
-      amount: Math.round(booking.finalAmount * 100),
+      amount: Math.round(retryAmountRupees * 100),
       currency: "INR",
       receipt: booking.id.slice(0, 40),
-      notes: { bookingId: booking.id },
+      notes: {
+        bookingId: booking.id,
+        paymentIntent: isDepositPayment ? "slot_block_deposit" : "full_payment",
+      },
     });
 
     await prisma.booking.update({

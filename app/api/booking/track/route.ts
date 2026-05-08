@@ -22,6 +22,7 @@ type DerivedBookingStatus =
 type DerivedPaymentStatus =
   | "unpaid"
   | "paid"
+  | "deposit_paid"
   | "pending_cash_collection"
   | "covered_by_loyalty"
   | "expired";
@@ -36,8 +37,8 @@ function getDerivedStatus(
   now: Date
 ): DerivedBookingStatus {
   if (
-    booking.paymentMethod === "pay_now" &&
-    booking.paymentStatus !== "paid" &&
+    booking.status === "pending_payment" &&
+    booking.paymentStatus === "unpaid" &&
     booking.paymentExpiresAt &&
     booking.paymentExpiresAt <= now
   ) {
@@ -67,7 +68,7 @@ function getStatusCategory(status: DerivedBookingStatus): "upcoming" | "past" {
 function getSupportingText(status: DerivedBookingStatus, paymentMethod: string | null) {
   if (status === "pending_payment") return "Complete payment to lock your booking.";
   if (status === "confirmed" && paymentMethod === "pay_after_service")
-    return "Your session is scheduled. Payment will be collected after the visit.";
+    return "Your session is scheduled. Deposit is paid; balance is collected after the visit.";
   if (status === "confirmed") return "Your session is scheduled.";
   if (status === "completed") return "This grooming session was completed.";
   if (status === "cancelled") return "This booking was cancelled.";
@@ -80,6 +81,7 @@ function getDerivedPaymentStatus(
 ): DerivedPaymentStatus {
   if (derivedStatus === "payment_expired") return "expired";
   if (paymentStatus === "paid") return "paid";
+  if (paymentStatus === "deposit_paid") return "deposit_paid";
   if (paymentStatus === "pending_cash_collection") return "pending_cash_collection";
   if (paymentStatus === "covered_by_loyalty") return "covered_by_loyalty";
   return "unpaid";
@@ -89,6 +91,7 @@ function getPaymentStatusLabel(paymentStatus: DerivedPaymentStatus) {
   switch (paymentStatus) {
     case "unpaid": return "Pending payment";
     case "paid": return "Paid";
+    case "deposit_paid": return "Deposit paid";
     case "pending_cash_collection": return "Pay after service";
     case "covered_by_loyalty": return "Covered by loyalty";
     case "expired": return "Expired";
@@ -147,6 +150,9 @@ function buildTimeline(params: {
   if (paymentStatus === "paid") {
     timeline.push({ type: "payment_completed", label: "Payment completed", at: null });
   }
+  if (paymentStatus === "deposit_paid") {
+    timeline.push({ type: "payment_completed", label: "Slot deposit paid", at: null });
+  }
   if (paymentStatus === "covered_by_loyalty") {
     timeline.push({ type: "payment_completed", label: "Covered by loyalty reward", at: null });
   }
@@ -203,14 +209,14 @@ export async function POST(request: Request) {
       const derivedPaymentStatus = getDerivedPaymentStatus(booking.paymentStatus, derivedStatus);
 
       const paymentHoldActive =
-        booking.paymentMethod === "pay_now" &&
-        booking.paymentStatus !== "paid" &&
+        booking.status === "pending_payment" &&
+        booking.paymentStatus === "unpaid" &&
         !!booking.paymentExpiresAt &&
         booking.paymentExpiresAt > now;
 
       const paymentExpired =
-        booking.paymentMethod === "pay_now" &&
-        booking.paymentStatus !== "paid" &&
+        booking.status === "pending_payment" &&
+        booking.paymentStatus === "unpaid" &&
         !!booking.paymentExpiresAt &&
         booking.paymentExpiresAt <= now;
 
