@@ -24,7 +24,7 @@ export type CouponEvaluationContext = {
   serviceName: string;
   city: string;
   petCount: number;
-  paymentMethod: "pay_now" | "pay_after_service";
+  paymentMethod: "pay_now" | "pay_after_service" | "cash";
   baseAmount: number;
   userId?: string | null;
   phone?: string | null;

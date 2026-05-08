@@ -288,7 +288,7 @@ export type AdminBookingListItem = {
   statusLabel: string;
   paymentStatus: AdminPaymentStatus;
   paymentStatusLabel: string;
-  paymentMethod: "pay_now" | "pay_after_service" | null;
+  paymentMethod: "pay_now" | "pay_after_service" | "cash" | null;
   paymentMethodLabel: string | null;
   selectedDate: string | null;
   createdAt: string;
@@ -333,7 +333,7 @@ export type AdminBookingDetail = {
   supportingText: string;
   paymentStatus: AdminPaymentStatus;
   paymentStatusLabel: string;
-  paymentMethod: "pay_now" | "pay_after_service" | null;
+  paymentMethod: "pay_now" | "pay_after_service" | "cash" | null;
   paymentMethodLabel: string | null;
   createdAt: string;
   selectedDate: string | null;
@@ -485,7 +485,7 @@ export type AdminManualBookingPayload = {
       originalName: string;
     }>;
   }>;
-  paymentMethod: "pay_now" | "pay_after_service";
+  paymentMethod: "pay_now" | "pay_after_service" | "cash";
   couponCode?: string;
   source: AdminManualBookingSource;
   adminNote?: string;
@@ -498,7 +498,7 @@ export type AdminManualBookingResponse = {
   selectedDate: string;
   bookingWindowId: string;
   bookingWindowLabel: string;
-  paymentMethod: "pay_now" | "pay_after_service";
+  paymentMethod: "pay_now" | "pay_after_service" | "cash";
   paymentStatus: string;
   status: string;
   originalAmount: number;

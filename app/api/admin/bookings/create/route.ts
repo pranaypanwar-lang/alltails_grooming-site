@@ -79,7 +79,7 @@ export async function POST(request: Request) {
       servicePincode?: string;
       serviceLocationUrl?: string;
       pets?: BookingCreatePetInput[];
-      paymentMethod?: "pay_now" | "pay_after_service";
+      paymentMethod?: "pay_now" | "pay_after_service" | "cash";
       couponCode?: string;
       source?: AdminBookingSource;
       adminNote?: string;
@@ -99,6 +99,13 @@ export async function POST(request: Request) {
     ) {
       return NextResponse.json(
         { error: "Missing required booking fields" },
+        { status: 400 }
+      );
+    }
+
+    if (!["pay_now", "pay_after_service", "cash"].includes(paymentMethod)) {
+      return NextResponse.json(
+        { error: "Invalid payment method" },
         { status: 400 }
       );
     }

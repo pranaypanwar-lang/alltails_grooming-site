@@ -54,13 +54,14 @@ function getStatusLabel(status: DerivedBookingStatus) {
 }
 
 function getPaymentStatusLabel(s: DerivedPaymentStatus) {
-  const map = { unpaid: "Pending payment", paid: "Paid", deposit_paid: "Deposit paid", pending_cash_collection: "Pay after service", covered_by_loyalty: "Covered by loyalty", expired: "Expired" };
+  const map = { unpaid: "Pending payment", paid: "Paid", deposit_paid: "Deposit paid", pending_cash_collection: "Cash collection pending", covered_by_loyalty: "Covered by loyalty", expired: "Expired" };
   return map[s];
 }
 
 function getPaymentMethodLabel(m: string | null) {
   if (m === "pay_now") return "Pay now";
   if (m === "pay_after_service") return "Pay after service";
+  if (m === "cash") return "Cash";
   return null;
 }
 
@@ -144,7 +145,7 @@ function buildListItem(booking: BookingListRecord, now: Date, includeFullPhone =
     statusLabel: getStatusLabel(derivedStatus),
     paymentStatus: derivedPaymentStatus,
     paymentStatusLabel: getPaymentStatusLabel(derivedPaymentStatus),
-    paymentMethod: booking.paymentMethod as "pay_now" | "pay_after_service" | null,
+    paymentMethod: booking.paymentMethod as "pay_now" | "pay_after_service" | "cash" | null,
     paymentMethodLabel: getPaymentMethodLabel(booking.paymentMethod),
     selectedDate: booking.selectedDate ?? null,
     createdAt: booking.createdAt.toISOString(),

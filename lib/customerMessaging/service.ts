@@ -71,7 +71,7 @@ export async function prepareCustomerMessageForBooking(
       : booking.paymentStatus === "deposit_paid"
         ? "Deposit paid"
         : booking.paymentStatus === "pending_cash_collection"
-          ? "Pay after service"
+          ? "Cash collection pending"
           : booking.paymentStatus === "covered_by_loyalty"
             ? "Covered by loyalty"
             : booking.paymentStatus === "expired"
@@ -83,6 +83,8 @@ export async function prepareCustomerMessageForBooking(
       ? "Pay now"
       : booking.paymentMethod === "pay_after_service"
         ? "Pay after service"
+        : booking.paymentMethod === "cash"
+          ? "Cash"
         : null;
 
   const message = buildCustomerMessage(

@@ -35,6 +35,7 @@ import {
 import { getBreedSuggestions, normalizeBreedName } from "../../../lib/pets/breeds";
 import { buildBookingEventId, buildServiceMeta, trackMetaEvent } from "../../../lib/analytics/metaPixel";
 import { trackGoogleAdsBookingConversion, trackGoogleAdsPurchaseConversion } from "../../../lib/analytics/googleAds";
+import { whatsappHref } from "../../../lib/seo/businessInfo";
 import { useBookingAnalytics } from "./hooks/useBookingAnalytics";
 import { formatCurrency, formatDateLabel, getTodayDateInputValue } from "./utils/bookingFormatters";
 import { hasMeaningfulBookingInput, isValidIndianMobile } from "./utils/bookingValidation";
@@ -208,7 +209,7 @@ type RazorpayOptions = {
 type RazorpayConstructor = new (options: RazorpayOptions) => RazorpayInstance;
 
 const STEP_ORDER: BookingStep[] = ["plan", "slot", "details", "review", "confirmation"];
-const SUPPORT_WHATSAPP = "https://wa.me/919667207707";
+const SUPPORT_WHATSAPP = whatsappHref;
 const ADD_ONS: BookingAddOn[] = [
   {
     id: "anti_tick_bath",

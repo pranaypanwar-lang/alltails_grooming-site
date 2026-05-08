@@ -16,7 +16,7 @@ function formatProofHint(proofType: AdminBookingSopStep["proofType"]) {
 type Props = {
   bookingId: string;
   steps: AdminBookingSopStep[];
-  paymentMethod: "pay_now" | "pay_after_service" | null;
+  paymentMethod: "pay_now" | "pay_after_service" | "cash" | null;
   expectedAmount: number;
   paymentCollection: AdminBookingPaymentCollection | null;
   onRefresh: () => Promise<void> | void;
@@ -302,7 +302,7 @@ export function AdminBookingSopSection({
                       disabled={isBusy}
                       className="rounded-[10px] bg-[#6d5bd0] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#5b4ab5] disabled:opacity-50"
                     >
-                      {isBusy ? "Saving…" : paymentMethod === "pay_after_service" ? "Save payment proof" : "Save payment record"}
+                      {isBusy ? "Saving…" : paymentMethod === "pay_after_service" || paymentMethod === "cash" ? "Save payment proof" : "Save payment record"}
                     </button>
                   </div>
                 </div>

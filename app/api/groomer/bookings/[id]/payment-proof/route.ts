@@ -95,8 +95,8 @@ export async function POST(
           where: { id: bookingId },
           select: { paymentMethod: true },
         });
-        if (paymentMethod?.paymentMethod !== "pay_after_service") {
-          throw Object.assign(new Error("Service amount changes are only allowed for pay-after-service bookings"), { httpStatus: 400 });
+        if (paymentMethod?.paymentMethod !== "pay_after_service" && paymentMethod?.paymentMethod !== "cash") {
+          throw Object.assign(new Error("Service amount changes are only allowed for post-service payment bookings"), { httpStatus: 400 });
         }
       }
 

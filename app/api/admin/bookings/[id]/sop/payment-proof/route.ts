@@ -42,8 +42,8 @@ export async function POST(
       await ensureBookingSopSteps(tx, bookingId);
 
       const expectedAmount = booking.finalAmount;
-      if (applyServiceAmountChange && booking.paymentMethod !== "pay_after_service") {
-        throw Object.assign(new Error("Service amount changes are only allowed for pay-after-service bookings"), { httpStatus: 400 });
+      if (applyServiceAmountChange && booking.paymentMethod !== "pay_after_service" && booking.paymentMethod !== "cash") {
+        throw Object.assign(new Error("Service amount changes are only allowed for post-service payment bookings"), { httpStatus: 400 });
       }
       if (applyServiceAmountChange && !notes) {
         throw Object.assign(new Error("Add a note explaining the plan change"), { httpStatus: 400 });

@@ -47,19 +47,21 @@ function getStatusLabel(s: DerivedBookingStatus) {
 }
 
 function getPaymentStatusLabel(s: DerivedPaymentStatus) {
-  const m = { unpaid: "Pending payment", paid: "Paid", deposit_paid: "Deposit paid", pending_cash_collection: "Pay after service", covered_by_loyalty: "Covered by loyalty", expired: "Expired" };
+  const m = { unpaid: "Pending payment", paid: "Paid", deposit_paid: "Deposit paid", pending_cash_collection: "Cash collection pending", covered_by_loyalty: "Covered by loyalty", expired: "Expired" };
   return m[s];
 }
 
 function getPaymentMethodLabel(m: string | null) {
   if (m === "pay_now") return "Pay now";
   if (m === "pay_after_service") return "Pay after service";
+  if (m === "cash") return "Cash";
   return null;
 }
 
 function getSupportingText(status: DerivedBookingStatus, paymentMethod: string | null) {
   if (status === "pending_payment") return "Payment pending. Slot is held.";
   if (status === "confirmed" && paymentMethod === "pay_after_service") return "Confirmed. Deposit paid; balance collected after service.";
+  if (status === "confirmed" && paymentMethod === "cash") return "Confirmed. Cash will be collected after service.";
   if (status === "confirmed") return "Confirmed and paid.";
   if (status === "completed") return "Session completed.";
   if (status === "cancelled") return "Booking was cancelled.";
@@ -260,7 +262,7 @@ export async function GET(
       supportingText: getSupportingText(derivedStatus, booking.paymentMethod),
       paymentStatus: derivedPaymentStatus,
       paymentStatusLabel: getPaymentStatusLabel(derivedPaymentStatus),
-      paymentMethod: booking.paymentMethod as "pay_now" | "pay_after_service" | null,
+      paymentMethod: booking.paymentMethod as "pay_now" | "pay_after_service" | "cash" | null,
       paymentMethodLabel: getPaymentMethodLabel(booking.paymentMethod),
       createdAt: booking.createdAt.toISOString(),
       selectedDate: booking.selectedDate ?? null,

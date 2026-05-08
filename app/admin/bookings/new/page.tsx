@@ -89,7 +89,7 @@ export default function AdminNewBookingPage() {
   const [serviceAreaSlug, setServiceAreaSlug] = useState("");
   const [serviceName, setServiceName] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"pay_now" | "pay_after_service">(
+  const [paymentMethod, setPaymentMethod] = useState<"pay_now" | "pay_after_service" | "cash">(
     "pay_now"
   );
   const [serviceAddress, setServiceAddress] = useState("");
@@ -1055,12 +1055,13 @@ export default function AdminNewBookingPage() {
                   <select
                     value={paymentMethod}
                     onChange={(event) =>
-                      setPaymentMethod(event.target.value as "pay_now" | "pay_after_service")
+                      setPaymentMethod(event.target.value as "pay_now" | "pay_after_service" | "cash")
                     }
                     className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] bg-white px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
                   >
                     <option value="pay_now">Pay now</option>
                     <option value="pay_after_service">Pay after service</option>
+                    <option value="cash">Cash</option>
                   </select>
                 </label>
 
@@ -1133,7 +1134,9 @@ export default function AdminNewBookingPage() {
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <span>Payment</span>
-                  <span className="font-semibold text-[#2a2346]">{paymentMethod === "pay_now" ? "Pay now" : "Pay after service"}</span>
+                  <span className="font-semibold text-[#2a2346]">
+                    {paymentMethod === "pay_now" ? "Pay now" : paymentMethod === "cash" ? "Cash" : "Pay after service"}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <span>Source</span>

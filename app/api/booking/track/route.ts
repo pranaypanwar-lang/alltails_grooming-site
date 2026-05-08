@@ -92,7 +92,7 @@ function getPaymentStatusLabel(paymentStatus: DerivedPaymentStatus) {
     case "unpaid": return "Pending payment";
     case "paid": return "Paid";
     case "deposit_paid": return "Deposit paid";
-    case "pending_cash_collection": return "Pay after service";
+    case "pending_cash_collection": return "Cash collection pending";
     case "covered_by_loyalty": return "Covered by loyalty";
     case "expired": return "Expired";
   }
@@ -101,6 +101,7 @@ function getPaymentStatusLabel(paymentStatus: DerivedPaymentStatus) {
 function getPaymentMethodLabel(paymentMethod: string | null) {
   if (paymentMethod === "pay_now") return "Pay now";
   if (paymentMethod === "pay_after_service") return "Pay after service";
+  if (paymentMethod === "cash") return "Cash";
   return null;
 }
 
@@ -253,7 +254,7 @@ export async function POST(request: Request) {
 
         paymentStatus: derivedPaymentStatus,
         paymentStatusLabel: getPaymentStatusLabel(derivedPaymentStatus),
-        paymentMethod: booking.paymentMethod as "pay_now" | "pay_after_service" | null,
+        paymentMethod: booking.paymentMethod as "pay_now" | "pay_after_service" | "cash" | null,
         paymentMethodLabel: getPaymentMethodLabel(booking.paymentMethod),
 
         originalAmount: booking.originalAmount,

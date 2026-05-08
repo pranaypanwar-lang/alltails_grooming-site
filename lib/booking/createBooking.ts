@@ -67,7 +67,7 @@ export type CreateBookingInput = {
   bookingWindowId: string;
   slotIds: string[];
   pets: BookingCreatePetInput[];
-  paymentMethod: "pay_now" | "pay_after_service";
+  paymentMethod: "pay_now" | "pay_after_service" | "cash";
   couponCode?: string;
   adminNote?: string | null;
   bookingSource?: string;
@@ -265,12 +265,17 @@ export async function createBookingWithBusinessRules(
       typeof input.overrideFinalAmount === "number"
         ? Math.max(0, Math.round(input.overrideFinalAmount))
         : couponEvaluation.finalAmount;
-    // Both pay_now and pay_after_service now hold the slot until a Razorpay
+    // Public pay_now and pay_after_service bookings hold the slot until a Razorpay
     // payment is verified (full amount for pay_now, deposit-only for
-    // pay_after_service). The booking only flips to confirmed at verify time.
+    // pay_after_service). Admin-only cash bookings are confirmed immediately.
     let paymentStatus = "unpaid";
     let bookingStatus = "pending_payment";
     let loyaltyRewardLabel: string | null = null;
+
+    if (input.paymentMethod === "cash") {
+      paymentStatus = "pending_cash_collection";
+      bookingStatus = "confirmed";
+    }
 
     if (loyaltyRewardApplied) {
       finalAmount = 0;

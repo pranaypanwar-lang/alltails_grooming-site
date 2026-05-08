@@ -73,6 +73,7 @@ function getStatusLabel(status: DerivedBookingStatus) {
 function getPaymentMethodLabel(method: string | null) {
   if (method === "pay_now") return "Pay now";
   if (method === "pay_after_service") return "Pay after service";
+  if (method === "cash") return "Cash";
   return null;
 }
 
