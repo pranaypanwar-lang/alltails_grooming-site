@@ -15,6 +15,119 @@ function slotKey(slot: { startTime: Date; endTime: Date }) {
   return `${slot.startTime.getTime()}__${slot.endTime.getTime()}`;
 }
 
+type TargetSlotWithBookings = {
+  id: string;
+  teamId: string;
+  startTime: Date;
+  endTime: Date;
+  isBlocked: boolean;
+  bookings: Array<{ booking: { id: string; status: string } | null; status: string }>;
+};
+
+function formatTime(date: Date) {
+  return date.toLocaleTimeString("en-IN", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Asia/Kolkata",
+  });
+}
+
+/**
+ * Pick target-team slots covering the booking's current time window.
+ *
+ * Strategy:
+ *  1. Try exact start+end-time match per booking slot (preserves the
+ *     existing happy path for teams whose grids align perfectly).
+ *  2. If that fails, fall back to a flexible match — find a contiguous
+ *     run of target-team slots from earliestStart..latestEnd whose
+ *     combined duration covers the booking duration.
+ *
+ * Returns the chosen target slots in order, OR a structured error
+ * describing exactly what went wrong (no overlap, blocked, already
+ * booked, partial coverage). Lets the route surface real diagnostics
+ * to the admin instead of a generic 409.
+ */
+function chooseTargetSlots(
+  bookingSlots: Array<{ slot: { id: string; startTime: Date; endTime: Date } }>,
+  candidates: TargetSlotWithBookings[]
+):
+  | { ok: true; targetSlots: TargetSlotWithBookings[] }
+  | { ok: false; reason: "no_overlap" | "blocked" | "already_booked" | "partial_coverage"; details: string } {
+  if (!candidates.length) {
+    return {
+      ok: false,
+      reason: "no_overlap",
+      details: "Selected team has no slots overlapping this booking's time window. Reschedule the booking to one of the team's available windows first.",
+    };
+  }
+
+  const blockedCandidate = candidates.find((slot) => slot.isBlocked);
+  if (blockedCandidate) {
+    return {
+      ok: false,
+      reason: "blocked",
+      details: `Selected team's slot at ${formatTime(blockedCandidate.startTime)} is blocked.`,
+    };
+  }
+
+  const occupiedCandidate = candidates.find((slot) => slot.bookings.length > 0);
+  if (occupiedCandidate) {
+    return {
+      ok: false,
+      reason: "already_booked",
+      details: `Selected team's slot at ${formatTime(occupiedCandidate.startTime)} is already booked.`,
+    };
+  }
+
+  const candidateByKey = new Map(candidates.map((slot) => [slotKey(slot), slot]));
+
+  // 1) Exact match per current slot — preferred.
+  const exact = bookingSlots
+    .map((item) => candidateByKey.get(slotKey(item.slot)))
+    .filter((slot): slot is TargetSlotWithBookings => Boolean(slot));
+  if (exact.length === bookingSlots.length) {
+    return { ok: true, targetSlots: exact };
+  }
+
+  // 2) Flexible coverage — find a contiguous run that covers the booking
+  //    window's total duration.
+  const sortedBooking = [...bookingSlots].sort(
+    (a, b) => a.slot.startTime.getTime() - b.slot.startTime.getTime()
+  );
+  const earliestStart = sortedBooking[0].slot.startTime;
+  const latestEnd = sortedBooking[sortedBooking.length - 1].slot.endTime;
+  const totalMs = latestEnd.getTime() - earliestStart.getTime();
+
+  const sortedCandidates = [...candidates].sort(
+    (a, b) => a.startTime.getTime() - b.startTime.getTime()
+  );
+
+  // Greedy contiguous run starting at the earliest candidate within the window.
+  for (let startIdx = 0; startIdx < sortedCandidates.length; startIdx++) {
+    const run: TargetSlotWithBookings[] = [];
+    let runStart = sortedCandidates[startIdx].startTime;
+    let runEnd = sortedCandidates[startIdx].startTime;
+    for (let i = startIdx; i < sortedCandidates.length; i++) {
+      const slot = sortedCandidates[i];
+      // Must be contiguous with the previous slot in the run.
+      if (run.length > 0 && slot.startTime.getTime() !== runEnd.getTime()) break;
+      run.push(slot);
+      runEnd = slot.endTime;
+      if (runEnd.getTime() - runStart.getTime() >= totalMs) {
+        return { ok: true, targetSlots: run };
+      }
+    }
+  }
+
+  return {
+    ok: false,
+    reason: "partial_coverage",
+    details: `Selected team has slots in this window but not enough contiguous capacity to cover the ${Math.round(totalMs / 60000)}-minute booking. Available slots: ${sortedCandidates
+      .map((s) => `${formatTime(s.startTime)}–${formatTime(s.endTime)}`)
+      .join(", ")}.`,
+  };
+}
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -65,15 +178,23 @@ export async function POST(
         booking.paymentMethod === "pay_after_service");
     const nextBookingSlotStatus = isPendingPrepaid ? "hold" : "confirmed";
 
-    const targetSlots = targetTeamAlreadyOwnsSlots
+    // Booking's overall window — used for the flexible-coverage fallback.
+    const sortedActive = [...activeBookingSlots].sort(
+      (a, b) => a.slot.startTime.getTime() - b.slot.startTime.getTime()
+    );
+    const windowStart = sortedActive[0].slot.startTime;
+    const windowEnd = sortedActive[sortedActive.length - 1].slot.endTime;
+
+    // Pull target-team candidates that overlap this window. Wider net than
+    // exact-time match so chooseTargetSlots() can do a flexible contiguous-run
+    // search when grids don't align.
+    const targetCandidates: TargetSlotWithBookings[] = targetTeamAlreadyOwnsSlots
       ? []
       : await adminPrisma.slot.findMany({
           where: {
             teamId: team.id,
-            OR: activeBookingSlots.map((item) => ({
-              startTime: item.slot.startTime,
-              endTime: item.slot.endTime,
-            })),
+            startTime: { lt: windowEnd },
+            endTime: { gt: windowStart },
           },
           include: {
             bookings: {
@@ -87,32 +208,36 @@ export async function POST(
           },
         });
 
-    const targetSlotByKey = new Map(targetSlots.map((slot) => [slotKey(slot), slot]));
-    const nextSlotIds = targetTeamAlreadyOwnsSlots
+    let targetSlots: TargetSlotWithBookings[] = [];
+    if (!targetTeamAlreadyOwnsSlots) {
+      const choice = chooseTargetSlots(activeBookingSlots, targetCandidates);
+      if (!choice.ok) {
+        return NextResponse.json(
+          { error: choice.details, reason: choice.reason },
+          { status: 409 }
+        );
+      }
+      targetSlots = choice.targetSlots;
+    }
+
+    // Mark targetSlotByKey for the legacy 1:1 mapping path; unused on the
+    // flexible-coverage path but kept so the analytics/event metadata
+    // continues to work for both cases.
+    void new Map(targetSlots.map((slot) => [slotKey(slot), slot]));
+    const nextSlotIds: string[] = targetTeamAlreadyOwnsSlots
       ? activeBookingSlots.map((item) => item.slotId)
-      : activeBookingSlots.map((item) => targetSlotByKey.get(slotKey(item.slot))?.id ?? null);
-
-    if (nextSlotIds.some((id) => !id)) {
-      return NextResponse.json(
-        { error: "Selected team does not have matching slots for this booking window" },
-        { status: 409 }
-      );
-    }
-
-    const unavailableTargetSlot = targetSlots.find((slot) => slot.isBlocked || slot.bookings.length > 0);
-    if (unavailableTargetSlot) {
-      return NextResponse.json(
-        { error: "Selected team is not available for this booking window" },
-        { status: 409 }
-      );
-    }
+      : targetSlots.map((slot) => slot.id);
 
     const updated = await adminPrisma.$transaction(async (tx) => {
       if (!targetTeamAlreadyOwnsSlots) {
-        const targetIds = nextSlotIds.filter((id): id is string => typeof id === "string");
+        const targetIds = nextSlotIds;
         const oldSlotIds = activeBookingSlots.map((item) => item.slotId);
         const oldSlotIdsToRelease = oldSlotIds.filter((id) => !targetIds.includes(id));
 
+        // Lock the chosen target slots with the appropriate state (held for
+        // pending-prepaid bookings, booked for confirmed). Atomic check
+        // ensures another admin / customer didn't grab them between the
+        // candidate query and this update.
         const lockResult = await tx.slot.updateMany({
           where: {
             id: { in: targetIds },
@@ -144,18 +269,20 @@ export async function POST(
           });
         }
 
-        for (const bookingSlot of activeBookingSlots) {
-          const nextSlotId = targetSlotByKey.get(slotKey(bookingSlot.slot))?.id;
-          if (!nextSlotId) {
-            throw Object.assign(new Error("Selected team does not have matching slots for this booking window"), {
-              httpStatus: 409,
-            });
-          }
+        // Release the old BookingSlot records (mark "released" — same pattern
+        // as /reschedule). We replace them with fresh BookingSlot rows
+        // pointing at the target team's slots, so the count of bookingSlots
+        // can change (e.g. 3 old 30-min → 1 new 90-min slot).
+        await tx.bookingSlot.updateMany({
+          where: { id: { in: activeBookingSlots.map((bs) => bs.id) } },
+          data: { status: "released" },
+        });
 
-          await tx.bookingSlot.update({
-            where: { id: bookingSlot.id },
+        for (const targetSlotId of targetIds) {
+          await tx.bookingSlot.create({
             data: {
-              slotId: nextSlotId,
+              bookingId,
+              slotId: targetSlotId,
               status: nextBookingSlotStatus,
             },
           });
@@ -182,13 +309,22 @@ export async function POST(
         }
       }
 
+      // Update booking record. selectedDate may shift if the target slots
+      // happen to be on a different calendar day (rare but possible if
+      // teams operate cross-midnight); pull from the first target slot.
+      const firstTarget = targetSlots[0] ?? null;
+      const updatedSelectedDate = firstTarget
+        ? firstTarget.startTime.toISOString().slice(0, 10)
+        : booking.selectedDate;
+
       return tx.booking.update({
         where: { id: bookingId },
         data: {
           assignedTeamId: team.id,
           groomerMemberId: booking.assignedTeamId !== team.id ? null : booking.groomerMemberId,
           dispatchState: "assigned",
-          bookingWindowId: nextSlotIds.filter((id): id is string => typeof id === "string").join("__"),
+          bookingWindowId: nextSlotIds.join("__"),
+          selectedDate: updatedSelectedDate,
         },
         include: {
           assignedTeam: { select: { id: true, name: true } },
