@@ -282,7 +282,13 @@ export async function GET(req: NextRequest) {
         groomerMember: true,
         service: true,
         pets: { include: { pet: true } },
-        slots: { include: { slot: { include: { team: true } } } },
+        // Exclude released BookingSlots from prior reschedules — otherwise
+        // the displayed window mixes old + new times (e.g. 6pm reschedule to
+        // 9am rendered as "9am to 8pm").
+        slots: {
+          where: { status: { notIn: ["released"] } },
+          include: { slot: { include: { team: true } } },
+        },
       },
       orderBy: [{ selectedDate: "asc" }, { createdAt: "asc" }],
     });

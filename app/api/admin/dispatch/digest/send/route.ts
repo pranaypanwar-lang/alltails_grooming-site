@@ -44,14 +44,29 @@ export async function runDigestSend(date: string, baseUrl?: string) {
       user: { select: { city: true, phone: true } },
       service: { select: { name: true } },
       pets: { include: { pet: { select: { name: true, breed: true } } } },
-      slots: { include: { slot: { include: { team: true } } } },
+      // Exclude released BookingSlots from prior reschedules so timeWindow
+      // reflects only the active visit, not a mix of old + new times.
+      slots: {
+        where: { status: { notIn: ["released"] } },
+        include: { slot: { include: { team: true } } },
+      },
     },
     orderBy: { createdAt: "asc" },
   });
 
+  type DigestEntry = {
+    bookingId: string;
+    timeWindow: string;
+    startMs: number;
+    serviceName: string;
+    area: string | null;
+    petSummary: string;
+    actionUrl: string | null;
+  };
+
   const teamMap = new Map<string, {
     team: { id: string; name: string; telegramChatId: string | null; telegramAlertsEnabled: boolean };
-    entries: Array<{ bookingId: string; timeWindow: string; serviceName: string; area: string | null; petSummary: string; actionUrl: string | null }>;
+    entries: DigestEntry[];
   }>();
 
   for (const booking of bookings) {
@@ -82,6 +97,9 @@ export async function runDigestSend(date: string, baseUrl?: string) {
       bookingId: booking.id,
       area: booking.user.city ?? null,
       timeWindow,
+      // Cache the slot start so we can sort entries chronologically per team
+      // before formatting the digest message.
+      startMs: firstSlot ? new Date(firstSlot.startTime).getTime() : Number.POSITIVE_INFINITY,
       serviceName: booking.service.name,
       petSummary: petSummary || `${booking.pets.length} pet(s)`,
       actionUrl: getGroomerJobUrl({
@@ -90,6 +108,12 @@ export async function runDigestSend(date: string, baseUrl?: string) {
         baseUrl,
       }),
     });
+  }
+
+  // Sort each team's entries chronologically by visit start time so the
+  // groomer reads the digest in the order they will work tomorrow.
+  for (const team of teamMap.values()) {
+    team.entries.sort((a, b) => a.startMs - b.startMs);
   }
 
   const results: Array<{ teamId: string; teamName: string; success: boolean; error?: string }> = [];

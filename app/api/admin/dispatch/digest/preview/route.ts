@@ -37,7 +37,12 @@ export async function POST(request: Request) {
         user: { select: { city: true } },
         service: { select: { name: true } },
         pets: { include: { pet: { select: { name: true, breed: true } } } },
-        slots: { include: { slot: { include: { team: true } } } },
+        // Exclude released BookingSlots from prior reschedules so the preview
+        // shows the active visit window only.
+        slots: {
+          where: { status: { notIn: ["released"] } },
+          include: { slot: { include: { team: true } } },
+        },
       },
       orderBy: { createdAt: "asc" },
     });
@@ -49,6 +54,8 @@ export async function POST(request: Request) {
         bookingId: string;
         area: string | null;
         timeWindow: string;
+        // Cached for chronological sort within the team digest.
+        startMs: number;
         serviceName: string;
         petCount: number;
         petSummary: string;
@@ -83,11 +90,18 @@ export async function POST(request: Request) {
         bookingId: booking.id,
         area: booking.user.city ?? null,
         timeWindow,
+        startMs: firstSlot ? new Date(firstSlot.startTime).getTime() : Number.POSITIVE_INFINITY,
         serviceName: booking.service.name,
         petCount: booking.pets.length,
         petSummary: petSummary || `${booking.pets.length} pet(s)`,
         notesSummary: null,
       });
+    }
+
+    // Sort each team's entries chronologically so the preview matches the
+    // order the groomer will work the next day.
+    for (const team of teamMap.values()) {
+      team.entries.sort((a, b) => a.startMs - b.startMs);
     }
 
     const teams = Array.from(teamMap.values()).map(({ team, entries }) => {

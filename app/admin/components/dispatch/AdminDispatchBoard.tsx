@@ -349,18 +349,15 @@ export function AdminDispatchBoard({
     );
   }
 
+  // The Unassigned lane was removed — bookings auto-assign on creation now,
+  // and the standalone column added clutter without surfacing actions admins
+  // weren't already taking from the team lanes. The `unassigned` prop is
+  // still received (kept for API compatibility) but intentionally unused.
+  void unassigned;
+
   return (
     <div className="overflow-x-auto pb-4">
       <div className="flex gap-5" style={{ minWidth: "max-content" }}>
-        <DispatchLane
-          title="Unassigned"
-          subtitle={unassigned.length > 0 ? `${unassigned.length} need assignment` : "All assigned"}
-          cards={unassigned}
-          selectedBookingIds={selectedBookingIds}
-          onToggleSelection={onToggleSelection}
-          onCardClick={onCardClick}
-          onActionClick={onActionClick}
-        />
         {groups.map((group) => (
           <DispatchLane
             key={group.team.id}
@@ -374,7 +371,7 @@ export function AdminDispatchBoard({
             onActionClick={onActionClick}
           />
         ))}
-        {groups.length === 0 && unassigned.length === 0 && (
+        {groups.length === 0 && (
           <div className="flex-1 rounded-[22px] border border-dashed border-[#ddd1fb] bg-[#faf9fd] py-20 text-center text-[13px] text-[#8a90a6]">
             No bookings for this date
           </div>
