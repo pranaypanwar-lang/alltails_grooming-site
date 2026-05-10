@@ -36,6 +36,36 @@ export const BUSINESS_INFO = {
     facebook: "https://www.facebook.com/share/1BMTGLq5HQ/?mibextid=wwXIfr",
     linkedin: "https://www.linkedin.com/company/alltails-in/",
   },
+
+  // Registered business address — matches the Google Business Profile listing
+  // for All Tails. Keep in sync with GBP; mismatch can hurt local-pack ranking.
+  address: {
+    streetAddress: "512, Golf Course Ext Rd, Badshahpur, Sector 66",
+    addressLocality: "Gurugram",
+    addressRegion: "Haryana",
+    postalCode: "122018",
+    addressCountry: "IN",
+  },
+
+  // Approximate geo for the registered address (Sector 66 Gurgaon, near M3M
+  // IFC on Golf Course Ext Road). Google can geocode the address text fine,
+  // but explicit coordinates strengthen the LocalBusiness signal. Refine if
+  // you have exact lat/lng from Google Maps.
+  geo: {
+    latitude: 28.4078,
+    longitude: 77.0741,
+  },
+
+  // Aggregate rating snapshot. Update manually when the GBP review count moves
+  // materially (~every 30 days or after a review push). Real, verifiable
+  // values only — Google penalizes inflated review schema.
+  aggregateRating: {
+    ratingValue: 4.8,
+    reviewCount: 189,
+    source: "Google Business Profile",
+    // ISO date the values above were last verified against GBP.
+    verifiedAt: "2026-05-10",
+  },
 } as const;
 
 export const phoneTel = `tel:${BUSINESS_INFO.phoneE164}`;

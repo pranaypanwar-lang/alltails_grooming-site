@@ -11,16 +11,42 @@ export function websiteSchema() {
 }
 
 export function professionalServiceSchema() {
+  // We declare both ProfessionalService AND LocalBusiness as @type so Google
+  // treats this as a fully-fledged LocalBusiness (powering Maps integration,
+  // Knowledge Panel, "near me" results) while preserving the existing
+  // ProfessionalService classification. PetGroomer schema doesn't exist as a
+  // strict type, but additionalType points to a Wikidata concept that some
+  // crawlers use as a fallback hint for category.
   return {
     "@context": "https://schema.org",
-    "@type": "ProfessionalService",
+    "@type": ["ProfessionalService", "LocalBusiness"],
+    "@id": `${SITE_URL}/#localbusiness`,
     name: BUSINESS_INFO.name,
     url: `${SITE_URL}/`,
+    image: `${SITE_URL}/images/Banner.jpg`,
+    logo: `${SITE_URL}/icon.png`,
     telephone: BUSINESS_INFO.phoneDisplay,
     email: BUSINESS_INFO.email,
     priceRange: "₹₹",
     description:
       "All Tails provides at-home pet grooming and doorstep grooming services for dogs and cats across selected service areas.",
+    additionalType: "https://www.wikidata.org/wiki/Q3406443", // pet groomer
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: BUSINESS_INFO.address.streetAddress,
+      addressLocality: BUSINESS_INFO.address.addressLocality,
+      addressRegion: BUSINESS_INFO.address.addressRegion,
+      postalCode: BUSINESS_INFO.address.postalCode,
+      addressCountry: BUSINESS_INFO.address.addressCountry,
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: BUSINESS_INFO.geo.latitude,
+      longitude: BUSINESS_INFO.geo.longitude,
+    },
+    hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      `${BUSINESS_INFO.address.streetAddress}, ${BUSINESS_INFO.address.addressLocality}, ${BUSINESS_INFO.address.addressRegion} ${BUSINESS_INFO.address.postalCode}`
+    )}`,
     areaServed: BUSINESS_INFO.serviceAreas.map((name) => ({
       "@type": "City",
       name,
@@ -39,6 +65,22 @@ export function professionalServiceSchema() {
         ],
         opens: BUSINESS_INFO.hoursOpens,
         closes: BUSINESS_INFO.hoursCloses,
+      },
+    ],
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: BUSINESS_INFO.aggregateRating.ratingValue,
+      reviewCount: BUSINESS_INFO.aggregateRating.reviewCount,
+      bestRating: 5,
+      worstRating: 1,
+    },
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        telephone: BUSINESS_INFO.phoneDisplay,
+        contactType: "customer service",
+        areaServed: "IN",
+        availableLanguage: ["English", "Hindi"],
       },
     ],
     sameAs: [
