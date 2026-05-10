@@ -33,7 +33,19 @@ import {
   SUPPORTED_CITIES,
 } from "../../../lib/booking/constants";
 import { getBreedSuggestions, normalizeBreedName } from "../../../lib/pets/breeds";
-import { buildBookingEventId, buildServiceMeta, trackMetaEvent } from "../../../lib/analytics/metaPixel";
+import {
+  buildAttemptEventId,
+  buildBookingEventId,
+  buildServiceMeta,
+  getBookingAttemptId,
+  getOrCreateBookingAttemptId,
+  hasAttemptEventFired,
+  hasSessionEventFired,
+  markAttemptEventFired,
+  markSessionEventFired,
+  resetBookingAttemptId,
+  trackMetaEvent,
+} from "../../../lib/analytics/metaPixel";
 import { trackGoogleAdsBookingConversion, trackGoogleAdsPurchaseConversion } from "../../../lib/analytics/googleAds";
 import { whatsappHref } from "../../../lib/seo/businessInfo";
 import { useBookingAnalytics } from "./hooks/useBookingAnalytics";
@@ -628,6 +640,26 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
   const goToStep = (nextStep: BookingStep) => {
     if (nextStep === "review") {
       trackBookingEvent("review_booking_viewed", commonEventPayload);
+
+      // AddPaymentInfo fires once per attempt when the user reaches review with
+      // all booking details locked in. Mirrors the legacy hero flow.
+      const attemptId = getBookingAttemptId();
+      if (attemptId && !hasAttemptEventFired(attemptId, "add_payment_info")) {
+        trackMetaEvent(
+          "AddPaymentInfo",
+          buildServiceMeta(serviceName, {
+            value: finalAmount,
+            currency: "INR",
+            city,
+            selected_date: selectedDateForSlots || selectedDate,
+            booking_window: selectedBookingWindow?.displayLabel,
+            pet_count: pets.length,
+            payment_method: paymentMethod,
+          }),
+          { eventID: buildAttemptEventId(attemptId, "add_payment_info") }
+        );
+        markAttemptEventFired(attemptId, "add_payment_info");
+      }
     }
     setStep(nextStep);
     setError("");
@@ -798,6 +830,9 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
 
   const closeFlow = () => {
     trackBookingEvent("booking_closed", { ...commonEventPayload, step });
+    // Clear the attempt id so the next time the user opens booking we get a
+    // fresh funnel attempt for Meta (InitiateCheckout/AddToCart/AddPaymentInfo).
+    resetBookingAttemptId();
     if (embedded) {
       resetFlow();
       return;
@@ -882,6 +917,28 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
         ...commonEventPayload,
         selectedDate,
       });
+
+      // Reset attempt id and fire InitiateCheckout once per attempt — mirrors
+      // the legacy hero flow so Meta sees consistent funnel events.
+      if (firstDateWithSlots) {
+        resetBookingAttemptId();
+        const attemptId = getOrCreateBookingAttemptId();
+        if (!hasAttemptEventFired(attemptId, "initiate_checkout")) {
+          trackMetaEvent(
+            "InitiateCheckout",
+            buildServiceMeta(serviceName, {
+              value: getServicePrice(serviceName) * pets.length,
+              currency: "INR",
+              city,
+              selected_date: firstDateWithSlots.date || selectedDate,
+              pet_count: pets.length,
+            }),
+            { eventID: buildAttemptEventId(attemptId, "initiate_checkout") }
+          );
+          markAttemptEventFired(attemptId, "initiate_checkout");
+        }
+      }
+
       goToStep("slot");
     } catch (fetchError) {
       const message = fetchError instanceof Error ? fetchError.message : "Could not check available slots.";
@@ -1483,12 +1540,34 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
             petCount={pets.length}
             onViewInclusions={(name) => {
               setInclusionsPackage(name);
+              const sessionKey = `view_content_${name.trim().toLowerCase()}`;
+              if (!hasSessionEventFired(sessionKey)) {
+                trackMetaEvent(
+                  "ViewContent",
+                  buildServiceMeta(name, {
+                    value: getServicePrice(name) * pets.length,
+                    currency: "INR",
+                  })
+                );
+                markSessionEventFired(sessionKey);
+              }
               trackBookingEvent("package_inclusions_viewed", { ...commonEventPayload, packageName: name });
             }}
             onServiceChange={(nextService) => {
               setServiceName(nextService);
               setAvailabilityDates([]);
               setSelectedBookingWindowId("");
+              const sessionKey = `view_content_${nextService.trim().toLowerCase()}`;
+              if (!hasSessionEventFired(sessionKey)) {
+                trackMetaEvent(
+                  "ViewContent",
+                  buildServiceMeta(nextService, {
+                    value: getServicePrice(nextService) * pets.length,
+                    currency: "INR",
+                  })
+                );
+                markSessionEventFired(sessionKey);
+              }
               trackBookingEvent("package_selected", { ...commonEventPayload, packageName: nextService });
             }}
             onCityChange={(nextCity) => {
@@ -1524,6 +1603,23 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
             }}
             onSlotChange={(window) => {
               setSelectedBookingWindowId(window.bookingWindowId);
+              const attemptId = getOrCreateBookingAttemptId();
+              const eventKey = `add_to_cart_${window.bookingWindowId}`;
+              if (!hasAttemptEventFired(attemptId, eventKey)) {
+                trackMetaEvent(
+                  "AddToCart",
+                  buildServiceMeta(serviceName, {
+                    value: getServicePrice(serviceName) * pets.length,
+                    currency: "INR",
+                    city,
+                    selected_date: selectedDateForSlots,
+                    booking_window: window.displayLabel,
+                    pet_count: pets.length,
+                  }),
+                  { eventID: buildAttemptEventId(attemptId, eventKey) }
+                );
+                markAttemptEventFired(attemptId, eventKey);
+              }
               trackBookingEvent("slot_selected", {
                 ...commonEventPayload,
                 selectedDate: selectedDateForSlots,
