@@ -49,6 +49,8 @@ import {
 } from "../../../lib/analytics/metaPixel";
 import { trackGoogleAdsBookingConversion, trackGoogleAdsPurchaseConversion } from "../../../lib/analytics/googleAds";
 import { whatsappHref } from "../../../lib/seo/businessInfo";
+import { getAttribution } from "../../../lib/analytics/attribution";
+import { slugToCity } from "../../../lib/cities/slugs";
 import { useBookingAnalytics } from "./hooks/useBookingAnalytics";
 import { formatCurrency, formatDateLabel, getTodayDateInputValue } from "./utils/bookingFormatters";
 import { hasMeaningfulBookingInput, isValidIndianMobile } from "./utils/bookingValidation";
@@ -677,13 +679,34 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
-    const serviceParam = params.get("service") || params.get("package");
-    if (!serviceParam) return;
 
-    const matched = INDIVIDUAL_SESSION_SERVICES.find(
-      (service) => slugifyServiceName(service.name) === serviceParam.toLowerCase()
-    );
-    if (matched) setServiceName(matched.name);
+    // Pre-fill service from ?service= / ?package=. Mirrors the legacy hero
+    // form so deep links from the homepage and the new /pet-grooming city
+    // pages both behave the same way.
+    const serviceParam = params.get("service") || params.get("package");
+    if (serviceParam) {
+      const matched = INDIVIDUAL_SESSION_SERVICES.find(
+        (service) => slugifyServiceName(service.name) === serviceParam.toLowerCase()
+      );
+      if (matched) setServiceName(matched.name);
+    }
+
+    // Pre-fill city from ?city= so paid traffic landing on
+    // /pet-grooming/<slug> doesn't have to pick city again. slugToCity
+    // normalises aliases ("delhi-ncr" → "Delhi", "gurugram" → "Gurgaon").
+    // Falls back to the persisted attribution store, so a user who landed
+    // on a city page yesterday and reopens booking today still gets it.
+    const cityParam = params.get("city");
+    if (cityParam) {
+      const matchedCity = slugToCity(cityParam);
+      if (matchedCity) setCity(matchedCity);
+    } else {
+      const attribution = getAttribution();
+      if (attribution.city) {
+        const matchedCity = slugToCity(attribution.city);
+        if (matchedCity) setCity(matchedCity);
+      }
+    }
   }, []);
 
   const goToStep = (nextStep: BookingStep) => {
@@ -1385,6 +1408,12 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
     setError("");
     trackBookingEvent("booking_create_started", commonEventPayload);
 
+    // Persisted attribution: gclid + utm_* + landing_page captured by
+    // AttributionCapture on first touch. Attached to the create payload so
+    // the server can store it for offline conversion uploads to Google Ads
+    // and downstream campaign performance reporting.
+    const attribution = getAttribution();
+
     try {
       const response = await fetch("/api/booking/create", {
         method: "POST",
@@ -1406,6 +1435,17 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
             price: addOn.price,
           })),
           finalAmount,
+          attribution: {
+            gclid: attribution.gclid ?? null,
+            utmSource: attribution.utm_source ?? null,
+            utmMedium: attribution.utm_medium ?? null,
+            utmCampaign: attribution.utm_campaign ?? null,
+            utmAdgroup: attribution.utm_adgroup ?? null,
+            utmKeyword: attribution.utm_keyword ?? null,
+            utmContent: attribution.utm_content ?? null,
+            landingPage: attribution.landing_page ?? null,
+            capturedAt: attribution.captured_at ?? null,
+          },
           serviceAddress,
           serviceLandmark,
           servicePincode,

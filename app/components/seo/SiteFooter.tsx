@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { TrackedExternalLink } from "@/app/components/analytics/TrackedExternalLink";
 import {
   BUSINESS_INFO,
   emailMailto,
@@ -57,19 +58,26 @@ export function SiteFooter() {
           </h3>
           <ul className="mt-4 space-y-2 text-[14px]">
             <li>
-              <a href={phoneTel} className="hover:text-white">
+              <TrackedExternalLink
+                type="call"
+                href={phoneTel}
+                trackingSource="footer"
+                className="hover:text-white"
+              >
                 {BUSINESS_INFO.phoneDisplay}
-              </a>
+              </TrackedExternalLink>
             </li>
             <li>
-              <a
+              <TrackedExternalLink
+                type="whatsapp"
                 href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
+                trackingSource="footer"
                 className="hover:text-white"
               >
                 WhatsApp us
-              </a>
+              </TrackedExternalLink>
             </li>
             <li>
               <a href={emailMailto} className="hover:text-white">

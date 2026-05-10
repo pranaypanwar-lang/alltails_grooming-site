@@ -85,6 +85,7 @@ export async function POST(request: Request) {
       serviceLng,
       serviceLocationSource,
       finalAmount,
+      attribution,
     }: {
       name?: string;
       phone?: string;
@@ -105,6 +106,17 @@ export async function POST(request: Request) {
       serviceLng?: number | null;
       serviceLocationSource?: string;
       finalAmount?: number;
+      attribution?: {
+        gclid?: string | null;
+        utmSource?: string | null;
+        utmMedium?: string | null;
+        utmCampaign?: string | null;
+        utmAdgroup?: string | null;
+        utmKeyword?: string | null;
+        utmContent?: string | null;
+        landingPage?: string | null;
+        capturedAt?: string | null;
+      };
     } = body;
 
     if (
@@ -175,6 +187,28 @@ export async function POST(request: Request) {
       ? `Selected add-ons: ${selectedAddOns.map((addOn) => `${addOn.name} (${addOn.price})`).join(", ")}`
       : null;
 
+    // Persisted attribution captured by the browser at first touch
+    // (gclid + utm_* + landing page). Stored as a structured marker line in
+    // adminNote so admins can read it in the booking detail view without a
+    // schema migration. The marker prefix lets downstream tooling (offline
+    // conversion uploader, attribution reporter) parse it back out cleanly.
+    const attributionEntries: Array<[string, string]> = [];
+    if (attribution?.gclid) attributionEntries.push(["gclid", attribution.gclid]);
+    if (attribution?.utmSource) attributionEntries.push(["utm_source", attribution.utmSource]);
+    if (attribution?.utmMedium) attributionEntries.push(["utm_medium", attribution.utmMedium]);
+    if (attribution?.utmCampaign) attributionEntries.push(["utm_campaign", attribution.utmCampaign]);
+    if (attribution?.utmAdgroup) attributionEntries.push(["utm_adgroup", attribution.utmAdgroup]);
+    if (attribution?.utmKeyword) attributionEntries.push(["utm_keyword", attribution.utmKeyword]);
+    if (attribution?.utmContent) attributionEntries.push(["utm_content", attribution.utmContent]);
+    if (attribution?.landingPage) attributionEntries.push(["landing_page", attribution.landingPage]);
+    if (attribution?.capturedAt) attributionEntries.push(["captured_at", attribution.capturedAt]);
+
+    const attributionNote = attributionEntries.length
+      ? `[attribution] ${attributionEntries.map(([k, v]) => `${k}=${v}`).join(" · ")}`
+      : null;
+
+    const combinedAdminNote = [attributionNote, addOnAdminNote].filter(Boolean).join("\n") || null;
+
     const result = await createBookingWithBusinessRules(prisma, {
       name,
       phone,
@@ -187,7 +221,7 @@ export async function POST(request: Request) {
       paymentMethod,
       couponCode,
       overrideFinalAmount,
-      adminNote: addOnAdminNote,
+      adminNote: combinedAdminNote,
       serviceAddress: serviceAddress?.trim() || null,
       serviceLandmark: serviceLandmark?.trim() || null,
       servicePincode: servicePincode?.trim() || null,
