@@ -4,8 +4,10 @@ import { JsonLd } from "../components/seo/JsonLd";
 import { SeoPageShell } from "../components/seo/SeoPageShell";
 import { INDIVIDUAL_SESSION_SERVICES, SERVICE_OPTIONS } from "@/lib/booking/constants";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { SITE_URL } from "@/lib/seo/businessInfo";
 import {
   breadcrumbSchema,
+  packageOfferCatalogSchema,
   serviceSchema,
 } from "@/lib/seo/schema";
 
@@ -32,9 +34,25 @@ export default function PackagesPage() {
     { name: "Packages", path: "/packages" },
   ]);
 
+  // Build AggregateOffer + per-package Offer schema for SERP rich snippets
+  // — surfaces "₹999 – ₹14,999" pricing in the Google result for /packages
+  // and lets each package show with its own price when long-tail queries
+  // hit. Includes both individual sessions and coat care plans so the
+  // range is honest.
+  const allPackages = [...INDIVIDUAL_SESSION_SERVICES, ...COAT_CARE_PLANS];
+  const offerCatalog = packageOfferCatalogSchema(
+    allPackages.map((pkg) => ({
+      name: pkg.name,
+      description: pkg.shortDescription,
+      price: pkg.price,
+      duration: pkg.duration,
+      url: `${SITE_URL}/packages#${slugify(pkg.name)}`,
+    }))
+  );
+
   return (
     <SeoPageShell>
-      <JsonLd data={[serviceSchema(), breadcrumbs]} />
+      <JsonLd data={[serviceSchema(), breadcrumbs, ...(offerCatalog ? [offerCatalog] : [])]} />
 
       <section className="mx-auto max-w-[1100px] px-5 py-14 lg:px-8 lg:py-20">
         <div className="text-center">

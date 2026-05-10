@@ -109,6 +109,65 @@ export function serviceSchema() {
   };
 }
 
+type PackageOfferInput = {
+  name: string;
+  description: string;
+  price: number;
+  url?: string;
+  // Optional duration text shown in the rich result (e.g. "60–75 mins").
+  duration?: string;
+};
+
+/**
+ * Builds a Schema.org OfferCatalog covering each grooming package, plus an
+ * AggregateOffer that gives Google a clean ₹999–₹14,999 price range for
+ * SERP snippets. Mount on /packages so SERP renders a price range and the
+ * individual packages can each gain Offer rich snippets.
+ */
+export function packageOfferCatalogSchema(packages: PackageOfferInput[]) {
+  if (!packages.length) return null;
+
+  const prices = packages.map((p) => p.price).filter((p) => Number.isFinite(p) && p > 0);
+  const lowPrice = prices.length ? Math.min(...prices) : undefined;
+  const highPrice = prices.length ? Math.max(...prices) : undefined;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: "All Tails pet grooming packages",
+    description:
+      "At-home pet grooming packages for dogs and cats across Delhi NCR, Chandigarh Tricity, Ludhiana and Patiala.",
+    brand: { "@type": "Brand", name: BUSINESS_INFO.name },
+    image: `${SITE_URL}/images/Banner.jpg`,
+    url: `${SITE_URL}/packages`,
+    ...(lowPrice !== undefined && highPrice !== undefined
+      ? {
+          offers: {
+            "@type": "AggregateOffer",
+            priceCurrency: "INR",
+            lowPrice,
+            highPrice,
+            offerCount: packages.length,
+            availability: "https://schema.org/InStock",
+            offers: packages.map((pkg) => ({
+              "@type": "Offer",
+              name: pkg.name,
+              description: pkg.description,
+              price: pkg.price,
+              priceCurrency: "INR",
+              url: pkg.url ?? `${SITE_URL}/packages`,
+              availability: "https://schema.org/InStock",
+              eligibleRegion: BUSINESS_INFO.serviceAreas.map((name) => ({
+                "@type": "City",
+                name,
+              })),
+            })),
+          },
+        }
+      : {}),
+  };
+}
+
 type ArticleSchemaInput = {
   slug: string;
   title: string;

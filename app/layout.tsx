@@ -5,6 +5,7 @@ import "./globals.css";
 import { Playfair_Display, Inter } from "next/font/google";
 import { MetaPixelPageView } from "./components/analytics/MetaPixelPageView";
 import { AttributionCapture } from "./components/analytics/AttributionCapture";
+import { StickyMobileCTA } from "./components/seo/StickyMobileCTA";
 import { META_PIXEL_ID } from "../lib/analytics/metaPixel";
 import { GOOGLE_ADS_ID } from "../lib/analytics/googleAds";
 import { JsonLd } from "./components/seo/JsonLd";
@@ -105,6 +106,7 @@ export default function RootLayout({
         <JsonLd data={websiteSchema()} />
         <JsonLd data={professionalServiceSchema()} />
         {children}
+        <StickyMobileCTA />
         <Analytics />
       </body>
     </html>

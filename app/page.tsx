@@ -7356,8 +7356,8 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
         </span>
       </h1>
 
-      {/* trust strip — moved ABOVE cards */}
-      <div className="mt-3 flex items-center gap-2 text-[13px] text-white/82">
+      {/* trust strip — stars + headline social proof + "from ₹999" */}
+      <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-white/82">
         <div className="flex items-center gap-0.5">
           {[0, 1, 2, 3, 4].map((i) => (
             <Star key={i} className="h-3.5 w-3.5 fill-[#FACC15] text-[#FACC15]" />
@@ -7365,7 +7365,36 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
         </div>
         <span className="font-semibold">Loved by pet parents</span>
         <span className="text-white/55">·</span>
-        <span>Doorstep grooming</span>
+        <span>From ₹999</span>
+        <span className="text-white/55">·</span>
+        <span>Vegan products</span>
+      </div>
+
+      {/* City strip — keeps the brand premium (no long marketing
+          subheadline) while signalling multi-city service to paid traffic
+          + AI engines. Cities are tappable so this doubles as internal
+          linking to the upcoming /pet-grooming/<city> pages. */}
+      <div className="mt-2.5 text-[11.5px] leading-[1.6] text-white/65">
+        <span className="text-white/45">Available in </span>
+        {[
+          { label: "Delhi", slug: "delhi" },
+          { label: "Gurgaon", slug: "gurgaon" },
+          { label: "Noida", slug: "noida" },
+          { label: "Chandigarh", slug: "chandigarh" },
+          { label: "Ludhiana", slug: "ludhiana" },
+          { label: "Patiala", slug: "patiala" },
+        ].map((city, index, arr) => (
+          <span key={city.slug}>
+            <a
+              href={`/pet-grooming/${city.slug}`}
+              className="text-white/80 underline decoration-white/20 underline-offset-[3px] transition hover:text-white"
+            >
+              {city.label}
+            </a>
+            {index < arr.length - 1 ? <span className="text-white/30"> · </span> : null}
+          </span>
+        ))}
+        <span className="text-white/45"> + more</span>
       </div>
 
       {/* SERVICE CARDS — the new conversion engine */}
