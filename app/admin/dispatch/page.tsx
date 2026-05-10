@@ -65,6 +65,13 @@ type DigestPreview = {
     bookingCount: number;
     messagePreview: string;
   }>;
+  // Bookings excluded from the digest with reason — surfaced so an admin can
+  // diagnose missing or unexpected entries.
+  skipped?: Array<{
+    bookingId: string;
+    reason: string;
+    detail: string;
+  }>;
 };
 
 const INITIAL_DISPATCH_FILTERS: AdminDispatchFilters = {
@@ -186,18 +193,38 @@ function DigestModal({ date, onClose }: { date: string; onClose: () => void }) {
           {loading && <p className="text-[13px] text-[#7c8499]">Generating…</p>}
           {error && <p className="text-[13px] text-[#b42318]">{error}</p>}
           {data && !loading && (
-            data.teams.length === 0
-              ? <p className="text-[13px] text-[#7c8499]">No confirmed bookings for {date}.</p>
-              : data.teams.map((teamDigest) => (
-                <div key={teamDigest.team.id}>
-                  <div className="font-semibold text-[14px] text-[#2a2346] mb-2">
-                    {teamDigest.team.name} · {teamDigest.bookingCount} booking(s)
+            <>
+              {data.teams.length === 0
+                ? <p className="text-[13px] text-[#7c8499]">No confirmed bookings for {date}.</p>
+                : data.teams.map((teamDigest) => (
+                  <div key={teamDigest.team.id}>
+                    <div className="font-semibold text-[14px] text-[#2a2346] mb-2">
+                      {teamDigest.team.name} · {teamDigest.bookingCount} booking(s)
+                    </div>
+                    <pre className="bg-[#faf9fd] border border-[#ece5ff] rounded-[14px] p-4 text-[12px] font-mono text-[#374151] whitespace-pre-wrap">
+                      {teamDigest.messagePreview}
+                    </pre>
                   </div>
-                  <pre className="bg-[#faf9fd] border border-[#ece5ff] rounded-[14px] p-4 text-[12px] font-mono text-[#374151] whitespace-pre-wrap">
-                    {teamDigest.messagePreview}
-                  </pre>
+                ))}
+              {data.skipped && data.skipped.length > 0 && (
+                <div className="rounded-[14px] border border-[#f3d7a3] bg-[#fff8eb] p-4">
+                  <div className="font-semibold text-[13px] text-[#8a4b1f] mb-2">
+                    {data.skipped.length} booking(s) skipped from this digest
+                  </div>
+                  <ul className="space-y-1.5 text-[12px] text-[#8a4b1f]">
+                    {data.skipped.map((entry) => (
+                      <li key={entry.bookingId}>
+                        <span className="font-mono">{entry.bookingId.slice(0, 8)}</span>
+                        {" — "}
+                        <span className="font-semibold">{entry.reason.replace(/_/g, " ")}</span>
+                        {" — "}
+                        {entry.detail}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              ))
+              )}
+            </>
           )}
         </div>
       </div>

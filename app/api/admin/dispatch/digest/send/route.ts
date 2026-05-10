@@ -35,15 +35,20 @@ export async function POST(request: Request) {
 }
 
 export async function runDigestSend(date: string, baseUrl?: string) {
+  // Only confirmed bookings — pending_payment ones are not committed and
+  // shouldn't reach the team digest.
   const bookings = await prisma.booking.findMany({
     where: {
       selectedDate: date,
-      status: { in: ["confirmed", "pending_payment"] },
+      status: "confirmed",
     },
     include: {
       user: { select: { city: true, phone: true } },
       service: { select: { name: true } },
       pets: { include: { pet: { select: { name: true, breed: true } } } },
+      // Authoritative source for the booking's team. Slots can lag after a
+      // partial reschedule/reassign so we never derive the team from there.
+      assignedTeam: true,
       // Exclude released BookingSlots from prior reschedules so timeWindow
       // reflects only the active visit, not a mix of old + new times.
       slots: {
@@ -69,14 +74,57 @@ export async function runDigestSend(date: string, baseUrl?: string) {
     entries: DigestEntry[];
   }>();
 
+  // Track exclusions for the response so admins can audit why a booking
+  // wasn't sent.
+  const skipped: Array<{ bookingId: string; reason: string; detail: string }> = [];
+
   for (const booking of bookings) {
     const sortedSlots = booking.slots
       .slice()
       .sort((a, b) => new Date(a.slot.startTime).getTime() - new Date(b.slot.startTime).getTime());
 
     const firstSlot = sortedSlots[0]?.slot ?? null;
-    const team = firstSlot?.team ?? null;
-    if (!team) continue;
+    if (!firstSlot) {
+      skipped.push({
+        bookingId: booking.id,
+        reason: "no_active_slots",
+        detail: "Booking has no active BookingSlot rows (all released).",
+      });
+      continue;
+    }
+
+    const assigned = booking.assignedTeam;
+    if (!assigned) {
+      skipped.push({
+        bookingId: booking.id,
+        reason: "no_assigned_team",
+        detail: "Booking has no assigned team — cannot send to any team digest.",
+      });
+      continue;
+    }
+    if (!assigned.isActive) {
+      skipped.push({
+        bookingId: booking.id,
+        reason: "team_inactive",
+        detail: `Assigned team "${assigned.name}" is marked inactive.`,
+      });
+      continue;
+    }
+    if (firstSlot.team && firstSlot.team.id !== assigned.id) {
+      skipped.push({
+        bookingId: booking.id,
+        reason: "team_drift",
+        detail: `assignedTeam "${assigned.name}" disagrees with slot.team "${firstSlot.team.name}". Investigate booking ${booking.id.slice(0, 8)}.`,
+      });
+      continue;
+    }
+
+    const team = {
+      id: assigned.id,
+      name: assigned.name,
+      telegramChatId: assigned.telegramChatId,
+      telegramAlertsEnabled: assigned.telegramAlertsEnabled,
+    };
 
     const timeWindow =
       getBookingWindowDisplay({
@@ -167,5 +215,5 @@ export async function runDigestSend(date: string, baseUrl?: string) {
     results.push({ teamId: team.id, teamName: team.name, success, ...(errorMsg ? { error: errorMsg } : {}) });
   }
 
-  return NextResponse.json({ date, results });
+  return NextResponse.json({ date, results, skipped });
 }

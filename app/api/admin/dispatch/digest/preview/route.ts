@@ -28,15 +28,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "date is required (YYYY-MM-DD)" }, { status: 400 });
     }
 
+    // Only confirmed bookings get sent to teams. pending_payment bookings
+    // (customer hasn't paid the deposit / full amount yet) are not real
+    // commitments and would generate ghost entries in the team digest.
     const bookings = await prisma.booking.findMany({
       where: {
         selectedDate: date,
-        status: { in: ["confirmed", "pending_payment"] },
+        status: "confirmed",
       },
       include: {
         user: { select: { city: true } },
         service: { select: { name: true } },
         pets: { include: { pet: { select: { name: true, breed: true } } } },
+        // Source of truth for the team is booking.assignedTeam below — we
+        // include assignedTeam to avoid relying on the slot's team relation,
+        // which can drift after a partial reschedule/reassign.
+        assignedTeam: true,
         // Exclude released BookingSlots from prior reschedules so the preview
         // shows the active visit window only.
         slots: {
@@ -63,6 +70,18 @@ export async function POST(request: Request) {
       }>;
     }>();
 
+    // Track bookings that were excluded so the admin can see why a "missing"
+    // booking didn't appear (e.g. unassigned, slot/team drift).
+    const skipped: Array<{
+      bookingId: string;
+      reason:
+        | "no_assigned_team"
+        | "team_inactive"
+        | "no_active_slots"
+        | "team_drift";
+      detail: string;
+    }> = [];
+
     for (const booking of bookings) {
       const sortedSlots = booking.slots
         .slice()
@@ -70,8 +89,47 @@ export async function POST(request: Request) {
 
       const firstSlot = sortedSlots[0]?.slot ?? null;
       const lastSlot = sortedSlots[sortedSlots.length - 1]?.slot ?? null;
-      const team = firstSlot?.team ?? null;
-      if (!team) continue;
+
+      if (!firstSlot) {
+        skipped.push({
+          bookingId: booking.id,
+          reason: "no_active_slots",
+          detail: "Booking has no active BookingSlot rows (all released).",
+        });
+        continue;
+      }
+
+      // Authoritative team is booking.assignedTeam — slots can lag during
+      // reassign edge cases; if they disagree, trust assignedTeam.
+      const assigned = booking.assignedTeam;
+      if (!assigned) {
+        skipped.push({
+          bookingId: booking.id,
+          reason: "no_assigned_team",
+          detail: "Booking has no assigned team — cannot include in any digest.",
+        });
+        continue;
+      }
+
+      if (!assigned.isActive) {
+        skipped.push({
+          bookingId: booking.id,
+          reason: "team_inactive",
+          detail: `Assigned team "${assigned.name}" is marked inactive.`,
+        });
+        continue;
+      }
+
+      if (firstSlot.team && firstSlot.team.id !== assigned.id) {
+        skipped.push({
+          bookingId: booking.id,
+          reason: "team_drift",
+          detail: `assignedTeam "${assigned.name}" disagrees with slot.team "${firstSlot.team.name}". This is usually a stale BookingSlot from a reassign that didn't release cleanly. Investigate booking ${booking.id.slice(0, 8)}.`,
+        });
+        continue;
+      }
+
+      const team = { id: assigned.id, name: assigned.name };
 
       const timeWindow =
         firstSlot && lastSlot
@@ -83,7 +141,7 @@ export async function POST(request: Request) {
         .join(", ");
 
       if (!teamMap.has(team.id)) {
-        teamMap.set(team.id, { team: { id: team.id, name: team.name }, entries: [] });
+        teamMap.set(team.id, { team, entries: [] });
       }
 
       teamMap.get(team.id)!.entries.push({
@@ -128,7 +186,7 @@ export async function POST(request: Request) {
       };
     });
 
-    return NextResponse.json({ date, teams });
+    return NextResponse.json({ date, teams, skipped });
   } catch (error) {
     console.error("POST /api/admin/dispatch/digest/preview failed", error);
     return NextResponse.json({ error: "Failed to generate digest preview" }, { status: 500 });
