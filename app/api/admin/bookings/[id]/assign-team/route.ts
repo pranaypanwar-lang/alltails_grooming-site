@@ -36,95 +36,130 @@ function formatTime(date: Date) {
  * Pick target-team slots covering the booking's current time window.
  *
  * Strategy:
- *  1. Try exact start+end-time match per booking slot (preserves the
- *     existing happy path for teams whose grids align perfectly).
- *  2. If that fails, fall back to a flexible match — find a contiguous
- *     run of target-team slots from earliestStart..latestEnd whose
- *     combined duration covers the booking duration.
+ *  0. Partition candidates into free / blocked / occupied.
+ *  1. Try exact start+end-time match against FREE candidates only
+ *     (preserves the happy path when grids align perfectly).
+ *  2. Fall back to a flexible match — find a contiguous run of FREE
+ *     target-team slots that covers the booking's total duration.
+ *  3. If neither works, return a verbose error listing every blocked
+ *     and every occupied slot in the window so the admin knows
+ *     exactly what's in the way.
  *
- * Returns the chosen target slots in order, OR a structured error
- * describing exactly what went wrong (no overlap, blocked, already
- * booked, partial coverage). Lets the route surface real diagnostics
- * to the admin instead of a generic 409.
+ * Bug surfaced in production: the previous version aborted on the
+ * first occupied slot it found (which was almost never the slot the
+ * admin had been looking at in the UI), making the message confusing.
+ * Now we ignore occupied slots if a free run exists, and only fall
+ * back to listing them when no free run can be found.
  */
 function chooseTargetSlots(
   bookingSlots: Array<{ slot: { id: string; startTime: Date; endTime: Date } }>,
   candidates: TargetSlotWithBookings[]
 ):
   | { ok: true; targetSlots: TargetSlotWithBookings[] }
-  | { ok: false; reason: "no_overlap" | "blocked" | "already_booked" | "partial_coverage"; details: string } {
-  if (!candidates.length) {
-    return {
-      ok: false,
-      reason: "no_overlap",
-      details: "Selected team has no slots overlapping this booking's time window. Reschedule the booking to one of the team's available windows first.",
-    };
-  }
-
-  const blockedCandidate = candidates.find((slot) => slot.isBlocked);
-  if (blockedCandidate) {
-    return {
-      ok: false,
-      reason: "blocked",
-      details: `Selected team's slot at ${formatTime(blockedCandidate.startTime)} is blocked.`,
-    };
-  }
-
-  const occupiedCandidate = candidates.find((slot) => slot.bookings.length > 0);
-  if (occupiedCandidate) {
-    return {
-      ok: false,
-      reason: "already_booked",
-      details: `Selected team's slot at ${formatTime(occupiedCandidate.startTime)} is already booked.`,
-    };
-  }
-
-  const candidateByKey = new Map(candidates.map((slot) => [slotKey(slot), slot]));
-
-  // 1) Exact match per current slot — preferred.
-  const exact = bookingSlots
-    .map((item) => candidateByKey.get(slotKey(item.slot)))
-    .filter((slot): slot is TargetSlotWithBookings => Boolean(slot));
-  if (exact.length === bookingSlots.length) {
-    return { ok: true, targetSlots: exact };
-  }
-
-  // 2) Flexible coverage — find a contiguous run that covers the booking
-  //    window's total duration.
+  | { ok: false; reason: "no_overlap" | "no_free_coverage" | "partial_coverage"; details: string } {
   const sortedBooking = [...bookingSlots].sort(
     (a, b) => a.slot.startTime.getTime() - b.slot.startTime.getTime()
   );
   const earliestStart = sortedBooking[0].slot.startTime;
   const latestEnd = sortedBooking[sortedBooking.length - 1].slot.endTime;
   const totalMs = latestEnd.getTime() - earliestStart.getTime();
+  const totalMinutes = Math.round(totalMs / 60000);
 
-  const sortedCandidates = [...candidates].sort(
+  if (!candidates.length) {
+    return {
+      ok: false,
+      reason: "no_overlap",
+      details: `Selected team has no slots between ${formatTime(earliestStart)} and ${formatTime(latestEnd)} on this date. Reschedule the booking to one of the team's available windows, or pick a different team.`,
+    };
+  }
+
+  // Partition: a candidate is "free" only if it isn't admin-blocked AND
+  // has zero overlapping active bookings.
+  const free: TargetSlotWithBookings[] = [];
+  const blocked: TargetSlotWithBookings[] = [];
+  const occupied: TargetSlotWithBookings[] = [];
+  for (const slot of candidates) {
+    if (slot.isBlocked) {
+      blocked.push(slot);
+    } else if (slot.bookings.length > 0) {
+      occupied.push(slot);
+    } else {
+      free.push(slot);
+    }
+  }
+
+  const sortedFree = [...free].sort(
     (a, b) => a.startTime.getTime() - b.startTime.getTime()
   );
 
-  // Greedy contiguous run starting at the earliest candidate within the window.
-  for (let startIdx = 0; startIdx < sortedCandidates.length; startIdx++) {
+  // 1) Exact match per current slot against free candidates — preferred.
+  const freeByKey = new Map(sortedFree.map((slot) => [slotKey(slot), slot]));
+  const exact = sortedBooking
+    .map((item) => freeByKey.get(slotKey(item.slot)))
+    .filter((slot): slot is TargetSlotWithBookings => Boolean(slot));
+  if (exact.length === sortedBooking.length) {
+    return { ok: true, targetSlots: exact };
+  }
+
+  // 2) Flexible coverage — greedy contiguous run of free slots covering
+  //    the booking's total duration.
+  for (let startIdx = 0; startIdx < sortedFree.length; startIdx++) {
     const run: TargetSlotWithBookings[] = [];
-    let runStart = sortedCandidates[startIdx].startTime;
-    let runEnd = sortedCandidates[startIdx].startTime;
-    for (let i = startIdx; i < sortedCandidates.length; i++) {
-      const slot = sortedCandidates[i];
-      // Must be contiguous with the previous slot in the run.
-      if (run.length > 0 && slot.startTime.getTime() !== runEnd.getTime()) break;
-      run.push(slot);
-      runEnd = slot.endTime;
-      if (runEnd.getTime() - runStart.getTime() >= totalMs) {
+    let runStart: Date | null = null;
+    let runEnd: Date | null = null;
+    for (let i = startIdx; i < sortedFree.length; i++) {
+      const slot = sortedFree[i];
+      if (run.length === 0) {
+        run.push(slot);
+        runStart = slot.startTime;
+        runEnd = slot.endTime;
+      } else if (runEnd && slot.startTime.getTime() === runEnd.getTime()) {
+        run.push(slot);
+        runEnd = slot.endTime;
+      } else {
+        break;
+      }
+      if (runStart && runEnd && runEnd.getTime() - runStart.getTime() >= totalMs) {
         return { ok: true, targetSlots: run };
       }
     }
   }
 
+  // 3) No free coverage — build a verbose, admin-friendly error listing
+  //    every blocked + occupied slot in the window. Helps figure out
+  //    which one the dispatch UI was hiding.
+  const lines: string[] = [
+    `Selected team can't cover the ${totalMinutes}-minute booking from ${formatTime(earliestStart)} to ${formatTime(latestEnd)}.`,
+  ];
+  if (blocked.length) {
+    lines.push(
+      `Admin-blocked: ${blocked.map((s) => `${formatTime(s.startTime)}–${formatTime(s.endTime)}`).join(", ")}.`
+    );
+  }
+  if (occupied.length) {
+    lines.push(
+      `Already booked: ${occupied
+        .map((s) => {
+          const otherBookingId = s.bookings[0]?.booking?.id ?? null;
+          const tag = otherBookingId ? ` (booking ${otherBookingId.slice(0, 8)})` : "";
+          return `${formatTime(s.startTime)}–${formatTime(s.endTime)}${tag}`;
+        })
+        .join(", ")}.`
+    );
+  }
+  if (sortedFree.length) {
+    lines.push(
+      `Free slots that don't form a long enough run: ${sortedFree.map((s) => `${formatTime(s.startTime)}–${formatTime(s.endTime)}`).join(", ")}.`
+    );
+  }
+  if (!blocked.length && !occupied.length && !sortedFree.length) {
+    lines.push("No matching slots found at all on this date for the selected team.");
+  }
+
   return {
     ok: false,
-    reason: "partial_coverage",
-    details: `Selected team has slots in this window but not enough contiguous capacity to cover the ${Math.round(totalMs / 60000)}-minute booking. Available slots: ${sortedCandidates
-      .map((s) => `${formatTime(s.startTime)}–${formatTime(s.endTime)}`)
-      .join(", ")}.`,
+    reason: sortedFree.length ? "partial_coverage" : "no_free_coverage",
+    details: lines.join(" "),
   };
 }
 
@@ -188,6 +223,14 @@ export async function POST(
     // Pull target-team candidates that overlap this window. Wider net than
     // exact-time match so chooseTargetSlots() can do a flexible contiguous-run
     // search when grids don't align.
+    //
+    // The "occupying booking" filter explicitly excludes pending_payment
+    // bookings whose paymentExpiresAt has already passed. Those are stale
+    // holds that the release-expired-pending cron will eventually clean up,
+    // but we don't want a cron lag to silently block legitimate reassigns —
+    // the admin saw the slot as free in the dispatch board (which filters
+    // those out) and rightly expects the reassign to succeed.
+    const now = new Date();
     const targetCandidates: TargetSlotWithBookings[] = targetTeamAlreadyOwnsSlots
       ? []
       : await adminPrisma.slot.findMany({
@@ -201,7 +244,26 @@ export async function POST(
               where: {
                 bookingId: { not: bookingId },
                 status: { in: ACTIVE_BOOKING_SLOT_STATUSES },
-                booking: { status: { in: ACTIVE_BOOKING_STATUSES } },
+                booking: {
+                  AND: [
+                    { status: { in: ACTIVE_BOOKING_STATUSES } },
+                    {
+                      OR: [
+                        // Confirmed / completed bookings always occupy.
+                        { status: { in: ["confirmed", "completed"] } },
+                        // Pending-payment bookings only occupy while their
+                        // payment hold is still live.
+                        {
+                          status: "pending_payment",
+                          OR: [
+                            { paymentExpiresAt: null },
+                            { paymentExpiresAt: { gt: now } },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
               },
               include: { booking: { select: { id: true, status: true } } },
             },
@@ -243,10 +305,29 @@ export async function POST(
             id: { in: targetIds },
             isBlocked: false,
             bookings: {
+              // Mirror the candidate-pull filter: only treat live holds as
+              // occupying. Stale pending-payment bookings past their
+              // payment expiry shouldn't block the lock.
               none: {
                 bookingId: { not: bookingId },
                 status: { in: ACTIVE_BOOKING_SLOT_STATUSES },
-                booking: { status: { in: ACTIVE_BOOKING_STATUSES } },
+                booking: {
+                  AND: [
+                    { status: { in: ACTIVE_BOOKING_STATUSES } },
+                    {
+                      OR: [
+                        { status: { in: ["confirmed", "completed"] } },
+                        {
+                          status: "pending_payment",
+                          OR: [
+                            { paymentExpiresAt: null },
+                            { paymentExpiresAt: { gt: now } },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
               },
             },
           },
