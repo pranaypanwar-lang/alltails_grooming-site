@@ -1,16 +1,6 @@
 export const META_PIXEL_ID =
   process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim() || "1003580967947137";
 
-declare global {
-  interface Window {
-    fbq?: (
-      command: "track" | "trackCustom",
-      eventName: string,
-      params?: Record<string, unknown>,
-      options?: Record<string, unknown>
-    ) => void;
-  }
-}
 
 type MetaTrackValue = string | number | boolean | string[] | null | undefined;
 
@@ -113,6 +103,76 @@ export const buildServiceMeta = (
     ...params,
   });
 };
+
+type AdvancedMatchingInput = {
+  phone?: string | null;
+  email?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  city?: string | null;
+};
+
+const ADVANCED_MATCHING_FIRED_KEY = "alltails_meta_advanced_matching_fired";
+
+const normalizePhoneForPixel = (phone?: string | null) => {
+  if (!phone) return undefined;
+  const digits = phone.replace(/\D/g, "");
+  if (!digits) return undefined;
+  if (digits.length === 10) return `91${digits}`;
+  if (digits.length === 12 && digits.startsWith("91")) return digits;
+  return digits;
+};
+
+/**
+ * Re-initialise the Meta pixel with advanced matching parameters so subsequent
+ * events carry hashed user identifiers. The pixel hashes plaintext values
+ * client-side automatically — never send pre-hashed strings here. Once we've
+ * fired with a non-empty payload we won't re-init again in the same session
+ * (only the first init's data is honoured by the pixel).
+ */
+export const setMetaAdvancedMatching = (input: AdvancedMatchingInput) => {
+  if (!isBrowser() || typeof window.fbq !== "function") return;
+  if (getSessionItem(ADVANCED_MATCHING_FIRED_KEY) === "1") return;
+
+  const userData: Record<string, string> = {};
+  const phone = normalizePhoneForPixel(input.phone);
+  if (phone) userData.ph = phone;
+
+  if (input.email && input.email.includes("@")) {
+    userData.em = input.email.trim().toLowerCase();
+  }
+
+  const firstName = input.firstName?.trim().toLowerCase();
+  if (firstName) userData.fn = firstName;
+
+  const lastName = input.lastName?.trim().toLowerCase();
+  if (lastName) userData.ln = lastName;
+
+  const normalizedCity = input.city?.trim().toLowerCase().replace(/\s+/g, "");
+  if (normalizedCity) userData.ct = normalizedCity;
+
+  if (!Object.keys(userData).length) return;
+
+  userData.country = "in";
+
+  // Re-init applies advanced matching to all subsequent events on the page.
+  // The pixel handles SHA-256 hashing internally for advanced matching keys.
+  window.fbq("init", META_PIXEL_ID, userData as Record<string, unknown>);
+  setSessionItem(ADVANCED_MATCHING_FIRED_KEY, "1");
+};
+
+declare global {
+  interface Window {
+    fbq?: ((
+      command: "track" | "trackCustom",
+      eventName: string,
+      params?: Record<string, unknown>,
+      options?: Record<string, unknown>
+    ) => void) &
+      ((command: "init", pixelId: string, userData?: Record<string, unknown>) => void) &
+      ((command: "set", key: string, value: unknown, pixelId?: string) => void);
+  }
+}
 
 export const trackMetaEvent = (
   eventName: string,

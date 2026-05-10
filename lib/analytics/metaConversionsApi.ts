@@ -85,6 +85,109 @@ const getEventSourceUrl = (request: Request) => {
 export const isMetaConversionsApiConfigured = () =>
   Boolean(getPixelId() && META_CAPI_ACCESS_TOKEN);
 
+type FunnelMirrorEventName =
+  | "ViewContent"
+  | "AddToCart"
+  | "InitiateCheckout"
+  | "AddPaymentInfo";
+
+type FunnelMirrorInput = {
+  request: Request;
+  eventName: FunnelMirrorEventName;
+  eventId: string;
+  customData?: Record<string, unknown>;
+  userData?: {
+    phone?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    city?: string | null;
+  };
+};
+
+/**
+ * Mirror an upper-funnel pixel event into the Conversions API. Uses the same
+ * event_id the browser pixel used so Meta dedupes correctly. Designed to be
+ * called from a thin proxy route — never accept a raw eventName from an
+ * untrusted client; the route should validate against the allow-list first.
+ */
+export async function sendMetaConversionsFunnelEvent(input: FunnelMirrorInput) {
+  if (!isMetaConversionsApiConfigured()) {
+    return { skipped: true as const };
+  }
+
+  const cookieHeader = input.request.headers.get("cookie");
+  const fbp = getCookieValue(cookieHeader, "_fbp");
+  const fbc = getCookieValue(cookieHeader, "_fbc");
+
+  const normalizedPhone = normalizePhone(input.userData?.phone);
+  const firstName = input.userData?.firstName?.trim().toLowerCase() || null;
+  const lastName = input.userData?.lastName?.trim().toLowerCase() || null;
+  const normalizedCity =
+    input.userData?.city?.trim().toLowerCase().replace(/\s+/g, "") || null;
+
+  const payload = {
+    data: [
+      {
+        event_name: input.eventName,
+        event_time: Math.floor(Date.now() / 1000),
+        event_id: input.eventId,
+        action_source: "website",
+        event_source_url: getEventSourceUrl(input.request),
+        user_data: {
+          client_ip_address: getClientIp(input.request),
+          client_user_agent: input.request.headers.get("user-agent") ?? undefined,
+          ph: normalizedPhone ? [sha256(normalizedPhone)] : undefined,
+          fn: firstName ? [sha256(firstName)] : undefined,
+          ln: lastName ? [sha256(lastName)] : undefined,
+          ct: normalizedCity ? [sha256(normalizedCity)] : undefined,
+          country: [sha256("in")],
+          fbp,
+          fbc,
+        },
+        custom_data: input.customData ?? {},
+      },
+    ],
+    test_event_code: META_CAPI_TEST_EVENT_CODE || undefined,
+  };
+
+  const requestBody = JSON.stringify({
+    ...payload,
+    access_token: META_CAPI_ACCESS_TOKEN,
+  });
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 4000);
+  try {
+    const response = await fetch(
+      `https://graph.facebook.com/${META_GRAPH_API_VERSION}/${getPixelId()}/events`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: requestBody,
+        signal: controller.signal,
+      }
+    );
+    clearTimeout(timeout);
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const message =
+        typeof data?.error?.message === "string"
+          ? data.error.message
+          : `Meta Conversions API mirror failed (status ${response.status})`;
+      throw new Error(message);
+    }
+
+    return {
+      skipped: false as const,
+      eventId: input.eventId,
+      response: data,
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export async function sendMetaConversionsEvent(
   input: MetaConversionsEventInput
 ) {

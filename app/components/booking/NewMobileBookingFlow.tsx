@@ -44,6 +44,7 @@ import {
   markAttemptEventFired,
   markSessionEventFired,
   resetBookingAttemptId,
+  setMetaAdvancedMatching,
   trackMetaEvent,
 } from "../../../lib/analytics/metaPixel";
 import { trackGoogleAdsBookingConversion, trackGoogleAdsPurchaseConversion } from "../../../lib/analytics/googleAds";
@@ -288,6 +289,54 @@ const createPet = (): BookingPet => ({
 });
 
 const normalizePhoneForLookup = (value: string) => value.replace(/\D/g, "").slice(-10);
+
+const FUNNEL_MIRROR_EVENTS = new Set([
+  "ViewContent",
+  "AddToCart",
+  "InitiateCheckout",
+  "AddPaymentInfo",
+]);
+
+/**
+ * Fires the browser pixel and (for upper-funnel events) mirrors to CAPI via
+ * the /api/analytics/meta-event proxy using the same eventID so Meta dedupes.
+ * Non-blocking — CAPI mirror failures are logged but never surface to the UI.
+ */
+const fireMetaEventDual = (
+  eventName: string,
+  params: Record<string, string | number | boolean | string[] | null | undefined>,
+  options: { eventID?: string } = {},
+  userData?: {
+    phone?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    city?: string | null;
+  }
+) => {
+  trackMetaEvent(eventName, params, options);
+
+  if (!options.eventID || !FUNNEL_MIRROR_EVENTS.has(eventName)) return;
+
+  const payload = {
+    eventName,
+    eventId: options.eventID,
+    customData: Object.fromEntries(
+      Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== "")
+    ),
+    userData,
+  };
+
+  fetch("/api/analytics/meta-event", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    keepalive: true,
+  }).catch((error) => {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("[meta-mirror] failed", eventName, error);
+    }
+  });
+};
 
 const AVATAR_GRADIENTS = [
   "from-[#f6f2ff] to-[#e9defa]",
@@ -641,11 +690,24 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
     if (nextStep === "review") {
       trackBookingEvent("review_booking_viewed", commonEventPayload);
 
+      // Manual advanced matching: re-init the pixel with the user data we
+      // collected on the details step so subsequent pixel events (and the
+      // mirrored CAPI events) carry hashed identifiers for higher attribution.
+      // Pixel hashes plaintext values client-side automatically.
+      const [maybeFirstName, ...rest] = name.trim().split(/\s+/);
+      setMetaAdvancedMatching({
+        phone,
+        firstName: maybeFirstName,
+        lastName: rest.length ? rest.join(" ") : undefined,
+        city,
+      });
+
       // AddPaymentInfo fires once per attempt when the user reaches review with
       // all booking details locked in. Mirrors the legacy hero flow.
       const attemptId = getBookingAttemptId();
       if (attemptId && !hasAttemptEventFired(attemptId, "add_payment_info")) {
-        trackMetaEvent(
+        const [reviewFirstName, ...reviewRest] = name.trim().split(/\s+/);
+        fireMetaEventDual(
           "AddPaymentInfo",
           buildServiceMeta(serviceName, {
             value: finalAmount,
@@ -656,7 +718,13 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
             pet_count: pets.length,
             payment_method: paymentMethod,
           }),
-          { eventID: buildAttemptEventId(attemptId, "add_payment_info") }
+          { eventID: buildAttemptEventId(attemptId, "add_payment_info") },
+          {
+            phone,
+            firstName: reviewFirstName || null,
+            lastName: reviewRest.length ? reviewRest.join(" ") : null,
+            city,
+          }
         );
         markAttemptEventFired(attemptId, "add_payment_info");
       }
@@ -924,7 +992,7 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
         resetBookingAttemptId();
         const attemptId = getOrCreateBookingAttemptId();
         if (!hasAttemptEventFired(attemptId, "initiate_checkout")) {
-          trackMetaEvent(
+          fireMetaEventDual(
             "InitiateCheckout",
             buildServiceMeta(serviceName, {
               value: getServicePrice(serviceName) * pets.length,
@@ -933,7 +1001,8 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
               selected_date: firstDateWithSlots.date || selectedDate,
               pet_count: pets.length,
             }),
-            { eventID: buildAttemptEventId(attemptId, "initiate_checkout") }
+            { eventID: buildAttemptEventId(attemptId, "initiate_checkout") },
+            { city }
           );
           markAttemptEventFired(attemptId, "initiate_checkout");
         }
@@ -1542,12 +1611,16 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
               setInclusionsPackage(name);
               const sessionKey = `view_content_${name.trim().toLowerCase()}`;
               if (!hasSessionEventFired(sessionKey)) {
-                trackMetaEvent(
+                const attemptId = getOrCreateBookingAttemptId();
+                fireMetaEventDual(
                   "ViewContent",
                   buildServiceMeta(name, {
                     value: getServicePrice(name) * pets.length,
                     currency: "INR",
-                  })
+                    city: city || undefined,
+                  }),
+                  { eventID: buildAttemptEventId(attemptId, sessionKey) },
+                  { city: city || undefined }
                 );
                 markSessionEventFired(sessionKey);
               }
@@ -1559,12 +1632,16 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
               setSelectedBookingWindowId("");
               const sessionKey = `view_content_${nextService.trim().toLowerCase()}`;
               if (!hasSessionEventFired(sessionKey)) {
-                trackMetaEvent(
+                const attemptId = getOrCreateBookingAttemptId();
+                fireMetaEventDual(
                   "ViewContent",
                   buildServiceMeta(nextService, {
                     value: getServicePrice(nextService) * pets.length,
                     currency: "INR",
-                  })
+                    city: city || undefined,
+                  }),
+                  { eventID: buildAttemptEventId(attemptId, sessionKey) },
+                  { city: city || undefined }
                 );
                 markSessionEventFired(sessionKey);
               }
@@ -1606,7 +1683,7 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
               const attemptId = getOrCreateBookingAttemptId();
               const eventKey = `add_to_cart_${window.bookingWindowId}`;
               if (!hasAttemptEventFired(attemptId, eventKey)) {
-                trackMetaEvent(
+                fireMetaEventDual(
                   "AddToCart",
                   buildServiceMeta(serviceName, {
                     value: getServicePrice(serviceName) * pets.length,
@@ -1616,7 +1693,8 @@ export function NewMobileBookingFlow({ embedded = false }: { embedded?: boolean 
                     booking_window: window.displayLabel,
                     pet_count: pets.length,
                   }),
-                  { eventID: buildAttemptEventId(attemptId, eventKey) }
+                  { eventID: buildAttemptEventId(attemptId, eventKey) },
+                  { city }
                 );
                 markAttemptEventFired(attemptId, eventKey);
               }
