@@ -109,6 +109,97 @@ export function serviceSchema() {
   };
 }
 
+type CityLocalBusinessInput = {
+  cityName: string;
+  region: string;
+  slug: string;
+  geo?: { latitude: number; longitude: number };
+  address?: {
+    streetAddress: string;
+    addressLocality: string;
+    addressRegion: string;
+    postalCode: string;
+    addressCountry: string;
+  };
+  description: string;
+  areaServed: readonly string[];
+};
+
+/**
+ * City-scoped LocalBusiness schema for /pet-grooming/[city] pages. Distinct
+ * @id per city so Google sees each city page as its own LocalBusiness node
+ * (powers per-city Maps cards + "near me" rankings). Falls back to the
+ * Gurugram HQ address when a city doesn't have its own real address —
+ * never invent fake addresses, Google flags them.
+ */
+export function cityLocalBusinessSchema(input: CityLocalBusinessInput) {
+  const address = input.address ?? BUSINESS_INFO.address;
+  const geo = input.geo ?? BUSINESS_INFO.geo;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": ["ProfessionalService", "LocalBusiness"],
+    "@id": `${SITE_URL}/pet-grooming/${input.slug}#localbusiness`,
+    name: `${BUSINESS_INFO.name} — Pet Grooming in ${input.cityName}`,
+    url: `${SITE_URL}/pet-grooming/${input.slug}`,
+    image: `${SITE_URL}/images/Banner.jpg`,
+    logo: `${SITE_URL}/icon.png`,
+    telephone: BUSINESS_INFO.phoneDisplay,
+    email: BUSINESS_INFO.email,
+    priceRange: "₹₹",
+    description: input.description,
+    additionalType: "https://www.wikidata.org/wiki/Q3406443",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: address.streetAddress,
+      addressLocality: address.addressLocality,
+      addressRegion: address.addressRegion,
+      postalCode: address.postalCode,
+      addressCountry: address.addressCountry,
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: geo.latitude,
+      longitude: geo.longitude,
+    },
+    hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      `${address.streetAddress}, ${address.addressLocality}, ${address.addressRegion} ${address.postalCode}`
+    )}`,
+    areaServed: [
+      { "@type": "City", name: input.cityName },
+      ...input.areaServed.map((name) => ({ "@type": "Place", name })),
+    ],
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ],
+        opens: BUSINESS_INFO.hoursOpens,
+        closes: BUSINESS_INFO.hoursCloses,
+      },
+    ],
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: BUSINESS_INFO.aggregateRating.ratingValue,
+      reviewCount: BUSINESS_INFO.aggregateRating.reviewCount,
+      bestRating: 5,
+      worstRating: 1,
+    },
+    sameAs: [
+      BUSINESS_INFO.socials.instagram,
+      BUSINESS_INFO.socials.facebook,
+      BUSINESS_INFO.socials.linkedin,
+    ],
+  };
+}
+
 type PackageOfferInput = {
   name: string;
   description: string;

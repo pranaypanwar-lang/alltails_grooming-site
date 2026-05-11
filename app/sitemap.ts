@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { SITE_URL } from "@/lib/seo/businessInfo";
+import { CITY_LANDING_SLUGS } from "@/lib/cities/data";
 import { getPublishedBlogPosts } from "@/lib/content/server";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -9,6 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/`, lastModified, changeFrequency: "weekly", priority: 1 },
     { url: `${SITE_URL}/packages`, lastModified, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${SITE_URL}/pet-grooming`, lastModified, changeFrequency: "weekly", priority: 0.9 },
     // /booking is intentionally omitted — it's noindex (transactional flow,
     // not informational content). Booking-intent queries land on the homepage
     // and /packages instead.
@@ -20,6 +22,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/refund-policy`, lastModified, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/cancellation-policy`, lastModified, changeFrequency: "yearly", priority: 0.3 },
   ];
+
+  // Per-city landing pages. Enumerated from the single source-of-truth
+  // CITY_LANDING_SLUGS list so adding a city in lib/cities/data.ts picks
+  // up automatically on the next deploy.
+  const cityRoutes: MetadataRoute.Sitemap = CITY_LANDING_SLUGS.map((slug) => ({
+    url: `${SITE_URL}/pet-grooming/${slug}`,
+    lastModified,
+    changeFrequency: "weekly",
+    priority: 0.85,
+  }));
 
   let blogRoutes: MetadataRoute.Sitemap = [];
   try {
@@ -35,5 +47,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // routes only — the next deploy will pick up posts.
   }
 
-  return [...staticRoutes, ...blogRoutes];
+  return [...staticRoutes, ...cityRoutes, ...blogRoutes];
 }
