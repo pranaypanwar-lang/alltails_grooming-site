@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { SITE_URL } from "@/lib/seo/businessInfo";
 import { CITY_LANDING_SLUGS } from "@/lib/cities/data";
+import { GLOSSARY_SLUGS } from "@/lib/glossary/data";
 import { getPublishedBlogPosts } from "@/lib/content/server";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -11,6 +12,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/`, lastModified, changeFrequency: "weekly", priority: 1 },
     { url: `${SITE_URL}/packages`, lastModified, changeFrequency: "weekly", priority: 0.9 },
     { url: `${SITE_URL}/pet-grooming`, lastModified, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${SITE_URL}/dog-grooming-at-home`, lastModified, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${SITE_URL}/cat-grooming-at-home`, lastModified, changeFrequency: "weekly", priority: 0.85 },
+    { url: `${SITE_URL}/about`, lastModified, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${SITE_URL}/glossary`, lastModified, changeFrequency: "monthly", priority: 0.7 },
     // /booking is intentionally omitted — it's noindex (transactional flow,
     // not informational content). Booking-intent queries land on the homepage
     // and /packages instead.
@@ -33,6 +38,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.85,
   }));
 
+  // Glossary entries — AI-citation-optimized definitional pages.
+  const glossaryRoutes: MetadataRoute.Sitemap = GLOSSARY_SLUGS.map((slug) => ({
+    url: `${SITE_URL}/glossary/${slug}`,
+    lastModified,
+    changeFrequency: "monthly",
+    priority: 0.65,
+  }));
+
   let blogRoutes: MetadataRoute.Sitemap = [];
   try {
     const posts = await getPublishedBlogPosts();
@@ -47,5 +60,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // routes only — the next deploy will pick up posts.
   }
 
-  return [...staticRoutes, ...cityRoutes, ...blogRoutes];
+  return [...staticRoutes, ...cityRoutes, ...glossaryRoutes, ...blogRoutes];
 }

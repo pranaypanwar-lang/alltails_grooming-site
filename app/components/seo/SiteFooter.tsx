@@ -10,11 +10,19 @@ import {
 
 const SERVICE_LINKS = [
   { href: "/", label: "At-home pet grooming" },
+  { href: "/pet-grooming", label: "Cities we serve" },
+  { href: "/dog-grooming-at-home", label: "Dog grooming at home" },
+  { href: "/cat-grooming-at-home", label: "Cat grooming at home" },
   { href: "/packages", label: "Pet grooming packages" },
   { href: "/booking", label: "Book pet grooming" },
-  { href: "/faq", label: "Pet grooming FAQs" },
-  { href: "/contact", label: "Contact All Tails" },
+];
+
+const LEARN_LINKS = [
+  { href: "/about", label: "About All Tails" },
+  { href: "/glossary", label: "Pet grooming glossary" },
+  { href: "/faq", label: "FAQs" },
   { href: "/blogs", label: "Pet grooming guides" },
+  { href: "/contact", label: "Contact us" },
 ];
 
 const POLICY_LINKS = [
@@ -27,7 +35,7 @@ const POLICY_LINKS = [
 export function SiteFooter() {
   return (
     <footer className="border-t border-[#ece5fb] bg-[#1f1b35] text-[#d8d2ec]">
-      <div className="mx-auto grid max-w-[1200px] gap-10 px-6 py-14 lg:grid-cols-4 lg:px-8">
+      <div className="mx-auto grid max-w-[1200px] gap-10 px-6 py-14 lg:grid-cols-5 lg:px-8">
         <div>
           <h2 className="text-[18px] font-black tracking-[-0.02em] text-white">
             All Tails
@@ -39,10 +47,25 @@ export function SiteFooter() {
 
         <div>
           <h3 className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#bcb3de]">
-            Explore
+            Services
           </h3>
           <ul className="mt-4 space-y-2 text-[14px]">
             {SERVICE_LINKS.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className="hover:text-white">
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#bcb3de]">
+            Learn
+          </h3>
+          <ul className="mt-4 space-y-2 text-[14px]">
+            {LEARN_LINKS.map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="hover:text-white">
                   {item.label}
