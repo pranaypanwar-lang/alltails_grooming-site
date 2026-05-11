@@ -135,7 +135,9 @@ export default function AboutPage() {
     description:
       "All Tails is a doorstep pet grooming service for dogs and cats across 10 cities in North India.",
     mainEntity: { "@id": `${SITE_URL}/#organization` },
-    breadcrumb: { "@id": `${SITE_URL}/about#breadcrumb` },
+    // breadcrumb ref intentionally omitted — breadcrumbSchema() doesn't emit
+    // a top-level @id on the BreadcrumbList, so a reference here would be
+    // a dangling pointer. The visible breadcrumb in the nav already links.
   };
 
   return (

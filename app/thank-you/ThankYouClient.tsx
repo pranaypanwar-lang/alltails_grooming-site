@@ -3,7 +3,7 @@
 import { Check, MessageCircle, Phone } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef } from "react";
 
 import {
   trackGoogleAdsBookingConversion,
@@ -39,23 +39,17 @@ function ThankYouInner() {
   const valueParam = params.get("value");
   const phoneParam = params.get("phone");
   const fired = useRef(false);
-  const [whatsappMessage, setWhatsappMessage] = useState<string>(
-    "Hi All Tails, I just submitted a grooming request and want to confirm the slot."
-  );
 
   // City display for the message + greeting. Falls back gracefully if the
   // URL didn't carry a city param.
   const cityLabel = citySlug ? CITY_DISPLAY[citySlug] ?? slugToCity(citySlug) ?? null : null;
 
-  useEffect(() => {
-    // Build a city-aware WhatsApp prefill so a paid user landing here can
-    // continue the conversation in WhatsApp without retyping.
-    if (cityLabel) {
-      setWhatsappMessage(
-        `Hi All Tails, I just submitted a pet grooming request in ${cityLabel}. Could you confirm my slot?`
-      );
-    }
-  }, [cityLabel]);
+  // Derive the WhatsApp message directly from cityLabel — no state needed.
+  // (Previously this was setState inside an effect, which lint correctly
+  // flagged as a cascading-render anti-pattern.)
+  const whatsappMessage = cityLabel
+    ? `Hi All Tails, I just submitted a pet grooming request in ${cityLabel}. Could you confirm my slot?`
+    : "Hi All Tails, I just submitted a grooming request and want to confirm the slot.";
 
   useEffect(() => {
     // Conversion-on-pageview: fire once per mount. Refresh-protected via

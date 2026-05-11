@@ -76,7 +76,7 @@ export const GLOSSARY_ENTRIES: Record<string, GlossaryEntry> = {
       "Hygiene haircuts are usually included in mid-tier grooming packages (such as All Tails' Signature Care at ₹1,299) and take an extra 20–30 minutes on top of the bath. They suit dogs whose owners want a clean, well-kept look without committing to a full styling cut — especially during summer or monsoon when full coats trap heat or moisture.",
       "For long-coated breeds (Shih Tzu, Lhasa Apso, Maltese), a regular hygiene haircut every 3–4 weeks combined with one full body cut every 8–10 weeks tends to be the most maintainable rhythm.",
     ],
-    related: ["dog-grooming", "complete-pampering"],
+    related: ["dog-grooming", "dental-hygiene-for-pets"],
   },
 
   "dental-hygiene-for-pets": {
@@ -127,7 +127,7 @@ export const GLOSSARY_ENTRIES: Record<string, GlossaryEntry> = {
     notes: [
       "De-shedding doesn't stop shedding entirely — it removes hair that would have fallen out anyway, just on your floor instead of in the tool. Genetics decide how much a dog sheds; grooming decides when and where.",
     ],
-    related: ["dog-grooming", "complete-pampering"],
+    related: ["dog-grooming", "coat-care-plan"],
   },
 
   "paw-butter": {
@@ -141,7 +141,7 @@ export const GLOSSARY_ENTRIES: Record<string, GlossaryEntry> = {
       "In a grooming session, paw butter is most often included in premium packages (All Tails' Complete Pampering at ₹1,799 includes it). The groomer trims excess hair between the pads first, cleans them, then applies the balm. Many owners reapply between visits during dry seasons.",
       "Paw butter is non-toxic and pet-safe if licked, which dogs usually do. That's intentional — the balm needs to be edible-safe because dogs are dogs. Anything you'd be uncomfortable putting on a baby's lips probably doesn't belong on a dog's paws either.",
     ],
-    related: ["dog-grooming", "complete-pampering"],
+    related: ["dog-grooming", "dental-hygiene-for-pets"],
   },
 
   "doorstep-pet-grooming": {
