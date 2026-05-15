@@ -1,6 +1,7 @@
 import { PrismaClient } from "../generated/prisma";
 import { getGroomerJobUrl } from "../groomerAccess";
 import { getBookingWindowDisplay } from "../booking/window";
+import { ACTIVE_BOOKING_SLOT_WHERE } from "../slots/releaseBookingSlots";
 import { sendTelegramMessage } from "./send";
 
 function maskPhone(phone: string) {
@@ -30,7 +31,11 @@ export async function sendBookingDispatchAlert({
       assignedTeam: true,
       service: true,
       pets: { include: { pet: true } },
-      slots: { include: { slot: { include: { team: true } } }, orderBy: { slot: { startTime: "asc" } } },
+      slots: {
+        where: ACTIVE_BOOKING_SLOT_WHERE,
+        include: { slot: { include: { team: true } } },
+        orderBy: { slot: { startTime: "asc" } },
+      },
     },
   });
 

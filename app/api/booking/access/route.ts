@@ -3,6 +3,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../lib/generated/prisma";
 import { assertBookingAccessToken, bookingAccessMatchesPhone } from "../_lib/assertBookingAccess";
 import { getBookingWindowDisplay } from "../../../../lib/booking/window";
+import { ACTIVE_BOOKING_SLOT_WHERE } from "../../../../lib/slots/releaseBookingSlots";
 
 export const runtime = "nodejs";
 
@@ -27,7 +28,11 @@ export async function POST(request: Request) {
       include: {
         user: true,
         service: true,
-        slots: { include: { slot: true }, orderBy: { slot: { startTime: "asc" } } },
+        slots: {
+          where: ACTIVE_BOOKING_SLOT_WHERE,
+          include: { slot: true },
+          orderBy: { slot: { startTime: "asc" } },
+        },
       },
     });
 

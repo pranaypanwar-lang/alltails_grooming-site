@@ -8,6 +8,10 @@ import {
   supersedeQueuedBookingLifecycleMessages,
 } from "../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../lib/customerMessaging/provider";
+import {
+  ACTIVE_BOOKING_SLOT_WHERE,
+  releaseBookingSlotReservations,
+} from "../../../../lib/slots/releaseBookingSlots";
 
 export const runtime = "nodejs";
 
@@ -37,7 +41,7 @@ export async function POST(request: Request) {
     const booking = await prisma.booking.findUnique({
       where: { id: bookingId },
       include: {
-        slots: true,
+        slots: { where: ACTIVE_BOOKING_SLOT_WHERE },
         user: true,
       },
     });
@@ -87,17 +91,7 @@ export async function POST(request: Request) {
         },
       });
 
-      for (const bookingSlot of booking.slots) {
-        await tx.bookingSlot.update({
-          where: { id: bookingSlot.id },
-          data: { status: "released" },
-        });
-
-        await tx.slot.update({
-          where: { id: bookingSlot.slotId },
-          data: { isBooked: false, isHeld: false, holdExpiresAt: null },
-        });
-      }
+      await releaseBookingSlotReservations(tx, bookingId, booking.slots);
 
       if (shouldRestoreReward) {
         await tx.user.update({

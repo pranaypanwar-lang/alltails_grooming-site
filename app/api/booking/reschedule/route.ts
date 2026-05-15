@@ -9,6 +9,10 @@ import {
 } from "../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../lib/customerMessaging/provider";
 import { validateAndLockSlots } from "../../../../lib/slots/validateAndLockSlots";
+import {
+  ACTIVE_BOOKING_SLOT_WHERE,
+  releaseBookingSlotReservations,
+} from "../../../../lib/slots/releaseBookingSlots";
 
 export const runtime = "nodejs";
 
@@ -49,6 +53,7 @@ export async function POST(request: Request) {
       include: {
         user: true,
         slots: {
+          where: ACTIVE_BOOKING_SLOT_WHERE,
           include: {
             slot: true,
           },
@@ -99,21 +104,7 @@ export async function POST(request: Request) {
       (!booking.paymentExpiresAt || booking.paymentExpiresAt <= new Date())
     ) {
       await prisma.$transaction(async (tx) => {
-        for (const oldBookingSlot of booking.slots) {
-          await tx.bookingSlot.update({
-            where: { id: oldBookingSlot.id },
-            data: { status: "released" },
-          });
-
-          await tx.slot.update({
-            where: { id: oldBookingSlot.slotId },
-            data: {
-              isBooked: false,
-              isHeld: false,
-              holdExpiresAt: null,
-            },
-          });
-        }
+        await releaseBookingSlotReservations(tx, booking.id, booking.slots);
 
         await tx.booking.update({
           where: { id: booking.id },
@@ -168,21 +159,7 @@ export async function POST(request: Request) {
     const nextBookingSlotStatus = isPendingPrepaid ? "hold" : "confirmed";
 
     await prisma.$transaction(async (tx) => {
-      for (const oldBookingSlot of booking.slots) {
-        await tx.bookingSlot.update({
-          where: { id: oldBookingSlot.id },
-          data: { status: "released" },
-        });
-
-        await tx.slot.update({
-          where: { id: oldBookingSlot.slotId },
-          data: {
-            isBooked: false,
-            isHeld: false,
-            holdExpiresAt: null,
-          },
-        });
-      }
+      await releaseBookingSlotReservations(tx, bookingId, booking.slots);
 
       const lockResult = await validateAndLockSlots(tx, slotIds, {
         mode: isPendingPrepaid ? "held" : "booked",

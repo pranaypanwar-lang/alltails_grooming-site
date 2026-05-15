@@ -5,6 +5,7 @@ import { Prisma, PrismaClient } from "../../../../lib/generated/prisma";
 import { assertAdminSession } from "../_lib/assertAdmin";
 import { getGamificationSnapshot } from "../../../../lib/groomerRewards";
 import { getBookingWindowDisplay } from "../../../../lib/booking/window";
+import { ACTIVE_BOOKING_SLOT_WHERE } from "../../../../lib/slots/releaseBookingSlots";
 
 export const runtime = "nodejs";
 
@@ -17,7 +18,7 @@ const bookingListInclude = {
   groomerMember: true,
   service: true,
   pets: { include: { pet: true } },
-  slots: { include: { slot: { include: { team: true } } } },
+  slots: { where: ACTIVE_BOOKING_SLOT_WHERE, include: { slot: { include: { team: true } } } },
 } satisfies Prisma.BookingInclude;
 
 type BookingListRecord = Prisma.BookingGetPayload<{ include: typeof bookingListInclude }>;
@@ -168,7 +169,7 @@ function buildListItem(booking: BookingListRecord, now: Date, includeFullPhone =
       startTime: bookingWindowDisplay.startTime,
       endTime: bookingWindowDisplay.endTime,
       displayLabel: bookingWindowDisplay.displayLabel,
-      slotIds: booking.slots.map((bookingSlot) => bookingSlot.slotId),
+      slotIds: sortedSlots.map((slot) => slot.id),
     } : null,
     pets: {
       count: booking.pets.length,

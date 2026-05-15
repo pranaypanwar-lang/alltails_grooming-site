@@ -8,6 +8,10 @@ import {
   processBookingRefund,
   type RefundMode,
 } from "../../../_lib/bookingAdmin";
+import {
+  ACTIVE_BOOKING_SLOT_WHERE,
+  releaseBookingSlotReservations,
+} from "../../../../../../lib/slots/releaseBookingSlots";
 
 export const runtime = "nodejs";
 
@@ -44,7 +48,7 @@ export async function POST(
 
     const booking = await adminPrisma.booking.findUnique({
       where: { id: bookingId },
-      include: { slots: true, user: true },
+      include: { slots: { where: ACTIVE_BOOKING_SLOT_WHERE }, user: true },
     });
 
     if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
@@ -72,13 +76,7 @@ export async function POST(
         },
       });
 
-      for (const bs of booking.slots) {
-        await tx.bookingSlot.update({ where: { id: bs.id }, data: { status: "released" } });
-        await tx.slot.update({
-          where: { id: bs.slotId },
-          data: { isBooked: false, isHeld: false, holdExpiresAt: null },
-        });
-      }
+      await releaseBookingSlotReservations(tx, bookingId, booking.slots);
 
       if (shouldRestoreReward) {
         await tx.user.update({

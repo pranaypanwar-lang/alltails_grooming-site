@@ -1,6 +1,7 @@
 import type { Prisma, PrismaClient } from "../generated/prisma";
 import { updateCustomerMessageStatus } from "./service";
 import { SLOT_BLOCK_DEPOSIT_AMOUNT } from "../booking/constants";
+import { ACTIVE_BOOKING_SLOT_WHERE } from "../slots/releaseBookingSlots";
 
 type DbClient = PrismaClient | Prisma.TransactionClient;
 
@@ -461,6 +462,7 @@ export async function processQueuedCustomerMessages(
             },
           },
           slots: {
+            where: ACTIVE_BOOKING_SLOT_WHERE,
             include: {
               slot: true,
             },

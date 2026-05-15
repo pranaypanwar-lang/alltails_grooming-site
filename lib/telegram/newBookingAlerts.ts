@@ -1,5 +1,6 @@
 import type { PrismaClient } from "../generated/prisma";
 import { getBookingWindowDisplay } from "../booking/window";
+import { ACTIVE_BOOKING_SLOT_WHERE } from "../slots/releaseBookingSlots";
 import { sendAdminTelegramMessage } from "./send";
 
 function buildAdminBookingUrl(baseUrl?: string | null) {
@@ -21,6 +22,7 @@ export async function sendNewBookingAdminAlert(params: {
       pets: { include: { pet: true } },
       assignedTeam: true,
       slots: {
+        where: ACTIVE_BOOKING_SLOT_WHERE,
         include: { slot: { include: { team: true } } },
         orderBy: { slot: { startTime: "asc" } },
       },

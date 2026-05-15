@@ -7,6 +7,7 @@ import { assertAdminSession } from "../_lib/assertAdmin";
 import { getAddressReadinessSummary } from "../../../../lib/booking/addressCapture";
 import { getGamificationSnapshot } from "../../../../lib/groomerRewards";
 import { getBookingWindowDisplay } from "../../../../lib/booking/window";
+import { ACTIVE_BOOKING_SLOT_WHERE } from "../../../../lib/slots/releaseBookingSlots";
 
 export const runtime = "nodejs";
 
@@ -286,7 +287,7 @@ export async function GET(req: NextRequest) {
         // the displayed window mixes old + new times (e.g. 6pm reschedule to
         // 9am rendered as "9am to 8pm").
         slots: {
-          where: { status: { notIn: ["released"] } },
+          where: ACTIVE_BOOKING_SLOT_WHERE,
           include: { slot: { include: { team: true } } },
         },
       },

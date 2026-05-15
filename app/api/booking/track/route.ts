@@ -4,6 +4,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../lib/generated/prisma";
 import { createBookingAccessToken } from "../../../../lib/auth/bookingAccess";
 import { getBookingWindowDisplay } from "../../../../lib/booking/window";
+import { ACTIVE_BOOKING_SLOT_WHERE } from "../../../../lib/slots/releaseBookingSlots";
 
 export const runtime = "nodejs";
 
@@ -194,7 +195,10 @@ export async function POST(request: Request) {
         user: true,
         service: true,
         pets: { include: { pet: true, assets: true } },
-        slots: { include: { slot: { include: { team: true } } } },
+        slots: {
+          where: ACTIVE_BOOKING_SLOT_WHERE,
+          include: { slot: { include: { team: true } } },
+        },
       },
       orderBy: { createdAt: "desc" },
     });

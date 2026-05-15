@@ -5,6 +5,10 @@ import {
   getExpiredPendingReleaseUpdate,
   isValidCronBearerToken,
 } from "../../../../lib/booking/holdExpiry";
+import {
+  ACTIVE_BOOKING_SLOT_WHERE,
+  releaseBookingSlotReservations,
+} from "../../../../lib/slots/releaseBookingSlots";
 
 export const runtime = "nodejs";
 
@@ -31,21 +35,17 @@ export async function POST(request: Request) {
         status: "pending_payment",
         paymentExpiresAt: { lt: now },
       },
-      include: { slots: true },
+      include: { slots: { where: ACTIVE_BOOKING_SLOT_WHERE } },
     });
 
     for (const booking of expiredBookings) {
       await prisma.$transaction(async (tx) => {
-        for (const bookingSlot of booking.slots) {
-          await tx.bookingSlot.update({
-            where: { id: bookingSlot.id },
-            data: releaseUpdate.bookingSlot,
-          });
-          await tx.slot.update({
-            where: { id: bookingSlot.slotId },
-            data: releaseUpdate.slot,
-          });
-        }
+        await releaseBookingSlotReservations(
+          tx,
+          booking.id,
+          booking.slots,
+          releaseUpdate.slot
+        );
         await tx.booking.update({
           where: { id: booking.id },
           data: releaseUpdate.booking,

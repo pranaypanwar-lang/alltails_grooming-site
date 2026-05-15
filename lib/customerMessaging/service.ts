@@ -1,5 +1,6 @@
 import type { Prisma, PrismaClient } from "../generated/prisma";
 import { getBookingWindowDisplay } from "../booking/window";
+import { ACTIVE_BOOKING_SLOT_WHERE } from "../slots/releaseBookingSlots";
 import {
   buildCustomerMessage,
   type ExtendedCustomerMessageType,
@@ -49,6 +50,7 @@ export async function prepareCustomerMessageForBooking(
       user: true,
       service: true,
       slots: {
+        where: ACTIVE_BOOKING_SLOT_WHERE,
         include: { slot: true },
         orderBy: { slot: { startTime: "asc" } },
       },

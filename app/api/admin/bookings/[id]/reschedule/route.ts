@@ -7,6 +7,10 @@ import {
 } from "../../../../../../lib/customerMessaging/service";
 import { processQueuedCustomerMessages } from "../../../../../../lib/customerMessaging/provider";
 import { validateAndLockSlots } from "../../../../../../lib/slots/validateAndLockSlots";
+import {
+  ACTIVE_BOOKING_SLOT_WHERE,
+  releaseBookingSlotReservations,
+} from "../../../../../../lib/slots/releaseBookingSlots";
 
 export const runtime = "nodejs";
 
@@ -31,7 +35,7 @@ export async function POST(
     const booking = await adminPrisma.booking.findUnique({
       where: { id: bookingId },
       include: {
-        slots: { include: { slot: true } },
+        slots: { where: ACTIVE_BOOKING_SLOT_WHERE, include: { slot: true } },
       },
     });
 
@@ -65,17 +69,7 @@ export async function POST(
     );
 
     await adminPrisma.$transaction(async (tx) => {
-      for (const oldBookingSlot of booking.slots) {
-        await tx.bookingSlot.update({
-          where: { id: oldBookingSlot.id },
-          data: { status: "released" },
-        });
-
-        await tx.slot.update({
-          where: { id: oldBookingSlot.slotId },
-          data: { isBooked: false, isHeld: false, holdExpiresAt: null },
-        });
-      }
+      await releaseBookingSlotReservations(tx, bookingId, booking.slots);
 
       const lockResult = await validateAndLockSlots(tx, slotIds, {
         mode: isPendingPrepaid ? "held" : "booked",

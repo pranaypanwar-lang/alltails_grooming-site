@@ -4,6 +4,7 @@ import { getAddressReadinessSummary } from "./booking/addressCapture";
 import { getBookingWindowDisplay } from "./booking/window";
 import { getBookingRewardSummary, getGamificationSnapshot } from "./groomerRewards";
 import { getServiceSlaSummary } from "./serviceSla";
+import { ACTIVE_BOOKING_SLOT_WHERE } from "./slots/releaseBookingSlots";
 
 type DbClient = PrismaClient | Prisma.TransactionClient;
 
@@ -14,7 +15,7 @@ type GroomerBookingRecord = Prisma.BookingGetPayload<{
     service: true;
     assignedTeam: { include: { members: { where: { isActive: true }, orderBy: { name: "asc" } } } };
     pets: { include: { pet: { include: { assets: true } }, assets: true } };
-    slots: { include: { slot: { include: { team: true } } } };
+    slots: { where: typeof ACTIVE_BOOKING_SLOT_WHERE; include: { slot: { include: { team: true } } } };
     sopSteps: { include: { proofs: true } };
     paymentCollection: true;
     customerMessages: true;
@@ -197,7 +198,10 @@ export async function fetchGroomerBooking(prisma: DbClient, bookingId: string) {
       groomerMember: true,
       service: true,
       pets: { include: { pet: { include: { assets: true } }, assets: true } },
-      slots: { include: { slot: { include: { team: true } } } },
+      slots: {
+        where: ACTIVE_BOOKING_SLOT_WHERE,
+        include: { slot: { include: { team: true } } },
+      },
       sopSteps: { include: { proofs: true }, orderBy: { createdAt: "asc" } },
       paymentCollection: true,
       customerMessages: { orderBy: { preparedAt: "desc" }, take: 6 },
