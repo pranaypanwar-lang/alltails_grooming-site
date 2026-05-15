@@ -60,6 +60,12 @@ describe("Razorpay verification helpers", () => {
       }
     );
 
+    // Late payment is now ACCEPTED (signature already proves it's real) —
+    // we surface isLatePayment + holdExpiredBySeconds so the route can
+    // log/alert ops, but never reject the customer's captured money.
+    // Previously this returned a 409 "Payment window has expired" error
+    // which caused production cases of customers whose deposit was charged
+    // by Razorpay but our verify rejected — slot then expired silently.
     assert.deepEqual(
       validateBookingPaymentVerification({
         bookingPhone: "9999999999",
@@ -71,9 +77,9 @@ describe("Razorpay verification helpers", () => {
         bookingAccessMatchesPhone: matchesPhone,
       }),
       {
-        ok: false,
-        status: 409,
-        error: "Payment window has expired",
+        ok: true,
+        isLatePayment: true,
+        holdExpiredBySeconds: 3600,
       }
     );
 
@@ -103,7 +109,7 @@ describe("Razorpay verification helpers", () => {
         now: new Date("2026-04-20T10:00:00.000Z"),
         bookingAccessMatchesPhone: matchesPhone,
       }),
-      { ok: true }
+      { ok: true, isLatePayment: false, holdExpiredBySeconds: 0 }
     );
   });
 });

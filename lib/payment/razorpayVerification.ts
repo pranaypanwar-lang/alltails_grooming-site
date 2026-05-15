@@ -44,14 +44,6 @@ export function validateBookingPaymentVerification(input: {
     };
   }
 
-  if (input.paymentExpiresAt && input.paymentExpiresAt < (input.now ?? new Date())) {
-    return {
-      ok: false as const,
-      status: 409,
-      error: "Payment window has expired",
-    };
-  }
-
   if (!input.bookingOrderId || input.bookingOrderId !== input.orderId) {
     return {
       ok: false as const,
@@ -60,5 +52,26 @@ export function validateBookingPaymentVerification(input: {
     };
   }
 
-  return { ok: true as const };
+  // paymentExpiresAt is intentionally NOT a hard reject anymore. Bug surfaced
+  // in production: customers who took an extra few seconds on the Razorpay
+  // screen (so verify hit our server a moment past the 15-min hold) had
+  // their card charged by Razorpay but our verify returned 409 — the slot
+  // then sat unpaid and got cancelled. The Razorpay signature check above
+  // already proves the payment is genuine; Razorpay enforces order-level
+  // expiry on its own side, so a valid signature means a real captured
+  // payment. We surface the late case so the caller can log/alert ops,
+  // but never reject the customer's money.
+  const now = input.now ?? new Date();
+  const isLatePayment = !!(
+    input.paymentExpiresAt && input.paymentExpiresAt < now
+  );
+  const holdExpiredBySeconds = isLatePayment && input.paymentExpiresAt
+    ? Math.round((now.getTime() - input.paymentExpiresAt.getTime()) / 1000)
+    : 0;
+
+  return {
+    ok: true as const,
+    isLatePayment,
+    holdExpiredBySeconds,
+  };
 }

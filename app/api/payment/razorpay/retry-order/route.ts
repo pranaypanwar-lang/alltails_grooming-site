@@ -5,6 +5,10 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../../lib/generated/prisma";
 import { assertBookingAccessToken, bookingAccessMatchesPhone } from "../../../booking/_lib/assertBookingAccess";
 import { SLOT_BLOCK_DEPOSIT_AMOUNT } from "../../../../../lib/booking/constants";
+import {
+  ACTIVE_BOOKING_SLOT_WHERE,
+  releaseBookingSlotReservations,
+} from "../../../../../lib/slots/releaseBookingSlots";
 
 export const runtime = "nodejs";
 
@@ -34,7 +38,7 @@ export async function POST(request: Request) {
 
     const booking = await prisma.booking.findUnique({
       where: { id: bookingId },
-      include: { slots: true, user: true },
+      include: { slots: { where: ACTIVE_BOOKING_SLOT_WHERE }, user: true },
     });
 
     if (!booking) {
@@ -67,16 +71,10 @@ export async function POST(request: Request) {
     // If hold expired, release slots and close the booking
     if (!booking.paymentExpiresAt || booking.paymentExpiresAt < new Date()) {
       await prisma.$transaction(async (tx) => {
-        for (const bookingSlot of booking.slots) {
-          await tx.bookingSlot.update({
-            where: { id: bookingSlot.id },
-            data: { status: "released" },
-          });
-          await tx.slot.update({
-            where: { id: bookingSlot.slotId },
-            data: { isHeld: false, holdExpiresAt: null },
-          });
-        }
+        await releaseBookingSlotReservations(tx, booking.id, booking.slots, {
+          isHeld: false,
+          holdExpiresAt: null,
+        });
         await tx.booking.update({
           where: { id: booking.id },
           data: {

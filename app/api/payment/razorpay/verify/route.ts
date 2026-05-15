@@ -15,6 +15,7 @@ import {
 import { processQueuedCustomerMessages } from "../../../../../lib/customerMessaging/provider";
 import { sendNewBookingAdminAlert } from "../../../../../lib/telegram/newBookingAlerts";
 import { sendMetaConversionsEvent } from "../../../../../lib/analytics/metaConversionsApi";
+import { settleRazorpayBookingPayment } from "../../../../../lib/payment/settleRazorpayBooking";
 
 export const runtime = "nodejs";
 
@@ -92,10 +93,17 @@ export async function POST(request: Request) {
       );
     }
 
-    const updatedBooking = await prisma.$transaction(async (tx) => {
+    // Track late-payment signal across the transaction boundary so we can
+    // log + alert ops after the booking is safely marked paid.
+    let latePaymentInfo: { isLate: boolean; holdExpiredBySeconds: number } = {
+      isLate: false,
+      holdExpiredBySeconds: 0,
+    };
+
+    const settlement = await prisma.$transaction(async (tx) => {
       const booking = await tx.booking.findUnique({
         where: { id: bookingId },
-        include: { slots: true, user: true, service: true },
+        include: { user: true },
       });
 
       if (!booking) {
@@ -116,79 +124,84 @@ export async function POST(request: Request) {
         });
       }
 
-      // Pay-after-service bookings settle a deposit only at this stage; the
-      // balance is collected by the groomer after the visit.
-      const isDepositPayment = booking.paymentMethod === "pay_after_service";
+      // Late-payment signal: customer paid past their local hold window
+      // but Razorpay still captured the money. We accept and proceed —
+      // never reject a real captured payment — but we surface this for ops.
+      latePaymentInfo = {
+        isLate: validation.isLatePayment,
+        holdExpiredBySeconds: validation.holdExpiredBySeconds,
+      };
 
-      const updated = await tx.booking.update({
-        where: { id: bookingId },
-        data: {
-          paymentStatus: isDepositPayment ? "deposit_paid" : "paid",
-          status: "confirmed",
-          razorpayOrderId: razorpay_order_id,
-          razorpayPaymentId: razorpay_payment_id,
-          paymentPendingReason: null,
-          paymentGatewayError: null,
-          paymentFailedAt: null,
-        },
-        include: {
-          user: true,
-          service: true,
-          _count: { select: { pets: true } },
-        },
+      return settleRazorpayBookingPayment(tx, {
+        bookingId,
+        razorpayOrderId: razorpay_order_id,
+        razorpayPaymentId: razorpay_payment_id,
+        source: "checkout_verify",
       });
-
-      for (const bookingSlot of booking.slots) {
-        await tx.bookingSlot.update({
-          where: { id: bookingSlot.id },
-          data: { status: "confirmed" },
-        });
-
-        await tx.slot.update({
-          where: { id: bookingSlot.slotId },
-          data: { isBooked: true, isHeld: false, holdExpiresAt: null },
-        });
-      }
-
-      return updated;
     });
+    const updatedBooking = settlement.booking;
 
-    await supersedeQueuedBookingLifecycleMessages(prisma, updatedBooking.id, {
-      keepMessageTypes: ["booking_confirmation"],
-    });
-    const prepared = await prepareCustomerMessageForBooking(prisma, updatedBooking.id, "booking_confirmation", {
-      skipIfPreparedAfter: new Date(Date.now() - 5 * 60 * 1000),
-      deliveryStatus: "queued",
-    });
-    await processQueuedCustomerMessages(prisma, { limit: 10, messageIds: [prepared.message.id] });
+    if (!settlement.alreadySettled) {
+      await supersedeQueuedBookingLifecycleMessages(prisma, updatedBooking.id, {
+        keepMessageTypes: ["booking_confirmation"],
+      });
+      const prepared = await prepareCustomerMessageForBooking(prisma, updatedBooking.id, "booking_confirmation", {
+        skipIfPreparedAfter: new Date(Date.now() - 5 * 60 * 1000),
+        deliveryStatus: "queued",
+      });
+      await processQueuedCustomerMessages(prisma, { limit: 10, messageIds: [prepared.message.id] });
+    }
+
+    // Log late-payment cases to Vercel logs — searchable later when
+    // reconciling slot-availability incidents. Includes booking id + how
+    // many seconds past the hold the payment arrived so ops can spot
+    // patterns (e.g. always 5-10 sec late → bump PAYMENT_HOLD_MINUTES).
+    if (latePaymentInfo.isLate) {
+      console.warn(
+        "[razorpay-verify] Accepted late payment",
+        JSON.stringify({
+          bookingId: updatedBooking.id,
+          paymentMethod: updatedBooking.paymentMethod,
+          holdExpiredBySeconds: latePaymentInfo.holdExpiredBySeconds,
+          razorpayPaymentId: razorpay_payment_id,
+        })
+      );
+    }
 
     try {
-      await sendNewBookingAdminAlert({
-        prisma,
-        bookingId: updatedBooking.id,
-        sourceLabel: updatedBooking.paymentMethod === "pay_after_service" ? "website pay-after-service deposit" : "website prepaid",
-        baseUrl: getPublicAppUrl(request),
-      });
+      const lateTag = latePaymentInfo.isLate
+        ? ` (late by ${latePaymentInfo.holdExpiredBySeconds}s)`
+        : "";
+      if (!settlement.alreadySettled) {
+        await sendNewBookingAdminAlert({
+          prisma,
+          bookingId: updatedBooking.id,
+          sourceLabel: (updatedBooking.paymentMethod === "pay_after_service" ? "website pay-after-service deposit" : "website prepaid") + lateTag,
+          baseUrl: getPublicAppUrl(request),
+        });
+      }
     } catch (error) {
       console.error("Admin Telegram prepaid booking alert failed:", error);
     }
 
     try {
-      await sendMetaConversionsEvent({
-        request,
-        eventName: "Purchase",
-        bookingId: updatedBooking.id,
-        phone: updatedBooking.user.phone,
-        externalId: updatedBooking.user.id,
-        name: updatedBooking.user.name,
-        city: updatedBooking.user.city,
-        serviceName: updatedBooking.service.name,
-        value: updatedBooking.finalAmount,
-        currency: "INR",
-        petCount: updatedBooking._count.pets,
-        selectedDate: updatedBooking.selectedDate ?? null,
-        paymentMethod: updatedBooking.paymentMethod,
-      });
+      if (!settlement.alreadySettled) {
+        await sendMetaConversionsEvent({
+          request,
+          eventName: "Purchase",
+          bookingId: updatedBooking.id,
+          phone: updatedBooking.user.phone,
+          externalId: updatedBooking.user.id,
+          name: updatedBooking.user.name,
+          city: updatedBooking.user.city,
+          serviceName: updatedBooking.service.name,
+          value: updatedBooking.finalAmount,
+          currency: "INR",
+          petCount: updatedBooking._count.pets,
+          selectedDate: updatedBooking.selectedDate ?? null,
+          paymentMethod: updatedBooking.paymentMethod,
+        });
+      }
     } catch (error) {
       console.error("Meta Conversions API Purchase event failed:", error);
     }
