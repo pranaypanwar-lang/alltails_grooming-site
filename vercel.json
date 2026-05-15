@@ -5,6 +5,10 @@
       "schedule": "*/10 * * * *"
     },
     {
+      "path": "/api/admin/cron/razorpay-payment-reconcile",
+      "schedule": "*/5 * * * *"
+    },
+    {
       "path": "/api/admin/cron/night-before-customer-reminders",
       "schedule": "30 14 * * *"
     },
