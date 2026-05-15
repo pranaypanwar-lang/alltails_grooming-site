@@ -1,3 +1,5 @@
+import { dogGroomingAtHomeBlog } from "./blogDefaults/dogGroomingAtHome";
+
 export type LegalDocumentDefault = {
   slug: "privacy-policy" | "terms-and-conditions" | "cancellation-policy" | "refund-policy";
   title: string;
@@ -143,6 +145,7 @@ Timelines may vary depending on the payment partner and banking channel. All Tai
 ];
 
 export const BLOG_POST_DEFAULTS = [
+  dogGroomingAtHomeBlog,
   {
     slug: "how-often-should-you-groom-your-pet",
     title: "How often should you groom your pet?",

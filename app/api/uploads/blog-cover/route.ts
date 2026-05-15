@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { putBookingAsset } from "../../../../lib/storage/putBookingAsset";
+import { assertAdminSession } from "../../admin/_lib/assertAdmin";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  const authErr = await assertAdminSession();
+  if (authErr) return authErr;
+
   try {
     const formData = await request.formData();
     const file = formData.get("file");
