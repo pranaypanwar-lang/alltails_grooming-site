@@ -6,6 +6,23 @@ import { putBookingAsset } from "../../../../../../lib/storage/putBookingAsset";
 import { syncCashCollectionLedgerForBooking } from "../../../../../../lib/finance/groomerLedger";
 
 export const runtime = "nodejs";
+const MAX_PAYMENT_PROOF_BYTES = 4 * 1024 * 1024;
+
+function getExtension(fileName: string) {
+  return fileName.split(".").pop()?.toLowerCase() || "";
+}
+
+function inferImageMimeType(file: File) {
+  const normalized = file.type.split(";")[0]?.trim().toLowerCase();
+  if (normalized) return normalized;
+  const extension = getExtension(file.name);
+  if (extension === "png") return "image/png";
+  if (extension === "webp") return "image/webp";
+  if (extension === "heic") return "image/heic";
+  if (extension === "heif") return "image/heif";
+  if (["jpg", "jpeg"].includes(extension)) return "image/jpeg";
+  return "";
+}
 
 export async function POST(
   request: NextRequest,
@@ -48,12 +65,13 @@ export async function POST(
     if (collectionMode !== "waived" && !file) {
       return NextResponse.json({ error: "Payment photo or screenshot is required" }, { status: 400 });
     }
+    const paymentMimeType = file ? inferImageMimeType(file) : "";
     if (file) {
-      if (!file.type.startsWith("image/")) {
+      if (!paymentMimeType.startsWith("image/")) {
         return NextResponse.json({ error: "Only image uploads are allowed for payment" }, { status: 400 });
       }
-      if (file.size > 12 * 1024 * 1024) {
-        return NextResponse.json({ error: "Payment image must be under 12MB" }, { status: 400 });
+      if (file.size > MAX_PAYMENT_PROOF_BYTES) {
+        return NextResponse.json({ error: "Payment image must be under 4MB. Please retake the photo or send a lighter screenshot." }, { status: 400 });
       }
     }
 
@@ -66,19 +84,19 @@ export async function POST(
     }
 
     const uploadedPaymentImage = file ? await (async () => {
-      const extension = file.name.split(".").pop() || "jpg";
+      const extension = getExtension(file.name) || "jpg";
       const storageKey = `booking-sop/payment_proof/${bookingId}/${randomUUID()}.${extension}`;
       const buffer = Buffer.from(await file.arrayBuffer());
       const uploaded = await putBookingAsset({
         storageKey,
         body: buffer,
-        contentType: file.type,
+        contentType: paymentMimeType || "image/jpeg",
       });
       return {
         storageKey,
         publicUrl: uploaded.publicUrl,
         originalName: file.name,
-        mimeType: file.type,
+        mimeType: paymentMimeType || file.type,
         sizeBytes: file.size,
       };
     })() : null;

@@ -63,6 +63,52 @@ type GroomerTemperamentInfo = {
   Icon: typeof Heart;
 };
 
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+const MAX_IMAGE_DIMENSION = 1600;
+
+function fileExtension(file: File) {
+  return file.name.split(".").pop()?.toLowerCase() ?? "";
+}
+
+function isImageFile(file: File) {
+  const extension = fileExtension(file);
+  return file.type.startsWith("image/") || ["jpg", "jpeg", "png", "webp", "heic", "heif"].includes(extension);
+}
+
+function isVideoFile(file: File) {
+  const extension = fileExtension(file);
+  return file.type.startsWith("video/") || ["mp4", "mov", "webm", "m4v"].includes(extension);
+}
+
+async function compressImageForUpload(file: File) {
+  if (!isImageFile(file) || file.size <= MAX_UPLOAD_BYTES) return file;
+  if (typeof document === "undefined") return file;
+
+  const objectUrl = URL.createObjectURL(file);
+  try {
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error("Photo compress nahi ho paayi. Camera se fresh photo try karein."));
+      img.src = objectUrl;
+    });
+
+    const scale = Math.min(1, MAX_IMAGE_DIMENSION / Math.max(image.naturalWidth, image.naturalHeight));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+    canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+    const context = canvas.getContext("2d");
+    if (!context) return file;
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.72));
+    if (!blob || blob.size >= file.size) return file;
+    return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
 const GROOMER_TEMPERAMENT: Record<GroomerTemperament, GroomerTemperamentInfo> = {
   calm: {
     key: "calm",
@@ -226,19 +272,19 @@ async function getVideoDuration(file: File) {
 }
 
 async function validateCapture(file: File) {
-  if (file.type.startsWith("video/")) {
+  if (isVideoFile(file)) {
     const duration = await getVideoDuration(file);
     if (duration > 15.5) {
       throw new Error("Video 10-15 second ke andar rakhein.");
     }
   }
 
-  if (file.type.startsWith("image/") && file.size > 12 * 1024 * 1024) {
-    throw new Error("Photo 12MB se chhoti rakhein.");
+  if (isImageFile(file) && file.size > MAX_UPLOAD_BYTES) {
+    throw new Error("Photo upload ke liye heavy hai. Camera se ek fresh photo try karein.");
   }
 
-  if (file.type.startsWith("video/") && file.size > 50 * 1024 * 1024) {
-    throw new Error("Video 50MB se chhota rakhein.");
+  if (isVideoFile(file) && file.size > MAX_UPLOAD_BYTES) {
+    throw new Error("Video heavy ho gaya. 10 second ka short video dobara record karein.");
   }
 }
 
@@ -842,7 +888,12 @@ export function GroomerJobClient({
     }
 
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: "environment" } },
+      video: {
+        facingMode: { ideal: "environment" },
+        width: { ideal: 854, max: 1280 },
+        height: { ideal: 480, max: 720 },
+        frameRate: { ideal: 15, max: 20 },
+      },
       audio: true,
     });
     mediaStreamRef.current = stream;
@@ -882,8 +933,15 @@ export function GroomerJobClient({
     const supportedMimeType =
       preferredMimeTypes.find((type) => MediaRecorder.isTypeSupported(type)) ?? "";
     const recorder = supportedMimeType
-      ? new MediaRecorder(stream, { mimeType: supportedMimeType })
-      : new MediaRecorder(stream);
+      ? new MediaRecorder(stream, {
+          mimeType: supportedMimeType,
+          videoBitsPerSecond: 650_000,
+          audioBitsPerSecond: 32_000,
+        })
+      : new MediaRecorder(stream, {
+          videoBitsPerSecond: 650_000,
+          audioBitsPerSecond: 32_000,
+        });
 
     recordingChunksRef.current = [];
     recorder.ondataavailable = (event) => {
@@ -1009,13 +1067,14 @@ export function GroomerJobClient({
     file: File,
     options?: { skipClientValidation?: boolean }
   ) => {
-    if (!options?.skipClientValidation) {
-      await validateCapture(file);
+    const uploadFile = isImageFile(file) ? await compressImageForUpload(file) : file;
+    if (!options?.skipClientValidation || uploadFile.size > MAX_UPLOAD_BYTES) {
+      await validateCapture(uploadFile);
     }
 
     const formData = new FormData();
     formData.set("stepKey", stepKey);
-    formData.set("file", file, file.name);
+    formData.set("file", uploadFile, uploadFile.name);
 
     const res = await fetch(`/api/groomer/bookings/${booking.id}/sop/proof${tokenQuery}`, {
       method: "POST",
@@ -1071,8 +1130,10 @@ export function GroomerJobClient({
         : "पेमेंट के साथ फोटो या स्क्रीनशॉट ज़रूर जोड़िए।");
     }
 
-    if (paymentImage) {
-      await validateCapture(paymentImage);
+    const uploadPaymentImage = paymentImage ? await compressImageForUpload(paymentImage) : null;
+
+    if (uploadPaymentImage) {
+      await validateCapture(uploadPaymentImage);
     }
 
     const formData = new FormData();
@@ -1080,8 +1141,8 @@ export function GroomerJobClient({
     formData.set("collectedAmount", String(normalizedAmount));
     formData.set("notes", paymentNotes);
     formData.set("applyServiceAmountChange", String(applyServiceAmountChange));
-    if (paymentImage) {
-      formData.set("file", paymentImage);
+    if (uploadPaymentImage) {
+      formData.set("file", uploadPaymentImage, uploadPaymentImage.name);
     }
 
     const res = await fetch(`/api/groomer/bookings/${booking.id}/payment-proof${tokenQuery}`, {

@@ -7,9 +7,34 @@ import { putBookingAsset } from "../../../../../../../lib/storage/putBookingAsse
 import { awardReviewReward } from "../../../../../../../lib/groomerRewards";
 
 export const runtime = "nodejs";
+const MAX_PROOF_UPLOAD_BYTES = 4 * 1024 * 1024;
+
+function getExtension(fileName: string) {
+  return fileName.split(".").pop()?.toLowerCase() || "";
+}
 
 function normalizeMimeType(type: string) {
   return type.split(";")[0]?.trim().toLowerCase();
+}
+
+function inferMimeType(file: File) {
+  const normalized = normalizeMimeType(file.type || "");
+  const extension = getExtension(file.name);
+  if (normalized) return normalized;
+  if (["jpg", "jpeg", "heic", "heif", "png", "webp"].includes(extension)) {
+    return extension === "png"
+      ? "image/png"
+      : extension === "webp"
+        ? "image/webp"
+        : extension === "heic"
+          ? "image/heic"
+          : extension === "heif"
+            ? "image/heif"
+            : "image/jpeg";
+  }
+  if (["mp4", "m4v", "mov"].includes(extension)) return "video/mp4";
+  if (extension === "webm") return "video/webm";
+  return "";
 }
 
 function getProofFolder(stepKey: string) {
@@ -42,17 +67,17 @@ export async function POST(
       return NextResponse.json({ error: "SOP step configuration not found" }, { status: 400 });
     }
 
-    const normalizedMimeType = normalizeMimeType(file.type);
+    const normalizedMimeType = inferMimeType(file);
     const isImage = normalizedMimeType.startsWith("image/");
     const isVideo = normalizedMimeType.startsWith("video/");
     if (!isImage && !isVideo) {
       return NextResponse.json({ error: "Only image or video uploads are allowed" }, { status: 400 });
     }
-    if (file.size > 50 * 1024 * 1024) {
-      return NextResponse.json({ error: "Max allowed size is 50MB" }, { status: 400 });
+    if (file.size > MAX_PROOF_UPLOAD_BYTES) {
+      return NextResponse.json({ error: "Proof file must be under 4MB. Please retake a shorter video or lighter photo." }, { status: 400 });
     }
 
-    const extension = file.name.split(".").pop() || (isVideo ? "mp4" : "jpg");
+    const extension = getExtension(file.name) || (isVideo ? "mp4" : "jpg");
     const storageKey = `${getProofFolder(stepKey)}/${bookingId}/${randomUUID()}.${extension}`;
     const buffer = Buffer.from(await file.arrayBuffer());
     const uploaded = await putBookingAsset({
