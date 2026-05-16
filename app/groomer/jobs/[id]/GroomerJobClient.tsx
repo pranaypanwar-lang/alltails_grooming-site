@@ -1633,6 +1633,17 @@ export function GroomerJobClient({
                 onToggle={() => setExpandedStepKey((prev) => (prev === step.key ? null : step.key))}
                 mode={languageMode}
               >
+                {step.key === "review_proof" ? (
+                  <div className="mb-3">
+                    <GroomerQrCard
+                      title={languageMode === "simple" ? "Google review QR" : "गूगल रिव्यू QR"}
+                      hint={languageMode === "simple" ? "Review maangte waqt customer ko ye QR scan karwa dein." : "रिव्यू लेते वक्त कस्टमर को यह QR स्कैन करवा दें।"}
+                      src={GROOMER_GOOGLE_REVIEW_QR_URL}
+                      alt="All Tails Google review QR code"
+                    />
+                  </div>
+                ) : null}
+
                 <div className="flex flex-wrap gap-2">
                   {step.proofType === "video" ? (
                     <ActionButton
@@ -1710,18 +1721,12 @@ export function GroomerJobClient({
           />
 
           <div className="mt-3 grid gap-3">
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3">
               <GroomerQrCard
                 title={languageMode === "simple" ? "Company payment QR" : "कंपनी पेमेंट QR"}
                 hint={languageMode === "simple" ? "Customer ko scan karwa ke online payment collect karein." : "कस्टमर को स्कैन करवा के ऑनलाइन पेमेंट लें।"}
                 src={GROOMER_PAYMENT_QR_URL}
                 alt="All Tails company payment QR code"
-              />
-              <GroomerQrCard
-                title={languageMode === "simple" ? "Google review QR" : "गूगल रिव्यू QR"}
-                hint={languageMode === "simple" ? "Service ke baad customer se review scan karwa sakte hain." : "सर्विस के बाद कस्टमर से रिव्यू स्कैन करवा सकते हैं।"}
-                src={GROOMER_GOOGLE_REVIEW_QR_URL}
-                alt="All Tails Google review QR code"
               />
             </div>
 
