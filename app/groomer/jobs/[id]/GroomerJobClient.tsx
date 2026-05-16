@@ -51,6 +51,9 @@ const PAYMENT_MODE_LABELS: Record<"cash" | "online" | "waived", TextValue> = {
   waived: { simple: "Maaf", hindi: "शुल्क माफ़" },
 };
 
+const GROOMER_PAYMENT_QR_URL = "/images/groomer/payment-qr.jpg";
+const GROOMER_GOOGLE_REVIEW_QR_URL = "/images/groomer/google-review-qr.png";
+
 type GroomerTemperament = "calm" | "anxious" | "can_bite";
 
 type GroomerTemperamentInfo = {
@@ -387,6 +390,39 @@ function CaptureButton({
         }}
       />
     </label>
+  );
+}
+
+function GroomerQrCard({
+  title,
+  hint,
+  src,
+  alt,
+}: {
+  title: string;
+  hint: string;
+  src: string;
+  alt: string;
+}) {
+  return (
+    <a
+      href={src}
+      target="_blank"
+      rel="noreferrer"
+      className="flex min-w-0 items-center gap-3 rounded-[20px] border border-[#eadffd] bg-[#fbf9ff] p-3"
+    >
+      <span className="flex h-[104px] w-[104px] shrink-0 items-center justify-center overflow-hidden rounded-[18px] border border-[#e7ddff] bg-white p-2 shadow-[0_10px_22px_rgba(73,44,120,0.08)]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={src} alt={alt} className="h-full w-full object-contain" />
+      </span>
+      <span className="min-w-0">
+        <span className="block text-[15px] font-black leading-tight text-[#2a2346]">{title}</span>
+        <span className="mt-1 block text-[12px] leading-[1.55] text-[#6b7280]">{hint}</span>
+        <span className="mt-2 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[#6d5bd0]">
+          Tap to open
+        </span>
+      </span>
+    </a>
   );
 }
 
@@ -1674,6 +1710,21 @@ export function GroomerJobClient({
           />
 
           <div className="mt-3 grid gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <GroomerQrCard
+                title={languageMode === "simple" ? "Company payment QR" : "कंपनी पेमेंट QR"}
+                hint={languageMode === "simple" ? "Customer ko scan karwa ke online payment collect karein." : "कस्टमर को स्कैन करवा के ऑनलाइन पेमेंट लें।"}
+                src={GROOMER_PAYMENT_QR_URL}
+                alt="All Tails company payment QR code"
+              />
+              <GroomerQrCard
+                title={languageMode === "simple" ? "Google review QR" : "गूगल रिव्यू QR"}
+                hint={languageMode === "simple" ? "Service ke baad customer se review scan karwa sakte hain." : "सर्विस के बाद कस्टमर से रिव्यू स्कैन करवा सकते हैं।"}
+                src={GROOMER_GOOGLE_REVIEW_QR_URL}
+                alt="All Tails Google review QR code"
+              />
+            </div>
+
             <select
               value={paymentMode}
               onChange={(event) => setPaymentMode(event.target.value as "cash" | "online" | "waived")}
