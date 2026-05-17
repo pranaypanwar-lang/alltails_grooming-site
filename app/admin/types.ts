@@ -441,9 +441,21 @@ export type AdminSavedPet = {
   defaultStylingNotes: string | null;
 };
 
+export type AdminSavedAddress = {
+  serviceAddress: string;
+  serviceLandmark: string;
+  servicePincode: string;
+  serviceLocationUrl: string;
+  serviceLat: number | null;
+  serviceLng: number | null;
+  serviceLocationSource: string | null;
+  addressUpdatedAt: string | null;
+};
+
 export type AdminSavedPetsResponse = {
   found: boolean;
   pets: AdminSavedPet[];
+  savedAddress: AdminSavedAddress | null;
 };
 
 export type AdminManualBookingSource =

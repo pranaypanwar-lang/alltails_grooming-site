@@ -109,6 +109,7 @@ export default function AdminNewBookingPage() {
   const [savedPetsLoading, setSavedPetsLoading] = useState(false);
   const [savedPetsError, setSavedPetsError] = useState("");
   const [savedPetsLookupPhone, setSavedPetsLookupPhone] = useState("");
+  const [addressAutoFilled, setAddressAutoFilled] = useState(false);
 
   const [availabilityLoading, setAvailabilityLoading] = useState(false);
   const [availabilityError, setAvailabilityError] = useState("");
@@ -361,6 +362,18 @@ export default function AdminNewBookingPage() {
       const data = await fetchAdminSavedPetsByPhone(phone);
       setSavedPets(data.pets);
       setSavedPetsLookupPhone(phone);
+
+      // Auto-fill address from the customer's most recent booking
+      if (data.savedAddress) {
+        setServiceAddress(data.savedAddress.serviceAddress);
+        setServiceLandmark(data.savedAddress.serviceLandmark);
+        setServicePincode(data.savedAddress.servicePincode ?? "");
+        setServiceLocationUrl(data.savedAddress.serviceLocationUrl ?? "");
+        setAddressAutoFilled(true);
+      } else {
+        setAddressAutoFilled(false);
+      }
+
       if (!data.found || data.pets.length === 0) {
         setSavedPetsError("No saved companions found for this phone number.");
       }
@@ -627,7 +640,14 @@ export default function AdminNewBookingPage() {
               </div>
 
               <div className="mt-5 rounded-[22px] border border-[#ece5ff] bg-[#fcfbff] p-4">
-                <div className="text-[14px] font-bold text-[#2a2346]">Service address</div>
+                <div className="flex items-center gap-2">
+                  <div className="text-[14px] font-bold text-[#2a2346]">Service address</div>
+                  {addressAutoFilled ? (
+                    <span className="rounded-full bg-[#edfbf1] px-2.5 py-0.5 text-[11px] font-semibold text-[#11724f]">
+                      Auto-filled from previous booking
+                    </span>
+                  ) : null}
+                </div>
                 <div className="mt-3 grid gap-4">
                   <label className="block">
                     <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Address</div>

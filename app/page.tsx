@@ -7398,17 +7398,17 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
       </h1>
 
       {/* trust strip */}
-      <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-white/82">
-        <div className="flex items-center gap-0.5">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <Star key={i} className="h-3.5 w-3.5 fill-[#FACC15] text-[#FACC15]" />
-          ))}
-        </div>
-        <span className="font-semibold">4.9★ · 327+ reviews</span>
-        <span className="text-white/55">·</span>
-        <span>From ₹999</span>
-        <span className="text-white/55">·</span>
-        <span>Pay after session</span>
+      <div className="mt-5 flex flex-wrap gap-2">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.15] bg-white/[0.08] px-3 py-1.5 text-[12px] font-semibold text-white backdrop-blur-sm">
+          <Star className="h-3 w-3 fill-[#FACC15] text-[#FACC15]" />
+          4.9 · 327+ reviews
+        </span>
+        <span className="inline-flex items-center rounded-full border border-white/[0.15] bg-white/[0.08] px-3 py-1.5 text-[12px] font-semibold text-white backdrop-blur-sm">
+          From ₹999
+        </span>
+        <span className="inline-flex items-center rounded-full border border-white/[0.15] bg-white/[0.08] px-3 py-1.5 text-[12px] font-semibold text-white backdrop-blur-sm">
+          Pay after session
+        </span>
       </div>
 
       {/* City strip — keeps the brand premium (no long marketing
