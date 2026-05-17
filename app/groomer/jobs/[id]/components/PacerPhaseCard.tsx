@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, CheckCircle2, ChevronRight, Circle, Video } from "lucide-react";
+import { Camera, CheckCircle2, ChevronDown, ChevronRight, Circle, Video } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 function playAlarmBeep() {
@@ -30,7 +30,7 @@ function playAlarmBeep() {
     // Vibration not available
   }
 }
-import type { PacerPhase } from "../../../../../lib/booking/pacerPhases";
+import type { CoachingStep, PacerPhase } from "../../../../../lib/booking/pacerPhases";
 import type { GroomerBookingView } from "../../../../../lib/groomerPortal";
 import { SyncStatusBadge } from "./SyncStatusBadge";
 import type { StepSyncState } from "../hooks/useOfflineQueue";
@@ -78,6 +78,85 @@ function timerBarColor(secondsRemaining: number, totalSeconds: number): string {
   if (secondsRemaining <= 0) return "bg-[#ef4444]";
   if (secondsRemaining <= totalSeconds * 0.25) return "bg-[#f59e0b]";
   return "bg-[#16a34a]";
+}
+
+function CoachingStepCard({
+  step,
+  mode,
+}: {
+  step: CoachingStep;
+  mode: "simple" | "hindi";
+}) {
+  const [open, setOpen] = useState(false);
+  const label = mode === "simple" ? step.label : step.labelHindi;
+  const howTo = mode === "simple" ? step.howTo : step.howToHindi;
+  const avoid = mode === "simple" ? step.avoid : step.avoidHindi;
+  const doneSign = mode === "simple" ? step.doneSign : step.doneSignHindi;
+  const nervousNote = mode === "simple" ? step.nervousNote : step.nervousNoteHindi;
+  const flagNote = mode === "simple" ? step.flagNote : step.flagNoteHindi;
+
+  return (
+    <div className="overflow-hidden rounded-[16px] border border-[#ebe5fb] bg-[#faf8ff]">
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+      >
+        <div className="min-w-0">
+          <div className="text-[13.5px] font-bold leading-[1.4] text-[#2a2346]">{label}</div>
+          <div className="mt-0.5 text-[11px] font-medium text-[#9ca3af]">{step.timeLabel}</div>
+        </div>
+        <ChevronDown
+          className={`h-4 w-4 shrink-0 text-[#6d5bd0] transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {open ? (
+        <div className="space-y-2.5 border-t border-[#ebe5fb] px-4 pb-4 pt-3">
+          <div className="rounded-[12px] border border-[#bbf7d0] bg-[#f0fdf4] px-3 py-2.5">
+            <div className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#15803d]">
+              {mode === "simple" ? "Kaise karein" : "कैसे करें"}
+            </div>
+            <div className="text-[13px] leading-[1.65] text-[#14532d]">{howTo}</div>
+          </div>
+
+          {avoid ? (
+            <div className="rounded-[12px] border border-[#fecaca] bg-[#fef2f2] px-3 py-2.5">
+              <div className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#b91c1c]">
+                {mode === "simple" ? "Mat karein" : "मत करें"}
+              </div>
+              <div className="text-[13px] leading-[1.65] text-[#7f1d1d]">{avoid}</div>
+            </div>
+          ) : null}
+
+          <div className="rounded-[12px] border border-[#bfdbfe] bg-[#eff6ff] px-3 py-2.5">
+            <div className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#1d4ed8]">
+              {mode === "simple" ? "Done sign" : "पूरा होने का संकेत"}
+            </div>
+            <div className="text-[13px] leading-[1.65] text-[#1e3a8a]">{doneSign}</div>
+          </div>
+
+          {nervousNote ? (
+            <div className="rounded-[12px] border border-[#fde68a] bg-[#fffbeb] px-3 py-2.5">
+              <div className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#b45309]">
+                {mode === "simple" ? "Nervous dog ke liye" : "Nervous dog के लिए"}
+              </div>
+              <div className="text-[13px] leading-[1.65] text-[#78350f]">{nervousNote}</div>
+            </div>
+          ) : null}
+
+          {flagNote ? (
+            <div className="rounded-[12px] border border-[#fecdd3] bg-[#fff1f2] px-3 py-2.5">
+              <div className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#be123c]">
+                {mode === "simple" ? "Parent ko batao" : "पैरेंट को बताएं"}
+              </div>
+              <div className="text-[13px] leading-[1.65] text-[#881337]">{flagNote}</div>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 function PhaseProofRow({
@@ -397,7 +476,7 @@ export function PacerPhaseCard({
 
         {/* SOP proof steps for this phase */}
         {phaseSteps.length > 0 && !isPaymentPhase ? (
-          <div className="space-y-3">
+          <div className="mb-4 space-y-3">
             <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">
               {mode === "simple" ? "Proof required" : "प्रूफ ज़रूरी है"}
             </div>
@@ -414,6 +493,20 @@ export function PacerPhaseCard({
                 onRetry={onRetrySync}
               />
             ))}
+          </div>
+        ) : null}
+
+        {/* Grooming guide for this phase */}
+        {phase.coachingSteps.length > 0 ? (
+          <div>
+            <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">
+              {mode === "simple" ? "Grooming guide" : "ग्रूमिंग गाइड"}
+            </div>
+            <div className="space-y-2">
+              {phase.coachingSteps.map((cs) => (
+                <CoachingStepCard key={cs.key} step={cs} mode={mode} />
+              ))}
+            </div>
           </div>
         ) : null}
       </div>

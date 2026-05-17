@@ -1,4 +1,19 @@
 import type { BookingSopStepKey } from "./sop";
+import type { CoachingStep } from "./pacerCoachingSteps";
+import {
+  COACHING_ARRIVE_SETUP,
+  COACHING_OIL,
+  COACHING_BATH,
+  COACHING_BATH_ESSENTIAL,
+  COACHING_COMPLETE_DRY_STYLE,
+  COACHING_SIGNATURE_DRY,
+  COACHING_SIGNATURE_HYGIENE_CUT,
+  COACHING_ESSENTIAL_DRY,
+  COACHING_FINISH,
+  COACHING_PAYMENT,
+} from "./pacerCoachingSteps";
+
+export type { CoachingStep };
 
 export type PacerPhase = {
   index: number;
@@ -12,6 +27,7 @@ export type PacerPhase = {
   coachNoteSource: "groomingNotes" | "stylingNotes" | "temperament" | null;
   coachNoteHint: string;
   coachNoteHintHindi: string;
+  coachingSteps: CoachingStep[];
   // Minimum % of phase time that must elapse before Next Phase is allowed
   minTimePercent?: number;
 };
@@ -41,6 +57,7 @@ const PHASES_COMPLETE: PacerPhase[] = [
     coachNoteSource: "temperament",
     coachNoteHint: "Pehle temperament dekho — pet ko calm karo tabhi kaam shuru karo.",
     coachNoteHintHindi: "पहले टेम्परामेंट देखें — पेट को शांत करके ही काम शुरू करें।",
+    coachingSteps: COACHING_ARRIVE_SETUP,
   },
   {
     index: 1,
@@ -62,6 +79,7 @@ const PHASES_COMPLETE: PacerPhase[] = [
     coachNoteSource: "groomingNotes",
     coachNoteHint: "Oil lagaane se pehle grooming notes mein skin sensitivity check karo.",
     coachNoteHintHindi: "ऑयल लगाने से पहले ग्रूमिंग नोट्स में स्किन सेंसिटिविटी देखें।",
+    coachingSteps: COACHING_OIL,
     minTimePercent: 80,
   },
   {
@@ -84,6 +102,7 @@ const PHASES_COMPLETE: PacerPhase[] = [
     coachNoteSource: "groomingNotes",
     coachNoteHint: "Shampoo restrictions ya skin issues grooming notes mein hain — zaroor check karo.",
     coachNoteHintHindi: "शैम्पू पाबंदियां या स्किन समस्याएं ग्रूमिंग नोट्स में हैं — ज़रूर देखें।",
+    coachingSteps: COACHING_BATH,
   },
   {
     index: 3,
@@ -109,6 +128,7 @@ const PHASES_COMPLETE: PacerPhase[] = [
     coachNoteSource: "stylingNotes",
     coachNoteHint: "Style reference photos aur cut instructions yahan hain — dekh ke hi karo.",
     coachNoteHintHindi: "स्टाइल रेफरेंस फोटो और कट के निर्देश यहाँ हैं — देखकर ही करें।",
+    coachingSteps: COACHING_COMPLETE_DRY_STYLE,
   },
   {
     index: 4,
@@ -134,6 +154,7 @@ const PHASES_COMPLETE: PacerPhase[] = [
     coachNoteSource: null,
     coachNoteHint: "",
     coachNoteHintHindi: "",
+    coachingSteps: COACHING_FINISH,
   },
   {
     index: 5,
@@ -155,6 +176,7 @@ const PHASES_COMPLETE: PacerPhase[] = [
     coachNoteSource: null,
     coachNoteHint: "",
     coachNoteHintHindi: "",
+    coachingSteps: COACHING_PAYMENT,
   },
 ];
 
@@ -183,6 +205,7 @@ const PHASES_SIGNATURE: PacerPhase[] = [
     coachNoteSource: "temperament",
     coachNoteHint: "Pehle temperament dekho — pet ko calm karo tabhi kaam shuru karo.",
     coachNoteHintHindi: "पहले टेम्परामेंट देखें — पेट को शांत करके ही काम शुरू करें।",
+    coachingSteps: COACHING_ARRIVE_SETUP,
   },
   {
     index: 1,
@@ -204,6 +227,7 @@ const PHASES_SIGNATURE: PacerPhase[] = [
     coachNoteSource: "groomingNotes",
     coachNoteHint: "Shampoo restrictions ya skin issues grooming notes mein hain — zaroor check karo.",
     coachNoteHintHindi: "शैम्पू पाबंदियां या स्किन समस्याएं ग्रूमिंग नोट्स में हैं — ज़रूर देखें।",
+    coachingSteps: COACHING_BATH,
   },
   {
     index: 2,
@@ -221,6 +245,7 @@ const PHASES_SIGNATURE: PacerPhase[] = [
     coachNoteSource: null,
     coachNoteHint: "",
     coachNoteHintHindi: "",
+    coachingSteps: COACHING_SIGNATURE_DRY,
   },
   {
     index: 3,
@@ -240,6 +265,7 @@ const PHASES_SIGNATURE: PacerPhase[] = [
     coachNoteSource: "stylingNotes",
     coachNoteHint: "Hygiene cut areas aur style notes yahan hain — dekh ke karo.",
     coachNoteHintHindi: "हाइजीन कट के एरिया और स्टाइल नोट्स यहाँ हैं — देखकर करें।",
+    coachingSteps: COACHING_SIGNATURE_HYGIENE_CUT,
   },
   {
     index: 4,
@@ -263,6 +289,7 @@ const PHASES_SIGNATURE: PacerPhase[] = [
     coachNoteSource: null,
     coachNoteHint: "",
     coachNoteHintHindi: "",
+    coachingSteps: COACHING_FINISH,
   },
   {
     index: 5,
@@ -284,6 +311,7 @@ const PHASES_SIGNATURE: PacerPhase[] = [
     coachNoteSource: null,
     coachNoteHint: "",
     coachNoteHintHindi: "",
+    coachingSteps: COACHING_PAYMENT,
   },
 ];
 
@@ -312,6 +340,7 @@ const PHASES_ESSENTIAL: PacerPhase[] = [
     coachNoteSource: "temperament",
     coachNoteHint: "Pehle temperament dekho — pet ko calm karo tabhi kaam shuru karo.",
     coachNoteHintHindi: "पहले टेम्परामेंट देखें — पेट को शांत करके ही काम शुरू करें।",
+    coachingSteps: COACHING_ARRIVE_SETUP,
   },
   {
     index: 1,
@@ -331,6 +360,7 @@ const PHASES_ESSENTIAL: PacerPhase[] = [
     coachNoteSource: "groomingNotes",
     coachNoteHint: "Shampoo restrictions ya skin issues grooming notes mein hain — zaroor check karo.",
     coachNoteHintHindi: "शैम्पू पाबंदियां या स्किन समस्याएं ग्रूमिंग नोट्स में हैं — ज़रूर देखें।",
+    coachingSteps: COACHING_BATH_ESSENTIAL,
   },
   {
     index: 2,
@@ -350,6 +380,7 @@ const PHASES_ESSENTIAL: PacerPhase[] = [
     coachNoteSource: null,
     coachNoteHint: "",
     coachNoteHintHindi: "",
+    coachingSteps: COACHING_ESSENTIAL_DRY,
   },
   {
     index: 3,
@@ -373,6 +404,7 @@ const PHASES_ESSENTIAL: PacerPhase[] = [
     coachNoteSource: null,
     coachNoteHint: "",
     coachNoteHintHindi: "",
+    coachingSteps: COACHING_FINISH,
   },
   {
     index: 4,
@@ -394,6 +426,7 @@ const PHASES_ESSENTIAL: PacerPhase[] = [
     coachNoteSource: null,
     coachNoteHint: "",
     coachNoteHintHindi: "",
+    coachingSteps: COACHING_PAYMENT,
   },
 ];
 
