@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Breadcrumbs } from "../components/seo/Breadcrumbs";
 import { MessageCircle } from "lucide-react";
 
 import { JsonLd } from "../components/seo/JsonLd";
@@ -126,15 +127,21 @@ export default function FaqPage() {
     { name: "FAQs", path: "/faq" },
   ]);
 
-  const faqSchema = faqPageSchema(
-    FAQ_GROUPS.flatMap((group) => group.items)
-  );
+  const allFaqItems = FAQ_GROUPS.flatMap((group) => group.items);
+  const faqSchema = {
+    ...faqPageSchema(allFaqItems),
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", "details summary"],
+    },
+  };
 
   return (
     <SeoPageShell>
       <JsonLd data={[faqSchema, breadcrumbs]} />
 
       <section className="mx-auto max-w-[860px] px-5 py-14 lg:px-8 lg:py-20">
+        <Breadcrumbs items={[{ name: "Home", path: "/" }, { name: "FAQs", path: "/faq" }]} className="mb-8" />
         <div className="text-center">
           <span className="inline-flex rounded-full border border-[#e8ddff] bg-white px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-[#7a5ce0]">
             FAQs

@@ -14,8 +14,10 @@ import {
 } from "@/lib/content/blogFormat";
 import { getPublishedBlogPostBySlug, getPublishedBlogPosts } from "@/lib/content/server";
 import { pageMetadata } from "@/lib/seo/metadata";
-import { articleSchema, breadcrumbSchema, faqPageSchema } from "@/lib/seo/schema";
+import { articleSchema, breadcrumbSchema, faqPageSchema, howToSchema } from "@/lib/seo/schema";
 import { ArticleReadingTools, MobileReadingProgressBar, MobileShareStrip } from "./ArticleReadingTools";
+import { Breadcrumbs } from "@/app/components/seo/Breadcrumbs";
+import { BlogReadTracker } from "@/app/components/analytics/BlogReadTracker";
 
 function slugifyHeading(value: string) {
   return value
@@ -80,6 +82,7 @@ export default async function BlogArticlePage({
     id: slugifyHeading(heading.text),
   }));
   const publishedAt = formatPublishedAt(post.publishedAt);
+  const lastReviewed = formatPublishedAt(post.updatedAt);
 
   const relatedPosts = (await getPublishedBlogPosts())
     .filter((candidate) => candidate.slug !== post.slug)
@@ -109,6 +112,16 @@ export default async function BlogArticlePage({
     { name: post.title, path: `/blogs/${post.slug}` },
   ]);
 
+  const wordCount = document.blocks
+    .map((b) => {
+      if (b.type === "paragraph" || b.type === "heading" || b.type === "callout") return b.text;
+      if (b.type === "list") return b.items.join(" ");
+      return "";
+    })
+    .join(" ")
+    .split(/\s+/)
+    .filter(Boolean).length;
+
   const article = articleSchema({
     slug: post.slug,
     title: post.title,
@@ -116,22 +129,52 @@ export default async function BlogArticlePage({
     publishedAt: post.publishedAt,
     updatedAt: post.updatedAt,
     coverImageUrl: heroImage,
+    wordCount,
   });
+
   const faqSchema = document.faqs?.length
     ? faqPageSchema(document.faqs.map((faq) => ({ q: faq.question, a: faq.answer })))
+    : null;
+
+  // Detect step-by-step posts and generate HowTo schema from heading+paragraph pairs
+  const isHowTo = /how\s+to|step.by.step|what happens|how.*groom|how.*reduce|how.*prepare/i.test(post.title);
+  const howTo = isHowTo && document.blocks.length > 3
+    ? (() => {
+        const steps: { name: string; text: string }[] = [];
+        let currentHeading = "";
+        for (const block of document.blocks) {
+          if (block.type === "heading") { currentHeading = block.text; continue; }
+          if (block.type === "paragraph" && currentHeading) {
+            steps.push({ name: currentHeading, text: block.text });
+            currentHeading = "";
+          }
+        }
+        return steps.length >= 3
+          ? howToSchema({ name: post.title, description: metaDescription, steps: steps.slice(0, 8), image: heroImage })
+          : null;
+      })()
     : null;
 
   return (
     <main className="min-h-screen bg-[#fcfbff]">
       <MobileReadingProgressBar headings={headings} />
-      <JsonLd data={faqSchema ? [article, breadcrumbs, faqSchema] : [article, breadcrumbs]} />
+      <JsonLd data={[article, breadcrumbs, ...(faqSchema ? [faqSchema] : []), ...(howTo ? [howTo] : [])]} />
+      <BlogReadTracker slug={post.slug} title={post.title} readTimeMinutes={post.readTimeMinutes ?? 6} />
 
       <article>
         <header className="overflow-hidden bg-[#1c1630] px-4 pb-8 pt-6 text-white sm:px-6 lg:px-8">
           <div className="mx-auto max-w-[1180px]">
+            <Breadcrumbs
+              items={[
+                { name: "Home", path: "/" },
+                { name: "Guides", path: "/blogs" },
+                { name: post.title, path: `/blogs/${post.slug}` },
+              ]}
+              className="text-white/60 [&_a]:text-white/60 [&_a:hover]:text-white [&_span[aria-current]]:text-white/90"
+            />
             <Link
               href="/blogs"
-              className="inline-flex rounded-full border border-white/12 bg-white/8 px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-white/84"
+              className="mt-3 inline-flex rounded-full border border-white/12 bg-white/8 px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-white/84"
             >
               Pet grooming guides
             </Link>
@@ -152,7 +195,12 @@ export default async function BlogArticlePage({
                   ) : null}
                   {publishedAt ? (
                     <span className="rounded-full bg-white/10 px-3 py-1">
-                      {publishedAt}
+                      Published {publishedAt}
+                    </span>
+                  ) : null}
+                  {lastReviewed ? (
+                    <span className="rounded-full bg-white/10 px-3 py-1">
+                      Reviewed {lastReviewed}
                     </span>
                   ) : null}
                 </div>
@@ -192,7 +240,7 @@ export default async function BlogArticlePage({
         <section className="-mt-2 px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-[1180px]">
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[32px] border border-white/12 bg-[#e8defd] shadow-[0_30px_90px_rgba(41,28,70,0.24)] sm:aspect-[16/9]">
-              <Image src={heroImage} alt={post.title} fill priority unoptimized className="object-cover" />
+              <Image src={heroImage} alt={post.title} fill priority className="object-cover" />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,16,39,0.06)_0%,rgba(23,16,39,0.1)_52%,rgba(23,16,39,0.28)_100%)]" />
             </div>
           </div>
@@ -203,6 +251,22 @@ export default async function BlogArticlePage({
             <div className="min-w-0">
               <div className="space-y-8">
                 <ArticleBodyComposition blocks={document.blocks} faqs={document.faqs || []} headings={headings} />
+
+                {/* Author bio */}
+                <div className="rounded-[24px] border border-[#ece5ff] bg-white px-6 py-5 shadow-[0_8px_24px_rgba(73,44,120,0.05)]">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f4efff] text-[20px]">
+                      🐾
+                    </div>
+                    <div>
+                      <div className="text-[13px] font-black uppercase tracking-[0.13em] text-[#8a82a3]">Written by</div>
+                      <div className="text-[16px] font-bold text-[#241c3f]">All Tails Editorial Team</div>
+                    </div>
+                  </div>
+                  <p className="mt-3 text-[13.5px] leading-[1.75] text-[#5f6673]">
+                    Our editorial team consists of professional pet groomers and pet-care researchers who write clear, practical guides based on real grooming sessions across Delhi NCR, Chandigarh Tricity, Ludhiana, and Patiala.
+                  </p>
+                </div>
 
                 {/* Back to guides — mobile only */}
                 <div className="lg:hidden">
@@ -286,7 +350,6 @@ export default async function BlogArticlePage({
                               src={relatedPost.coverImage}
                               alt={relatedPost.title}
                               fill
-                              unoptimized
                               className="object-cover"
                             />
                           </div>

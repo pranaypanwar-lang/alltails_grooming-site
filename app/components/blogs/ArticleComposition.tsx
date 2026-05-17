@@ -198,7 +198,6 @@ function BlogImageFigure({
               alt={block.alt}
               width={800}
               height={600}
-              unoptimized
               className="h-auto w-full"
             />
           </div>
@@ -221,7 +220,6 @@ function BlogImageFigure({
             alt={block.alt}
             width={800}
             height={600}
-            unoptimized
             className="h-auto w-full"
           />
         </div>

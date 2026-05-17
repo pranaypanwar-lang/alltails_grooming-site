@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { Breadcrumbs } from "../components/seo/Breadcrumbs";
+import { PackageViewTracker } from "../components/analytics/PackageViewTracker";
+import { CostCalculator } from "../components/packages/CostCalculator";
 import { Check, MessageCircle, Minus } from "lucide-react";
 
 import { JsonLd } from "../components/seo/JsonLd";
@@ -9,7 +12,9 @@ import { pageMetadata } from "@/lib/seo/metadata";
 import { SITE_URL, whatsappHref } from "@/lib/seo/businessInfo";
 import {
   breadcrumbSchema,
+  faqPageSchema,
   packageOfferCatalogSchema,
+  packageServicesSchema,
   serviceSchema,
 } from "@/lib/seo/schema";
 
@@ -52,11 +57,31 @@ export default function PackagesPage() {
     }))
   );
 
+  const packageServices = packageServicesSchema(
+    allPackages.map((pkg) => ({
+      name: pkg.name,
+      description: pkg.shortDescription,
+      price: pkg.price,
+      duration: pkg.duration,
+      slug: slugify(pkg.name),
+    }))
+  );
+
+  const packagesFaq = faqPageSchema([
+    { q: "What is included in the Essential Care package?", a: "Essential Care (Rs 999) includes bath, blow dry, brushing, nail trim, and ear cleaning. It is a bath-only upkeep package suited for regular maintenance." },
+    { q: "What is included in the Signature Care package?", a: "Signature Care (Rs 1,299) includes everything in Essential Care plus hygiene trimming (face, paws, sanitary area) and dental hygiene. It is our most-booked package." },
+    { q: "What is included in the Complete Pampering package?", a: "Complete Pampering (Rs 1,799) includes everything in Signature Care plus a full body haircut and styling, paw butter, hair serum, and perfume finish." },
+    { q: "How much does at-home pet grooming cost?", a: "All Tails at-home grooming packages start at Rs 999 for Essential Care, Rs 1,299 for Signature Care, and Rs 1,799 for Complete Pampering. Coat care plans are also available for multi-session bookings." },
+    { q: "Can I pay after the grooming session?", a: "Yes. You can choose to pay after the session is complete, or pay online when confirming the booking to secure your slot instantly." },
+    { q: "What is a hygiene haircut and is it included?", a: "A hygiene haircut trims hair around the face (eyes, ears, muzzle), paws (between pads), and the sanitary area. It is included in Signature Care and Complete Pampering but not in Essential Care." },
+  ]);
+
   return (
     <SeoPageShell>
-      <JsonLd data={[serviceSchema(), breadcrumbs, ...(offerCatalog ? [offerCatalog] : [])]} />
+      <JsonLd data={[serviceSchema(), breadcrumbs, packagesFaq, ...packageServices, ...(offerCatalog ? [offerCatalog] : [])]} />
 
       <section className="mx-auto max-w-[1100px] px-5 py-14 lg:px-8 lg:py-20">
+        <Breadcrumbs items={[{ name: "Home", path: "/" }, { name: "Packages", path: "/packages" }]} className="mb-8" />
         <div className="text-center">
           <span className="inline-flex rounded-full border border-[#e8ddff] bg-white px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-[#7a5ce0]">
             Packages
@@ -78,8 +103,9 @@ export default function PackagesPage() {
             return (
               <article
                 key={service.name}
-                className="flex h-full flex-col rounded-[28px] border border-[#ece5fb] bg-white p-7 shadow-[0_18px_50px_rgba(34,22,74,0.06)] transition hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(34,22,74,0.1)]"
+                className="relative flex h-full flex-col rounded-[28px] border border-[#ece5fb] bg-white p-7 shadow-[0_18px_50px_rgba(34,22,74,0.06)] transition hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(34,22,74,0.1)]"
               >
+                <PackageViewTracker packageName={service.name} price={service.price} />
                 <div className="flex items-center justify-between">
                   <h3 className="text-[20px] font-black tracking-[-0.02em] text-[#2a2346]">
                     {service.name}
@@ -192,6 +218,8 @@ export default function PackagesPage() {
             })}
           </div>
         </section>
+
+        <CostCalculator />
 
         <section className="mt-20 rounded-[28px] bg-white p-8 shadow-[0_18px_50px_rgba(34,22,74,0.06)] lg:p-12">
           <h2 className="text-[24px] font-black tracking-[-0.03em] text-[#2a2346] lg:text-[28px]">

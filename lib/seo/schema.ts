@@ -266,6 +266,7 @@ type ArticleSchemaInput = {
   publishedAt: Date | null;
   updatedAt: Date;
   coverImageUrl?: string | null;
+  wordCount?: number;
 };
 
 export function articleSchema(input: ArticleSchemaInput) {
@@ -284,18 +285,91 @@ export function articleSchema(input: ArticleSchemaInput) {
     datePublished: (input.publishedAt ?? input.updatedAt).toISOString(),
     dateModified: input.updatedAt.toISOString(),
     image: [image],
-    author: {
-      "@type": "Organization",
-      name: BUSINESS_INFO.name,
-      url: `${SITE_URL}/`,
+    ...(input.wordCount ? { wordCount: input.wordCount } : {}),
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", ".article-intro"],
     },
+    author: [
+      {
+        "@type": "Organization",
+        name: BUSINESS_INFO.name,
+        url: `${SITE_URL}/`,
+      },
+      {
+        "@type": "Person",
+        name: "All Tails Editorial Team",
+        url: `${SITE_URL}/about`,
+        jobTitle: "Pet Grooming Content Team",
+        worksFor: { "@type": "Organization", name: BUSINESS_INFO.name },
+      },
+    ],
     publisher: {
       "@type": "Organization",
       name: BUSINESS_INFO.name,
       url: `${SITE_URL}/`,
+      logo: { "@type": "ImageObject", url: `${SITE_URL}/icon.png` },
     },
     mainEntityOfPage: url,
   };
+}
+
+type HowToStep = { name: string; text: string };
+type HowToSchemaInput = {
+  name: string;
+  description: string;
+  steps: HowToStep[];
+  image?: string;
+  totalTime?: string;
+};
+
+export function howToSchema(input: HowToSchemaInput) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: input.name,
+    description: input.description,
+    ...(input.image ? { image: input.image } : {}),
+    ...(input.totalTime ? { totalTime: input.totalTime } : {}),
+    step: input.steps.map((step, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: step.name,
+      text: step.text,
+    })),
+  };
+}
+
+type PackageServiceInput = {
+  name: string;
+  description: string;
+  price: number;
+  duration?: string;
+  slug: string;
+};
+
+export function packageServicesSchema(packages: PackageServiceInput[]) {
+  return packages.map((pkg) => ({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${SITE_URL}/packages#${pkg.slug}`,
+    name: pkg.name,
+    description: pkg.description,
+    provider: {
+      "@type": "ProfessionalService",
+      name: BUSINESS_INFO.name,
+      url: `${SITE_URL}/`,
+    },
+    offers: {
+      "@type": "Offer",
+      price: pkg.price,
+      priceCurrency: "INR",
+      availability: "https://schema.org/InStock",
+      url: `${SITE_URL}/packages#${pkg.slug}`,
+      ...(pkg.duration ? { description: pkg.duration } : {}),
+    },
+    areaServed: BUSINESS_INFO.serviceAreas.map((name) => ({ "@type": "City", name })),
+  }));
 }
 
 type FaqItem = { q: string; a: string };

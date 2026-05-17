@@ -137,7 +137,6 @@ function SpotlightCard({
             src={post.coverImageUrl || "/images/Banner.jpg"}
             alt={post.title}
             fill
-            unoptimized
             className="object-cover"
           />
         </div>
@@ -256,7 +255,6 @@ export function BlogsIndexClient({
                 alt={featuredPost.title}
                 fill
                 priority
-                unoptimized
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,12,32,0.24)_0%,rgba(18,12,32,0.68)_56%,rgba(18,12,32,0.94)_100%)]" />
@@ -411,7 +409,6 @@ export function BlogsIndexClient({
                     src={post.coverImageUrl || "/images/Banner.jpg"}
                     alt={post.title}
                     fill
-                    unoptimized
                     className="object-cover"
                   />
                 </div>
@@ -445,7 +442,6 @@ export function BlogsIndexClient({
                     src={post.coverImageUrl || "/images/Banner.jpg"}
                     alt={post.title}
                     fill
-                    unoptimized
                     className="object-cover"
                   />
                 </div>

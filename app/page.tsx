@@ -4738,7 +4738,6 @@ onClick={() => {
                                   alt={savedPet.name || savedPet.breed}
                                   fill
                                   sizes="40px"
-                                  unoptimized
                                   className="object-cover"
                                 />
                               ) : (
@@ -4862,7 +4861,6 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                 alt={image.name}
                 width={220}
                 height={110}
-                unoptimized
                 className="h-[110px] w-full object-cover"
               />
               <button
@@ -4938,7 +4936,6 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                   alt={image.name}
                   width={192}
                   height={96}
-                  unoptimized
                   className="h-[96px] w-full object-cover"
                 />
                 <button
@@ -5750,7 +5747,6 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                 alt={image.name}
                 width={220}
                 height={110}
-                unoptimized
                 className="h-[110px] w-full object-cover"
               />
               <button
@@ -5825,7 +5821,6 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                   alt={image.name}
                   width={192}
                   height={96}
-                  unoptimized
                   className="h-[96px] w-full object-cover"
                 />
                 <button
@@ -6774,7 +6769,6 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
               alt={avatarLabel}
               fill
               sizes="56px"
-              unoptimized
               className="object-cover"
             />
           ) : companion.species === "cat" ? (
@@ -6926,7 +6920,6 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                     alt={companionDraft.name || companionDraft.breed || "Companion"}
                     fill
                     sizes="80px"
-                    unoptimized
                     className="object-cover"
                   />
                 ) : companionDraft.species === "cat" ? (
@@ -7099,7 +7092,6 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                           alt={`Styling reference ${index + 1}`}
                           fill
                           sizes="80px"
-                          unoptimized
                           className="object-cover"
                         />
                         <button
@@ -10053,7 +10045,6 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                 src={blogPosts[0].coverImageUrl || "/images/blog-1.jpeg"}
                 alt={blogPosts[0].title}
                 fill
-                unoptimized
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(21,14,45,0.18)_0%,rgba(21,14,45,0.56)_52%,rgba(21,14,45,0.92)_100%)]" />
@@ -10125,7 +10116,6 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
                         src={post.coverImageUrl || `/images/blog-${index + 2}.jpeg`}
                         alt={post.title}
                         fill
-                        unoptimized
                         className="object-cover"
                       />
                     </div>

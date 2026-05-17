@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { JsonLd } from "@/app/components/seo/JsonLd";
+import { faqPageSchema } from "@/lib/seo/schema";
 
 type FaqSectionProps = {
   onTalkToUs: (message: string) => void;
@@ -11,8 +13,17 @@ const TALK_TO_EXPERT_MESSAGE =
   "Hi All Tails, I'd like to talk to a grooming expert and get help choosing the right package for my pet.";
 
 export default function FaqSection({ onTalkToUs }: FaqSectionProps) {
+  const homepageFaqSchema = faqPageSchema([
+    { q: "Will my pet be anxious during grooming?", a: "We begin every session with a calm bonding period where the groomer gently familiarizes themselves with your pet. We move at your pet's pace — no force, no rushing — so they feel safe and comfortable throughout." },
+    { q: "Do I need to prepare anything at home?", a: "No preparation is needed. Our team brings all equipment, products, and setup required for the session. We only need a small space with access to water and power." },
+    { q: "How long does a grooming session take?", a: "Session length depends on the package selected, coat condition, and your pet's comfort. We keep the flow calm and avoid rushing the grooming process." },
+    { q: "What exactly is included in a grooming session?", a: "Depending on the package, sessions may include bath, conditioning, blow dry, haircut or styling, paw care, ear cleaning, dental cleaning, serum, brushing, and finishing touches. Everything is done gently, step by step." },
+    { q: "Are your products safe for pets?", a: "Yes. We use pet-care products selected for everyday coat and skin care, matched to your pet's needs where possible." },
+  ]);
+
   return (
     <section id="faqs-section" className="relative overflow-hidden bg-[#fcfaff] pt-10 pb-12 sm:py-20 lg:py-[120px]">
+      <JsonLd data={homepageFaqSchema} />
       {/* BACKGROUND GLOWS */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-[-120px] top-[140px] h-[300px] w-[300px] rounded-full bg-[#efe7ff] blur-[100px]" />

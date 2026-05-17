@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { MetaPixelPageView } from "./components/analytics/MetaPixelPageView";
@@ -102,6 +103,7 @@ export default function RootLayout({
         {children}
         <StickyMobileCTA />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
