@@ -3,7 +3,6 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../lib/generated/prisma";
 import { assertAdminSession } from "../_lib/assertAdmin";
-import { ensureBlogPostDefaults } from "../../../../lib/content/store";
 
 export const runtime = "nodejs";
 
@@ -23,7 +22,6 @@ export async function GET() {
   if (authErr) return authErr;
 
   try {
-    await ensureBlogPostDefaults(prisma);
     const posts = await prisma.blogPost.findMany({
       orderBy: [{ publishedAt: "desc" }, { updatedAt: "desc" }],
     });

@@ -1,5 +1,3 @@
-import { dogGroomingAtHomeBlog } from "./blogDefaults/dogGroomingAtHome";
-
 export type LegalDocumentDefault = {
   slug: "privacy-policy" | "terms-and-conditions" | "cancellation-policy" | "refund-policy";
   title: string;
@@ -144,55 +142,4 @@ Timelines may vary depending on the payment partner and banking channel. All Tai
   },
 ];
 
-export const BLOG_POST_DEFAULTS = [
-  dogGroomingAtHomeBlog,
-  {
-    slug: "how-often-should-you-groom-your-pet",
-    title: "How often should you groom your pet?",
-    excerpt:
-      "Learn how grooming frequency changes based on breed, coat type, lifestyle, and seasonal shedding patterns.",
-    category: "Grooming Guide",
-    readTimeMinutes: 5,
-    coverImageUrl: "/images/blog-1.jpeg",
-    body: `Regular grooming needs vary from pet to pet.
-
-Long-haired breeds usually require more frequent grooming, while short-haired pets may need a lighter schedule.
-
-Coat type, shedding cycle, activity level, and skin sensitivity all matter. If you are unsure, start with a routine every 3 to 5 weeks and adjust based on coat condition.
-
-At All Tails, our team can help recommend the right cadence based on your pet's comfort and coat maintenance needs.`,
-    isPublished: true,
-  },
-  {
-    slug: "how-to-reduce-grooming-anxiety-in-pets",
-    title: "How to reduce grooming anxiety in pets",
-    excerpt:
-      "Small things you can do before a session to help your pet feel calmer and more comfortable.",
-    category: "Comfort Tips",
-    readTimeMinutes: 4,
-    coverImageUrl: "/images/blog-2.jpeg",
-    body: `A calm grooming experience starts before the session begins.
-
-Give your pet some time to settle, avoid overstimulation, and keep water available. Familiar smells, a calm environment, and gentle handling can make a big difference.
-
-If your pet has known triggers, inform the grooming team in advance so the session can be paced correctly.`,
-    isPublished: true,
-  },
-  {
-    slug: "which-grooming-package-is-right-for-your-pet",
-    title: "Which grooming package is right for your pet?",
-    excerpt:
-      "Understand when to choose Basic, Hygiene, or Luxury based on your pet’s needs.",
-    category: "Choosing a Plan",
-    readTimeMinutes: 4,
-    coverImageUrl: "/images/blog-3.jpeg",
-    body: `Different pets need different levels of grooming support.
-
-Some need a quick hygiene refresh, while others need a complete coat reset with styling and deeper care.
-
-Choosing the right package depends on coat length, matting, skin condition, and how long it has been since the last session.
-
-If you are unsure, our team can help you choose the most suitable option before the booking.`,
-    isPublished: true,
-  },
-] as const;
+export const BLOG_POST_DEFAULTS = [] as const;
