@@ -7397,18 +7397,18 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
         </span>
       </h1>
 
-      {/* trust strip — stars + headline social proof + "from ₹999" */}
+      {/* trust strip */}
       <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-white/82">
         <div className="flex items-center gap-0.5">
           {[0, 1, 2, 3, 4].map((i) => (
             <Star key={i} className="h-3.5 w-3.5 fill-[#FACC15] text-[#FACC15]" />
           ))}
         </div>
-        <span className="font-semibold">Loved by pet parents</span>
+        <span className="font-semibold">4.9★ · 327+ reviews</span>
         <span className="text-white/55">·</span>
         <span>From ₹999</span>
         <span className="text-white/55">·</span>
-        <span>Vegan products</span>
+        <span>Pay after session</span>
       </div>
 
       {/* City strip — keeps the brand premium (no long marketing
@@ -7601,16 +7601,15 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
 
           <div className="pr-16">
             <p className="text-[14px] font-semibold text-[#6d5bd0]">
-              Book A Consultation
+              Doorstep grooming · No advance payment
             </p>
 
             <h3 className="mt-2 text-[26px] font-bold leading-tight text-[#1f1f2c]">
-              Check Available Slot
+              Book a slot in 60 seconds
             </h3>
 
             <p className="mt-3 max-w-[340px] text-[15px] leading-[1.6] text-[#6b7280]">
-              Your Pet&apos;s Manager will be in touch with you shortly to help
-              you book.
+              See available slots for your city and date instantly. Pay online or after the session — your choice.
             </p>
           </div>
 
@@ -7752,7 +7751,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
       Check Availability
     </button>
     <p className="mt-2.5 text-center text-[13px] leading-[1.55] text-[#9ca3af]">
-      Choose your city, date, and service in the next step.
+      No advance payment · Slots available today
     </p>
   </div>
 </div>
