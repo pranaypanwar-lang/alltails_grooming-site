@@ -19,6 +19,11 @@ import {
 } from "lucide-react";
 import type { GroomerBookingView } from "../../../../lib/groomerPortal";
 import { deriveActionMoment, deriveJobFlowPsychology, resolvePsychologyText } from "../../../../lib/groomerPsychology";
+import { getPacerPhases } from "../../../../lib/booking/pacerPhases";
+import { useOfflineQueue } from "./hooks/useOfflineQueue";
+import { FuelApprovalSheet } from "./components/FuelApprovalSheet";
+import { PacerPhaseCard } from "./components/PacerPhaseCard";
+import { PaymentPhaseCard } from "./components/PaymentPhaseCard";
 
 type LanguageMode = "simple" | "hindi";
 
@@ -817,6 +822,17 @@ export function GroomerJobClient({
   const recordingChunksRef = useRef<Blob[]>([]);
   const tokenQuery = token ? `?token=${encodeURIComponent(token)}` : "";
 
+  const { stepSyncMap, queueUpload, runSync } = useOfflineQueue(booking.id, tokenQuery);
+
+  // Pacer state — activate once groomer has arrived (fuel confirmed)
+  const [pacerMode, setPacerMode] = useState(booking.dispatchState === "started");
+  const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
+  const [pacerPhaseStartAt, setPacerPhaseStartAt] = useState<number | null>(
+    booking.dispatchState === "started" ? Date.now() : null
+  );
+  const [showFuelSheet, setShowFuelSheet] = useState(false);
+  const [arrivedGps, setArrivedGps] = useState<{ lat: number; lng: number } | null>(null);
+
   useEffect(() => {
     setPaymentMode((booking.payment.collection?.collectionMode as "cash" | "online" | "waived") ?? "cash");
     setPaymentAmount(String(booking.payment.collection?.collectedAmount ?? booking.payment.finalAmount));
@@ -879,6 +895,14 @@ export function GroomerJobClient({
   const completedRequiredStepCount = booking.sopSteps.filter((step) => step.requiredForCompletion && step.status === "completed").length;
   const totalRequiredStepCount = booking.sopSteps.filter((step) => step.requiredForCompletion).length;
   const reviewCompleted = booking.sopSteps.find((step) => step.key === "review_proof")?.status === "completed";
+
+  const pacerPhases = useMemo(() => getPacerPhases(booking.service.name), [booking.service.name]);
+  const safePhaseIndex = Math.min(currentPhaseIndex, pacerPhases.length - 1);
+  const currentPhase = pacerPhases[safePhaseIndex]!;
+  const isLastPacerPhase = safePhaseIndex === pacerPhases.length - 1;
+  const phaseTotalSeconds = currentPhase.durationMinutes * 60;
+  const phaseSecondsElapsed = pacerPhaseStartAt ? Math.max(0, Math.round((now - pacerPhaseStartAt) / 1000)) : 0;
+  const phaseSecondsRemaining = phaseTotalSeconds - phaseSecondsElapsed;
   const jobPsychology = deriveJobFlowPsychology({
     dispatchState: booking.dispatchState,
     bookingStatus: booking.status,
@@ -1146,41 +1170,52 @@ export function GroomerJobClient({
     });
   };
 
-  const savePayment = async () => {
-    const normalizedAmount = Number(paymentAmount);
-    if (!Number.isFinite(normalizedAmount) || normalizedAmount < 0) {
+  const uploadOrQueue = async (stepKey: string, file: File, options?: { skipClientValidation?: boolean }) => {
+    try {
+      await uploadStepMedia(stepKey, file, options);
+    } catch (err) {
+      if (!navigator.onLine) {
+        await queueUpload(stepKey, file);
+      } else {
+        throw err;
+      }
+    }
+  };
+
+  const executeSavePayment = async (
+    mode: "cash" | "online" | "waived",
+    amount: number,
+    notes: string,
+    image: File | null,
+    applyChange: boolean
+  ) => {
+    if (!Number.isFinite(amount) || amount < 0) {
       throw new Error(languageMode === "simple"
         ? "Valid amount daaliye."
         : "सही अमाउंट डालिए।");
     }
-
-    if (applyServiceAmountChange && !paymentNotes.trim()) {
+    if (applyChange && !notes.trim()) {
       throw new Error(languageMode === "simple"
         ? "Upgrade ya downgrade ka short note likhna zaroori hai."
         : "अपग्रेड या डाउनग्रेड का छोटा नोट लिखना ज़रूरी है।");
     }
-
-    if (paymentMode !== "waived" && !paymentImage) {
+    if (mode !== "waived" && !image && !booking.payment.collection) {
       throw new Error(languageMode === "simple"
         ? "Payment ke saath photo ya screenshot zaroor add karein."
         : "पेमेंट के साथ फोटो या स्क्रीनशॉट ज़रूर जोड़िए।");
     }
-
-    const uploadPaymentImage = paymentImage ? await compressImageForUpload(paymentImage) : null;
-
+    const uploadPaymentImage = image ? await compressImageForUpload(image) : null;
     if (uploadPaymentImage) {
       await validateCapture(uploadPaymentImage);
     }
-
     const formData = new FormData();
-    formData.set("collectionMode", paymentMode);
-    formData.set("collectedAmount", String(normalizedAmount));
-    formData.set("notes", paymentNotes);
-    formData.set("applyServiceAmountChange", String(applyServiceAmountChange));
+    formData.set("collectionMode", mode);
+    formData.set("collectedAmount", String(amount));
+    formData.set("notes", notes);
+    formData.set("applyServiceAmountChange", String(applyChange));
     if (uploadPaymentImage) {
       formData.set("file", uploadPaymentImage, uploadPaymentImage.name);
     }
-
     const res = await fetch(`/api/groomer/bookings/${booking.id}/payment-proof${tokenQuery}`, {
       method: "POST",
       body: formData,
@@ -1188,9 +1223,17 @@ export function GroomerJobClient({
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data?.error ?? "Payment save nahi ho paaya.");
     setPaymentImage(null);
-    openMomentToast({
-      action: "payment_saved",
-    });
+    openMomentToast({ action: "payment_saved" });
+  };
+
+  const savePayment = async () => {
+    await executeSavePayment(
+      paymentMode,
+      Number(paymentAmount),
+      paymentNotes,
+      paymentImage,
+      applyServiceAmountChange
+    );
   };
 
   const claimGroomerIdentity = async () => {
@@ -1312,7 +1355,20 @@ export function GroomerJobClient({
             <button
               type="button"
               onClick={() => void runAction("en_route", async () => {
-                const data = await postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, { dispatchState: "en_route" });
+                let gpsLat: number | null = null;
+                let gpsLng: number | null = null;
+                await new Promise<void>((resolve) => {
+                  navigator.geolocation.getCurrentPosition(
+                    (pos) => { gpsLat = pos.coords.latitude; gpsLng = pos.coords.longitude; resolve(); },
+                    () => resolve(),
+                    { timeout: 5000, maximumAge: 30000 }
+                  );
+                });
+                const data = await postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, {
+                  dispatchState: "en_route",
+                  lat: gpsLat,
+                  lng: gpsLng,
+                });
                 if (data?.rewardsDelta?.length) {
                   setRewardModal({
                     rewards: data.rewardsDelta,
@@ -1346,18 +1402,24 @@ export function GroomerJobClient({
             </button>
             <button
               type="button"
-              onClick={() => void runAction("started", async () => {
-                await postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, { dispatchState: "started" });
-                openMomentToast({
-                  action: "started",
-                });
-              })}
+              onClick={() => {
+                if (["started", "completed"].includes(booking.dispatchState)) return;
+                navigator.geolocation.getCurrentPosition(
+                  (pos) => {
+                    setArrivedGps({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+                    setShowFuelSheet(true);
+                  },
+                  () => {
+                    setArrivedGps(null);
+                    setShowFuelSheet(true);
+                  },
+                  { timeout: 8000, maximumAge: 0 }
+                );
+              }}
               disabled={busy !== null || ["started", "completed"].includes(booking.dispatchState)}
               className="rounded-[18px] border border-[#d8cff8] bg-white px-4 py-4 text-[15px] font-semibold text-[#5b4bc2] disabled:opacity-50"
             >
-              {busy === "started"
-                ? languageMode === "simple" ? "Save ho raha hai..." : "सेव हो रहा है..."
-                : languageMode === "simple" ? "Pahunch gaye" : "पहुँच गए"}
+              {languageMode === "simple" ? "Pahunch gaye" : "पहुँच गए"}
             </button>
           </div>
 
@@ -1574,6 +1636,93 @@ export function GroomerJobClient({
           })}
         </div>
 
+        {/* ─── Pacer mode ─── */}
+        {pacerMode ? (
+          <div className="space-y-3">
+            {isLastPacerPhase ? (
+              <PaymentPhaseCard
+                mode={languageMode}
+                booking={booking}
+                busy={busy}
+                onSave={async (collectionMode, amount, notes, image, applyServiceAmountChange) => {
+                  await executeSavePayment(collectionMode, amount, notes, image, applyServiceAmountChange);
+                  await refresh();
+                }}
+                onComplete={() => void runAction("complete", async () => {
+                  const res = await fetch(`/api/groomer/bookings/${booking.id}/complete${tokenQuery}`, { method: "POST" });
+                  const data = await res.json().catch(() => ({}));
+                  if (!res.ok) throw new Error(data?.error ?? "Booking complete nahi ho paayi.");
+                  setRewardModal({
+                    rewards: data?.rewardsDelta ?? [],
+                    summary: data?.rewardSummary ? {
+                      teamMember: data.rewardSummary.teamMember,
+                      totalXpAwarded: data.rewardSummary.totalXpAwarded,
+                      totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded,
+                      prestigeCredits: data.rewardSummary.gamification?.prestigeCredits,
+                    } : null,
+                  });
+                  openMomentToast({
+                    action: "complete",
+                    xpAwarded: Array.isArray(data?.rewardsDelta)
+                      ? data.rewardsDelta.reduce((sum: number, r: { xpAwarded?: number }) => sum + Number(r?.xpAwarded ?? 0), 0)
+                      : 0,
+                    rewardCreditsAwarded: Array.isArray(data?.rewardsDelta)
+                      ? data.rewardsDelta.reduce((sum: number, r: { rewardPointsAwarded?: number }) => sum + Number(r?.rewardPointsAwarded ?? 0), 0)
+                      : 0,
+                    prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits,
+                  });
+                })}
+              />
+            ) : (
+              <PacerPhaseCard
+                mode={languageMode}
+                phase={currentPhase}
+                phaseIndex={safePhaseIndex}
+                totalPhases={pacerPhases.length}
+                secondsRemaining={phaseSecondsRemaining}
+                secondsElapsed={phaseSecondsElapsed}
+                booking={booking}
+                sopSteps={booking.sopSteps}
+                busy={busy}
+                stepSyncMap={stepSyncMap}
+                isLastPhase={isLastPacerPhase}
+                onNextPhase={() => {
+                  setCurrentPhaseIndex((prev) => Math.min(prev + 1, pacerPhases.length - 1));
+                  setPacerPhaseStartAt(Date.now());
+                }}
+                onStepToggle={(stepKey, currentStatus) => void runAction(stepKey, () =>
+                  postJson(`/api/groomer/bookings/${booking.id}/sop/step`, {
+                    stepKey,
+                    status: currentStatus === "completed" ? "pending" : "completed",
+                  })
+                )}
+                onVideoCapture={(stepKey) => void openLiveVideoRecorder(stepKey).catch((error: unknown) => {
+                  setModalError(error instanceof Error ? error.message : "Camera khul nahi paaya.");
+                })}
+                onPhotoCapture={(stepKey, file) => void runAction(stepKey, () => uploadOrQueue(stepKey, file))}
+                onRetrySync={() => void runSync()}
+              />
+            )}
+            <button
+              type="button"
+              onClick={() => setPacerMode(false)}
+              className="w-full rounded-[20px] border border-[#ddd1fb] bg-white px-4 py-3 text-[13px] font-semibold text-[#6b7280]"
+            >
+              {languageMode === "simple" ? "View full checklist" : "पूरी चेकलिस्ट देखें"}
+            </button>
+          </div>
+        ) : (
+          <>
+        {/* ─── Full checklist mode ─── */}
+        {booking.dispatchState === "started" ? (
+          <button
+            type="button"
+            onClick={() => { setPacerMode(true); setPacerPhaseStartAt((p) => p ?? Date.now()); }}
+            className="flex h-[56px] w-full items-center justify-center gap-2 rounded-[22px] bg-[linear-gradient(135deg,#6d5bd0,#8b7be7)] text-[15px] font-semibold text-white"
+          >
+            {languageMode === "simple" ? "Pacer mode chalao" : "पेसर मोड चलाएं"}
+          </button>
+        ) : null}
         <div className="rounded-[30px] border border-[#eadffd] bg-white p-4 shadow-[0_18px_48px_rgba(73,44,120,0.08)]">
           <SectionTitle
             eyebrow="SOP"
@@ -1885,7 +2034,32 @@ export function GroomerJobClient({
                 : languageMode === "simple" ? "Booking complete karein" : "बुकिंग पूरी करें"}
           </button>
         </div>
+          </>
+        )}
       </div>
+
+      {showFuelSheet ? (
+        <FuelApprovalSheet
+          mode={languageMode}
+          bookingId={booking.id}
+          tokenQuery={tokenQuery}
+          enRouteLat={booking.enRouteLat}
+          enRouteLng={booking.enRouteLng}
+          arrivedLat={arrivedGps?.lat ?? 0}
+          arrivedLng={arrivedGps?.lng ?? 0}
+          onConfirmed={async () => {
+            setShowFuelSheet(false);
+            await refresh();
+            setPacerMode(true);
+            setPacerPhaseStartAt((prev) => prev ?? Date.now());
+            setCurrentPhaseIndex(0);
+          }}
+          onError={(msg) => {
+            setShowFuelSheet(false);
+            setModalError(msg);
+          }}
+        />
+      ) : null}
 
       {modalError ? (
         <ErrorModal
@@ -1914,7 +2088,7 @@ export function GroomerJobClient({
           onUseRecording={() => {
             if (!activeVideoStepKey || !recordedVideoFile) return;
             void runAction(activeVideoStepKey, async () => {
-              await uploadStepMedia(activeVideoStepKey, recordedVideoFile, {
+              await uploadOrQueue(activeVideoStepKey, recordedVideoFile, {
                 skipClientValidation: true,
               });
               closeLiveVideoRecorder();

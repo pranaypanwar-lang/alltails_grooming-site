@@ -18028,6 +18028,8 @@ export namespace Prisma {
     finalAmount: number | null
     serviceLat: number | null
     serviceLng: number | null
+    enRouteLat: number | null
+    enRouteLng: number | null
     loyaltyCompletedCountBefore: number | null
     loyaltyCompletedCountAfter: number | null
     refundAmount: number | null
@@ -18038,6 +18040,8 @@ export namespace Prisma {
     finalAmount: number | null
     serviceLat: number | null
     serviceLng: number | null
+    enRouteLat: number | null
+    enRouteLng: number | null
     loyaltyCompletedCountBefore: number | null
     loyaltyCompletedCountAfter: number | null
     refundAmount: number | null
@@ -18074,6 +18078,8 @@ export namespace Prisma {
     assignedTeamId: string | null
     groomerMemberId: string | null
     dispatchState: string | null
+    enRouteLat: number | null
+    enRouteLng: number | null
     adminNote: string | null
     loyaltyEligible: boolean | null
     loyaltyCompletedCountBefore: number | null
@@ -18124,6 +18130,8 @@ export namespace Prisma {
     assignedTeamId: string | null
     groomerMemberId: string | null
     dispatchState: string | null
+    enRouteLat: number | null
+    enRouteLng: number | null
     adminNote: string | null
     loyaltyEligible: boolean | null
     loyaltyCompletedCountBefore: number | null
@@ -18174,6 +18182,8 @@ export namespace Prisma {
     assignedTeamId: number
     groomerMemberId: number
     dispatchState: number
+    enRouteLat: number
+    enRouteLng: number
     adminNote: number
     loyaltyEligible: number
     loyaltyCompletedCountBefore: number
@@ -18200,6 +18210,8 @@ export namespace Prisma {
     finalAmount?: true
     serviceLat?: true
     serviceLng?: true
+    enRouteLat?: true
+    enRouteLng?: true
     loyaltyCompletedCountBefore?: true
     loyaltyCompletedCountAfter?: true
     refundAmount?: true
@@ -18210,6 +18222,8 @@ export namespace Prisma {
     finalAmount?: true
     serviceLat?: true
     serviceLng?: true
+    enRouteLat?: true
+    enRouteLng?: true
     loyaltyCompletedCountBefore?: true
     loyaltyCompletedCountAfter?: true
     refundAmount?: true
@@ -18246,6 +18260,8 @@ export namespace Prisma {
     assignedTeamId?: true
     groomerMemberId?: true
     dispatchState?: true
+    enRouteLat?: true
+    enRouteLng?: true
     adminNote?: true
     loyaltyEligible?: true
     loyaltyCompletedCountBefore?: true
@@ -18296,6 +18312,8 @@ export namespace Prisma {
     assignedTeamId?: true
     groomerMemberId?: true
     dispatchState?: true
+    enRouteLat?: true
+    enRouteLng?: true
     adminNote?: true
     loyaltyEligible?: true
     loyaltyCompletedCountBefore?: true
@@ -18346,6 +18364,8 @@ export namespace Prisma {
     assignedTeamId?: true
     groomerMemberId?: true
     dispatchState?: true
+    enRouteLat?: true
+    enRouteLng?: true
     adminNote?: true
     loyaltyEligible?: true
     loyaltyCompletedCountBefore?: true
@@ -18483,6 +18503,8 @@ export namespace Prisma {
     assignedTeamId: string | null
     groomerMemberId: string | null
     dispatchState: string
+    enRouteLat: number | null
+    enRouteLng: number | null
     adminNote: string | null
     loyaltyEligible: boolean
     loyaltyCompletedCountBefore: number | null
@@ -18552,6 +18574,8 @@ export namespace Prisma {
     assignedTeamId?: boolean
     groomerMemberId?: boolean
     dispatchState?: boolean
+    enRouteLat?: boolean
+    enRouteLng?: boolean
     adminNote?: boolean
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: boolean
@@ -18621,6 +18645,8 @@ export namespace Prisma {
     assignedTeamId?: boolean
     groomerMemberId?: boolean
     dispatchState?: boolean
+    enRouteLat?: boolean
+    enRouteLng?: boolean
     adminNote?: boolean
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: boolean
@@ -18675,6 +18701,8 @@ export namespace Prisma {
     assignedTeamId?: boolean
     groomerMemberId?: boolean
     dispatchState?: boolean
+    enRouteLat?: boolean
+    enRouteLng?: boolean
     adminNote?: boolean
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: boolean
@@ -18729,6 +18757,8 @@ export namespace Prisma {
     assignedTeamId?: boolean
     groomerMemberId?: boolean
     dispatchState?: boolean
+    enRouteLat?: boolean
+    enRouteLng?: boolean
     adminNote?: boolean
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: boolean
@@ -18748,7 +18778,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type BookingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "serviceId" | "status" | "paymentMethod" | "paymentStatus" | "couponCode" | "originalAmount" | "finalAmount" | "razorpayOrderId" | "razorpayPaymentId" | "paymentPendingReason" | "paymentGatewayError" | "paymentExpiresAt" | "paymentFailedAt" | "paymentExpiredAt" | "selectedDate" | "bookingWindowId" | "bookingSource" | "serviceAddress" | "serviceLandmark" | "servicePincode" | "serviceLocationUrl" | "serviceLat" | "serviceLng" | "serviceLocationSource" | "addressUpdatedAt" | "assignedTeamId" | "groomerMemberId" | "dispatchState" | "adminNote" | "loyaltyEligible" | "loyaltyCompletedCountBefore" | "loyaltyCompletedCountAfter" | "loyaltyRewardApplied" | "loyaltyRewardLabel" | "loyaltyCountedAt" | "loyaltyRewardRestored" | "refundStatus" | "refundMode" | "refundReason" | "refundNotes" | "refundAmount" | "refundedAt" | "razorpayRefundId" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
+  export type BookingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "serviceId" | "status" | "paymentMethod" | "paymentStatus" | "couponCode" | "originalAmount" | "finalAmount" | "razorpayOrderId" | "razorpayPaymentId" | "paymentPendingReason" | "paymentGatewayError" | "paymentExpiresAt" | "paymentFailedAt" | "paymentExpiredAt" | "selectedDate" | "bookingWindowId" | "bookingSource" | "serviceAddress" | "serviceLandmark" | "servicePincode" | "serviceLocationUrl" | "serviceLat" | "serviceLng" | "serviceLocationSource" | "addressUpdatedAt" | "assignedTeamId" | "groomerMemberId" | "dispatchState" | "enRouteLat" | "enRouteLng" | "adminNote" | "loyaltyEligible" | "loyaltyCompletedCountBefore" | "loyaltyCompletedCountAfter" | "loyaltyRewardApplied" | "loyaltyRewardLabel" | "loyaltyCountedAt" | "loyaltyRewardRestored" | "refundStatus" | "refundMode" | "refundReason" | "refundNotes" | "refundAmount" | "refundedAt" | "razorpayRefundId" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
   export type BookingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     service?: boolean | ServiceDefaultArgs<ExtArgs>
@@ -18836,6 +18866,8 @@ export namespace Prisma {
       assignedTeamId: string | null
       groomerMemberId: string | null
       dispatchState: string
+      enRouteLat: number | null
+      enRouteLng: number | null
       adminNote: string | null
       loyaltyEligible: boolean
       loyaltyCompletedCountBefore: number | null
@@ -19324,6 +19356,8 @@ export namespace Prisma {
     readonly assignedTeamId: FieldRef<"Booking", 'String'>
     readonly groomerMemberId: FieldRef<"Booking", 'String'>
     readonly dispatchState: FieldRef<"Booking", 'String'>
+    readonly enRouteLat: FieldRef<"Booking", 'Float'>
+    readonly enRouteLng: FieldRef<"Booking", 'Float'>
     readonly adminNote: FieldRef<"Booking", 'String'>
     readonly loyaltyEligible: FieldRef<"Booking", 'Boolean'>
     readonly loyaltyCompletedCountBefore: FieldRef<"Booking", 'Int'>
@@ -20156,6 +20190,7 @@ export namespace Prisma {
     punctualityStreak: number | null
     reviewStreak: number | null
     noLeaveStreakDays: number | null
+    streakShieldCount: number | null
     baseSalary: number | null
     homeLat: number | null
     homeLng: number | null
@@ -20179,6 +20214,7 @@ export namespace Prisma {
     punctualityStreak: number | null
     reviewStreak: number | null
     noLeaveStreakDays: number | null
+    streakShieldCount: number | null
     baseSalary: number | null
     homeLat: number | null
     homeLng: number | null
@@ -20212,6 +20248,8 @@ export namespace Prisma {
     punctualityStreak: number | null
     reviewStreak: number | null
     noLeaveStreakDays: number | null
+    streakShieldCount: number | null
+    lastStreakShieldResetAt: Date | null
     lastCompletedAt: Date | null
     lastReviewAt: Date | null
     lastOnTimeAt: Date | null
@@ -20264,6 +20302,8 @@ export namespace Prisma {
     punctualityStreak: number | null
     reviewStreak: number | null
     noLeaveStreakDays: number | null
+    streakShieldCount: number | null
+    lastStreakShieldResetAt: Date | null
     lastCompletedAt: Date | null
     lastReviewAt: Date | null
     lastOnTimeAt: Date | null
@@ -20316,6 +20356,8 @@ export namespace Prisma {
     punctualityStreak: number
     reviewStreak: number
     noLeaveStreakDays: number
+    streakShieldCount: number
+    lastStreakShieldResetAt: number
     lastCompletedAt: number
     lastReviewAt: number
     lastOnTimeAt: number
@@ -20360,6 +20402,7 @@ export namespace Prisma {
     punctualityStreak?: true
     reviewStreak?: true
     noLeaveStreakDays?: true
+    streakShieldCount?: true
     baseSalary?: true
     homeLat?: true
     homeLng?: true
@@ -20383,6 +20426,7 @@ export namespace Prisma {
     punctualityStreak?: true
     reviewStreak?: true
     noLeaveStreakDays?: true
+    streakShieldCount?: true
     baseSalary?: true
     homeLat?: true
     homeLng?: true
@@ -20416,6 +20460,8 @@ export namespace Prisma {
     punctualityStreak?: true
     reviewStreak?: true
     noLeaveStreakDays?: true
+    streakShieldCount?: true
+    lastStreakShieldResetAt?: true
     lastCompletedAt?: true
     lastReviewAt?: true
     lastOnTimeAt?: true
@@ -20468,6 +20514,8 @@ export namespace Prisma {
     punctualityStreak?: true
     reviewStreak?: true
     noLeaveStreakDays?: true
+    streakShieldCount?: true
+    lastStreakShieldResetAt?: true
     lastCompletedAt?: true
     lastReviewAt?: true
     lastOnTimeAt?: true
@@ -20520,6 +20568,8 @@ export namespace Prisma {
     punctualityStreak?: true
     reviewStreak?: true
     noLeaveStreakDays?: true
+    streakShieldCount?: true
+    lastStreakShieldResetAt?: true
     lastCompletedAt?: true
     lastReviewAt?: true
     lastOnTimeAt?: true
@@ -20659,6 +20709,8 @@ export namespace Prisma {
     punctualityStreak: number
     reviewStreak: number
     noLeaveStreakDays: number
+    streakShieldCount: number
+    lastStreakShieldResetAt: Date | null
     lastCompletedAt: Date | null
     lastReviewAt: Date | null
     lastOnTimeAt: Date | null
@@ -20730,6 +20782,8 @@ export namespace Prisma {
     punctualityStreak?: boolean
     reviewStreak?: boolean
     noLeaveStreakDays?: boolean
+    streakShieldCount?: boolean
+    lastStreakShieldResetAt?: boolean
     lastCompletedAt?: boolean
     lastReviewAt?: boolean
     lastOnTimeAt?: boolean
@@ -20798,6 +20852,8 @@ export namespace Prisma {
     punctualityStreak?: boolean
     reviewStreak?: boolean
     noLeaveStreakDays?: boolean
+    streakShieldCount?: boolean
+    lastStreakShieldResetAt?: boolean
     lastCompletedAt?: boolean
     lastReviewAt?: boolean
     lastOnTimeAt?: boolean
@@ -20851,6 +20907,8 @@ export namespace Prisma {
     punctualityStreak?: boolean
     reviewStreak?: boolean
     noLeaveStreakDays?: boolean
+    streakShieldCount?: boolean
+    lastStreakShieldResetAt?: boolean
     lastCompletedAt?: boolean
     lastReviewAt?: boolean
     lastOnTimeAt?: boolean
@@ -20904,6 +20962,8 @@ export namespace Prisma {
     punctualityStreak?: boolean
     reviewStreak?: boolean
     noLeaveStreakDays?: boolean
+    streakShieldCount?: boolean
+    lastStreakShieldResetAt?: boolean
     lastCompletedAt?: boolean
     lastReviewAt?: boolean
     lastOnTimeAt?: boolean
@@ -20931,7 +20991,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type TeamMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "teamId" | "name" | "phone" | "passwordHash" | "passwordSetAt" | "role" | "isActive" | "joinedAt" | "currentXp" | "lifetimeXp" | "rewardPoints" | "trustScore" | "performanceScore" | "currentLevel" | "currentRank" | "salaryHikeStage" | "completedCount" | "onTimeCount" | "reviewCount" | "highestReviewStreak" | "punctualityStreak" | "reviewStreak" | "noLeaveStreakDays" | "lastCompletedAt" | "lastReviewAt" | "lastOnTimeAt" | "aadhaarNumber" | "aadhaarImageUrl" | "panNumber" | "panImageUrl" | "bankAccountName" | "bankAccountNumber" | "bankIfsc" | "bankName" | "upiId" | "baseSalary" | "salaryEffectiveFromMonth" | "homeAddress" | "homeLat" | "homeLng" | "bikeAverageKmPerLitre" | "fuelRatePerLitre" | "emergencyContactName" | "emergencyContactPhone" | "yearsExperience" | "experienceNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["teamMember"]>
+  export type TeamMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "teamId" | "name" | "phone" | "passwordHash" | "passwordSetAt" | "role" | "isActive" | "joinedAt" | "currentXp" | "lifetimeXp" | "rewardPoints" | "trustScore" | "performanceScore" | "currentLevel" | "currentRank" | "salaryHikeStage" | "completedCount" | "onTimeCount" | "reviewCount" | "highestReviewStreak" | "punctualityStreak" | "reviewStreak" | "noLeaveStreakDays" | "streakShieldCount" | "lastStreakShieldResetAt" | "lastCompletedAt" | "lastReviewAt" | "lastOnTimeAt" | "aadhaarNumber" | "aadhaarImageUrl" | "panNumber" | "panImageUrl" | "bankAccountName" | "bankAccountNumber" | "bankIfsc" | "bankName" | "upiId" | "baseSalary" | "salaryEffectiveFromMonth" | "homeAddress" | "homeLat" | "homeLng" | "bikeAverageKmPerLitre" | "fuelRatePerLitre" | "emergencyContactName" | "emergencyContactPhone" | "yearsExperience" | "experienceNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["teamMember"]>
   export type TeamMemberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     team?: boolean | TeamDefaultArgs<ExtArgs>
     bookings?: boolean | TeamMember$bookingsArgs<ExtArgs>
@@ -21001,6 +21061,8 @@ export namespace Prisma {
       punctualityStreak: number
       reviewStreak: number
       noLeaveStreakDays: number
+      streakShieldCount: number
+      lastStreakShieldResetAt: Date | null
       lastCompletedAt: Date | null
       lastReviewAt: Date | null
       lastOnTimeAt: Date | null
@@ -21488,6 +21550,8 @@ export namespace Prisma {
     readonly punctualityStreak: FieldRef<"TeamMember", 'Int'>
     readonly reviewStreak: FieldRef<"TeamMember", 'Int'>
     readonly noLeaveStreakDays: FieldRef<"TeamMember", 'Int'>
+    readonly streakShieldCount: FieldRef<"TeamMember", 'Int'>
+    readonly lastStreakShieldResetAt: FieldRef<"TeamMember", 'DateTime'>
     readonly lastCompletedAt: FieldRef<"TeamMember", 'DateTime'>
     readonly lastReviewAt: FieldRef<"TeamMember", 'DateTime'>
     readonly lastOnTimeAt: FieldRef<"TeamMember", 'DateTime'>
@@ -56318,6 +56382,8 @@ export namespace Prisma {
     assignedTeamId: 'assignedTeamId',
     groomerMemberId: 'groomerMemberId',
     dispatchState: 'dispatchState',
+    enRouteLat: 'enRouteLat',
+    enRouteLng: 'enRouteLng',
     adminNote: 'adminNote',
     loyaltyEligible: 'loyaltyEligible',
     loyaltyCompletedCountBefore: 'loyaltyCompletedCountBefore',
@@ -56365,6 +56431,8 @@ export namespace Prisma {
     punctualityStreak: 'punctualityStreak',
     reviewStreak: 'reviewStreak',
     noLeaveStreakDays: 'noLeaveStreakDays',
+    streakShieldCount: 'streakShieldCount',
+    lastStreakShieldResetAt: 'lastStreakShieldResetAt',
     lastCompletedAt: 'lastCompletedAt',
     lastReviewAt: 'lastReviewAt',
     lastOnTimeAt: 'lastOnTimeAt',
@@ -57847,6 +57915,8 @@ export namespace Prisma {
     assignedTeamId?: StringNullableFilter<"Booking"> | string | null
     groomerMemberId?: StringNullableFilter<"Booking"> | string | null
     dispatchState?: StringFilter<"Booking"> | string
+    enRouteLat?: FloatNullableFilter<"Booking"> | number | null
+    enRouteLng?: FloatNullableFilter<"Booking"> | number | null
     adminNote?: StringNullableFilter<"Booking"> | string | null
     loyaltyEligible?: BoolFilter<"Booking"> | boolean
     loyaltyCompletedCountBefore?: IntNullableFilter<"Booking"> | number | null
@@ -57915,6 +57985,8 @@ export namespace Prisma {
     assignedTeamId?: SortOrderInput | SortOrder
     groomerMemberId?: SortOrderInput | SortOrder
     dispatchState?: SortOrder
+    enRouteLat?: SortOrderInput | SortOrder
+    enRouteLng?: SortOrderInput | SortOrder
     adminNote?: SortOrderInput | SortOrder
     loyaltyEligible?: SortOrder
     loyaltyCompletedCountBefore?: SortOrderInput | SortOrder
@@ -57986,6 +58058,8 @@ export namespace Prisma {
     assignedTeamId?: StringNullableFilter<"Booking"> | string | null
     groomerMemberId?: StringNullableFilter<"Booking"> | string | null
     dispatchState?: StringFilter<"Booking"> | string
+    enRouteLat?: FloatNullableFilter<"Booking"> | number | null
+    enRouteLng?: FloatNullableFilter<"Booking"> | number | null
     adminNote?: StringNullableFilter<"Booking"> | string | null
     loyaltyEligible?: BoolFilter<"Booking"> | boolean
     loyaltyCompletedCountBefore?: IntNullableFilter<"Booking"> | number | null
@@ -58054,6 +58128,8 @@ export namespace Prisma {
     assignedTeamId?: SortOrderInput | SortOrder
     groomerMemberId?: SortOrderInput | SortOrder
     dispatchState?: SortOrder
+    enRouteLat?: SortOrderInput | SortOrder
+    enRouteLng?: SortOrderInput | SortOrder
     adminNote?: SortOrderInput | SortOrder
     loyaltyEligible?: SortOrder
     loyaltyCompletedCountBefore?: SortOrderInput | SortOrder
@@ -58112,6 +58188,8 @@ export namespace Prisma {
     assignedTeamId?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     groomerMemberId?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     dispatchState?: StringWithAggregatesFilter<"Booking"> | string
+    enRouteLat?: FloatNullableWithAggregatesFilter<"Booking"> | number | null
+    enRouteLng?: FloatNullableWithAggregatesFilter<"Booking"> | number | null
     adminNote?: StringNullableWithAggregatesFilter<"Booking"> | string | null
     loyaltyEligible?: BoolWithAggregatesFilter<"Booking"> | boolean
     loyaltyCompletedCountBefore?: IntNullableWithAggregatesFilter<"Booking"> | number | null
@@ -58159,6 +58237,8 @@ export namespace Prisma {
     punctualityStreak?: IntFilter<"TeamMember"> | number
     reviewStreak?: IntFilter<"TeamMember"> | number
     noLeaveStreakDays?: IntFilter<"TeamMember"> | number
+    streakShieldCount?: IntFilter<"TeamMember"> | number
+    lastStreakShieldResetAt?: DateTimeNullableFilter<"TeamMember"> | Date | string | null
     lastCompletedAt?: DateTimeNullableFilter<"TeamMember"> | Date | string | null
     lastReviewAt?: DateTimeNullableFilter<"TeamMember"> | Date | string | null
     lastOnTimeAt?: DateTimeNullableFilter<"TeamMember"> | Date | string | null
@@ -58226,6 +58306,8 @@ export namespace Prisma {
     punctualityStreak?: SortOrder
     reviewStreak?: SortOrder
     noLeaveStreakDays?: SortOrder
+    streakShieldCount?: SortOrder
+    lastStreakShieldResetAt?: SortOrderInput | SortOrder
     lastCompletedAt?: SortOrderInput | SortOrder
     lastReviewAt?: SortOrderInput | SortOrder
     lastOnTimeAt?: SortOrderInput | SortOrder
@@ -58296,6 +58378,8 @@ export namespace Prisma {
     punctualityStreak?: IntFilter<"TeamMember"> | number
     reviewStreak?: IntFilter<"TeamMember"> | number
     noLeaveStreakDays?: IntFilter<"TeamMember"> | number
+    streakShieldCount?: IntFilter<"TeamMember"> | number
+    lastStreakShieldResetAt?: DateTimeNullableFilter<"TeamMember"> | Date | string | null
     lastCompletedAt?: DateTimeNullableFilter<"TeamMember"> | Date | string | null
     lastReviewAt?: DateTimeNullableFilter<"TeamMember"> | Date | string | null
     lastOnTimeAt?: DateTimeNullableFilter<"TeamMember"> | Date | string | null
@@ -58363,6 +58447,8 @@ export namespace Prisma {
     punctualityStreak?: SortOrder
     reviewStreak?: SortOrder
     noLeaveStreakDays?: SortOrder
+    streakShieldCount?: SortOrder
+    lastStreakShieldResetAt?: SortOrderInput | SortOrder
     lastCompletedAt?: SortOrderInput | SortOrder
     lastReviewAt?: SortOrderInput | SortOrder
     lastOnTimeAt?: SortOrderInput | SortOrder
@@ -58423,6 +58509,8 @@ export namespace Prisma {
     punctualityStreak?: IntWithAggregatesFilter<"TeamMember"> | number
     reviewStreak?: IntWithAggregatesFilter<"TeamMember"> | number
     noLeaveStreakDays?: IntWithAggregatesFilter<"TeamMember"> | number
+    streakShieldCount?: IntWithAggregatesFilter<"TeamMember"> | number
+    lastStreakShieldResetAt?: DateTimeNullableWithAggregatesFilter<"TeamMember"> | Date | string | null
     lastCompletedAt?: DateTimeNullableWithAggregatesFilter<"TeamMember"> | Date | string | null
     lastReviewAt?: DateTimeNullableWithAggregatesFilter<"TeamMember"> | Date | string | null
     lastOnTimeAt?: DateTimeNullableWithAggregatesFilter<"TeamMember"> | Date | string | null
@@ -61945,6 +62033,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -62013,6 +62103,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -62073,6 +62165,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -62141,6 +62235,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -62205,6 +62301,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -62251,6 +62349,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -62301,6 +62401,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -62344,6 +62446,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -62411,6 +62515,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -62476,6 +62582,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -62543,6 +62651,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -62609,6 +62719,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -62660,6 +62772,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -62712,6 +62826,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -66525,6 +66641,8 @@ export namespace Prisma {
     assignedTeamId?: SortOrder
     groomerMemberId?: SortOrder
     dispatchState?: SortOrder
+    enRouteLat?: SortOrder
+    enRouteLng?: SortOrder
     adminNote?: SortOrder
     loyaltyEligible?: SortOrder
     loyaltyCompletedCountBefore?: SortOrder
@@ -66549,6 +66667,8 @@ export namespace Prisma {
     finalAmount?: SortOrder
     serviceLat?: SortOrder
     serviceLng?: SortOrder
+    enRouteLat?: SortOrder
+    enRouteLng?: SortOrder
     loyaltyCompletedCountBefore?: SortOrder
     loyaltyCompletedCountAfter?: SortOrder
     refundAmount?: SortOrder
@@ -66585,6 +66705,8 @@ export namespace Prisma {
     assignedTeamId?: SortOrder
     groomerMemberId?: SortOrder
     dispatchState?: SortOrder
+    enRouteLat?: SortOrder
+    enRouteLng?: SortOrder
     adminNote?: SortOrder
     loyaltyEligible?: SortOrder
     loyaltyCompletedCountBefore?: SortOrder
@@ -66635,6 +66757,8 @@ export namespace Prisma {
     assignedTeamId?: SortOrder
     groomerMemberId?: SortOrder
     dispatchState?: SortOrder
+    enRouteLat?: SortOrder
+    enRouteLng?: SortOrder
     adminNote?: SortOrder
     loyaltyEligible?: SortOrder
     loyaltyCompletedCountBefore?: SortOrder
@@ -66659,6 +66783,8 @@ export namespace Prisma {
     finalAmount?: SortOrder
     serviceLat?: SortOrder
     serviceLng?: SortOrder
+    enRouteLat?: SortOrder
+    enRouteLng?: SortOrder
     loyaltyCompletedCountBefore?: SortOrder
     loyaltyCompletedCountAfter?: SortOrder
     refundAmount?: SortOrder
@@ -66806,6 +66932,8 @@ export namespace Prisma {
     punctualityStreak?: SortOrder
     reviewStreak?: SortOrder
     noLeaveStreakDays?: SortOrder
+    streakShieldCount?: SortOrder
+    lastStreakShieldResetAt?: SortOrder
     lastCompletedAt?: SortOrder
     lastReviewAt?: SortOrder
     lastOnTimeAt?: SortOrder
@@ -66848,6 +66976,7 @@ export namespace Prisma {
     punctualityStreak?: SortOrder
     reviewStreak?: SortOrder
     noLeaveStreakDays?: SortOrder
+    streakShieldCount?: SortOrder
     baseSalary?: SortOrder
     homeLat?: SortOrder
     homeLng?: SortOrder
@@ -66881,6 +67010,8 @@ export namespace Prisma {
     punctualityStreak?: SortOrder
     reviewStreak?: SortOrder
     noLeaveStreakDays?: SortOrder
+    streakShieldCount?: SortOrder
+    lastStreakShieldResetAt?: SortOrder
     lastCompletedAt?: SortOrder
     lastReviewAt?: SortOrder
     lastOnTimeAt?: SortOrder
@@ -66933,6 +67064,8 @@ export namespace Prisma {
     punctualityStreak?: SortOrder
     reviewStreak?: SortOrder
     noLeaveStreakDays?: SortOrder
+    streakShieldCount?: SortOrder
+    lastStreakShieldResetAt?: SortOrder
     lastCompletedAt?: SortOrder
     lastReviewAt?: SortOrder
     lastOnTimeAt?: SortOrder
@@ -66975,6 +67108,7 @@ export namespace Prisma {
     punctualityStreak?: SortOrder
     reviewStreak?: SortOrder
     noLeaveStreakDays?: SortOrder
+    streakShieldCount?: SortOrder
     baseSalary?: SortOrder
     homeLat?: SortOrder
     homeLng?: SortOrder
@@ -71586,6 +71720,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -71652,6 +71788,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -71819,6 +71957,8 @@ export namespace Prisma {
     assignedTeamId?: StringNullableFilter<"Booking"> | string | null
     groomerMemberId?: StringNullableFilter<"Booking"> | string | null
     dispatchState?: StringFilter<"Booking"> | string
+    enRouteLat?: FloatNullableFilter<"Booking"> | number | null
+    enRouteLng?: FloatNullableFilter<"Booking"> | number | null
     adminNote?: StringNullableFilter<"Booking"> | string | null
     loyaltyEligible?: BoolFilter<"Booking"> | boolean
     loyaltyCompletedCountBefore?: IntNullableFilter<"Booking"> | number | null
@@ -72205,6 +72345,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -72271,6 +72413,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -72444,6 +72588,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -72511,6 +72657,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -72666,6 +72814,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -72733,6 +72883,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -72940,6 +73092,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -73006,6 +73160,8 @@ export namespace Prisma {
     addressUpdatedAt?: Date | string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -73133,6 +73289,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -73198,6 +73356,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -73463,6 +73623,8 @@ export namespace Prisma {
     punctualityStreak?: IntFilter<"TeamMember"> | number
     reviewStreak?: IntFilter<"TeamMember"> | number
     noLeaveStreakDays?: IntFilter<"TeamMember"> | number
+    streakShieldCount?: IntFilter<"TeamMember"> | number
+    lastStreakShieldResetAt?: DateTimeNullableFilter<"TeamMember"> | Date | string | null
     lastCompletedAt?: DateTimeNullableFilter<"TeamMember"> | Date | string | null
     lastReviewAt?: DateTimeNullableFilter<"TeamMember"> | Date | string | null
     lastOnTimeAt?: DateTimeNullableFilter<"TeamMember"> | Date | string | null
@@ -73989,6 +74151,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -74055,6 +74219,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -74757,6 +74923,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -74823,6 +74991,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75334,6 +75504,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -75400,6 +75572,8 @@ export namespace Prisma {
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -76442,6 +76616,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -76508,6 +76684,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -76588,6 +76766,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76654,6 +76834,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76718,6 +76900,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -76784,6 +76968,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -76864,6 +77050,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76930,6 +77118,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76994,6 +77184,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -77060,6 +77252,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -77132,6 +77326,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -77199,6 +77395,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -77271,6 +77469,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -77337,6 +77537,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -77415,6 +77617,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -77482,6 +77686,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -77541,6 +77747,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -77608,6 +77816,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -77669,6 +77879,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -77735,6 +77947,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -77818,6 +78032,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -77885,6 +78101,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -77952,6 +78170,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78018,6 +78238,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78082,6 +78304,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -78148,6 +78372,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -78228,6 +78454,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78294,6 +78522,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78399,6 +78629,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -78465,6 +78697,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -78592,6 +78826,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78658,6 +78894,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78722,6 +78960,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -78788,6 +79028,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -78860,6 +79102,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -78927,6 +79171,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -78999,6 +79245,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -79065,6 +79313,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -79143,6 +79393,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -79210,6 +79462,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -79266,6 +79520,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -79332,6 +79588,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -79412,6 +79670,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -79478,6 +79738,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -79542,6 +79804,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -79608,6 +79872,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -79688,6 +79954,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -79754,6 +80022,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -79818,6 +80088,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -79884,6 +80156,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -79964,6 +80238,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -80030,6 +80306,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -80188,6 +80466,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -80254,6 +80534,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -80365,6 +80647,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -80431,6 +80715,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -80532,6 +80818,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -80598,6 +80886,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -80678,6 +80968,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -80744,6 +81036,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -80839,6 +81133,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -80905,6 +81201,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -81022,6 +81320,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -81088,6 +81388,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -81155,6 +81457,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -81222,6 +81526,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -81297,6 +81603,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -81364,6 +81672,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -81423,6 +81733,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -81490,6 +81802,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -81601,6 +81915,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -81668,6 +81984,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -81743,6 +82061,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -81810,6 +82130,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -81914,6 +82236,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -81981,6 +82305,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -82075,6 +82401,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -82142,6 +82470,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -82217,6 +82547,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -82284,6 +82616,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -82343,6 +82677,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -82410,6 +82746,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -82552,6 +82890,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -82619,6 +82959,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -82752,6 +83094,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -82819,6 +83163,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -82927,6 +83273,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -82994,6 +83342,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -83152,6 +83502,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -83219,6 +83571,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -83335,6 +83689,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -83402,6 +83758,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -83508,6 +83866,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -83575,6 +83935,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -83691,6 +84053,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -83758,6 +84122,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -83864,6 +84230,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -83931,6 +84299,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -84006,6 +84376,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -84073,6 +84445,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -84132,6 +84506,8 @@ export namespace Prisma {
     serviceLocationSource?: string | null
     addressUpdatedAt?: Date | string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -84199,6 +84575,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -84274,6 +84652,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -84341,6 +84721,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -84403,6 +84785,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -84474,6 +84858,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -84540,6 +84926,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -84603,6 +84991,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -84809,6 +85199,8 @@ export namespace Prisma {
     assignedTeamId?: string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -84855,6 +85247,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -84921,6 +85315,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -84984,6 +85380,8 @@ export namespace Prisma {
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -85113,6 +85511,8 @@ export namespace Prisma {
     addressUpdatedAt?: Date | string | null
     groomerMemberId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -85176,6 +85576,8 @@ export namespace Prisma {
     punctualityStreak?: number
     reviewStreak?: number
     noLeaveStreakDays?: number
+    streakShieldCount?: number
+    lastStreakShieldResetAt?: Date | string | null
     lastCompletedAt?: Date | string | null
     lastReviewAt?: Date | string | null
     lastOnTimeAt?: Date | string | null
@@ -85306,6 +85708,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -85372,6 +85776,8 @@ export namespace Prisma {
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -85435,6 +85841,8 @@ export namespace Prisma {
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     groomerMemberId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -85538,6 +85946,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -85603,6 +86013,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -85668,6 +86080,8 @@ export namespace Prisma {
     punctualityStreak?: IntFieldUpdateOperationsInput | number
     reviewStreak?: IntFieldUpdateOperationsInput | number
     noLeaveStreakDays?: IntFieldUpdateOperationsInput | number
+    streakShieldCount?: IntFieldUpdateOperationsInput | number
+    lastStreakShieldResetAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastOnTimeAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -86513,6 +86927,8 @@ export namespace Prisma {
     addressUpdatedAt?: Date | string | null
     assignedTeamId?: string | null
     dispatchState?: string
+    enRouteLat?: number | null
+    enRouteLng?: number | null
     adminNote?: string | null
     loyaltyEligible?: boolean
     loyaltyCompletedCountBefore?: number | null
@@ -86763,6 +87179,8 @@ export namespace Prisma {
     serviceLocationSource?: NullableStringFieldUpdateOperationsInput | string | null
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -86829,6 +87247,8 @@ export namespace Prisma {
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null
@@ -86892,6 +87312,8 @@ export namespace Prisma {
     addressUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTeamId?: NullableStringFieldUpdateOperationsInput | string | null
     dispatchState?: StringFieldUpdateOperationsInput | string
+    enRouteLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    enRouteLng?: NullableFloatFieldUpdateOperationsInput | number | null
     adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     loyaltyEligible?: BoolFieldUpdateOperationsInput | boolean
     loyaltyCompletedCountBefore?: NullableIntFieldUpdateOperationsInput | number | null

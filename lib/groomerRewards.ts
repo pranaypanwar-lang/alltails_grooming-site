@@ -2,6 +2,16 @@ import type { Prisma, PrismaClient } from "./generated/prisma";
 import { BOOKING_SOP_STEPS, getMissingRequiredSopEvidenceLabels } from "./booking/sop";
 import { getServiceSlaMinutes } from "./serviceSla";
 
+// Lucky booking: 1-in-15 chance of 3× XP multiplier on a booking completion.
+// Seeded by bookingId so the result is deterministic and tamper-proof.
+export function isLuckyBooking(bookingId: string): boolean {
+  let hash = 0;
+  for (let i = 0; i < bookingId.length; i++) {
+    hash = (hash * 31 + bookingId.charCodeAt(i)) >>> 0;
+  }
+  return hash % 15 === 0;
+}
+
 type DbTx = Prisma.TransactionClient;
 type DbClient = PrismaClient | Prisma.TransactionClient;
 
@@ -179,6 +189,7 @@ export function getGamificationSnapshot(input: {
   punctualityStreak?: number;
   reviewStreak?: number;
   noLeaveStreakDays?: number;
+  streakShieldCount?: number;
 }) {
   const level = getLevelForXp(input.currentXp);
   const rankEntry = getRankEntry(input.currentXp);
@@ -235,6 +246,7 @@ export function getGamificationSnapshot(input: {
       reviews: input.reviewStreak ?? 0,
       noLeaveDays: input.noLeaveStreakDays ?? 0,
     },
+    streakShieldCount: input.streakShieldCount ?? 1,
     scoreBreakdown: {
       completion: completionRateScore,
       punctuality: punctualityScore,
@@ -305,6 +317,7 @@ export async function awardGroomerXp(input: {
       highestReviewStreak: true,
       punctualityStreak: true,
       reviewStreak: true,
+      streakShieldCount: true,
     },
   });
   if (!member) {
@@ -560,6 +573,139 @@ export async function getTeamMemberRewardSummary(prisma: DbClient, teamMemberId:
   };
 }
 
+/**
+ * Monthly streak shield refill — call this from a cron job at the start of each month.
+ * Resets every groomer's shield count to 1.
+ */
+export async function refillMonthlyStreakShields(prisma: DbClient) {
+  const now = new Date();
+  await (prisma as PrismaClient).teamMember.updateMany({
+    where: {
+      isActive: true,
+      OR: [
+        { lastStreakShieldResetAt: null },
+        {
+          lastStreakShieldResetAt: {
+            lt: new Date(now.getFullYear(), now.getMonth(), 1),
+          },
+        },
+      ],
+    },
+    data: {
+      streakShieldCount: 1,
+      lastStreakShieldResetAt: now,
+    },
+  });
+}
+
+/**
+ * Consume a streak shield to protect the punctuality streak from breaking.
+ * Returns { used: true } if shield was consumed, { used: false } if none available.
+ */
+export async function consumeStreakShield(
+  prisma: DbClient,
+  teamMemberId: string
+): Promise<{ used: boolean; shieldsRemaining: number }> {
+  return (prisma as PrismaClient).$transaction(async (tx) => {
+    const member = await tx.teamMember.findUnique({
+      where: { id: teamMemberId },
+      select: { streakShieldCount: true },
+    });
+    if (!member || member.streakShieldCount <= 0) {
+      return { used: false, shieldsRemaining: 0 };
+    }
+    const updated = await tx.teamMember.update({
+      where: { id: teamMemberId },
+      data: { streakShieldCount: { decrement: 1 } },
+      select: { streakShieldCount: true },
+    });
+    await tx.groomerRewardEvent.create({
+      data: {
+        teamMemberId,
+        bookingId: null,
+        eventType: "streak_shield_used",
+        summary: "Streak Shield use hua — punctuality streak bachaya! 🛡️",
+        xpAwarded: 0,
+        rewardPointsAwarded: 0,
+        trustDelta: 0,
+        performanceDelta: 0,
+      },
+    });
+    return { used: true, shieldsRemaining: updated.streakShieldCount };
+  });
+}
+
+// Called by the daily check-in API route. Awards XP once per calendar day.
+export async function awardDailyCheckin(prisma: DbClient, teamMemberId: string) {
+  return prisma.$transaction(async (tx) => {
+    const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+    const existing = await tx.groomerRewardEvent.findFirst({
+      where: {
+        teamMemberId,
+        eventType: "daily_checkin",
+        createdAt: {
+          gte: new Date(`${today}T00:00:00.000Z`),
+          lt: new Date(`${today}T23:59:59.999Z`),
+        },
+      },
+    });
+    if (existing) return { alreadyClaimed: true, reward: null };
+
+    const result = await awardGroomerXp({
+      tx,
+      teamMemberId,
+      bookingId: null,
+      eventType: "daily_checkin",
+      summary: "Aaj login — daily check-in bonus ✅",
+      xpAwarded: 10,
+      rewardPointsAwarded: 2,
+      trustDelta: 0,
+      performanceDelta: 1,
+    });
+    return { alreadyClaimed: false, reward: result.reward };
+  });
+}
+
+// Called when admin marks a profile as complete, or from the profile update API.
+export async function awardProfileCompletion(prisma: DbClient, teamMemberId: string) {
+  return prisma.$transaction(async (tx) => {
+    const result = await awardGroomerXp({
+      tx,
+      teamMemberId,
+      bookingId: null,
+      eventType: "profile_complete",
+      summary: "Profile 100% complete — account setup bonus 🌟",
+      xpAwarded: 80,
+      rewardPointsAwarded: 15,
+      trustDelta: 3,
+      performanceDelta: 3,
+    });
+    return result.reward;
+  });
+}
+
+// Called once per year on the groomer's work anniversary.
+export async function awardWorkAnniversary(prisma: DbClient, teamMemberId: string, years: number) {
+  return prisma.$transaction(async (tx) => {
+    const eventType = `work_anniversary_${years}y`;
+    const xp = years === 1 ? 1000 : years === 2 ? 2500 : 4000;
+    const rp = years === 1 ? 20 : years === 2 ? 40 : 80;
+    const result = await awardGroomerXp({
+      tx,
+      teamMemberId,
+      bookingId: null,
+      eventType,
+      summary: `${years} saal All Tails ke saath — anniversary bonus! 🎂`,
+      xpAwarded: xp,
+      rewardPointsAwarded: rp,
+      trustDelta: 3,
+      performanceDelta: 5,
+      metadata: { years },
+    });
+    return result.reward;
+  });
+}
+
 export async function awardReviewReward(prisma: DbClient, bookingId: string) {
   return prisma.$transaction(async (tx) => {
     const booking = await tx.booking.findUnique({
@@ -624,6 +770,7 @@ export async function awardCompletionRewards(prisma: DbClient, bookingId: string
         groomerMember: true,
         sopSteps: { include: { proofs: true } },
         service: true,
+        user: { select: { id: true } },
       },
     });
     if (!booking?.groomerMemberId || !booking.groomerMember) {
@@ -749,6 +896,70 @@ export async function awardCompletionRewards(prisma: DbClient, bookingId: string
           performanceDelta: 4,
         });
         if (inTimeGrant.reward) grants.push(inTimeGrant.reward);
+      }
+    }
+
+    // First-ever booking bonus
+    const completedCountAfter = booking.groomerMember.completedCount + 1;
+    if (completedCountAfter === 1) {
+      const firstGrant = await awardGroomerXp({
+        tx,
+        teamMemberId: booking.groomerMemberId,
+        bookingId,
+        eventType: "first_booking_ever",
+        summary: "Pehli booking complete — welcome bonus! 🎉",
+        xpAwarded: 200,
+        rewardPointsAwarded: 30,
+        trustDelta: 2,
+        performanceDelta: 5,
+      });
+      if (firstGrant.reward) grants.push(firstGrant.reward);
+    }
+
+    // Repeat customer bonus (same pet parent booked this groomer before)
+    if (booking.user) {
+      const priorBookingsWithUser = await tx.booking.count({
+        where: {
+          groomerMemberId: booking.groomerMemberId,
+          userId: booking.user.id,
+          status: "completed",
+          id: { not: bookingId },
+        },
+      });
+      if (priorBookingsWithUser > 0) {
+        const repeatGrant = await awardGroomerXp({
+          tx,
+          teamMemberId: booking.groomerMemberId,
+          bookingId,
+          eventType: "repeat_customer",
+          summary: "Wahi customer wapas aaya — rishta bana! 💛",
+          xpAwarded: 40,
+          rewardPointsAwarded: 12,
+          trustDelta: 1,
+          performanceDelta: 2,
+        });
+        if (repeatGrant.reward) grants.push(repeatGrant.reward);
+      }
+    }
+
+    // Lucky booking: deterministic 1-in-15 multiplier
+    if (isLuckyBooking(bookingId)) {
+      const baseXpEarned = grants.reduce((sum, g) => sum + g.xpAwarded, 0);
+      const luckyBonus = Math.round(baseXpEarned * 2); // 3× total = base + 2× bonus
+      if (luckyBonus > 0) {
+        const luckyGrant = await awardGroomerXp({
+          tx,
+          teamMemberId: booking.groomerMemberId,
+          bookingId,
+          eventType: "lucky_booking",
+          summary: `Lucky booking! ⭐ 3× XP multiplier mila (+${luckyBonus} bonus XP)`,
+          xpAwarded: luckyBonus,
+          rewardPointsAwarded: Math.round(luckyBonus / 3),
+          trustDelta: 0,
+          performanceDelta: 0,
+          metadata: { baseXpEarned, multiplier: 3 },
+        });
+        if (luckyGrant.reward) grants.push(luckyGrant.reward);
       }
     }
 

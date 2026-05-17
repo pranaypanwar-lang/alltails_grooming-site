@@ -3,109 +3,33 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { ArticleBodyComposition } from "@/app/components/blogs/ArticleComposition";
 import { JsonLd } from "@/app/components/seo/JsonLd";
 import {
+  blogHeadings,
   normalizeBlogImageUrl,
   parseBlogDocument,
-  type BlogBlock,
-  type BlogTable,
 } from "@/lib/content/blogFormat";
-import { getPublishedBlogPostBySlug } from "@/lib/content/server";
+import { getPublishedBlogPostBySlug, getPublishedBlogPosts } from "@/lib/content/server";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { articleSchema, breadcrumbSchema, faqPageSchema } from "@/lib/seo/schema";
+import { ArticleReadingTools, MobileReadingProgressBar, MobileShareStrip } from "./ArticleReadingTools";
 
-function BlogTableView({ table }: { table: BlogTable }) {
-  return (
-    <div className="my-7 overflow-hidden rounded-[22px] border border-[#e7ddff] bg-white shadow-[0_16px_36px_rgba(73,44,120,0.05)]">
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-left text-[14px]">
-          <thead className="bg-[#f7f1ff] text-[#2a2346]">
-            <tr>
-              {table.headers.map((header) => (
-                <th key={header} className="px-4 py-3 font-black">
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-[#efe8ff] text-[#5f6474]">
-            {table.rows.map((row, index) => (
-              <tr key={`${row.join("-")}-${index}`}>
-                {row.map((cell, cellIndex) => (
-                  <td key={`${cell}-${cellIndex}`} className="px-4 py-3 align-top">
-                    {cell}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+function slugifyHeading(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
-function BlogBlockView({ block }: { block: BlogBlock }) {
-  if (block.type === "heading") {
-    const Heading = block.level === 3 ? "h3" : "h2";
-    return (
-      <Heading
-        className={
-          block.level === 3
-            ? "mt-8 text-[22px] font-black tracking-[-0.02em] text-[#2a2346]"
-            : "mt-10 text-[28px] font-black tracking-[-0.03em] text-[#2a2346]"
-        }
-      >
-        {block.text}
-      </Heading>
-    );
-  }
-
-  if (block.type === "paragraph") {
-    return <p className="mt-4 text-[16px] leading-[1.9] text-[#545a6c]">{block.text}</p>;
-  }
-
-  if (block.type === "list") {
-    return (
-      <ul className="mt-5 grid gap-2 text-[15px] leading-[1.75] text-[#545a6c] sm:grid-cols-2">
-        {block.items.map((item) => (
-          <li key={item} className="rounded-[16px] border border-[#eee7ff] bg-white px-4 py-3">
-            {item}
-          </li>
-        ))}
-      </ul>
-    );
-  }
-
-  if (block.type === "table") {
-    return <BlogTableView table={block.table} />;
-  }
-
-  if (block.type === "image") {
-    return (
-      <figure className="my-8">
-        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[26px] bg-[#efe8ff] shadow-[0_20px_48px_rgba(73,44,120,0.08)]">
-          <Image src={normalizeBlogImageUrl(block.src) || "/images/Banner.jpg"} alt={block.alt} fill unoptimized className="object-cover" />
-        </div>
-        {block.caption ? (
-          <figcaption className="mt-3 text-center text-[13px] leading-[1.6] text-[#7a728d]">
-            {block.caption}
-          </figcaption>
-        ) : null}
-      </figure>
-    );
-  }
-
-  if (block.type === "callout") {
-    return (
-      <div className="my-7 rounded-[24px] border border-[#eadfff] bg-[#f8f2ff] px-5 py-5 text-[#4d426f]">
-        {block.title ? <div className="text-[13px] font-black uppercase tracking-[0.14em] text-[#6d5bd0]">{block.title}</div> : null}
-        <p className={block.title ? "mt-2 text-[16px] leading-[1.8]" : "text-[16px] leading-[1.8]"}>{block.text}</p>
-      </div>
-    );
-  }
-
-  return null;
+function formatPublishedAt(value: Date | null) {
+  if (!value) return null;
+  return new Intl.DateTimeFormat("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(value);
 }
 
 export async function generateMetadata({
@@ -146,9 +70,37 @@ export default async function BlogArticlePage({
   if (!post) notFound();
 
   const document = parseBlogDocument(post.body);
-  const seoTitle = document.seoTitle || post.title;
   const metaDescription = document.metaDescription || post.excerpt;
-  const heroImage = normalizeBlogImageUrl(document.heroImageUrl || post.coverImageUrl) || "/images/Banner.jpg";
+  const heroImage =
+    normalizeBlogImageUrl(document.heroImageUrl || post.coverImageUrl) || "/images/Banner.jpg";
+  const headings = blogHeadings(post.body).map((heading) => ({
+    ...heading,
+    id: slugifyHeading(heading.text),
+  }));
+  const publishedAt = formatPublishedAt(post.publishedAt);
+
+  const relatedPosts = (await getPublishedBlogPosts())
+    .filter((candidate) => candidate.slug !== post.slug)
+    .sort((left, right) => {
+      const leftScore =
+        Number(left.category === post.category) * 2 +
+        Number(parseBlogDocument(left.body).primaryKeyword === document.primaryKeyword);
+      const rightScore =
+        Number(right.category === post.category) * 2 +
+        Number(parseBlogDocument(right.body).primaryKeyword === document.primaryKeyword);
+      return rightScore - leftScore;
+    })
+    .slice(0, 3)
+    .map((candidate) => ({
+      slug: candidate.slug,
+      title: candidate.title,
+      excerpt: candidate.excerpt,
+      category: candidate.category,
+      coverImage:
+        normalizeBlogImageUrl(parseBlogDocument(candidate.body).heroImageUrl || candidate.coverImageUrl) ||
+        "/images/Banner.jpg",
+      readTimeMinutes: candidate.readTimeMinutes,
+    }));
   const breadcrumbs = breadcrumbSchema([
     { name: "Home", path: "/" },
     { name: "Guides", path: "/blogs" },
@@ -168,69 +120,198 @@ export default async function BlogArticlePage({
     : null;
 
   return (
-    <main className="min-h-screen bg-[#fbf8ff]">
+    <main className="min-h-screen bg-[#fcfbff]">
+      <MobileReadingProgressBar headings={headings} />
       <JsonLd data={faqSchema ? [article, breadcrumbs, faqSchema] : [article, breadcrumbs]} />
 
       <article>
-        <header className="px-4 pb-8 pt-10 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-[980px]">
-            <Link href="/blogs" className="inline-flex rounded-full border border-[#e8ddff] bg-white px-4 py-2 text-[12px] font-black uppercase tracking-[0.14em] text-[#6d5bd0]">
+        <header className="overflow-hidden bg-[#1c1630] px-4 pb-8 pt-6 text-white sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-[1180px]">
+            <Link
+              href="/blogs"
+              className="inline-flex rounded-full border border-white/12 bg-white/8 px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-white/84"
+            >
               Pet grooming guides
             </Link>
-            <h1 className="mt-5 text-[36px] font-black leading-[1.05] tracking-[-0.045em] text-[#241c3f] sm:text-[54px]">
-              {post.title}
-            </h1>
-            <p className="mt-5 max-w-[760px] text-[17px] leading-[1.8] text-[#626b80] sm:text-[19px]">
-              {post.excerpt}
-            </p>
-            <div className="mt-6 flex flex-wrap gap-2 text-[12px] font-bold uppercase tracking-[0.12em] text-[#7c7394]">
-              <span className="rounded-full bg-white px-3 py-2">{post.category || "All Tails"}</span>
-              <span className="rounded-full bg-white px-3 py-2">{post.readTimeMinutes} min read</span>
-              {document.primaryKeyword ? <span className="rounded-full bg-white px-3 py-2">{document.primaryKeyword}</span> : null}
+
+            <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-end">
+              <div className="max-w-[760px]">
+                <div className="flex flex-wrap gap-2 text-[11px] font-black uppercase tracking-[0.14em] text-white/70">
+                  <span className="rounded-full bg-white/10 px-3 py-1">
+                    {post.category || "All Tails"}
+                  </span>
+                  <span className="rounded-full bg-white/10 px-3 py-1">
+                    {post.readTimeMinutes} min read
+                  </span>
+                  {document.primaryKeyword ? (
+                    <span className="hidden rounded-full bg-white/10 px-3 py-1 sm:inline-flex">
+                      {document.primaryKeyword}
+                    </span>
+                  ) : null}
+                  {publishedAt ? (
+                    <span className="rounded-full bg-white/10 px-3 py-1">
+                      {publishedAt}
+                    </span>
+                  ) : null}
+                </div>
+                <h1 className="mt-4 text-[34px] font-black leading-[1.02] tracking-[-0.05em] text-white sm:text-[48px] lg:text-[62px]">
+                  {post.title}
+                </h1>
+                <p className="mt-4 max-w-[720px] text-[16px] leading-[1.82] text-white/76 sm:text-[19px]">
+                  {post.excerpt}
+                </p>
+              </div>
+
+              <div className="hidden rounded-[28px] border border-white/12 bg-white/8 p-5 backdrop-blur-sm lg:block">
+                <div className="text-[11px] font-black uppercase tracking-[0.16em] text-white/58">
+                  Why this guide matters
+                </div>
+                <p className="mt-3 text-[15px] leading-[1.8] text-white/78">
+                  Clear answers, fixed package context, and grooming advice that matches how pet parents actually search before booking.
+                </p>
+                {headings.length ? (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {headings.slice(0, 3).map((heading) => (
+                      <a
+                        key={heading.id}
+                        href={`#${heading.id}`}
+                        className="rounded-full border border-white/10 bg-white/8 px-3 py-2 text-[11px] font-semibold text-white/82"
+                      >
+                        {heading.text}
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
         </header>
 
-        <section className="px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-[1100px]">
-            <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[30px] bg-[#eee7ff] shadow-[0_24px_70px_rgba(73,44,120,0.10)] sm:aspect-[16/8]">
+        <section className="-mt-2 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-[1180px]">
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[32px] border border-white/12 bg-[#e8defd] shadow-[0_30px_90px_rgba(41,28,70,0.24)] sm:aspect-[16/9]">
               <Image src={heroImage} alt={post.title} fill priority unoptimized className="object-cover" />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,16,39,0.06)_0%,rgba(23,16,39,0.1)_52%,rgba(23,16,39,0.28)_100%)]" />
             </div>
           </div>
         </section>
 
         <section className="px-4 py-10 sm:px-6 lg:px-8">
-          <div className="mx-auto grid max-w-[1100px] gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
-            <div className="min-w-0 rounded-[28px] border border-[#eee7ff] bg-white/82 px-5 py-6 shadow-[0_18px_50px_rgba(73,44,120,0.05)] sm:px-8">
-              {document.blocks.map((block, index) => (
-                <BlogBlockView key={`${block.type}-${index}`} block={block} />
-              ))}
+          <div className="mx-auto grid max-w-[1180px] gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+            <div className="min-w-0">
+              <div className="space-y-8">
+                <ArticleBodyComposition blocks={document.blocks} faqs={document.faqs || []} headings={headings} />
 
-              {document.faqs?.length ? (
-                <section className="mt-12">
-                  <h2 className="text-[28px] font-black tracking-[-0.03em] text-[#2a2346]">FAQs</h2>
-                  <div className="mt-5 space-y-3">
-                    {document.faqs.map((faq) => (
-                      <details key={faq.question} className="group rounded-[20px] border border-[#eadfff] bg-[#fcfaff] px-4 py-4">
-                        <summary className="cursor-pointer text-[15px] font-black text-[#2a2346]">
-                          {faq.question}
-                        </summary>
-                        <p className="mt-3 text-[14px] leading-[1.8] text-[#5f6474]">{faq.answer}</p>
-                      </details>
-                    ))}
+                {/* Back to guides — mobile only */}
+                <div className="lg:hidden">
+                  <Link
+                    href="/blogs"
+                    className="inline-flex items-center gap-2 text-[13px] font-black uppercase tracking-[0.14em] text-[#6d5bd0]"
+                  >
+                    <span aria-hidden="true">←</span>
+                    All guides
+                  </Link>
+                </div>
+
+                {/* Mobile booking CTA — shown after article, mobile only */}
+                <div className="rounded-[28px] bg-[#241c3f] p-5 text-white shadow-[0_20px_55px_rgba(36,28,63,0.20)] lg:hidden">
+                  <div className="text-[12px] font-black uppercase tracking-[0.16em] text-white/60">
+                    Book at home
                   </div>
-                </section>
-              ) : null}
+                  <div className="mt-3 text-[24px] font-black tracking-[-0.03em]">
+                    Dog grooming starts at Rs 999
+                  </div>
+                  <p className="mt-3 text-[14px] leading-[1.7] text-white/74">
+                    Fixed package pricing, trained groomers, and a Rs 250 deposit to confirm your slot.
+                  </p>
+                  <Link
+                    href="/booking-preview"
+                    className="mt-5 inline-flex h-[46px] w-full items-center justify-center rounded-full bg-white text-[14px] font-black text-[#241c3f]"
+                  >
+                    Book grooming
+                  </Link>
+                </div>
+
+                {/* Mobile share strip — shown after the article, before related posts */}
+                <MobileShareStrip title={post.title} />
+
+                {relatedPosts.length ? (
+                  <section className="rounded-[30px] border border-[#ece5ff] bg-white px-5 py-6 shadow-[0_16px_42px_rgba(73,44,120,0.04)] sm:px-8 sm:py-8">
+                    <div className="flex flex-wrap items-end justify-between gap-4">
+                      <div>
+                        <div className="text-[11px] font-black uppercase tracking-[0.16em] text-[#8a84a3]">
+                          Keep reading
+                        </div>
+                        <h2 className="mt-2 text-[28px] font-black tracking-[-0.03em] text-[#241c3f]">
+                          More guides in the same flow
+                        </h2>
+                      </div>
+                      <Link
+                        href="/blogs"
+                        className="inline-flex items-center gap-2 text-[13px] font-black uppercase tracking-[0.14em] text-[#6d5bd0]"
+                      >
+                        View all guides
+                        <span aria-hidden="true">→</span>
+                      </Link>
+                    </div>
+
+                    <div className="mt-5 grid gap-4 md:grid-cols-3">
+                      {relatedPosts.map((relatedPost) => (
+                        <article
+                          key={relatedPost.slug}
+                          className="overflow-hidden rounded-[24px] border border-[#ebe5ff] bg-white shadow-[0_16px_42px_rgba(73,44,120,0.05)]"
+                        >
+                          <div className="relative aspect-[16/10] overflow-hidden bg-[#eee7ff]">
+                            <Image
+                              src={relatedPost.coverImage}
+                              alt={relatedPost.title}
+                              fill
+                              unoptimized
+                              className="object-cover"
+                            />
+                          </div>
+                          <div className="p-5">
+                            <div className="text-[11px] font-black uppercase tracking-[0.16em] text-[#8a84a3]">
+                              {relatedPost.category || "All Tails"} · {relatedPost.readTimeMinutes} min read
+                            </div>
+                            <h3 className="mt-3 text-[22px] font-black leading-[1.15] tracking-[-0.03em] text-[#241c3f]">
+                              {relatedPost.title}
+                            </h3>
+                            <p className="mt-3 text-[14px] leading-[1.75] text-[#626b80]">
+                              {relatedPost.excerpt}
+                            </p>
+                            <Link
+                              href={`/blogs/${relatedPost.slug}`}
+                              className="mt-5 inline-flex items-center gap-2 text-[13px] font-black uppercase tracking-[0.14em] text-[#6d5bd0]"
+                            >
+                              Open guide
+                              <span aria-hidden="true">→</span>
+                            </Link>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
+              </div>
             </div>
 
-            <aside className="lg:sticky lg:top-6 lg:self-start">
+            <aside className="hidden space-y-5 lg:sticky lg:top-6 lg:block lg:self-start">
+              <ArticleReadingTools title={post.title} excerpt={post.excerpt} headings={headings} />
               <div className="rounded-[28px] bg-[#241c3f] p-5 text-white shadow-[0_20px_55px_rgba(36,28,63,0.20)]">
-                <div className="text-[12px] font-black uppercase tracking-[0.16em] text-white/60">Book at home</div>
-                <div className="mt-3 text-[26px] font-black tracking-[-0.03em]">Dog grooming starts at Rs 999</div>
+                <div className="text-[12px] font-black uppercase tracking-[0.16em] text-white/60">
+                  Book at home
+                </div>
+                <div className="mt-3 text-[26px] font-black tracking-[-0.03em]">
+                  Dog grooming starts at Rs 999
+                </div>
                 <p className="mt-3 text-[14px] leading-[1.7] text-white/74">
                   Fixed package pricing, trained groomers, and a Rs 250 deposit to confirm your slot.
                 </p>
-                <Link href="/booking-preview" className="mt-5 inline-flex h-[46px] w-full items-center justify-center rounded-full bg-white text-[14px] font-black text-[#241c3f]">
+                <Link
+                  href="/booking-preview"
+                  className="mt-5 inline-flex h-[46px] w-full items-center justify-center rounded-full bg-white text-[14px] font-black text-[#241c3f]"
+                >
                   Book grooming
                 </Link>
               </div>

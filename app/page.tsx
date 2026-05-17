@@ -330,6 +330,7 @@ type BlogPostPreview = {
   body: string;
   category: string | null;
   coverImageUrl: string | null;
+  featuredLabel?: string | null;
   readTimeMinutes: number;
   publishedAt: string | null;
 };
@@ -2685,11 +2686,11 @@ useEffect(() => {
 
   const loadBlogPosts = async () => {
     try {
-      const res = await fetch("/api/blogs");
+      const res = await fetch("/api/blogs?surface=homepage&limit=3");
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to load blog posts.");
       if (!cancelled) {
-        setBlogPosts((data.posts || []).slice(0, 3));
+        setBlogPosts(data.posts || []);
       }
     } catch (error) {
       console.error(error);
@@ -9959,108 +9960,156 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
 <FaqSection onTalkToUs={openWhatsAppChat} />
 
 {/* BLOG / RESOURCES SECTION */}
-<section className="relative overflow-hidden bg-white pt-10 pb-12 lg:py-[130px]">
-  {/* BACKGROUND GLOWS */}
+<section className="relative overflow-hidden bg-[#fcfbff] py-12 lg:py-[130px]">
   <div className="pointer-events-none absolute inset-0">
     <div className="absolute left-[-120px] top-[120px] h-[280px] w-[280px] rounded-full bg-[#f3ecff] blur-[95px]" />
     <div className="absolute right-[-100px] bottom-[100px] h-[260px] w-[260px] rounded-full bg-[#fff3ea] blur-[95px]" />
   </div>
 
   <div className="relative z-10 mx-auto max-w-[1240px] px-4 sm:px-6">
-    {/* HEADER */}
-    <div className="mx-auto max-w-[860px] text-center">
-      <div className="inline-flex rounded-full border border-[#e8ddff] bg-white px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#7a5ce0] shadow-[0_8px_18px_rgba(122,92,224,0.07)] sm:px-5 sm:py-2.5 sm:text-[13px]">
-        Expert Tips for Pet Parents
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <div className="max-w-[760px]">
+        <div className="inline-flex rounded-full border border-[#e8ddff] bg-white px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#7a5ce0] shadow-[0_8px_18px_rgba(122,92,224,0.07)] sm:px-5 sm:py-2.5 sm:text-[13px]">
+          Editorial grooming guides
+        </div>
+        <h2 className="mt-4 text-[26px] font-black leading-[1.04] tracking-[-0.04em] text-[#2a2346] sm:text-[34px] lg:mt-6 lg:text-[44px]">
+          Reads that feel curated,
+          <span className="hidden lg:inline"><br /></span>
+          not dumped into a grid
+        </h2>
+        <p className="mt-3 max-w-[720px] text-[14px] leading-[1.8] text-[#6b7280] sm:text-[16px] lg:text-[18px] lg:leading-[1.9]">
+          Grooming advice, breed care, package explainers, and decision-focused guides designed to help pet parents book with more clarity.
+        </p>
       </div>
 
-      <h2 className="mt-3 text-[24px] font-black leading-[1.08] tracking-[-0.03em] text-[#2a2346] sm:mt-5 sm:text-[32px] lg:mt-7 lg:text-[40px]">
-        Helpful reads for healthier coats
-        <span className="hidden lg:inline"><br />and happier pets</span>
-      </h2>
-
-      <p className="mx-auto mt-2 max-w-[300px] text-[13px] leading-[1.7] text-[#6b7280] sm:mt-4 sm:max-w-[600px] sm:text-[16px] lg:mt-5 lg:max-w-[760px] lg:text-[18px] lg:leading-[1.85]">
-        Grooming advice, coat care guidance, and practical tips from the All Tails care team.
-      </p>
+      <div className="flex flex-wrap gap-2 text-[12px] font-semibold text-[#6d5bd0]">
+        <span className="rounded-full bg-white px-4 py-2 shadow-[0_10px_22px_rgba(109,91,208,0.08)]">
+          {blogPosts.length} featured reads
+        </span>
+        <Link
+          href="/blogs"
+          className="inline-flex h-[42px] items-center justify-center rounded-full bg-[#6d5bd0] px-5 text-[12px] font-semibold text-white shadow-[0_12px_28px_rgba(109,91,208,0.18)] transition hover:bg-[#5f4fc2]"
+        >
+          View all articles
+        </Link>
+      </div>
     </div>
 
-    {/* BLOG GRID */}
     {blogPosts.length > 0 ? (
-      <div className="mt-5 grid gap-4 sm:mt-10 sm:gap-6 lg:mt-18 lg:gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-        <article className="group relative overflow-hidden rounded-[24px] border border-[#ebe5ff] bg-white shadow-[0_12px_36px_rgba(73,44,120,0.07)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(73,44,120,0.10)] sm:rounded-[30px] lg:rounded-[34px] lg:shadow-[0_28px_80px_rgba(73,44,120,0.08)]">
-          <div className="relative h-[190px] w-full overflow-hidden sm:h-[260px] md:h-[320px] lg:h-[380px]">
-            <Image
-              src={blogPosts[0].coverImageUrl || "/images/blog-1.jpeg"}
-              alt={blogPosts[0].title}
-              fill
-              unoptimized
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-            />
-            <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(21,14,45,0.42),rgba(21,14,45,0.02))]" />
-            <div className="absolute left-4 top-4 sm:left-6 sm:top-6">
-              <div className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/90 backdrop-blur-sm sm:px-4 sm:py-2 sm:text-[12px]">
-                {blogPosts[0].category || "All Tails"}
-              </div>
+      <div className="mt-6 overflow-hidden rounded-[30px] border border-[#2c2445] bg-[#1d1730] text-white shadow-[0_30px_90px_rgba(32,20,56,0.22)] lg:mt-10">
+        <div className="grid lg:grid-cols-[minmax(0,1.2fr)_360px]">
+          <article className="relative overflow-hidden">
+            <div className="absolute inset-0">
+              <Image
+                src={blogPosts[0].coverImageUrl || "/images/blog-1.jpeg"}
+                alt={blogPosts[0].title}
+                fill
+                unoptimized
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(21,14,45,0.18)_0%,rgba(21,14,45,0.56)_52%,rgba(21,14,45,0.92)_100%)]" />
             </div>
-          </div>
 
-          <div className="p-4 sm:p-6 lg:p-8">
-            <div className="text-[11px] font-medium text-[#8a84a3] sm:text-[13px]">
-              {blogPosts[0].readTimeMinutes} min read
-            </div>
-            <h3 className="mt-2 text-[17px] font-black leading-[1.2] tracking-[-0.02em] text-[#2a2346] sm:mt-3 sm:text-[22px] lg:text-[28px] lg:leading-[1.16]">
-              {blogPosts[0].title}
-            </h3>
-            <p className="mt-2 text-[12.5px] leading-[1.75] text-[#6b7280] sm:mt-3 sm:text-[14px] lg:mt-4 lg:max-w-[620px] lg:text-[16px] lg:leading-[1.9]">
-              {blogPosts[0].excerpt}
-            </p>
-            <div className="mt-4 lg:mt-7">
-              <a href={`/blogs/${blogPosts[0].slug}`} className="inline-flex items-center gap-1.5 rounded-full bg-[#f4efff] px-4 py-2 text-[12px] font-semibold text-[#5f4fc2] transition hover:bg-[#ebe3ff] sm:px-5 sm:py-2.5 sm:text-[14px]">
-                Read article <span>→</span>
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <div className="grid gap-4 sm:gap-5 lg:gap-8">
-          {blogPosts.slice(1, 3).map((post, index) => (
-            <article key={post.id} className={`group relative overflow-hidden rounded-[20px] border bg-white shadow-[0_8px_24px_rgba(73,44,120,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_14px_36px_rgba(73,44,120,0.09)] sm:rounded-[26px] lg:rounded-[32px] lg:shadow-[0_22px_70px_rgba(73,44,120,0.07)] ${index === 1 ? "border-[#f4dfcf]" : "border-[#ebe5ff]"}`}>
-              <div className="relative h-[130px] w-full overflow-hidden sm:h-[170px] lg:h-[220px]">
-                <Image
-                  src={post.coverImageUrl || `/images/blog-${index + 2}.jpeg`}
-                  alt={post.title}
-                  fill
-                  unoptimized
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                />
-              </div>
-              <div className="p-4 sm:p-5 lg:p-6">
-                <div className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] sm:px-3 sm:py-1.5 sm:text-[11px] ${index === 1 ? "bg-[#fff5ee] text-[#ea580c]" : "bg-[#f4efff] text-[#6d5bd0]"}`}>
-                  {post.category || "All Tails"}
+            <div className="relative flex min-h-[420px] flex-col justify-between px-5 py-5 sm:min-h-[520px] sm:px-7 sm:py-7">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="max-w-[340px] rounded-[22px] border border-white/12 bg-white/10 p-4 backdrop-blur-sm">
+                  <div className="inline-flex rounded-full bg-white/12 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white/88">
+                    Editorial pick
+                  </div>
+                  <p className="mt-3 text-[13px] leading-[1.7] text-white/78 sm:text-[14px]">
+                    Selected for booking intent, clarity of answers, and strength of grooming guidance.
+                  </p>
                 </div>
-                <h3 className="mt-2 text-[15px] font-black leading-[1.25] tracking-[-0.02em] text-[#2a2346] sm:text-[18px] lg:mt-4 lg:text-[24px]">
-                  {post.title}
+
+                <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3 text-[11px] font-semibold text-white/72 backdrop-blur-sm">
+                  {blogPosts[0].readTimeMinutes} min read
+                </div>
+              </div>
+
+              <div className="max-w-[720px]">
+                <div className="flex flex-wrap items-center gap-2 text-[10px] font-black uppercase tracking-[0.14em] text-white/78 sm:text-[11px]">
+                  <span className="rounded-full bg-white px-3 py-1 text-[#241c3f]">
+                    {blogPosts[0].featuredLabel || blogPosts[0].category || "All Tails"}
+                  </span>
+                  {blogPosts[0].publishedAt ? (
+                    <span className="rounded-full bg-white/10 px-3 py-1">
+                      {new Date(blogPosts[0].publishedAt).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </span>
+                  ) : null}
+                </div>
+                <h3 className="mt-4 max-w-[11ch] text-[30px] font-black leading-[0.98] tracking-[-0.05em] text-white sm:max-w-[720px] sm:text-[48px] lg:text-[56px]">
+                  {blogPosts[0].title}
                 </h3>
-                <p className="mt-1.5 text-[12px] leading-[1.7] text-[#6b7280] sm:mt-2 sm:text-[13px] lg:mt-3 lg:text-[15px] lg:leading-[1.85]">
-                  {post.excerpt}
+                <p className="mt-4 max-w-[620px] text-[14px] leading-[1.8] text-white/78 sm:text-[16px] lg:text-[17px]">
+                  {blogPosts[0].excerpt}
                 </p>
-                <div className="mt-3 lg:mt-6">
-                  <a href={`/blogs/${post.slug}`} className={`inline-flex items-center gap-1 text-[12px] font-semibold transition sm:text-[14px] ${index === 1 ? "text-[#ea580c] hover:text-[#cf4f09]" : "text-[#6d5bd0] hover:text-[#5f4fc2]"}`}>
-                    Read article <span>→</span>
+                <div className="mt-5">
+                  <a
+                    href={`/blogs/${blogPosts[0].slug}`}
+                    className="inline-flex h-[46px] items-center justify-center rounded-full bg-white px-5 text-[13px] font-black text-[#241c3f] transition hover:bg-[#f4efff] sm:h-[48px] sm:px-6 sm:text-[14px]"
+                  >
+                    Open guide
                   </a>
                 </div>
               </div>
-            </article>
-          ))}
+            </div>
+          </article>
+
+          <div className="border-t border-white/8 bg-[#241c3f] p-4 lg:border-l lg:border-t-0 lg:p-5">
+            <div className="rounded-[22px] border border-white/10 bg-white/6 p-4 backdrop-blur-sm">
+              <div className="text-[11px] font-black uppercase tracking-[0.16em] text-white/56">
+                More to read
+              </div>
+              <p className="mt-2 text-[13px] leading-[1.65] text-white/68">
+                Structured answers, breed-specific grooming advice, and high-intent explainers.
+              </p>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              {blogPosts.slice(1, 3).map((post, index) => (
+                <article
+                  key={post.id}
+                  className="rounded-[24px] border border-white/10 bg-white/6 p-3 backdrop-blur-sm"
+                >
+                  <div className="grid grid-cols-[92px_minmax(0,1fr)] gap-3">
+                    <div className="relative aspect-[4/5] overflow-hidden rounded-[18px] bg-white/10">
+                      <Image
+                        src={post.coverImageUrl || `/images/blog-${index + 2}.jpeg`}
+                        alt={post.title}
+                        fill
+                        unoptimized
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[10px] font-black uppercase tracking-[0.14em] text-white/54">
+                        {post.featuredLabel || post.category || "All Tails"}
+                      </div>
+                      <h3 className="mt-2 text-[18px] font-black leading-[1.15] tracking-[-0.025em] text-white">
+                        {post.title}
+                      </h3>
+                      <p className="mt-2 line-clamp-3 text-[13px] leading-[1.65] text-white/66">
+                        {post.excerpt}
+                      </p>
+                      <a
+                        href={`/blogs/${post.slug}`}
+                        className="mt-3 inline-flex items-center gap-1 text-[12px] font-semibold text-white"
+                      >
+                        Read article <span>→</span>
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     ) : null}
-
-    {/* BOTTOM CTA */}
-    <div className="mt-6 text-center sm:mt-10 lg:mt-14">
-      <Link href="/blogs" className="inline-flex h-[44px] items-center justify-center rounded-full bg-[#6d5bd0] px-7 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(109,91,208,0.16)] transition hover:bg-[#5f4fc2] sm:h-[52px] sm:px-8 sm:text-[15px] lg:shadow-[0_14px_30px_rgba(109,91,208,0.18)] lg:hover:-translate-y-0.5">
-        View All Articles
-      </Link>
-    </div>
   </div>
 </section>
 

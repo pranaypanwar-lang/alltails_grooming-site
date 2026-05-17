@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server";
 import "dotenv/config";
+import { cookies } from "next/headers";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../../../lib/generated/prisma";
 import { resolveEligibleTeamIds } from "../../../../lib/slots/coverage";
 import { ensureSlotsExistForDateRange } from "../../../../lib/slots/ensureSlots";
 import { isSlotAvailableForBooking } from "../../../../lib/slots/occupancy";
 import { getSlotLabel, SLOT_ORDER, type SlotLabel } from "../../../../lib/slots/slotTemplates";
+import {
+  isAdminAuthConfigured,
+  verifyAdminSessionToken,
+  getAdminSessionCookieName,
+} from "../../../../lib/auth/adminSession";
 
 export const runtime = "nodejs";
 
@@ -166,6 +172,16 @@ function applyLeadTimeFilter<T extends { startTime: string }>(
   );
 }
 
+const CUSTOMER_LEAD_TIME_MINUTES = 90;
+const ADMIN_LEAD_TIME_MINUTES = 30;
+
+async function resolveLeadTimeMinutes() {
+  if (!isAdminAuthConfigured()) return CUSTOMER_LEAD_TIME_MINUTES;
+  const jar = await cookies();
+  const token = jar.get(getAdminSessionCookieName())?.value;
+  return verifyAdminSessionToken(token) ? ADMIN_LEAD_TIME_MINUTES : CUSTOMER_LEAD_TIME_MINUTES;
+}
+
 // ─── Route handler ────────────────────────────────────────────────────────────
 
 export async function POST(request: Request) {
@@ -203,6 +219,7 @@ export async function POST(request: Request) {
     }
 
     const areaSlug = city.trim().toLowerCase().replace(/\s+/g, "-");
+    const leadTimeMinutes = await resolveLeadTimeMinutes();
 
     // Self-heal: ensure slots exist for the entire requested range
     await ensureSlotsExistForDateRange(prisma, areaSlug, startDate, normalizedDays);
@@ -285,7 +302,7 @@ export async function POST(request: Request) {
       const bookingWindows = collapseDuplicateBookingWindows(
         applyLeadTimeFilter(
           buildBookingWindows(formattedSlots, normalizedPetCount),
-          120
+          leadTimeMinutes
         )
       );
 

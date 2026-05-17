@@ -32,7 +32,7 @@ export const BUSINESS_INFO = {
   ] as const,
   socials: {
     instagram:
-      "https://www.instagram.com/alltails.in?igsh=MXg3bDR6dHc1eXRnaQ%3D%3D&utm_source=qr",
+      "https://www.instagram.com/alltails.in/",
     facebook: "https://www.facebook.com/share/1BMTGLq5HQ/?mibextid=wwXIfr",
     linkedin: "https://www.linkedin.com/company/alltails-in/",
   },

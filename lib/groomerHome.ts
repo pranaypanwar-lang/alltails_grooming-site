@@ -2,6 +2,7 @@ import type { Prisma, PrismaClient } from "./generated/prisma";
 import { getGamificationSnapshot, getSalaryAdvanceEligibility } from "./groomerRewards";
 import { resolveGroomerCopy } from "./groomerStateCopy";
 import { deriveHomePsychology } from "./groomerPsychology";
+import { REWARD_STORE_ITEMS } from "./groomerRewardStore";
 
 type DbClient = PrismaClient | Prisma.TransactionClient;
 
@@ -16,6 +17,21 @@ export async function serializeGroomerHome(prisma: DbClient, memberId: string) {
           service: true,
           user: true,
           slots: { include: { slot: true } },
+          pets: {
+            include: {
+              pet: {
+                select: {
+                  name: true,
+                  breed: true,
+                  temperament: true,
+                  defaultGroomingNotes: true,
+                  defaultStylingNotes: true,
+                  avatarUrl: true,
+                },
+              },
+            },
+            take: 1,
+          },
         },
         orderBy: [{ selectedDate: "asc" }, { createdAt: "desc" }],
         take: 12,
@@ -98,6 +114,7 @@ export async function serializeGroomerHome(prisma: DbClient, memberId: string) {
     punctualityStreak: member.punctualityStreak,
     reviewStreak: member.reviewStreak,
     noLeaveStreakDays: member.noLeaveStreakDays,
+    streakShieldCount: member.streakShieldCount,
   });
 
   const latestAdvanceRequestedAt = member.salaryAdvanceRequests[0]?.requestedAt ?? null;
@@ -271,40 +288,18 @@ export async function serializeGroomerHome(prisma: DbClient, memberId: string) {
   };
 
   const trainingInterestByModule = new Map(member.trainingInterests.map((interest) => [interest.moduleId, interest]));
-  const rewardStore = [
-    {
-      key: "half_day_off",
-      title: "Half-day off token",
-      creditsCost: 4,
-      requiredSalaryStage: 1,
-      detail: "Junior band se upar aur 4 credits par request bhej sakte ho",
-    },
-    {
-      key: "paid_day_off",
-      title: "Paid day off",
-      creditsCost: 6,
-      requiredSalaryStage: 2,
-      detail: "Pet Groomer band ke baad ek paid day off claim kar sakte ho",
-    },
-    {
-      key: "dinner_for_2",
-      title: "Dinner for 2",
-      creditsCost: 8,
-      requiredSalaryStage: 2,
-      detail: "8 credits aur clean performance ke saath unlock hota hai",
-    },
-    {
-      key: "family_meal",
-      title: "Family meal voucher",
-      creditsCost: 10,
-      requiredSalaryStage: 3,
-      detail: "Senior band aur 10 credits ke baad request bhej sakte ho",
-    },
-  ].map((reward) => {
+  const rewardStore = REWARD_STORE_ITEMS.map((reward) => {
     const request = member.rewardRedemptionRequests.find((item) => item.rewardKey === reward.key);
     const eligible = gamification.prestigeCredits >= reward.creditsCost && member.salaryHikeStage >= reward.requiredSalaryStage;
     return {
-      ...reward,
+      key: reward.key,
+      title: reward.title,
+      titleHindi: reward.titleHindi,
+      tier: reward.tier,
+      emoji: reward.emoji,
+      creditsCost: reward.creditsCost,
+      requiredSalaryStage: reward.requiredSalaryStage,
+      detail: reward.detail,
       eligible,
       currentStatus: request?.status ?? null,
       requestedAt: request?.requestedAt.toISOString() ?? null,
@@ -352,6 +347,66 @@ export async function serializeGroomerHome(prisma: DbClient, memberId: string) {
         : "Kam se kam 1 training complete honi chahiye",
     },
   ];
+
+  // Hike readiness meter — 4 gates with live progress
+  const tenureMonths = Math.max(
+    0,
+    (new Date().getFullYear() - member.joinedAt.getFullYear()) * 12 +
+      new Date().getMonth() - member.joinedAt.getMonth() -
+      (new Date().getDate() < member.joinedAt.getDate() ? 1 : 0)
+  );
+  const hikeReadiness = {
+    allMet: false,
+    gates: [
+      {
+        key: "xp",
+        label: "XP / Rank",
+        met: gamification.salaryHikeStage > 0 || (gamification.nextRank?.xpRemaining ?? 1) <= 0,
+        current: member.currentXp,
+        target: gamification.nextRank?.xpRequired ?? member.currentXp,
+        unit: "XP",
+        detail: gamification.nextRank
+          ? `${gamification.nextRank.xpRemaining} XP aur chahiye`
+          : "Top rank reach kar liya ✅",
+      },
+      {
+        key: "trust",
+        label: "Respect Score",
+        met: member.trustScore >= 70,
+        current: member.trustScore,
+        target: 70,
+        unit: "/ 100",
+        detail: member.trustScore >= 70 ? "Score ready hai ✅" : `${70 - member.trustScore} aur chahiye`,
+      },
+      {
+        key: "performance",
+        label: "Performance",
+        met: member.performanceScore >= 70,
+        current: member.performanceScore,
+        target: 70,
+        unit: "/ 100",
+        detail: member.performanceScore >= 70 ? "Score ready hai ✅" : `${70 - member.performanceScore} aur chahiye`,
+      },
+      {
+        key: "no_leave",
+        label: "No-Leave Streak",
+        met: member.noLeaveStreakDays >= 30,
+        current: Math.min(member.noLeaveStreakDays, 30),
+        target: 30,
+        unit: "din",
+        detail: member.noLeaveStreakDays >= 30 ? "Streak ready hai ✅" : `${30 - member.noLeaveStreakDays} din aur chahiye`,
+      },
+    ],
+  };
+  hikeReadiness.allMet = hikeReadiness.gates.every((g) => g.met) && tenureMonths >= 3;
+
+  // Daily check-in status
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const checkedInToday = member.rewardEvents.some(
+    (e) =>
+      e.eventType === "daily_checkin" &&
+      e.createdAt.toISOString().slice(0, 10) === todayStr
+  );
 
   const monthlyRewardEvents = member.rewardEvents.filter((event) => {
     const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
@@ -482,6 +537,8 @@ export async function serializeGroomerHome(prisma: DbClient, memberId: string) {
     gamification: {
       ...gamification,
       profileCompletionPercent,
+      checkedInToday,
+      hikeReadiness,
       streakFamilies: [
         {
           key: "punctuality",
@@ -548,6 +605,7 @@ export async function serializeGroomerHome(prisma: DbClient, memberId: string) {
       const firstSlot = [...booking.slots].sort(
         (a, b) => a.slot.startTime.getTime() - b.slot.startTime.getTime()
       )[0]?.slot ?? null;
+      const bp = booking.pets?.[0] ?? null;
       return {
         id: booking.id,
         status: booking.status,
@@ -556,12 +614,21 @@ export async function serializeGroomerHome(prisma: DbClient, memberId: string) {
         customerName: booking.user.name,
         city: booking.user.city,
         startTime: firstSlot?.startTime.toISOString() ?? null,
+        pet: bp ? {
+          name: bp.pet.name ?? null,
+          breed: bp.pet.breed,
+          temperament: bp.temperament ?? bp.pet.temperament ?? null,
+          groomingNotes: bp.groomingNotes ?? bp.pet.defaultGroomingNotes ?? null,
+          stylingNotes: bp.stylingNotes ?? bp.pet.defaultStylingNotes ?? null,
+          avatarUrl: bp.pet.avatarUrl ?? null,
+        } : null,
       };
     }),
     todayBookings: todayBookings.map((booking) => {
       const firstSlot = [...booking.slots].sort(
         (a, b) => a.slot.startTime.getTime() - b.slot.startTime.getTime()
       )[0]?.slot ?? null;
+      const bp = booking.pets?.[0] ?? null;
       return {
         id: booking.id,
         status: booking.status,
@@ -570,6 +637,14 @@ export async function serializeGroomerHome(prisma: DbClient, memberId: string) {
         customerName: booking.user.name,
         city: booking.user.city,
         startTime: firstSlot?.startTime.toISOString() ?? null,
+        pet: bp ? {
+          name: bp.pet.name ?? null,
+          breed: bp.pet.breed,
+          temperament: bp.temperament ?? bp.pet.temperament ?? null,
+          groomingNotes: bp.groomingNotes ?? bp.pet.defaultGroomingNotes ?? null,
+          stylingNotes: bp.stylingNotes ?? bp.pet.defaultStylingNotes ?? null,
+          avatarUrl: bp.pet.avatarUrl ?? null,
+        } : null,
       };
     }),
     leaveRequests: member.leaveRequests.map((request) => ({

@@ -59,6 +59,8 @@ export async function serializeGroomerBooking(prisma: DbClient, booking: Groomer
     id: booking.id,
     status: booking.status,
     dispatchState: booking.dispatchState,
+    enRouteLat: booking.enRouteLat ?? null,
+    enRouteLng: booking.enRouteLng ?? null,
     selectedDate: booking.selectedDate ?? null,
     opsNote: booking.adminNote ?? null,
     service: {

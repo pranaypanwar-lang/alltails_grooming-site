@@ -238,6 +238,8 @@ model Booking {
   groomerMemberId String?
   groomerMember   TeamMember? @relation(fields: [groomerMemberId], references: [id])
   dispatchState  String  @default("unassigned")
+  enRouteLat     Float?
+  enRouteLng     Float?
   adminNote      String?
 
   // Loyalty snapshot fields
@@ -312,6 +314,8 @@ model TeamMember {
   punctualityStreak Int  @default(0)
   reviewStreak    Int    @default(0)
   noLeaveStreakDays Int  @default(0)
+  streakShieldCount Int  @default(1)
+  lastStreakShieldResetAt DateTime?
   lastCompletedAt DateTime?
   lastReviewAt    DateTime?
   lastOnTimeAt    DateTime?

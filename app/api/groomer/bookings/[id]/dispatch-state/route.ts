@@ -25,6 +25,9 @@ export async function POST(
       return NextResponse.json({ error: "Invalid dispatch state" }, { status: 400 });
     }
 
+    const gpsLat = typeof body.lat === "number" ? body.lat : null;
+    const gpsLng = typeof body.lng === "number" ? body.lng : null;
+
     const booking = await adminPrisma.booking.findUnique({
       where: { id: bookingId },
       include: { user: true, slots: { include: { slot: true } } },
@@ -37,7 +40,13 @@ export async function POST(
     const rewardResult = await adminPrisma.$transaction(async (tx) => {
       await tx.booking.update({
         where: { id: bookingId },
-        data: { dispatchState },
+        data: {
+          dispatchState,
+          // Save GPS at departure so the fuel-trip route can use it later
+          ...(dispatchState === "en_route" && gpsLat !== null && gpsLng !== null
+            ? { enRouteLat: gpsLat, enRouteLng: gpsLng }
+            : {}),
+        },
       });
 
       await ensureBookingSopSteps(tx, bookingId);
