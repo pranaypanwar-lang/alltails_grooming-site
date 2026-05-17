@@ -192,13 +192,14 @@ function BlogImageFigure({
       <figure className="relative">
         <div className="absolute inset-0 translate-x-3 translate-y-3 rounded-[32px] bg-[linear-gradient(135deg,rgba(109,91,208,0.12),rgba(247,201,109,0.10))] blur-[2px]" />
         <div className="relative rounded-[30px] border border-[#ece2ff] bg-[linear-gradient(135deg,#f4ecff_0%,#fff6ef_100%)] p-3 shadow-[0_28px_70px_rgba(73,44,120,0.10)]">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] bg-[#efe8ff] sm:aspect-[16/10]">
+          <div className="overflow-hidden rounded-[24px] bg-[#efe8ff]">
             <Image
               src={normalizeBlogImageUrl(block.src) || "/images/Banner.jpg"}
               alt={block.alt}
-              fill
+              width={800}
+              height={600}
               unoptimized
-              className="object-cover"
+              className="h-auto w-full"
             />
           </div>
         </div>
@@ -214,13 +215,14 @@ function BlogImageFigure({
   return (
     <figure className="my-8">
       <div className={variant.frame}>
-        <div className={`relative w-full overflow-hidden bg-[#efe8ff] ${variant.media}`}>
+        <div className="overflow-hidden rounded-[inherit] bg-[#efe8ff]">
           <Image
             src={normalizeBlogImageUrl(block.src) || "/images/Banner.jpg"}
             alt={block.alt}
-            fill
+            width={800}
+            height={600}
             unoptimized
-            className="object-cover"
+            className="h-auto w-full"
           />
         </div>
       </div>
