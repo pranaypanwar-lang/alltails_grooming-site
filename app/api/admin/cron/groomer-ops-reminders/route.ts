@@ -45,6 +45,32 @@ function buildUpcomingReminderMessage(input: {
   ].join("\n");
 }
 
+function buildLateArrivalCheckinMessage(input: {
+  serviceName: string;
+  slotLabel: string;
+  customerName: string;
+  minutesLate: number;
+  actionUrl: string | null;
+}) {
+  return [
+    `⚠️ *देर हो रही है — कब पहुंचेंगे?*`,
+    "",
+    `*सेवा:* ${input.serviceName}`,
+    `*स्लॉट समय:* ${input.slotLabel}`,
+    `*पेट पैरेंट:* ${input.customerName}`,
+    "",
+    `आपने "निकल गए" mark किया था, लेकिन अभी तक arrival confirm नहीं हुई।`,
+    `Session का समय ${input.minutesLate} मिनट पहले शुरू हो जाना चाहिए था।`,
+    "",
+    `कृपया बताएं:`,
+    `• अभी कहाँ हैं आप?`,
+    `• पहुंचने में कितना और समय लगेगा?`,
+    ...(input.actionUrl ? ["", `*Job link:* ${input.actionUrl}`] : []),
+    "",
+    `ग्राहक इंतजार कर रहे हैं — जल्द से जल्द पहुंचिए और Pahunch Gaye दबाइए।`,
+  ].join("\n");
+}
+
 function buildEscalationMessage(input: {
   serviceName: string;
   slotLabel: string;
@@ -100,6 +126,7 @@ export async function GET(request: Request) {
 
     const upcomingResults: Array<{ bookingId: string; reminded: boolean; skippedReason?: string }> = [];
     const escalationResults: Array<{ bookingId: string; escalated: boolean; customerQueued?: boolean; skippedReason?: string }> = [];
+    const lateArrivalResults: Array<{ bookingId: string; sent: boolean; skippedReason?: string }> = [];
 
     for (const booking of bookings) {
       const team = booking.assignedTeam;
@@ -249,14 +276,85 @@ export async function GET(request: Request) {
           ...(supportCase.created ? {} : { skippedReason: "support_case_already_open" }),
         });
       }
+
+      // Late arrival check-in: groomer marked en_route but hasn't confirmed arrival
+      // and slot start time has passed by 5–40 minutes
+      if (
+        booking.dispatchState === "en_route" &&
+        minutesToStart <= -5 &&
+        minutesToStart >= -40
+      ) {
+        const minutesLate = Math.abs(minutesToStart);
+
+        if (!team.telegramChatId || !team.telegramAlertsEnabled) {
+          lateArrivalResults.push({ bookingId: booking.id, sent: false, skippedReason: "telegram_not_configured" });
+        } else {
+          const existingCheckin = await adminPrisma.dispatchAlert.findFirst({
+            where: {
+              bookingId: booking.id,
+              alertType: "groomer_late_arrival_checkin",
+              sentAt: { gte: new Date(now.getTime() - 25 * 60 * 1000) },
+            },
+          });
+
+          if (existingCheckin) {
+            lateArrivalResults.push({ bookingId: booking.id, sent: false, skippedReason: "already_sent_recently" });
+          } else {
+            let telegramMessageId: string | null = null;
+            let success = false;
+            let errorMsg: string | undefined;
+
+            try {
+              telegramMessageId = await sendTelegramMessage(
+                team.telegramChatId,
+                buildLateArrivalCheckinMessage({
+                  serviceName: booking.service.name,
+                  slotLabel,
+                  customerName: booking.user.name,
+                  minutesLate,
+                  actionUrl,
+                }),
+                { parseMode: "Markdown" }
+              );
+              success = true;
+            } catch (error) {
+              errorMsg = error instanceof Error ? error.message : "Telegram send failed";
+            }
+
+            await adminPrisma.dispatchAlert.create({
+              data: {
+                bookingId: booking.id,
+                teamId: team.id,
+                alertType: "groomer_late_arrival_checkin",
+                telegramMessageId,
+                success,
+                errorMsg,
+              },
+            });
+
+            if (success) {
+              await logAdminBookingEvent({
+                bookingId: booking.id,
+                type: "dispatch_alert_sent",
+                summary: `Late arrival check-in sent (${minutesLate} min past slot)`,
+                metadata: { teamId: team.id, minutesLate, alertType: "groomer_late_arrival_checkin" },
+              });
+            }
+
+            lateArrivalResults.push({ bookingId: booking.id, sent: success, ...(errorMsg ? { skippedReason: errorMsg } : {}) });
+          }
+        }
+      }
     }
 
     return NextResponse.json({
       date: today,
       upcomingReminderCount: upcomingResults.filter((item) => item.reminded).length,
       escalationCount: escalationResults.filter((item) => item.escalated).length,
+      lateArrivalCheckinCount: lateArrivalResults.filter((item) => item.sent).length,
       upcomingResults,
       escalationResults,
+      lateArrivalResults,
     });
   } catch (error) {
     return NextResponse.json(

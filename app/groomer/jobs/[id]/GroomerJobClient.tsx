@@ -892,6 +892,10 @@ export function GroomerJobClient({
   const slaDeadlineAt = slaStartAt ? slaStartAt + slaDurationSeconds * 1000 : null;
   const slaSecondsRemaining = slaDeadlineAt ? Math.round((slaDeadlineAt - now) / 1000) : null;
   const slaSecondsElapsed = slaStartAt ? Math.max(0, Math.round((now - slaStartAt) / 1000)) : null;
+  // Countdown to slot start — shown while groomer has not yet arrived
+  const preArrivalSecondsRemaining = slaStartAt && !["started", "completed"].includes(booking.dispatchState)
+    ? Math.round((slaStartAt - now) / 1000)
+    : null;
   const completedRequiredStepCount = booking.sopSteps.filter((step) => step.requiredForCompletion && step.status === "completed").length;
   const totalRequiredStepCount = booking.sopSteps.filter((step) => step.requiredForCompletion).length;
   const reviewCompleted = booking.sopSteps.find((step) => step.key === "review_proof")?.status === "completed";
@@ -1306,7 +1310,57 @@ export function GroomerJobClient({
               </div>
             </div>
 
-            {slaSecondsRemaining !== null ? (
+            {/* Pre-arrival countdown — shows until groomer arrives */}
+            {preArrivalSecondsRemaining !== null ? (() => {
+              const secs = preArrivalSecondsRemaining;
+              const isLate = secs < 0;
+              const absSecs = Math.abs(secs);
+              const mins = Math.floor(absSecs / 60);
+              const urgency = isLate
+                ? { bg: "bg-[#fef2f2]", text: "text-[#b91c1c]", border: "border-[#fecaca]" }
+                : secs <= 300
+                  ? { bg: "bg-[#fff7ed]", text: "text-[#c2410c]", border: "border-[#fed7aa]" }
+                  : secs <= 900
+                    ? { bg: "bg-[#fffbeb]", text: "text-[#b45309]", border: "border-[#fde68a]" }
+                    : { bg: "bg-[#f0fdf4]", text: "text-[#15803d]", border: "border-[#bbf7d0]" };
+              return (
+                <div className={`mt-3 rounded-[20px] border p-3 ${urgency.bg} ${urgency.border}`}>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className={`text-[11px] font-black uppercase tracking-[0.1em] ${urgency.text}`}>
+                        {isLate
+                          ? (languageMode === "simple" ? "Late ho gaye" : "देर हो गई")
+                          : (languageMode === "simple" ? "Session shuru hone mein" : "सेशन शुरू होने में")}
+                      </div>
+                      <div className={`mt-1 font-mono text-[28px] font-black tracking-[-0.04em] ${urgency.text}`}>
+                        {isLate ? `+${formatTimer(absSecs)}` : formatTimer(absSecs)}
+                      </div>
+                      <div className={`mt-0.5 text-[12px] font-medium ${urgency.text} opacity-75`}>
+                        {isLate
+                          ? (languageMode === "simple"
+                              ? `${mins} min late — jaldi pahunchiye`
+                              : `${mins} मिनट देर — जल्दी पहुंचिए`)
+                          : (languageMode === "simple"
+                              ? `Slot: ${booking.bookingWindow?.label ?? "—"}`
+                              : `स्लॉट: ${booking.bookingWindow?.label ?? "—"}`)}
+                      </div>
+                    </div>
+                    {isLate ? (
+                      <div className={`shrink-0 rounded-full border px-3 py-2 text-center text-[11px] font-black uppercase tracking-[0.1em] ${urgency.text} ${urgency.border} ${urgency.bg}`}>
+                        {languageMode === "simple" ? "Hurry!" : "जल्दी!"}
+                      </div>
+                    ) : (
+                      <div className={`shrink-0 rounded-full border px-3 py-2 text-center text-[11px] font-black uppercase tracking-[0.1em] ${urgency.text} ${urgency.border} ${urgency.bg}`}>
+                        {languageMode === "simple" ? "On time" : "समय पर"}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })() : null}
+
+            {/* SLA service timer — shows once groomer has arrived and session is running */}
+            {slaSecondsRemaining !== null && ["started"].includes(booking.dispatchState) ? (
               <div className="mt-3 rounded-[20px] bg-white/14 p-3">
                 <div className="flex items-start justify-between gap-3">
                   <div>
