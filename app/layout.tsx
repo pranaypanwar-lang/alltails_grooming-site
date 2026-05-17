@@ -83,6 +83,7 @@ export default function RootLayout({
             window.gtag = gtag;
             gtag('js', new Date());
             gtag('config', '${GOOGLE_ADS_ID}');
+            gtag('config', 'G-ZMPGZ8EL0P');
           `}
         </Script>
       </head>
