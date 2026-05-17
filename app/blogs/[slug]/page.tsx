@@ -3,6 +3,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { whatsappHref } from "@/lib/seo/businessInfo";
+
 import { ArticleBodyComposition } from "@/app/components/blogs/ArticleComposition";
 import { JsonLd } from "@/app/components/seo/JsonLd";
 import {
@@ -214,22 +216,40 @@ export default async function BlogArticlePage({
                 </div>
 
                 {/* Mobile booking CTA — shown after article, mobile only */}
-                <div className="rounded-[28px] bg-[#241c3f] p-5 text-white shadow-[0_20px_55px_rgba(36,28,63,0.20)] lg:hidden">
-                  <div className="text-[12px] font-black uppercase tracking-[0.16em] text-white/60">
-                    Book at home
+                <div className="overflow-hidden rounded-[28px] bg-[#1a1033] shadow-[0_20px_55px_rgba(20,10,50,0.28)] lg:hidden">
+                  <div className="relative p-5">
+                    <div
+                      aria-hidden
+                      className="pointer-events-none absolute -right-8 -top-8 h-[160px] w-[160px] rounded-full bg-[#6d5bd0]/30 blur-[60px]"
+                    />
+                    <div className="relative">
+                      <div className="inline-flex rounded-full border border-white/12 bg-white/[0.07] px-3 py-1.5 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-white/70">
+                        Doorstep service
+                      </div>
+                      <p className="mt-3 text-[22px] font-black leading-[1.15] tracking-[-0.03em] text-white">
+                        Leave the grooming to us.
+                      </p>
+                      <p className="mt-2 text-[13.5px] leading-[1.65] text-white/65">
+                        Trained groomers at your home — packages from ₹999. Pay online or after the session.
+                      </p>
+                      <div className="mt-4 flex flex-col gap-2">
+                        <Link
+                          href="/booking"
+                          className="flex h-[48px] items-center justify-center rounded-[16px] bg-[#6d5bd0] text-[14px] font-bold text-white shadow-[0_10px_24px_rgba(109,91,208,0.35)] transition active:scale-[0.98]"
+                        >
+                          Book a session — from ₹999
+                        </Link>
+                        <a
+                          href={`${whatsappHref}?text=${encodeURIComponent("Hi All Tails, I read one of your grooming guides and I'm interested in booking a session.")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex h-[44px] items-center justify-center gap-2 rounded-[16px] border border-white/[0.14] bg-white/[0.06] text-[13.5px] font-semibold text-white/90 transition active:scale-[0.98]"
+                        >
+                          Chat on WhatsApp
+                        </a>
+                      </div>
+                    </div>
                   </div>
-                  <div className="mt-3 text-[24px] font-black tracking-[-0.03em]">
-                    Dog grooming starts at Rs 999
-                  </div>
-                  <p className="mt-3 text-[14px] leading-[1.7] text-white/74">
-                    Fixed package pricing, trained groomers, and a Rs 250 deposit to confirm your slot.
-                  </p>
-                  <Link
-                    href="/booking-preview"
-                    className="mt-5 inline-flex h-[46px] w-full items-center justify-center rounded-full bg-white text-[14px] font-black text-[#241c3f]"
-                  >
-                    Book grooming
-                  </Link>
                 </div>
 
                 {/* Mobile share strip — shown after the article, before related posts */}
@@ -298,22 +318,30 @@ export default async function BlogArticlePage({
 
             <aside className="hidden space-y-5 lg:sticky lg:top-6 lg:block lg:self-start">
               <ArticleReadingTools title={post.title} excerpt={post.excerpt} headings={headings} />
-              <div className="rounded-[28px] bg-[#241c3f] p-5 text-white shadow-[0_20px_55px_rgba(36,28,63,0.20)]">
-                <div className="text-[12px] font-black uppercase tracking-[0.16em] text-white/60">
-                  Book at home
+              <div className="overflow-hidden rounded-[28px] bg-[#1a1033] shadow-[0_20px_55px_rgba(20,10,50,0.28)]">
+                <div className="relative p-5">
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute -right-6 -top-6 h-[130px] w-[130px] rounded-full bg-[#6d5bd0]/30 blur-[50px]"
+                  />
+                  <div className="relative">
+                    <div className="text-[10.5px] font-black uppercase tracking-[0.18em] text-white/55">
+                      Doorstep service
+                    </div>
+                    <p className="mt-3 text-[22px] font-black leading-[1.15] tracking-[-0.03em] text-white">
+                      Leave the grooming to us.
+                    </p>
+                    <p className="mt-2.5 text-[13px] leading-[1.7] text-white/65">
+                      Packages from ₹999 — pay online or after the session.
+                    </p>
+                    <Link
+                      href="/booking"
+                      className="mt-5 flex h-[46px] items-center justify-center rounded-full bg-[#6d5bd0] text-[14px] font-bold text-white shadow-[0_10px_24px_rgba(109,91,208,0.35)]"
+                    >
+                      Book a session
+                    </Link>
+                  </div>
                 </div>
-                <div className="mt-3 text-[26px] font-black tracking-[-0.03em]">
-                  Dog grooming starts at Rs 999
-                </div>
-                <p className="mt-3 text-[14px] leading-[1.7] text-white/74">
-                  Fixed package pricing, trained groomers, and a Rs 250 deposit to confirm your slot.
-                </p>
-                <Link
-                  href="/booking-preview"
-                  className="mt-5 inline-flex h-[46px] w-full items-center justify-center rounded-full bg-white text-[14px] font-black text-[#241c3f]"
-                >
-                  Book grooming
-                </Link>
               </div>
             </aside>
           </div>

@@ -124,7 +124,12 @@ export default function DogGroomingAtHomePage() {
               <br />
               <span className="text-[#6d5bd0]">All breeds, all coats.</span>
             </h1>
-            <p className="mt-5 max-w-[760px] text-[15.5px] font-medium leading-[1.75] text-[#4f475f] lg:text-[16.5px]">
+            <p className="mt-4">
+              <span className="inline-flex items-center rounded-full bg-[#f4efff] px-4 py-1.5 text-[13.5px] font-semibold text-[#5b49c8]">
+                Essential ₹999 · Signature ₹1,299 · Complete Pampering ₹1,799
+              </span>
+            </p>
+            <p className="mt-4 max-w-[760px] text-[15.5px] font-medium leading-[1.75] text-[#4f475f] lg:text-[16.5px]">
               All Tails brings professional dog grooming to your doorstep across 10 cities. Trained groomers carry every tool and product — bath, brushing, nail trim, ear cleaning, hygiene haircut or full body styling — to your home, so your dog never leaves their familiar environment.
             </p>
 
@@ -144,7 +149,7 @@ export default function DogGroomingAtHomePage() {
                 Book a grooming slot
                 <ArrowRight className="h-4 w-4" />
               </Link>
-              <TrackedExternalLink type="whatsapp" href={whatsappHref} target="_blank" rel="noopener noreferrer" trackingService="dog_grooming" trackingSource="dog_hero" className="inline-flex h-12 items-center justify-center gap-2 rounded-[16px] bg-[#25D366]/12 px-5 text-[14px] font-semibold text-[#11724f]">
+              <TrackedExternalLink type="whatsapp" href={`${whatsappHref}?text=${encodeURIComponent("Hi All Tails, I'm interested in dog grooming at home.")}`} target="_blank" rel="noopener noreferrer" trackingService="dog_grooming" trackingSource="dog_hero" className="inline-flex h-12 items-center justify-center gap-2 rounded-[16px] bg-[#25D366] px-5 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(37,211,102,0.28)]">
                 <MessageCircle className="h-4 w-4" />WhatsApp us
               </TrackedExternalLink>
               <TrackedExternalLink type="call" href={phoneTel} trackingService="dog_grooming" trackingSource="dog_hero" className="inline-flex h-12 items-center justify-center gap-2 rounded-[16px] border border-[#ded7f1] bg-white px-5 text-[14px] font-semibold text-[#5b49c8]">

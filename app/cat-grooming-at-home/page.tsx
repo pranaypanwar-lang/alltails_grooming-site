@@ -120,7 +120,12 @@ export default function CatGroomingAtHomePage() {
               <br />
               <span className="text-[#6d5bd0]">Calm hands, cat-safe products.</span>
             </h1>
-            <p className="mt-5 max-w-[760px] text-[15.5px] font-medium leading-[1.75] text-[#4f475f] lg:text-[16.5px]">
+            <p className="mt-4">
+              <span className="inline-flex items-center rounded-full bg-[#f4efff] px-4 py-1.5 text-[13.5px] font-semibold text-[#5b49c8]">
+                Essential ₹999 · Signature ₹1,299 · Complete Pampering ₹1,799
+              </span>
+            </p>
+            <p className="mt-4 max-w-[760px] text-[15.5px] font-medium leading-[1.75] text-[#4f475f] lg:text-[16.5px]">
               Cats hate being moved, restrained and bathed by strangers — almost universally. At-home grooming removes the worst of those triggers. Our trained handlers use slow approach, calm restraint, and cat-specific products free of essential oils. We&apos;ll do as much as your cat will allow, and tell you honestly when sedation grooming with a vet is the safer call.
             </p>
 
@@ -140,7 +145,7 @@ export default function CatGroomingAtHomePage() {
                 Book a grooming slot
                 <ArrowRight className="h-4 w-4" />
               </Link>
-              <TrackedExternalLink type="whatsapp" href={whatsappHref} target="_blank" rel="noopener noreferrer" trackingService="cat_grooming" trackingSource="cat_hero" className="inline-flex h-12 items-center justify-center gap-2 rounded-[16px] bg-[#25D366]/12 px-5 text-[14px] font-semibold text-[#11724f]">
+              <TrackedExternalLink type="whatsapp" href={`${whatsappHref}?text=${encodeURIComponent("Hi All Tails, I'm interested in cat grooming at home.")}`} target="_blank" rel="noopener noreferrer" trackingService="cat_grooming" trackingSource="cat_hero" className="inline-flex h-12 items-center justify-center gap-2 rounded-[16px] bg-[#25D366] px-5 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(37,211,102,0.28)]">
                 <MessageCircle className="h-4 w-4" />WhatsApp us
               </TrackedExternalLink>
               <TrackedExternalLink type="call" href={phoneTel} trackingService="cat_grooming" trackingSource="cat_hero" className="inline-flex h-12 items-center justify-center gap-2 rounded-[16px] border border-[#ded7f1] bg-white px-5 text-[14px] font-semibold text-[#5b49c8]">

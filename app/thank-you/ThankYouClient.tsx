@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, MessageCircle, Phone } from "lucide-react";
+import { Check, MessageCircle, Phone, Share2 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef } from "react";
@@ -102,6 +102,29 @@ function ThankYouInner() {
 
   const whatsappUrl = `${whatsappHref}?text=${encodeURIComponent(whatsappMessage)}`;
 
+  const handleShare = async () => {
+    const shareData = {
+      title: "All Tails — At-Home Pet Grooming",
+      text: "I just booked at-home pet grooming with All Tails — trained groomers at your doorstep, starting from ₹999.",
+      url: "https://alltails.in",
+    };
+    try {
+      if (typeof navigator !== "undefined" && navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        window.open(
+          `${whatsappHref}?text=${encodeURIComponent(
+            `${shareData.text} ${shareData.url}`
+          )}`,
+          "_blank",
+          "noopener,noreferrer"
+        );
+      }
+    } catch {
+      // user cancelled share — do nothing
+    }
+  };
+
   return (
     <main className="relative min-h-[100dvh] bg-[linear-gradient(180deg,#f8f5ff_0%,#ffffff_44%,#fbfbff_100%)] px-5 py-12">
       <div className="pointer-events-none absolute -right-[120px] -top-[140px] h-[420px] w-[420px] rounded-full bg-[#e9defa] opacity-70 blur-[110px]" aria-hidden />
@@ -143,16 +166,28 @@ function ThankYouInner() {
           <a
             href={phoneTel}
             onClick={() => trackCallClick({ city: citySlug, source: "thank_you" })}
-            className="flex h-12 items-center justify-center gap-2 rounded-[16px] border border-[#ded7f1] bg-white text-[14.5px] font-semibold text-[#5b49c8]"
+            className="flex h-12 items-center justify-center gap-2 rounded-[16px] border border-[#ded7f1] bg-white text-[14.5px] font-semibold text-[#5b49c8] transition active:scale-[0.98]"
           >
             <Phone className="h-4 w-4" />
             Call us
           </a>
         </div>
 
+        <div className="mt-5 border-t border-[#ede8f7] pt-5">
+          <p className="text-[12px] font-medium text-[#9088b8]">Know someone with a pet?</p>
+          <button
+            type="button"
+            onClick={handleShare}
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-[16px] border border-[#e2d9f3] bg-[#faf8ff] py-3 text-[13.5px] font-semibold text-[#6d5bd0] transition active:scale-[0.98]"
+          >
+            <Share2 className="h-4 w-4" />
+            Share All Tails with a friend
+          </button>
+        </div>
+
         <Link
           href="/"
-          className="mt-6 inline-block text-[12.5px] font-medium text-[#9088b8] underline decoration-[#cfc7df] underline-offset-[3px]"
+          className="mt-5 inline-block text-[12.5px] font-medium text-[#9088b8] underline decoration-[#cfc7df] underline-offset-[3px]"
         >
           Back to All Tails homepage
         </Link>

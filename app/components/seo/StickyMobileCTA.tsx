@@ -25,6 +25,7 @@ export function StickyMobileCTA() {
 
   // Hide on routes that don't want the bar competing with their own UI.
   const hiddenPrefixes = [
+    "/",
     "/booking",
     "/booking-preview",
     "/pay",
@@ -44,8 +45,8 @@ export function StickyMobileCTA() {
   const citySlug = extractCitySlug(pathname);
   const whatsappCityLabel = citySlug ? cityLabelFromSlug(citySlug) : null;
   const whatsappMessage = whatsappCityLabel
-    ? `Hi All Tails, I want to book pet grooming at home in ${whatsappCityLabel}. My area is ___ and my pet is a ___.`
-    : "Hi All Tails, I'd like to book pet grooming at home for my pet.";
+    ? `Hi All Tails, I'm interested in at-home pet grooming in ${whatsappCityLabel}.`
+    : "Hi All Tails, I'm interested in at-home pet grooming for my pet.";
   const whatsappUrl = `${whatsappHref}?text=${encodeURIComponent(whatsappMessage)}`;
 
   const bookHref = citySlug ? `/booking?city=${encodeURIComponent(citySlug)}` : "/booking";
@@ -63,7 +64,7 @@ export function StickyMobileCTA() {
           rel="noopener noreferrer"
           onClick={() => trackWhatsAppClick({ city: citySlug, source: "sticky_bar" })}
           aria-label="WhatsApp All Tails"
-          className="flex flex-1 flex-col items-center justify-center gap-0.5 rounded-[16px] bg-[#25D366]/10 py-2 text-[11.5px] font-semibold text-[#11724f] transition active:scale-[0.97]"
+          className="flex flex-1 flex-col items-center justify-center gap-1 rounded-[16px] bg-[#25D366]/10 py-3 text-[12.5px] font-semibold text-[#11724f] transition active:scale-[0.97]"
         >
           <MessageCircle className="h-4 w-4" />
           WhatsApp
@@ -72,7 +73,7 @@ export function StickyMobileCTA() {
           href={phoneTel}
           onClick={() => trackCallClick({ city: citySlug, source: "sticky_bar" })}
           aria-label="Call All Tails"
-          className="flex flex-1 flex-col items-center justify-center gap-0.5 rounded-[16px] bg-[#f5f1ff] py-2 text-[11.5px] font-semibold text-[#5b49c8] transition active:scale-[0.97]"
+          className="flex flex-1 flex-col items-center justify-center gap-1 rounded-[16px] bg-[#f5f1ff] py-3 text-[12.5px] font-semibold text-[#5b49c8] transition active:scale-[0.97]"
         >
           <Phone className="h-4 w-4" />
           Call
@@ -80,11 +81,11 @@ export function StickyMobileCTA() {
         <a
           href={bookHref}
           onClick={() => trackBookCTAClick({ city: citySlug, source: "sticky_bar" })}
-          aria-label="Book a grooming slot"
-          className="flex flex-1 flex-col items-center justify-center gap-0.5 rounded-[16px] bg-[#6d5bd0] py-2 text-[11.5px] font-bold text-white shadow-[0_8px_18px_rgba(109,91,208,0.22)] transition active:scale-[0.97]"
+          aria-label="Book a grooming session"
+          className="flex flex-1 flex-col items-center justify-center gap-1 rounded-[16px] bg-[#6d5bd0] py-3 text-[12.5px] font-bold text-white shadow-[0_8px_18px_rgba(109,91,208,0.22)] transition active:scale-[0.97]"
         >
           <CalendarClock className="h-4 w-4" />
-          Book Slot
+          Book Now
         </a>
       </div>
     </div>

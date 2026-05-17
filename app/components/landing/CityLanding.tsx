@@ -22,14 +22,54 @@ import { TrackedExternalLink } from "@/app/components/analytics/TrackedExternalL
  * own footer bar.
  */
 
+const NEARBY_CITIES: Record<string, { label: string; slug: string }[]> = {
+  delhi: [
+    { label: "Gurgaon", slug: "gurgaon" },
+    { label: "Noida", slug: "noida" },
+    { label: "Faridabad", slug: "faridabad" },
+    { label: "Ghaziabad", slug: "ghaziabad" },
+  ],
+  gurgaon: [
+    { label: "Delhi", slug: "delhi" },
+    { label: "Faridabad", slug: "faridabad" },
+    { label: "Noida", slug: "noida" },
+  ],
+  noida: [
+    { label: "Delhi", slug: "delhi" },
+    { label: "Ghaziabad", slug: "ghaziabad" },
+    { label: "Gurgaon", slug: "gurgaon" },
+  ],
+  chandigarh: [
+    { label: "Mohali", slug: "mohali" },
+    { label: "Panchkula", slug: "panchkula" },
+  ],
+  mohali: [
+    { label: "Chandigarh", slug: "chandigarh" },
+    { label: "Panchkula", slug: "panchkula" },
+  ],
+  panchkula: [
+    { label: "Chandigarh", slug: "chandigarh" },
+    { label: "Mohali", slug: "mohali" },
+  ],
+  faridabad: [
+    { label: "Delhi", slug: "delhi" },
+    { label: "Gurgaon", slug: "gurgaon" },
+  ],
+  ghaziabad: [
+    { label: "Delhi", slug: "delhi" },
+    { label: "Noida", slug: "noida" },
+  ],
+};
+
 type Props = {
   data: CityLandingData;
 };
 
 export function CityLanding({ data }: Props) {
-  const whatsappMessage = `Hi All Tails, I want to book pet grooming at home in ${data.displayName}. My area is ___ and my pet is a ___.`;
+  const whatsappMessage = `Hi All Tails, I'm interested in at-home pet grooming in ${data.displayName}.`;
   const whatsappUrl = `${whatsappHref}?text=${encodeURIComponent(whatsappMessage)}`;
   const bookingHref = `/booking?city=${data.slug}`;
+  const nearbyCities = NEARBY_CITIES[data.slug] ?? [];
 
   return (
     <main className="relative overflow-hidden bg-[linear-gradient(180deg,#f8f5ff_0%,#ffffff_44%,#fbfbff_100%)]">
@@ -135,6 +175,11 @@ export function CityLanding({ data }: Props) {
               {data.callout}
             </p>
           ) : null}
+
+          <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#edfbf1] px-3.5 py-1.5 text-[12.5px] font-semibold text-[#11724f]">
+            <span className="h-2 w-2 rounded-full bg-[#11724f]" aria-hidden />
+            Slots available this week in {data.displayName}
+          </p>
         </section>
 
         {/* Packages */}
@@ -291,6 +336,30 @@ export function CityLanding({ data }: Props) {
             ))}
           </div>
         </section>
+
+        {/* Nearby cities */}
+        {nearbyCities.length > 0 ? (
+          <section className="mt-14">
+            <h2 className="text-[20px] font-black tracking-[-0.02em] text-[#241b4b]">
+              Also serving nearby
+            </h2>
+            <p className="mt-2 text-[13.5px] font-medium leading-[1.7] text-[#6b7280]">
+              We cover multiple cities in this region — check the page for your exact area.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              {nearbyCities.map((city) => (
+                <Link
+                  key={city.slug}
+                  href={`/pet-grooming/${city.slug}`}
+                  className="inline-flex items-center gap-1.5 rounded-[14px] border border-[#ece4f8] bg-white px-4 py-2.5 text-[13.5px] font-semibold text-[#5b49c8] shadow-[0_4px_14px_rgba(38,28,70,0.04)] transition hover:border-[#c9b8f5] hover:bg-[#f9f6ff]"
+                >
+                  <MapPin className="h-3.5 w-3.5 text-[#6d5bd0]" />
+                  Pet grooming in {city.label}
+                </Link>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         {/* Final CTA card */}
         <section className="mt-14">

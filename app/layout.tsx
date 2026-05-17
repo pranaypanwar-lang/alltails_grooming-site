@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
-import { Playfair_Display, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 import { MetaPixelPageView } from "./components/analytics/MetaPixelPageView";
 import { AttributionCapture } from "./components/analytics/AttributionCapture";
 import { StickyMobileCTA } from "./components/seo/StickyMobileCTA";
@@ -14,12 +14,6 @@ import {
   professionalServiceSchema,
   websiteSchema,
 } from "../lib/seo/schema";
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-playfair",
-});
 
 const inter = Inter({
   subsets: ["latin"],

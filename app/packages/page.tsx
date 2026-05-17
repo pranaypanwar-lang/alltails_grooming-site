@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { Check, MessageCircle, Minus } from "lucide-react";
 
 import { JsonLd } from "../components/seo/JsonLd";
 import { SeoPageShell } from "../components/seo/SeoPageShell";
+import { TrackedExternalLink } from "../components/analytics/TrackedExternalLink";
 import { INDIVIDUAL_SESSION_SERVICES, SERVICE_OPTIONS } from "@/lib/booking/constants";
 import { pageMetadata } from "@/lib/seo/metadata";
-import { SITE_URL } from "@/lib/seo/businessInfo";
+import { SITE_URL, whatsappHref } from "@/lib/seo/businessInfo";
 import {
   breadcrumbSchema,
   packageOfferCatalogSchema,
@@ -193,36 +195,57 @@ export default function PackagesPage() {
 
         <section className="mt-20 rounded-[28px] bg-white p-8 shadow-[0_18px_50px_rgba(34,22,74,0.06)] lg:p-12">
           <h2 className="text-[24px] font-black tracking-[-0.03em] text-[#2a2346] lg:text-[28px]">
-            Which package should I choose?
+            What&apos;s included in each package
           </h2>
-          <div className="mt-6 grid gap-5 lg:grid-cols-3">
-            <div>
-              <h3 className="text-[16px] font-bold text-[#2a2346]">
-                Just a clean, fresh bath
-              </h3>
-              <p className="mt-2 text-[14px] leading-[1.7] text-[#6b7280]">
-                Pick <strong>Essential Care</strong> for routine bathing,
-                blow-dry, and basic hygiene. No haircut included.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-[16px] font-bold text-[#2a2346]">
-                Regular full-body upkeep
-              </h3>
-              <p className="mt-2 text-[14px] leading-[1.7] text-[#6b7280]">
-                Pick <strong>Signature Care</strong> for full bath, hygiene
-                trim, ears, nails, and dental care. Most booked option.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-[16px] font-bold text-[#2a2346]">
-                Haircut, styling, or long coats
-              </h3>
-              <p className="mt-2 text-[14px] leading-[1.7] text-[#6b7280]">
-                Pick <strong>Complete Pampering</strong> when your pet needs a
-                proper haircut, styling, or a fuller spa finish.
-              </p>
-            </div>
+          <p className="mt-2 text-[14px] leading-[1.7] text-[#6b7280]">
+            Every package builds on the previous — you always get everything from the tier below plus more.
+          </p>
+
+          <div className="mt-8 overflow-x-auto">
+            <table className="w-full min-w-[520px] text-left">
+              <thead>
+                <tr className="border-b border-[#ece5fb]">
+                  <th className="pb-4 pr-4 text-[13px] font-semibold text-[#8a82a3]">Feature</th>
+                  <th className="pb-4 px-4 text-center text-[13px] font-black text-[#241b4b]">
+                    Essential Care<br /><span className="text-[16px] text-[#6d5bd0]">₹999</span>
+                  </th>
+                  <th className="pb-4 px-4 text-center text-[13px] font-black text-[#241b4b]">
+                    <span className="inline-flex flex-col items-center">
+                      <span className="rounded-full bg-[#f4efff] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6d5bd0]">Most booked</span>
+                      Signature Care<br /><span className="text-[16px] text-[#6d5bd0]">₹1,299</span>
+                    </span>
+                  </th>
+                  <th className="pb-4 pl-4 text-center text-[13px] font-black text-[#241b4b]">
+                    Complete Pampering<br /><span className="text-[16px] text-[#6d5bd0]">₹1,799</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#f3effc]">
+                {[
+                  { feature: "Bath + blow dry", essential: true, signature: true, complete: true },
+                  { feature: "Brushing + de-tangling", essential: true, signature: true, complete: true },
+                  { feature: "Nail trim", essential: true, signature: true, complete: true },
+                  { feature: "Ear cleaning", essential: true, signature: true, complete: true },
+                  { feature: "Hygiene haircut", essential: false, signature: true, complete: true },
+                  { feature: "Dental hygiene", essential: false, signature: true, complete: true },
+                  { feature: "Full body haircut + styling", essential: false, signature: false, complete: true },
+                  { feature: "Paw butter", essential: false, signature: false, complete: true },
+                  { feature: "Hair serum + perfume finish", essential: false, signature: false, complete: true },
+                ].map((row) => (
+                  <tr key={row.feature}>
+                    <td className="py-3.5 pr-4 text-[13.5px] font-medium text-[#3a3458]">{row.feature}</td>
+                    {[row.essential, row.signature, row.complete].map((included, i) => (
+                      <td key={i} className="px-4 py-3.5 text-center">
+                        {included
+                          ? <Check className="mx-auto h-4 w-4 text-[#6d5bd0]" strokeWidth={2.8} />
+                          : <Minus className="mx-auto h-4 w-4 text-[#d1cce8]" strokeWidth={2} />
+                        }
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </section>
 
@@ -232,7 +255,7 @@ export default function PackagesPage() {
           </h2>
           <p className="mt-3 max-w-[640px] text-[15px] leading-[1.7] text-white/85">
             Choose a package, share your city and date, and our team will
-            confirm your slot.
+            confirm your slot. Or WhatsApp us — we&apos;ll help you pick.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
@@ -241,6 +264,17 @@ export default function PackagesPage() {
             >
               Check available slots
             </Link>
+            <TrackedExternalLink
+              type="whatsapp"
+              href={`${whatsappHref}?text=${encodeURIComponent("Hi All Tails, I'd like help choosing a grooming package.")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              trackingSource="packages_cta"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-[14px] font-semibold text-white shadow-[0_8px_20px_rgba(0,0,0,0.18)]"
+            >
+              <MessageCircle className="h-4 w-4" />
+              WhatsApp us
+            </TrackedExternalLink>
             <Link
               href="/faq"
               className="inline-flex items-center justify-center rounded-full border border-white/40 px-6 py-3 text-[14px] font-semibold text-white hover:bg-white/10"

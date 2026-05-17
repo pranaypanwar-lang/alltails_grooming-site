@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { MessageCircle } from "lucide-react";
 
 import { JsonLd } from "../components/seo/JsonLd";
 import { SeoPageShell } from "../components/seo/SeoPageShell";
+import { TrackedExternalLink } from "../components/analytics/TrackedExternalLink";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { breadcrumbSchema, faqPageSchema } from "@/lib/seo/schema";
+import { whatsappHref } from "@/lib/seo/businessInfo";
 
 export const metadata = pageMetadata({
   title: "Pet Grooming FAQs",
@@ -90,6 +93,31 @@ const FAQ_GROUPS: FaqGroup[] = [
       },
     ],
   },
+  {
+    title: "Common concerns before booking",
+    items: [
+      {
+        q: "Can I stay in the room while my pet is being groomed?",
+        a: "Yes — and for first-time pets or anxious animals we recommend it. Your presence helps your pet stay calm. The groomer will guide you on whether to hold your pet gently or step back a couple of steps so your pet doesn't try to jump to you mid-session. Either way, you're welcome to stay close.",
+      },
+      {
+        q: "What if my pet doesn't cooperate or gets stressed?",
+        a: "We pause, let your pet settle, and resume in sections. Sessions for anxious pets naturally take a bit longer, and that's fine — we don't rush. If your pet is consistently very stressed, we'll advise shorter sessions across two visits rather than forcing it in one. We've never damaged a coat by being patient.",
+      },
+      {
+        q: "Is my exact area or colony covered?",
+        a: "Check the city pages for a list of commonly served areas. If your colony or sector isn't listed, WhatsApp us — we frequently have a groomer routing nearby and can often fit you in the same run. Coverage expands weekly as we add groomers in each city.",
+      },
+      {
+        q: "What exactly is a hygiene haircut?",
+        a: "A hygiene haircut trims hair in three specific zones: around the face (eyes, ears, muzzle), around the paws (between the pads and around the nails), and the sanitary area (rear and genitals). It's not a full body haircut — it's maintenance trimming that keeps your pet clean and comfortable between full styling sessions. Included in Signature Care and Complete Pampering.",
+      },
+      {
+        q: "Do you guarantee the outcome of the session?",
+        a: "We guarantee our groomers are trained, use the right products, and treat your pet with care throughout. We don't guarantee a specific aesthetic outcome in advance — coat condition, matting level, and breed variation affect what's achievable in one session. We'll tell you upfront if we think a second session is needed to reach a goal rather than rushing through it. If you're unhappy with a specific part of the result, message us and we'll make it right.",
+      },
+    ],
+  },
 ];
 
 export default function FaqPage() {
@@ -160,17 +188,28 @@ export default function FaqPage() {
             session.
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-3">
-            <Link
-              href="/contact"
-              className="inline-flex items-center rounded-full border border-[#cdbcf5] bg-white px-5 py-2.5 text-[13px] font-semibold text-[#5f4fc2] hover:bg-[#f4efff]"
+            <TrackedExternalLink
+              type="whatsapp"
+              href={`${whatsappHref}?text=${encodeURIComponent("Hi All Tails, I have a question about pet grooming.")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              trackingSource="faq_bottom"
+              className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_8px_20px_rgba(37,211,102,0.25)]"
             >
-              Contact All Tails
-            </Link>
+              <MessageCircle className="h-4 w-4" />
+              Chat on WhatsApp
+            </TrackedExternalLink>
             <Link
               href="/booking"
               className="inline-flex items-center rounded-full bg-[#6d5bd0] px-5 py-2.5 text-[13px] font-semibold text-white hover:bg-[#5f4fc2]"
             >
               Book a session
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex items-center rounded-full border border-[#cdbcf5] bg-white px-5 py-2.5 text-[13px] font-semibold text-[#5f4fc2] hover:bg-[#f4efff]"
+            >
+              Contact All Tails
             </Link>
           </div>
         </div>
