@@ -7798,12 +7798,12 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
       <div className="flex snap-x snap-mandatory gap-3.5 pr-4">
         {/* MOBILE SLIDE 1 */}
         <div data-carousel-slide="true" className="w-[85%] max-w-[320px] shrink-0 snap-start rounded-[26px] border border-[#eee7ff] bg-white/95 p-4 shadow-[0_18px_40px_rgba(77,47,122,0.08)] backdrop-blur-sm">
-          <div className="relative h-[156px] w-full overflow-hidden rounded-[18px] border border-[#ececec] bg-[linear-gradient(135deg,#eef1f4_0%,#f7f8fb_100%)]">
+          <div className="relative h-[186px] w-full overflow-hidden rounded-[18px] border border-[#ececec] bg-[linear-gradient(135deg,#eef1f4_0%,#f7f8fb_100%)]">
             <Image
               src="/images/trust-image-1.jpeg"
               alt="Gentle pet-first grooming"
               fill
-              className="object-cover object-[40%_68%]"
+              className="object-cover object-[60%_78%]"
             />
           </div>
 
@@ -7835,12 +7835,12 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
 
         {/* MOBILE SLIDE 2 */}
         <div data-carousel-slide="true" className="w-[85%] max-w-[320px] shrink-0 snap-start rounded-[26px] border border-[#eee7ff] bg-white/95 p-4 shadow-[0_18px_40px_rgba(77,47,122,0.08)] backdrop-blur-sm">
-          <div className="relative h-[156px] w-full overflow-hidden rounded-[18px] border border-[#ececec] bg-[linear-gradient(135deg,#eef1f4_0%,#f7f8fb_100%)]">
+          <div className="relative h-[186px] w-full overflow-hidden rounded-[18px] border border-[#ececec] bg-[linear-gradient(135deg,#eef1f4_0%,#f7f8fb_100%)]">
             <Image
               src="/images/trust-image-2.jpeg"
               alt="Professional groomer at work"
               fill
-              className="object-cover object-center"
+              className="object-cover object-[65%_72%]"
             />
           </div>
 
@@ -7872,12 +7872,12 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
 
         {/* MOBILE SLIDE 3 */}
         <div data-carousel-slide="true" className="w-[85%] max-w-[320px] shrink-0 snap-start rounded-[26px] border border-[#eee7ff] bg-white/95 p-4 shadow-[0_18px_40px_rgba(77,47,122,0.08)] backdrop-blur-sm">
-          <div className="relative h-[156px] w-full overflow-hidden rounded-[18px] border border-[#ececec] bg-[linear-gradient(135deg,#eef1f4_0%,#f7f8fb_100%)]">
+          <div className="relative h-[186px] w-full overflow-hidden rounded-[18px] border border-[#ececec] bg-[linear-gradient(135deg,#eef1f4_0%,#f7f8fb_100%)]">
             <Image
               src="/images/trust-image-3.jpeg"
               alt="Premium grooming products"
               fill
-              className="object-cover object-[78%_center]"
+              className="object-cover object-[78%_74%]"
             />
           </div>
 
@@ -7909,12 +7909,12 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
 
         {/* MOBILE SLIDE 4 */}
         <div data-carousel-slide="true" className="w-[85%] max-w-[320px] shrink-0 snap-start rounded-[26px] border border-[#eee7ff] bg-white/95 p-4 shadow-[0_18px_40px_rgba(77,47,122,0.08)] backdrop-blur-sm">
-          <div className="relative h-[156px] w-full overflow-hidden rounded-[18px] border border-[#ececec] bg-[linear-gradient(135deg,#eef1f4_0%,#f7f8fb_100%)]">
+          <div className="relative h-[186px] w-full overflow-hidden rounded-[18px] border border-[#ececec] bg-[linear-gradient(135deg,#eef1f4_0%,#f7f8fb_100%)]">
             <Image
               src="/images/trust-image-4.jpeg"
               alt="Style preview grooming"
               fill
-              className="object-cover object-[30%_center]"
+              className="object-cover object-[65%_72%]"
             />
           </div>
 
