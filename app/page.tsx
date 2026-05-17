@@ -7573,7 +7573,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
         <div className="mt-9 flex flex-wrap gap-2.5">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2.5 text-[14px] font-semibold text-white backdrop-blur-sm">
             <Star className="h-4 w-4 fill-[#FACC15] text-[#FACC15]" />
-            4.8 rated · 189 reviews
+            Rated 4.9★ by 327+ pet parents
           </span>
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2.5 text-[14px] font-semibold text-white backdrop-blur-sm">
             Sessions from ₹999
@@ -7582,7 +7582,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
             10 cities · Delhi NCR + Punjab
           </span>
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2.5 text-[14px] font-semibold text-white backdrop-blur-sm">
-            Vegan products · Doorstep
+            Pay after the session
           </span>
         </div>
       </div>
