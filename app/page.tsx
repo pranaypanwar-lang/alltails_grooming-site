@@ -10012,13 +10012,8 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
 
             <div className="relative flex min-h-[420px] flex-col justify-between px-5 py-5 sm:min-h-[520px] sm:px-7 sm:py-7">
               <div className="flex flex-wrap items-start justify-between gap-3">
-                <div className="max-w-[340px] rounded-[22px] border border-white/12 bg-white/10 p-4 backdrop-blur-sm">
-                  <div className="inline-flex rounded-full bg-white/12 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white/88">
-                    Editorial pick
-                  </div>
-                  <p className="mt-3 text-[13px] leading-[1.7] text-white/78 sm:text-[14px]">
-                    Selected for booking intent, clarity of answers, and strength of grooming guidance.
-                  </p>
+                <div className="inline-flex rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-white/88 backdrop-blur-sm">
+                  Editor's pick
                 </div>
 
                 <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3 text-[11px] font-semibold text-white/72 backdrop-blur-sm">
