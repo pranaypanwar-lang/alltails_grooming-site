@@ -87,6 +87,7 @@ export function professionalServiceSchema() {
       BUSINESS_INFO.socials.instagram,
       BUSINESS_INFO.socials.facebook,
       BUSINESS_INFO.socials.linkedin,
+      "https://www.wikidata.org/wiki/Q139831788",
     ],
   };
 }
@@ -196,6 +197,7 @@ export function cityLocalBusinessSchema(input: CityLocalBusinessInput) {
       BUSINESS_INFO.socials.instagram,
       BUSINESS_INFO.socials.facebook,
       BUSINESS_INFO.socials.linkedin,
+      "https://www.wikidata.org/wiki/Q139831788",
     ],
   };
 }
