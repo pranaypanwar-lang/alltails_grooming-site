@@ -61,10 +61,10 @@ export const BUSINESS_INFO = {
   // values only — Google penalizes inflated review schema.
   aggregateRating: {
     ratingValue: 4.8,
-    reviewCount: 189,
+    reviewCount: 207,
     source: "Google Business Profile",
     // ISO date the values above were last verified against GBP.
-    verifiedAt: "2026-05-10",
+    verifiedAt: "2026-05-18",
   },
 } as const;
 
