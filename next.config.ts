@@ -16,6 +16,13 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "fhckbdubujugourguqwc.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
+    ],
   },
 
   // Tree-shake lucide-react imports so only the icons we actually use ship
