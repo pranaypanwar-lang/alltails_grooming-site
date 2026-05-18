@@ -7393,7 +7393,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
       <div className="mt-5 flex flex-wrap gap-2">
         <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.15] bg-white/[0.08] px-3 py-1.5 text-[12px] font-semibold text-white backdrop-blur-sm">
           <Star className="h-3 w-3 fill-[#FACC15] text-[#FACC15]" />
-          4.8 · 207+ reviews
+          4.9 · 345+ reviews
         </span>
         <span className="inline-flex items-center rounded-full border border-white/[0.15] bg-white/[0.08] px-3 py-1.5 text-[12px] font-semibold text-white backdrop-blur-sm">
           From ₹999
@@ -7565,7 +7565,7 @@ onChange={(e) => handlePetStylingNotesChange(index, e.target.value)}
         <div className="mt-9 flex flex-wrap gap-2.5">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2.5 text-[14px] font-semibold text-white backdrop-blur-sm">
             <Star className="h-4 w-4 fill-[#FACC15] text-[#FACC15]" />
-            Rated 4.8★ by 207+ pet parents
+            Rated 4.9★ by 345+ pet parents
           </span>
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2.5 text-[14px] font-semibold text-white backdrop-blur-sm">
             Sessions from ₹999
