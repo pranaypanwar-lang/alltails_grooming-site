@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { flushSync } from "react-dom";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -607,7 +606,7 @@ function LiveVideoRecorderModal({
   elapsedSeconds: number;
   isRecording: boolean;
   hasRecordedFile: boolean;
-  videoRef: React.RefObject<HTMLVideoElement | null>;
+  videoRef: React.RefObject<HTMLVideoElement | null> | ((el: HTMLVideoElement | null) => void);
   onStart: () => void;
   onStop: () => void;
   onUseRecording: () => void;
@@ -824,6 +823,18 @@ export function GroomerJobClient({
   const [momentToast, setMomentToast] = useState<MomentToast>(null);
   const [showSessionStartModal, setShowSessionStartModal] = useState(false);
   const liveVideoRef = useRef<HTMLVideoElement | null>(null);
+  // Holds a stream that arrived before the video element mounted; the callback ref drains it
+  const pendingStreamRef = useRef<MediaStream | null>(null);
+  // Callback ref: attaches any pending stream the moment the <video> element mounts
+  const videoCallbackRef = useCallback((el: HTMLVideoElement | null) => {
+    liveVideoRef.current = el;
+    if (el && pendingStreamRef.current) {
+      el.srcObject = pendingStreamRef.current;
+      el.muted = true;
+      void el.play().catch(() => undefined);
+      pendingStreamRef.current = null;
+    }
+  }, []);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedBlobUrlRef = useRef<string | null>(null);
@@ -962,6 +973,8 @@ export function GroomerJobClient({
   const jobPsychologyTitle = resolvePsychologyText(jobPsychology.stateKey, psychologyMode);
 
   const cleanupLiveRecorder = () => {
+    pendingStreamRef.current?.getTracks().forEach((track) => track.stop());
+    pendingStreamRef.current = null;
     mediaRecorderRef.current?.stream.getTracks().forEach((track) => track.stop());
     mediaRecorderRef.current = null;
     mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
@@ -1010,16 +1023,18 @@ export function GroomerJobClient({
     mediaStreamRef.current = stream;
 
     if (liveVideoRef.current) {
+      // Video element already mounted (retake path or flushSync succeeded)
       liveVideoRef.current.srcObject = stream;
       liveVideoRef.current.muted = true;
       await liveVideoRef.current.play().catch(() => undefined);
+    } else {
+      // Video element not yet mounted — callback ref will attach stream on mount
+      pendingStreamRef.current = stream;
     }
   };
 
   const openLiveVideoRecorder = async (stepKey: string) => {
-    // flushSync forces the modal to mount synchronously so liveVideoRef.current
-    // is populated before setupLiveVideoPreview tries to attach the stream
-    flushSync(() => setActiveVideoStepKey(stepKey));
+    setActiveVideoStepKey(stepKey);
     try {
       await setupLiveVideoPreview();
     } catch (error) {
@@ -1343,7 +1358,7 @@ export function GroomerJobClient({
       elapsedSeconds={recordingSeconds}
       isRecording={isRecordingVideo}
       hasRecordedFile={!!recordedVideoFile}
-      videoRef={liveVideoRef}
+      videoRef={videoCallbackRef}
       onStart={() => {
         try { startLiveRecording(); } catch (error) {
           setModalError(error instanceof Error ? error.message : "Recording start nahi hui.");
