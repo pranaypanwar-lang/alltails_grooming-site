@@ -18,6 +18,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               <Link href="/admin/bookings" className="text-gray-600 hover:text-gray-900 transition-colors">
                 Bookings
               </Link>
+              <Link href="/admin/customers" className="text-gray-600 hover:text-gray-900 transition-colors">
+                Customers
+              </Link>
               <Link href="/admin/dispatch" className="text-gray-600 hover:text-gray-900 transition-colors">
                 Dispatch
               </Link>

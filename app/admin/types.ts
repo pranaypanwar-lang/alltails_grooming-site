@@ -847,6 +847,240 @@ export type AdminSupportSignalScanResponse = {
   }>;
 };
 
+export type AdminCustomerLifecycleStage =
+  | "lead"
+  | "first_booking_scheduled"
+  | "first_time_customer"
+  | "repeat_customer"
+  | "loyal_customer"
+  | "active_with_upcoming"
+  | "at_risk"
+  | "lost"
+  | "support_hold";
+
+export type AdminCustomerRiskFlag =
+  | "due_soon"
+  | "payment_risk"
+  | "support_open"
+  | "complaint_history"
+  | "refund_history"
+  | "loyalty_unlocked"
+  | "upcoming_booking";
+
+export type AdminCustomerListRow = {
+  id: string;
+  name: string;
+  phoneFull: string;
+  phoneMasked: string;
+  city: string | null;
+  createdAt: string;
+  lifecycleStage: AdminCustomerLifecycleStage;
+  lifecycleLabel: string;
+  lifecycleReason: string;
+  riskFlags: AdminCustomerRiskFlag[];
+  pets: {
+    count: number;
+    names: string[];
+    breeds: string[];
+  };
+  loyalty: {
+    completedCount: number;
+    freeUnlocked: boolean;
+    unlockedAt: string | null;
+    lastRedeemedAt: string | null;
+  };
+  bookingSummary: {
+    total: number;
+    completed: number;
+    upcomingConfirmed: number;
+    cancelledOrExpired: number;
+    totalSpent: number;
+    refundedAmount: number;
+    averageOrderValue: number;
+    lastCompletedAt: string | null;
+    nextBookingAt: string | null;
+    expectedNextBookingAt: string | null;
+    daysOverdue: number | null;
+    expectedCycleDays: number | null;
+  };
+  communicationSummary: {
+    totalMessages: number;
+    lastMessageAt: string | null;
+  };
+  supportSummary: {
+    openCaseCount: number;
+    unresolvedComplaintCount: number;
+    lastOpenedAt: string | null;
+  };
+};
+
+export type AdminCustomersSummary = {
+  totalCustomers: number;
+  leadCount: number;
+  firstTimeCount: number;
+  repeatCount: number;
+  loyalCount: number;
+  activeWithUpcomingCount: number;
+  dueSoonCount: number;
+  atRiskCount: number;
+  supportHoldCount: number;
+  upcomingCount: number;
+};
+
+export type AdminCustomersFilters = {
+  search: string;
+  city: string;
+  lifecycleStage: AdminCustomerLifecycleStage | "";
+  loyaltyState: "unlocked" | "locked" | "";
+  hasUpcomingBooking: boolean;
+  hasOpenSupportCase: boolean;
+  isAtRisk: boolean;
+  sortBy:
+    | "createdAt"
+    | "name"
+    | "city"
+    | "lastCompletedAt"
+    | "nextBookingAt"
+    | "totalSpent"
+    | "completedBookings";
+  sortOrder: "asc" | "desc";
+};
+
+export type AdminCustomersResponse = {
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+  availableCities: string[];
+  summary: AdminCustomersSummary;
+  customers: AdminCustomerListRow[];
+};
+
+export type AdminCustomerDetailBookingRow = {
+  id: string;
+  status: AdminBookingStatus;
+  statusLabel: string;
+  paymentStatus: AdminPaymentStatus;
+  paymentStatusLabel: string;
+  paymentMethod: "pay_now" | "pay_after_service" | "cash" | null;
+  paymentMethodLabel: string | null;
+  serviceName: string;
+  selectedDate: string | null;
+  createdAt: string;
+  completedAt: string | null;
+  bookingWindowLabel: string | null;
+  finalAmount: number;
+  originalAmount: number;
+  refundAmount: number | null;
+  couponCode: string | null;
+  team: AdminBookingTeam | null;
+  groomerMember: Pick<AdminGroomerMember, "id" | "name" | "role" | "currentRank"> | null;
+  dispatchState: AdminDispatchState;
+  loyaltyRewardApplied: boolean;
+};
+
+export type AdminCustomerDetailPet = {
+  id: string;
+  name: string | null;
+  breed: string;
+  species: string;
+  avatarUrl: string | null;
+  defaultGroomingNotes: string | null;
+  defaultStylingNotes: string | null;
+  temperament: string | null;
+  lastBookedAt: string | null;
+  stylingReferenceUrls: string[];
+};
+
+export type AdminCustomerDetailMessage = {
+  id: string;
+  bookingId: string;
+  messageType: string;
+  channel: string;
+  status: string;
+  recipient: string;
+  preparedAt: string;
+  sentAt: string | null;
+  content: string;
+};
+
+export type AdminCustomerDetailSupportCase = {
+  id: string;
+  bookingId: string | null;
+  category: string;
+  status: string;
+  priority: string;
+  summary: string;
+  resolution: string | null;
+  openedAt: string;
+  resolvedAt: string | null;
+};
+
+export type AdminCustomerTimelineItem = {
+  id: string;
+  kind: "booking" | "message" | "support";
+  at: string;
+  title: string;
+  description: string;
+  bookingId: string | null;
+  tone: "default" | "warning" | "success" | "danger";
+};
+
+export type AdminCustomerDetail = {
+  customer: {
+    id: string;
+    name: string;
+    phoneFull: string;
+    phoneMasked: string;
+    city: string | null;
+    createdAt: string;
+    lifecycleStage: AdminCustomerLifecycleStage;
+    lifecycleLabel: string;
+    lifecycleReason: string;
+    riskFlags: AdminCustomerRiskFlag[];
+  };
+  overview: {
+    totalBookings: number;
+    completedBookings: number;
+    upcomingConfirmedBookings: number;
+    cancelledOrExpiredBookings: number;
+    totalSpent: number;
+    refundedAmount: number;
+    netValue: number;
+    averageOrderValue: number;
+    firstBookingAt: string | null;
+    lastCompletedAt: string | null;
+    nextBookingAt: string | null;
+    expectedNextBookingAt: string | null;
+    expectedCycleDays: number | null;
+    daysOverdue: number | null;
+    lastMessageAt: string | null;
+    openCaseCount: number;
+  };
+  loyalty: {
+    completedCount: number;
+    freeUnlocked: boolean;
+    unlockedAt: string | null;
+    lastRedeemedAt: string | null;
+  };
+  latestAddress: {
+    serviceAddress: string | null;
+    serviceLandmark: string | null;
+    servicePincode: string | null;
+    serviceLocationUrl: string | null;
+    addressUpdatedAt: string | null;
+  } | null;
+  pets: AdminCustomerDetailPet[];
+  bookingHistory: AdminCustomerDetailBookingRow[];
+  communications: AdminCustomerDetailMessage[];
+  supportCases: AdminCustomerDetailSupportCase[];
+  timeline: AdminCustomerTimelineItem[];
+};
+
+export type AdminCustomerDetailResponse = {
+  customer: AdminCustomerDetail;
+};
+
 export type AdminCompleteBookingResponse = {
   success: true;
   bookingId: string;

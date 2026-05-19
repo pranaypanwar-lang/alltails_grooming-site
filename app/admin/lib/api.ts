@@ -16,9 +16,12 @@ import type {
   AdminPaymentLinkResponse,
   AdminCustomerMessageResponse,
   AdminBookingCreateMetaResponse,
+  AdminCustomerDetailResponse,
   AdminSavedPetsResponse,
   AdminManualBookingPayload,
   AdminManualBookingResponse,
+  AdminCustomersFilters,
+  AdminCustomersResponse,
   AdminDigestHistoryResponse,
   AdminDispatchAlertHistoryResponse,
   AdminBookingSopUpdateResponse,
@@ -104,6 +107,41 @@ export async function fetchAdminBookingDetail(bookingId: string): Promise<AdminB
   const res = await fetch(`/api/admin/bookings/${bookingId}`, { cache: "no-store" });
   if (!res.ok) throw new Error("Failed to load booking details");
   return res.json();
+}
+
+export async function fetchAdminCustomers(params: {
+  filters: AdminCustomersFilters;
+  page: number;
+  pageSize: number;
+}): Promise<AdminCustomersResponse> {
+  const { filters, page, pageSize } = params;
+
+  const res = await fetch(
+    `/api/admin/customers?${toQueryString({
+      page,
+      pageSize,
+      search: filters.search.trim(),
+      city: filters.city,
+      lifecycleStage: filters.lifecycleStage,
+      loyaltyState: filters.loyaltyState,
+      hasUpcomingBooking: filters.hasUpcomingBooking,
+      hasOpenSupportCase: filters.hasOpenSupportCase,
+      isAtRisk: filters.isAtRisk,
+      sortBy: filters.sortBy,
+      sortOrder: filters.sortOrder,
+    })}`,
+    { cache: "no-store" }
+  );
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(getApiErrorMessage(data, "Failed to load customers"));
+  return data;
+}
+
+export async function fetchAdminCustomerDetail(customerId: string): Promise<AdminCustomerDetailResponse> {
+  const res = await fetch(`/api/admin/customers/${customerId}`, { cache: "no-store" });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(getApiErrorMessage(data, "Failed to load customer details"));
+  return data;
 }
 
 export async function fetchAdminBookingCreateMeta(): Promise<AdminBookingCreateMetaResponse> {

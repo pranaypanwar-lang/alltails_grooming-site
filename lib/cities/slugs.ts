@@ -30,6 +30,13 @@ const SLUG_TO_CITY: Record<string, SupportedCity> = {
   patiala: "Patiala",
 };
 
+const CITY_INPUT_TO_CANONICAL: Record<string, SupportedCity> = {
+  ...Object.fromEntries(
+    SUPPORTED_CITIES.map((city) => [city.trim().toLowerCase(), city] as const)
+  ),
+  ...SLUG_TO_CITY,
+};
+
 /**
  * Resolve a URL slug (case-insensitive) to a canonical city name, or
  * undefined if the slug isn't recognised. Use for prefilling forms and
@@ -39,6 +46,15 @@ export function slugToCity(slug: string | null | undefined): SupportedCity | und
   if (!slug) return undefined;
   const key = slug.trim().toLowerCase();
   return SLUG_TO_CITY[key];
+}
+
+export function normalizeCityName(value: string | null | undefined): SupportedCity | undefined {
+  if (!value) return undefined;
+
+  const trimmed = value.trim().toLowerCase();
+  if (!trimmed) return undefined;
+
+  return CITY_INPUT_TO_CANONICAL[trimmed] ?? CITY_INPUT_TO_CANONICAL[trimmed.replace(/\s+/g, "-")];
 }
 
 /**

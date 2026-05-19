@@ -8,13 +8,17 @@ import {
   formatBookingWindowLabel,
   localIstDateTimeToUtc,
 } from "../../../../lib/booking/window";
+import { normalizeCityName } from "../../../../lib/cities/slugs";
 import {
   createAdminManualBooking,
+  fetchAdminCustomers,
   fetchAdminBookingCreateMeta,
   fetchAdminSavedPetsByPhone,
 } from "../../lib/api";
 import type {
   AdminBookingCreateMetaResponse,
+  AdminCustomerListRow,
+  AdminCustomersFilters,
   AdminManualBookingPayload,
   AdminManualBookingResponse,
   AdminManualBookingSource,
@@ -84,6 +88,10 @@ export default function AdminNewBookingPage() {
   const [metaError, setMetaError] = useState("");
 
   const [name, setName] = useState("");
+  const [customerSearch, setCustomerSearch] = useState("");
+  const [customerSuggestions, setCustomerSuggestions] = useState<AdminCustomerListRow[]>([]);
+  const [customerSuggestionsLoading, setCustomerSuggestionsLoading] = useState(false);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
   const [serviceAreaSlug, setServiceAreaSlug] = useState("");
@@ -119,6 +127,18 @@ export default function AdminNewBookingPage() {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [success, setSuccess] = useState<AdminManualBookingResponse | null>(null);
 
+  const suggestionFilters: AdminCustomersFilters = {
+    search: customerSearch,
+    city: "",
+    lifecycleStage: "",
+    loyaltyState: "",
+    hasUpcomingBooking: false,
+    hasOpenSupportCase: false,
+    isAtRisk: false,
+    sortBy: "name",
+    sortOrder: "asc",
+  };
+
   useEffect(() => {
     const loadMeta = async () => {
       setMetaLoading(true);
@@ -135,6 +155,41 @@ export default function AdminNewBookingPage() {
 
     void loadMeta();
   }, []);
+
+  useEffect(() => {
+    if (customerSearch.trim().length < 2) {
+      setCustomerSuggestions([]);
+      setCustomerSuggestionsLoading(false);
+      return;
+    }
+
+    let active = true;
+    setCustomerSuggestionsLoading(true);
+    const timeoutId = window.setTimeout(() => {
+      void fetchAdminCustomers({
+        filters: suggestionFilters,
+        page: 1,
+        pageSize: 6,
+      })
+        .then((data) => {
+          if (!active) return;
+          setCustomerSuggestions(data.customers);
+        })
+        .catch(() => {
+          if (!active) return;
+          setCustomerSuggestions([]);
+        })
+        .finally(() => {
+          if (!active) return;
+          setCustomerSuggestionsLoading(false);
+        });
+    }, 180);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timeoutId);
+    };
+  }, [customerSearch]);
 
   const selectedWindow = useMemo(
     () => bookingWindows.find((window) => window.bookingWindowId === selectedBookingWindowId) ?? null,
@@ -175,6 +230,9 @@ export default function AdminNewBookingPage() {
     !submitLoading;
 
   const resetBookingState = () => {
+    setCustomerSearch("");
+    setCustomerSuggestions([]);
+    setSelectedCustomerId(null);
     setName("");
     setPhone("");
     setCity("");
@@ -384,6 +442,70 @@ export default function AdminNewBookingPage() {
     }
   };
 
+  const applyCustomerAutofill = async (customer: AdminCustomerListRow) => {
+    setSelectedCustomerId(customer.id);
+    setCustomerSearch(customer.name);
+    setCustomerSuggestions([]);
+    setName(customer.name);
+    setPhone(customer.phoneFull);
+
+    const canonicalCity = normalizeCityName(customer.city ?? "") ?? customer.city ?? "";
+    const matchedArea =
+      meta?.serviceAreas.find(
+        (area) => area.name.trim().toLowerCase() === canonicalCity.trim().toLowerCase()
+      ) ?? null;
+
+    setCity(matchedArea?.name ?? canonicalCity);
+    setServiceAreaSlug(matchedArea?.slug ?? "");
+    setBookingWindows([]);
+    setAvailabilityError("");
+    setSelectedBookingWindowId("");
+
+    try {
+      setSavedPetsLoading(true);
+      setSavedPetsError("");
+      const data = await fetchAdminSavedPetsByPhone(customer.phoneFull);
+      setSavedPets(data.pets);
+      setSavedPetsLookupPhone(customer.phoneFull);
+
+      if (data.savedAddress) {
+        setServiceAddress(data.savedAddress.serviceAddress);
+        setServiceLandmark(data.savedAddress.serviceLandmark);
+        setServicePincode(data.savedAddress.servicePincode ?? "");
+        setServiceLocationUrl(data.savedAddress.serviceLocationUrl ?? "");
+        setAddressAutoFilled(true);
+      } else {
+        setAddressAutoFilled(false);
+      }
+
+      if (data.pets.length > 0) {
+        setPets(
+          data.pets.map((pet) =>
+            makePetDraft({
+              sourcePetId: pet.petId,
+              name: pet.name ?? "",
+              breed: pet.breed,
+              groomingNotes: pet.defaultGroomingNotes ?? "",
+              stylingNotes: pet.defaultStylingNotes ?? "",
+            })
+          )
+        );
+      } else {
+        setPets([makePetDraft()]);
+      }
+
+      if (!data.found || data.pets.length === 0) {
+        setSavedPetsError("No saved companions found for this customer yet.");
+      }
+    } catch (error) {
+      setSavedPets([]);
+      setPets([makePetDraft()]);
+      setSavedPetsError(error instanceof Error ? error.message : "Failed to load saved pets.");
+    } finally {
+      setSavedPetsLoading(false);
+    }
+  };
+
   const loadAvailability = async () => {
     if (!canLoadAvailability) {
       setAvailabilityError("Select a city, date, and valid pet details first.");
@@ -568,12 +690,60 @@ export default function AdminNewBookingPage() {
           <div className="space-y-5">
             <section className="rounded-[28px] border border-[#ece5ff] bg-white p-5 shadow-[0_18px_48px_rgba(73,44,120,0.06)]">
               <div className="text-[18px] font-black tracking-[-0.02em] text-[#1f1f2c]">Customer</div>
+              <div className="mt-4 rounded-[22px] border border-[#ece5ff] bg-[#fcfbff] p-4">
+                <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Find existing customer</div>
+                <input
+                  value={customerSearch}
+                  onChange={(event) => {
+                    setCustomerSearch(event.target.value);
+                    setSelectedCustomerId(null);
+                  }}
+                  className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
+                  placeholder="Search by customer name, phone, pet name, or breed"
+                />
+                {customerSuggestionsLoading ? (
+                  <div className="mt-2 text-[12px] text-[#8a90a6]">Searching customers…</div>
+                ) : null}
+                {customerSuggestions.length > 0 ? (
+                  <div className="mt-3 space-y-2">
+                    {customerSuggestions.map((customer) => (
+                      <button
+                        key={customer.id}
+                        type="button"
+                        onClick={() => void applyCustomerAutofill(customer)}
+                        className={`block w-full rounded-[16px] border px-4 py-3 text-left transition-colors ${
+                          selectedCustomerId === customer.id
+                            ? "border-[#6d5bd0] bg-[#f6f3ff]"
+                            : "border-[#ece5ff] bg-white hover:bg-[#f9f7ff]"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <div className="text-[13px] font-semibold text-[#2a2346]">{customer.name}</div>
+                            <div className="mt-1 text-[12px] text-[#6b7280]">{customer.phoneFull} • {customer.city ?? "No city"}</div>
+                            <div className="mt-1 text-[12px] text-[#8a90a6]">
+                              {(customer.pets.names.join(", ") || "Unnamed pets")} • {customer.pets.breeds.join(", ")}
+                            </div>
+                          </div>
+                          <div className="rounded-full bg-[#eef2ff] px-2.5 py-1 text-[11px] font-semibold text-[#4338ca]">
+                            {customer.lifecycleLabel}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+
               <div className="mt-4 grid gap-4 md:grid-cols-2">
                 <label className="block">
                   <div className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Customer name</div>
                   <input
                     value={name}
-                    onChange={(event) => setName(event.target.value)}
+                    onChange={(event) => {
+                      setName(event.target.value);
+                      setSelectedCustomerId(null);
+                    }}
                     className="h-[46px] w-full rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
                     placeholder="Pet parent name"
                   />
@@ -583,7 +753,10 @@ export default function AdminNewBookingPage() {
                   <div className="flex gap-2">
                     <input
                       value={phone}
-                      onChange={(event) => setPhone(event.target.value)}
+                      onChange={(event) => {
+                        setPhone(event.target.value);
+                        setSelectedCustomerId(null);
+                      }}
                       className="h-[46px] min-w-0 flex-1 rounded-[14px] border border-[#ddd1fb] px-4 text-[14px] text-[#2a2346] outline-none transition-colors focus:border-[#6d5bd0]"
                       placeholder="9876543210"
                     />
