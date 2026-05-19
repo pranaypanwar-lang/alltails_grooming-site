@@ -48,6 +48,9 @@ type Props = {
   onPageChange: (page: number) => void;
   onRowClick: (row: AdminBookingListItem) => void;
   onActionClick: (row: AdminBookingListItem, action: AdminBookingActionId) => void;
+  selectedIds?: Set<string>;
+  onSelectToggle?: (id: string) => void;
+  onSelectAll?: (ids: string[]) => void;
 };
 
 const COLS = [
@@ -78,6 +81,9 @@ export function AdminBookingsTable({
   onPageChange,
   onRowClick,
   onActionClick,
+  selectedIds,
+  onSelectToggle,
+  onSelectAll,
 }: Props) {
   if (isLoading) {
     return (
@@ -112,6 +118,16 @@ export function AdminBookingsTable({
         <table className="min-w-[1480px] w-full">
           <thead className="bg-[#faf9fd]">
             <tr>
+              {onSelectToggle && (
+                <th className="w-10 px-3 py-3">
+                  <input
+                    type="checkbox"
+                    className="accent-[#6d5bd0] w-4 h-4 cursor-pointer"
+                    checked={selectedIds ? rows.length > 0 && rows.every((r) => selectedIds.has(r.id)) : false}
+                    onChange={() => onSelectAll?.(rows.map((r) => r.id))}
+                  />
+                </th>
+              )}
               {COLS.map((col) => (
                 <th
                   key={col}
@@ -126,8 +142,20 @@ export function AdminBookingsTable({
             {rows.map((row) => (
               <tr
                 key={row.id}
-                className="border-t border-[#f0ecfa] hover:bg-[#fcfbff] transition-colors"
+                className={`border-t border-[#f0ecfa] transition-colors ${
+                  selectedIds?.has(row.id) ? "bg-[#f6f4fd]" : "hover:bg-[#fcfbff]"
+                }`}
               >
+                {onSelectToggle && (
+                  <td className="px-3 py-3.5" onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      className="accent-[#6d5bd0] w-4 h-4 cursor-pointer"
+                      checked={selectedIds?.has(row.id) ?? false}
+                      onChange={() => onSelectToggle(row.id)}
+                    />
+                  </td>
+                )}
                 <td
                   className="px-4 py-3.5 cursor-pointer hover:text-[#6d5bd0]"
                   onClick={() => onRowClick(row)}

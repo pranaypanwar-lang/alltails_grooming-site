@@ -147,13 +147,34 @@ function DispatchCard({
           Details
         </button>
 
-        {card.status === "confirmed" && (
+        {/* Promoted quick-actions: most common dispatch operations */}
+        {(card.availableActions.includes("assign_team") || card.availableActions.includes("reassign_team")) && (
+          <button
+            type="button"
+            onClick={() => onActionClick(card.availableActions.includes("reassign_team") ? "reassign_team" : "assign_team")}
+            className="rounded-[10px] border border-[#ddd1fb] bg-[#f6f4fd] px-3 py-1.5 text-[11px] font-semibold text-[#6d5bd0] hover:bg-[#ede9fe] transition-colors"
+          >
+            Assign
+          </button>
+        )}
+
+        {card.availableActions.includes("mark_en_route") && (
+          <button
+            type="button"
+            onClick={() => onActionClick("mark_en_route")}
+            className="rounded-[10px] border border-[#fde7b0] bg-[#fffaf0] px-3 py-1.5 text-[11px] font-semibold text-[#b45309] hover:bg-[#fff8eb] transition-colors"
+          >
+            En Route
+          </button>
+        )}
+
+        {card.status === "confirmed" && card.urgency.sameDay && (
           <button
             type="button"
             onClick={() => onActionClick("send_same_day_alert")}
             className="rounded-[10px] border border-[#fde7b0] bg-[#fffaf0] px-3 py-1.5 text-[11px] font-semibold text-[#b45309] hover:bg-[#fff8eb] transition-colors"
           >
-            Send alert
+            Alert
           </button>
         )}
 

@@ -34,6 +34,75 @@ function toneClass(tone: "default" | "warning" | "success" | "danger") {
   return "bg-[#eef2ff] text-[#4338ca]";
 }
 
+function NextBestAction({ data }: { data: AdminCustomerDetail }) {
+  const { daysOverdue, openCaseCount, nextBookingAt } = data.overview;
+  const { lifecycleStage } = data.customer;
+
+  if (lifecycleStage === "support_hold" || openCaseCount > 0) {
+    return (
+      <section className="rounded-[22px] border border-[#fecaca] bg-[#fff5f5] p-4 shadow-[0_14px_34px_rgba(73,44,120,0.05)]">
+        <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#dc2626]">Next best action</div>
+        <div className="mt-2 text-[14px] font-semibold text-[#991b1b]">Resolve open support case first</div>
+        <div className="mt-1 text-[12px] text-[#b91c1c]">{openCaseCount} open case{openCaseCount > 1 ? "s" : ""} — this customer cannot rebook until resolved</div>
+        <Link href="/admin/support" className="mt-3 inline-flex rounded-[10px] bg-[#dc2626] px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-[#b91c1c] transition-colors">
+          Go to Support →
+        </Link>
+      </section>
+    );
+  }
+
+  if (nextBookingAt) {
+    return (
+      <section className="rounded-[22px] border border-[#d1fae5] bg-[#f0fdf4] p-4 shadow-[0_14px_34px_rgba(73,44,120,0.05)]">
+        <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#15803d]">Next best action</div>
+        <div className="mt-2 text-[14px] font-semibold text-[#14532d]">Upcoming booking confirmed</div>
+        <div className="mt-1 text-[12px] text-[#166534]">No action needed — customer has an upcoming visit scheduled</div>
+      </section>
+    );
+  }
+
+  if (daysOverdue !== null && daysOverdue >= 1 && daysOverdue <= 20) {
+    return (
+      <section className="rounded-[22px] border border-[#dbeafe] bg-[#eff6ff] p-4 shadow-[0_14px_34px_rgba(73,44,120,0.05)]">
+        <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#2563eb]">Next best action</div>
+        <div className="mt-2 text-[14px] font-semibold text-[#1e3a5f]">Send a care tip message</div>
+        <div className="mt-1 text-[12px] text-[#1d4ed8]">Last visit was {daysOverdue} days ago — keep the relationship warm</div>
+        <Link href="/admin/campaigns" className="mt-3 inline-flex rounded-[10px] bg-[#2563eb] px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-[#1d4ed8] transition-colors">
+          Prepare message →
+        </Link>
+      </section>
+    );
+  }
+
+  if (daysOverdue !== null && daysOverdue >= 21 && daysOverdue <= 45) {
+    return (
+      <section className="rounded-[22px] border border-[#fde68a] bg-[#fffbeb] p-4 shadow-[0_14px_34px_rgba(73,44,120,0.05)]">
+        <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#d97706]">Next best action</div>
+        <div className="mt-2 text-[14px] font-semibold text-[#78350f]">Due for rebooking</div>
+        <div className="mt-1 text-[12px] text-[#92400e]">Last visit {daysOverdue} days ago — send a rebooking reminder now</div>
+        <Link href="/admin/campaigns" className="mt-3 inline-flex rounded-[10px] bg-[#d97706] px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-[#b45309] transition-colors">
+          Send reminder →
+        </Link>
+      </section>
+    );
+  }
+
+  if (daysOverdue !== null && daysOverdue > 45) {
+    return (
+      <section className="rounded-[22px] border border-[#fecaca] bg-[#fff5f5] p-4 shadow-[0_14px_34px_rgba(73,44,120,0.05)]">
+        <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#dc2626]">Next best action</div>
+        <div className="mt-2 text-[14px] font-semibold text-[#991b1b]">At risk of churn</div>
+        <div className="mt-1 text-[12px] text-[#b91c1c]">Last visit {daysOverdue} days ago — consider a win-back offer with a discount</div>
+        <Link href="/admin/coupons" className="mt-3 inline-flex rounded-[10px] bg-[#dc2626] px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-[#b91c1c] transition-colors">
+          Create offer →
+        </Link>
+      </section>
+    );
+  }
+
+  return null;
+}
+
 export default function AdminCustomerDetailPage() {
   const params = useParams<{ id: string }>();
   const customerId = typeof params?.id === "string" ? params.id : "";
@@ -238,6 +307,9 @@ export default function AdminCustomerDetailPage() {
           </div>
 
           <div className="space-y-5">
+            {/* Next best action card */}
+            <NextBestAction data={data} />
+
             <section className="rounded-[22px] border border-[#ece5ff] bg-white p-5 shadow-[0_14px_34px_rgba(73,44,120,0.05)]">
               <h2 className="text-[18px] font-black tracking-[-0.02em] text-[#1f1f2c]">Signals</h2>
               <div className="mt-4 flex flex-wrap gap-2">
@@ -315,19 +387,30 @@ export default function AdminCustomerDetailPage() {
                 </div>
 
                 <div>
-                  <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#8a90a6]">Recent messages</div>
-                  <div className="mt-2 space-y-2">
+                  <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#8a90a6]">Message thread</div>
+                  <div className="mt-3 space-y-2">
                     {data.communications.length === 0 ? (
                       <div className="text-[13px] text-[#8a90a6]">No message history.</div>
                     ) : (
-                      data.communications.slice(0, 6).map((message) => (
-                        <div key={message.id} className="rounded-[14px] border border-[#f0ecfa] p-3">
-                          <div className="text-[13px] font-semibold text-[#2a2346]">{message.messageType.replace(/_/g, " ")}</div>
-                          <div className="mt-1 text-[12px] text-[#6b7280]">
-                            {message.channel} • {message.status} • {formatDate(message.sentAt ?? message.preparedAt)}
+                      data.communications.slice(0, 8).map((message) => {
+                        const statusIcon = message.status === "sent" ? "✓" : message.status === "failed" ? "✗" : "…";
+                        const statusColor = message.status === "sent" ? "text-[#15803d]" : message.status === "failed" ? "text-[#dc2626]" : "text-[#9ca3af]";
+                        return (
+                          <div key={message.id} className="flex flex-col items-end gap-0.5">
+                            <div className="max-w-[90%] rounded-[14px] rounded-tr-[4px] bg-[#6d5bd0] px-3 py-2.5">
+                              <div className="text-[12px] font-semibold text-white">
+                                {message.messageType.replace(/_/g, " ")}
+                              </div>
+                              <div className="mt-0.5 text-[11px] text-white/70">
+                                {message.channel.toUpperCase()}
+                              </div>
+                            </div>
+                            <div className={`text-[10px] ${statusColor}`}>
+                              {statusIcon} {message.status} · {formatDate(message.sentAt ?? message.preparedAt)}
+                            </div>
                           </div>
-                        </div>
-                      ))
+                        );
+                      })
                     )}
                   </div>
                 </div>

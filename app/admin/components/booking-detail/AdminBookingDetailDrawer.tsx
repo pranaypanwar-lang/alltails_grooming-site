@@ -62,6 +62,93 @@ function Thumb({ src, alt }: { src: string; alt: string }) {
   );
 }
 
+type StepState = "complete" | "current" | "pending";
+
+const STEPS = [
+  { key: "received", label: "Received" },
+  { key: "assigned", label: "Assigned" },
+  { key: "en_route", label: "En Route" },
+  { key: "arrived", label: "Arrived" },
+  { key: "sop_done", label: "SOP Done" },
+  { key: "completed", label: "Completed" },
+] as const;
+
+function getStepState(key: string, booking: AdminBookingDetail): StepState {
+  const ds = booking.dispatchState ?? "unassigned";
+  const status = booking.status;
+  const sopAllDone = booking.sopSteps.length > 0 && booking.sopSteps.every((s) => s.status === "completed");
+
+  const order = ["received", "assigned", "en_route", "arrived", "sop_done", "completed"];
+
+  const currentKey = (() => {
+    if (status === "completed") return "completed";
+    if (sopAllDone) return "sop_done";
+    if (ds === "started") return "arrived";
+    if (ds === "en_route") return "en_route";
+    if (booking.groomerMember !== null) return "assigned";
+    return "received";
+  })();
+
+  const keyIdx = order.indexOf(key);
+  const curIdx = order.indexOf(currentKey);
+
+  if (keyIdx < curIdx) return "complete";
+  if (keyIdx === curIdx) return "current";
+  return "pending";
+}
+
+function BookingPipelineStepper({ booking }: { booking: AdminBookingDetail }) {
+  return (
+    <div className="rounded-[20px] border border-[#ece5ff] bg-[#faf9fd] px-4 py-3">
+      <div className="flex items-center gap-0">
+        {STEPS.map(({ key, label }, idx) => {
+          const state = getStepState(key, booking);
+          return (
+            <div key={key} className="flex flex-1 items-center">
+              <div className="flex flex-col items-center gap-1 flex-1">
+                {/* Circle */}
+                <div
+                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-black transition-all ${
+                    state === "complete"
+                      ? "bg-[#6d5bd0] text-white"
+                      : state === "current"
+                      ? "bg-[#6d5bd0] text-white ring-4 ring-[#ede9fe]"
+                      : "border-2 border-[#ddd1fb] bg-white text-[#c4b8f0]"
+                  }`}
+                >
+                  {state === "complete" ? "✓" : idx + 1}
+                </div>
+                {/* Label */}
+                <span
+                  className={`text-[9px] font-semibold leading-tight text-center ${
+                    state === "complete"
+                      ? "text-[#6d5bd0]"
+                      : state === "current"
+                      ? "text-[#1f1f2c]"
+                      : "text-[#c4b8f0]"
+                  }`}
+                >
+                  {label}
+                </span>
+              </div>
+              {/* Connector line */}
+              {idx < STEPS.length - 1 && (
+                <div
+                  className={`h-[2px] w-full -mt-4 ${
+                    getStepState(STEPS[idx + 1].key, booking) !== "pending" || state === "complete"
+                      ? "bg-[#6d5bd0]"
+                      : "bg-[#ede9fe]"
+                  }`}
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 type Props = {
   isOpen: boolean;
   booking: AdminBookingDetail | null;
@@ -123,6 +210,9 @@ export function AdminBookingDetailDrawer({
 
           {booking && !isLoading && (
             <div className="space-y-4 p-5">
+              {/* Pipeline stepper */}
+              <BookingPipelineStepper booking={booking} />
+
               {/* Status + actions */}
               <Section title="Booking">
                 <div className="flex flex-wrap items-center gap-2 mb-3">

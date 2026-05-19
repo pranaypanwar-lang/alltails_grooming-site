@@ -185,7 +185,50 @@ export default function AdminBookingsPage() {
     }>;
   } | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkLoading, setBulkLoading] = useState(false);
   const { showToast } = useAdminToast();
+
+  const handleSelectToggle = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleSelectAll = (ids: string[]) => {
+    setSelectedIds((prev) => {
+      const allSelected = ids.every((id) => prev.has(id));
+      if (allSelected) return new Set();
+      return new Set(ids);
+    });
+  };
+
+  const handleBulkReminder = async () => {
+    if (selectedIds.size === 0) return;
+    setBulkLoading(true);
+    const ids = Array.from(selectedIds);
+    const results = await Promise.allSettled(
+      ids.map((bookingId) =>
+        prepareAdminCustomerMessage(bookingId, {
+          messageType: "night_before_reminder",
+        })
+      )
+    );
+    const succeeded = results.filter((r) => r.status === "fulfilled").length;
+    const failed = results.filter((r) => r.status === "rejected").length;
+    setBulkLoading(false);
+    setSelectedIds(new Set());
+    showToast(
+      failed > 0
+        ? `${succeeded} reminder${succeeded !== 1 ? "s" : ""} sent, ${failed} failed`
+        : `${succeeded} reminder${succeeded !== 1 ? "s" : ""} prepared`,
+      failed === 0
+    );
+    void load(filters, page, true);
+  };
 
   const sameDayAlertConfirm = useAdminConfirmAction<{ bookingId: string }>({
     title: "Send same-day alert",
@@ -728,6 +771,31 @@ export default function AdminBookingsPage() {
           onReset={() => applyFilters(DEFAULT_FILTERS)}
         />
 
+        {/* Bulk action toolbar */}
+        {selectedIds.size > 0 && (
+          <div className="flex items-center gap-3 rounded-[16px] border border-[#ddd1fb] bg-[#f6f4fd] px-4 py-2.5 shadow-[0_4px_12px_rgba(109,91,208,0.12)]">
+            <span className="text-[13px] font-semibold text-[#6d5bd0]">
+              {selectedIds.size} selected
+            </span>
+            <div className="h-4 w-px bg-[#ddd1fb]" />
+            <button
+              type="button"
+              disabled={bulkLoading}
+              onClick={() => void handleBulkReminder()}
+              className="rounded-[10px] bg-[#6d5bd0] px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-[#5b4ab5] disabled:opacity-50 transition-colors"
+            >
+              {bulkLoading ? "Sending…" : "Send reminder to all"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedIds(new Set())}
+              className="ml-auto rounded-[10px] border border-[#ddd1fb] px-3 py-1.5 text-[12px] font-semibold text-[#7c8499] hover:bg-white transition-colors"
+            >
+              Clear selection
+            </button>
+          </div>
+        )}
+
         <AdminBookingsTable
           rows={bookings}
           isLoading={isLoading}
@@ -739,6 +807,9 @@ export default function AdminBookingsPage() {
           onPageChange={handlePageChange}
           onRowClick={(row) => openDrawer(row.id)}
           onActionClick={handleTableAction}
+          selectedIds={selectedIds}
+          onSelectToggle={handleSelectToggle}
+          onSelectAll={handleSelectAll}
         />
       </div>
 

@@ -12,6 +12,84 @@ import type {
 import { AdminPageHeader } from "../components/common/AdminPageHeader";
 import { AdminSummaryBar } from "../components/common/AdminSummaryBar";
 
+const FUNNEL_STAGES: {
+  key: AdminCustomerLifecycleStage;
+  label: string;
+  summaryKey: keyof AdminCustomersSummary;
+  color: string;
+  activeColor: string;
+}[] = [
+  { key: "first_time_customer", label: "First-time", summaryKey: "firstTimeCount", color: "bg-[#dbeafe]", activeColor: "bg-[#2563eb]" },
+  { key: "repeat_customer", label: "Repeat", summaryKey: "repeatCount", color: "bg-[#d1fae5]", activeColor: "bg-[#059669]" },
+  { key: "loyal_customer", label: "Loyal", summaryKey: "loyalCount", color: "bg-[#f5f3ff]", activeColor: "bg-[#6d5bd0]" },
+  { key: "at_risk", label: "At Risk", summaryKey: "atRiskCount", color: "bg-[#fef3c7]", activeColor: "bg-[#d97706]" },
+  { key: "support_hold", label: "Support Hold", summaryKey: "supportHoldCount", color: "bg-[#fee2e2]", activeColor: "bg-[#dc2626]" },
+];
+
+function LifecycleFunnel({
+  summary,
+  activeStage,
+  onStageClick,
+}: {
+  summary: AdminCustomersSummary;
+  activeStage: AdminCustomerLifecycleStage | "";
+  onStageClick: (stage: AdminCustomerLifecycleStage) => void;
+}) {
+  const total = Math.max(
+    FUNNEL_STAGES.reduce((s, f) => s + (summary[f.summaryKey] as number), 0),
+    1
+  );
+
+  return (
+    <div className="mb-5 rounded-[22px] border border-[#ece5ff] bg-white p-5 shadow-[0_14px_34px_rgba(73,44,120,0.05)]">
+      <div className="mb-3 flex items-center justify-between">
+        <div className="text-[14px] font-black tracking-[-0.02em] text-[#1f1f2c]">Customer Lifecycle</div>
+        {activeStage && (
+          <button
+            type="button"
+            onClick={() => onStageClick(activeStage)}
+            className="text-[11px] font-semibold text-[#6d5bd0] hover:underline"
+          >
+            Clear filter
+          </button>
+        )}
+      </div>
+      <div className="flex gap-3">
+        {FUNNEL_STAGES.map((stage, idx) => {
+          const count = summary[stage.summaryKey] as number;
+          const widthPct = Math.max((count / total) * 100, 4);
+          const isActive = activeStage === stage.key;
+          return (
+            <button
+              key={stage.key}
+              type="button"
+              onClick={() => onStageClick(stage.key)}
+              className={`group flex flex-col gap-2 rounded-[14px] p-3 text-left transition-all hover:shadow-md ${
+                isActive ? `${stage.activeColor} text-white shadow-md` : "border border-[#f0ecfa] bg-[#faf9fd] hover:bg-white"
+              }`}
+              style={{ flex: `${widthPct} 0 0`, minWidth: 80 }}
+            >
+              <div className={`text-[22px] font-black tracking-[-0.03em] ${isActive ? "text-white" : "text-[#1f1f2c]"}`}>
+                {count}
+              </div>
+              <div className={`text-[11px] font-semibold leading-tight ${isActive ? "text-white/80" : "text-[#7c8499]"}`}>
+                {stage.label}
+              </div>
+              {/* Mini bar */}
+              <div className={`h-1 w-full rounded-full ${isActive ? "bg-white/30" : "bg-[#ece5ff]"}`}>
+                <div
+                  className={`h-1 rounded-full ${isActive ? "bg-white" : stage.color.replace("bg-[", "bg-[")}`}
+                  style={{ width: `${Math.min(widthPct, 100)}%` }}
+                />
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 const DEFAULT_FILTERS: AdminCustomersFilters = {
   search: "",
   city: "",
@@ -125,6 +203,38 @@ export default function AdminCustomersPage() {
             { label: "At risk", value: summary?.atRiskCount ?? "—", tone: "danger" },
           ]}
         />
+
+        {/* Lifecycle funnel */}
+        {summary && (
+          <LifecycleFunnel
+            summary={summary}
+            activeStage={filters.lifecycleStage}
+            onStageClick={(stage) =>
+              applyFilters({ lifecycleStage: filters.lifecycleStage === stage ? "" : stage })
+            }
+          />
+        )}
+
+        {/* Opportunity grabber */}
+        {rows.length > 0 && (() => {
+          const dueCount = rows.filter(
+            (r) => r.bookingSummary.daysOverdue !== null && r.bookingSummary.daysOverdue >= 27 && r.bookingSummary.daysOverdue <= 42
+          ).length;
+          if (dueCount === 0) return null;
+          return (
+            <div className="mb-4 flex items-center justify-between gap-3 rounded-[16px] border border-[#fde68a] bg-[#fffbeb] px-4 py-3">
+              <div className="text-[13px] font-semibold text-[#92400e]">
+                ⚡ {dueCount} customer{dueCount > 1 ? "s" : ""} due for rebooking — last visit 27–42 days ago
+              </div>
+              <Link
+                href="/admin/campaigns"
+                className="shrink-0 rounded-[10px] bg-[#d97706] px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-[#b45309] transition-colors"
+              >
+                Prepare messages →
+              </Link>
+            </div>
+          );
+        })()}
 
         <div className="mb-5 rounded-[22px] border border-[#ece5ff] bg-white p-4 shadow-[0_14px_34px_rgba(73,44,120,0.05)]">
           <div className="grid gap-3 md:grid-cols-4 xl:grid-cols-8">

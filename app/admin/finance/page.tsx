@@ -194,6 +194,7 @@ export default function AdminFinancePage() {
   const [unfreezingPayrollId, setUnfreezingPayrollId] = useState<string | null>(null);
   const [fuelAdjustments, setFuelAdjustments] = useState<FuelAdjustmentRow[]>([]);
   const [fuelAdjustmentsLoading, setFuelAdjustmentsLoading] = useState(true);
+  const [selectedGroomerId, setSelectedGroomerId] = useState<string | null>(null);
   const [adjustmentReviewNotes, setAdjustmentReviewNotes] = useState<Record<string, string>>({});
   const [reviewingAdjustmentId, setReviewingAdjustmentId] = useState<string | null>(null);
   const [settingsMemberId, setSettingsMemberId] = useState("");
@@ -527,6 +528,86 @@ export default function AdminFinancePage() {
         <AdminSummaryCard label="Fuel estimates" value={fuelData ? formatCurrency(fuelData.summary.estimatedFuelCost) : "—"} tone="success" />
         <AdminSummaryCard label="Payroll payable" value={payrollData ? formatCurrency(payrollData.summary.netPayable) : "—"} />
       </div>
+
+      {/* Cash Position Hero */}
+      <section className="overflow-hidden rounded-[22px] border border-[#ece5ff] bg-white shadow-[0_14px_34px_rgba(73,44,120,0.05)]">
+        <div className="flex items-center justify-between border-b border-[#f0ecfa] px-5 py-4">
+          <div>
+            <div className="text-[16px] font-black tracking-[-0.02em] text-[#1f1f2c]">Cash Position</div>
+            <div className="text-[12px] text-[#9ca3af]">
+              Groomers holding cash — collected minus deposited
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => void loadFinance()}
+            className="inline-flex h-9 items-center gap-2 rounded-[14px] border border-[#ddd1fb] px-4 text-[13px] font-semibold text-[#6d5bd0] hover:bg-[#f6f4fd] transition-colors"
+          >
+            <RefreshCw className="h-3.5 w-3.5" />
+            Refresh
+          </button>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-[13px]">
+            <thead>
+              <tr className="border-b border-[#f0ecfa] bg-[#faf9fd]">
+                <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Groomer</th>
+                <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Team</th>
+                <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Cash Collected</th>
+                <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Cash Deposited</th>
+                <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Currently Held</th>
+                <th className="px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Last Activity</th>
+                <th className="px-5 py-3" />
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr><td colSpan={7} className="px-5 py-8 text-center text-[13px] text-[#9ca3af]">Loading…</td></tr>
+              ) : data?.groomers.length ? data.groomers.map((groomer) => {
+                const isUrgent = groomer.cash.held > 2000;
+                const isWarning = groomer.cash.held > 0 && !isUrgent;
+                const latest = groomer.recentLedgerEntries[0];
+                return (
+                  <tr
+                    key={groomer.id}
+                    className={`border-b border-[#f3f0fb] last:border-0 cursor-pointer hover:bg-[#faf9fd] transition-colors ${
+                      isUrgent ? "bg-[#fff5f5]" : isWarning ? "bg-[#fffbeb]" : ""
+                    }`}
+                    onClick={() => setSelectedGroomerId(groomer.id)}
+                  >
+                    <td className="px-5 py-3.5">
+                      <div className="font-semibold text-[#1f1f2c]">{groomer.name}</div>
+                      <div className="text-[11px] text-[#9ca3af]">{groomer.phone ?? "No phone"}</div>
+                    </td>
+                    <td className="px-5 py-3.5 text-[#6b7280]">{groomer.team?.name ?? "—"}</td>
+                    <td className="px-5 py-3.5 text-right text-[#4b5563]">{formatCurrency(groomer.cash.collected)}</td>
+                    <td className="px-5 py-3.5 text-right text-[#4b5563]">{formatCurrency(groomer.cash.deposited)}</td>
+                    <td className="px-5 py-3.5 text-right">
+                      <span className={`font-black text-[15px] ${isUrgent ? "text-[#dc2626]" : isWarning ? "text-[#d97706]" : "text-[#15803d]"}`}>
+                        {formatCurrency(groomer.cash.held)}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3.5 text-[12px] text-[#6b7280]">
+                      {latest ? `${latest.type.replace(/_/g, " ")} · ${formatCurrency(latest.amount)}` : "—"}
+                    </td>
+                    <td className="px-5 py-3.5 text-right">
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setSelectedGroomerId(groomer.id); }}
+                        className="rounded-[10px] border border-[#ddd1fb] px-3 py-1 text-[11px] font-semibold text-[#6d5bd0] hover:bg-[#f6f4fd] transition-colors"
+                      >
+                        View ledger
+                      </button>
+                    </td>
+                  </tr>
+                );
+              }) : (
+                <tr><td colSpan={7} className="px-5 py-8 text-center text-[13px] text-[#9ca3af]">No groomers found.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <section className="overflow-hidden rounded-[8px] border border-gray-200 bg-white">
         <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
@@ -973,6 +1054,79 @@ export default function AdminFinancePage() {
           </form>
         </aside>
       </div>
+
+      {/* Groomer ledger drawer */}
+      {selectedGroomerId && (() => {
+        const groomer = data?.groomers.find((g) => g.id === selectedGroomerId);
+        if (!groomer) return null;
+        const balance = groomer.recentLedgerEntries.reduce((sum, e) => {
+          return e.direction === "credit" ? sum + e.amount : sum - e.amount;
+        }, 0);
+        return (
+          <div className="fixed inset-0 z-[300] flex justify-end">
+            <div className="absolute inset-0 bg-[rgba(17,12,33,0.45)]" onClick={() => setSelectedGroomerId(null)} />
+            <div className="relative flex h-full w-full max-w-[480px] flex-col overflow-hidden border-l border-[#ece5ff] bg-white shadow-[0_20px_60px_rgba(17,12,33,0.18)]">
+              <div className="flex shrink-0 items-center justify-between border-b border-[#f0ecfa] px-5 py-4">
+                <div>
+                  <h2 className="text-[18px] font-black tracking-[-0.03em] text-[#1f1f2c]">{groomer.name}</h2>
+                  <p className="mt-0.5 text-[12px] text-[#7c8499]">{groomer.team?.name ?? "No team"} · {groomer.phone ?? "No phone"}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedGroomerId(null)}
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#ece8f5] text-[#8a90a6] hover:bg-[#f6f4fd] transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-5 space-y-4">
+                {/* Cash snapshot */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="rounded-[16px] border border-[#fde68a] bg-[#fffbeb] p-3 text-center">
+                    <div className="text-[11px] font-semibold text-[#92400e] uppercase tracking-[0.08em]">Held</div>
+                    <div className="mt-1 text-[20px] font-black text-[#d97706]">{formatCurrency(groomer.cash.held)}</div>
+                  </div>
+                  <div className="rounded-[16px] border border-[#ece5ff] bg-white p-3 text-center">
+                    <div className="text-[11px] font-semibold text-[#8a90a6] uppercase tracking-[0.08em]">Collected</div>
+                    <div className="mt-1 text-[20px] font-black text-[#1f1f2c]">{formatCurrency(groomer.cash.collected)}</div>
+                  </div>
+                  <div className="rounded-[16px] border border-[#d1fae5] bg-[#f0fdf4] p-3 text-center">
+                    <div className="text-[11px] font-semibold text-[#15803d] uppercase tracking-[0.08em]">Deposited</div>
+                    <div className="mt-1 text-[20px] font-black text-[#15803d]">{formatCurrency(groomer.cash.deposited)}</div>
+                  </div>
+                </div>
+
+                {/* Recent ledger */}
+                <div className="rounded-[20px] border border-[#ece5ff] bg-white p-4">
+                  <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">Recent ledger entries</div>
+                  {groomer.recentLedgerEntries.length === 0 ? (
+                    <div className="text-[13px] text-[#9ca3af]">No ledger entries yet.</div>
+                  ) : (
+                    <div className="space-y-2">
+                      {groomer.recentLedgerEntries.map((entry, idx) => (
+                        <div key={`${entry.id}-${idx}`} className="flex items-start justify-between gap-3 border-b border-[#f0ecfa] pb-2 last:border-0 last:pb-0">
+                          <div>
+                            <div className="text-[12px] font-semibold text-[#2a2346]">{entry.type.replace(/_/g, " ")}</div>
+                            <div className="text-[11px] text-[#8a90a6]">{entry.description ?? entry.monthBucket}</div>
+                            <div className="text-[11px] text-[#9ca3af]">{new Date(entry.occurredAt).toLocaleDateString("en-IN")}</div>
+                          </div>
+                          <span className={`shrink-0 text-[13px] font-black ${entry.direction === "credit" ? "text-[#15803d]" : "text-[#dc2626]"}`}>
+                            {entry.direction === "credit" ? "+" : "−"}{formatCurrency(entry.amount)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div className="mt-3 flex items-center justify-between border-t border-[#f0ecfa] pt-3">
+                    <span className="text-[11px] font-semibold text-[#8a90a6] uppercase tracking-[0.08em]">Running balance</span>
+                    <span className={`text-[15px] font-black ${balance >= 0 ? "text-[#15803d]" : "text-[#dc2626]"}`}>{formatCurrency(balance)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
