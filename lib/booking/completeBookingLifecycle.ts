@@ -4,6 +4,7 @@ import {
   getMissingRequiredSopEvidenceLabels,
   getMissingRequiredSopLabels,
 } from "./sop";
+
 import { syncCashCollectionLedgerForBooking } from "../finance/groomerLedger";
 import { syncEstimatedFuelTripForBooking } from "../finance/fuelTrips";
 
@@ -60,7 +61,8 @@ export async function completeBookingLifecycle(
     }
 
     const missingSopSteps = getMissingRequiredSopLabels(
-      booking.sopSteps.filter((step) => step.status === "completed").map((step) => step.stepKey)
+      booking.sopSteps.filter((step) => step.status === "completed").map((step) => step.stepKey),
+      booking.service.name
     );
     let hasPaymentCollection = false;
     if (missingSopSteps.length > 0 && !options?.allowMissingRequiredSteps) {
@@ -86,6 +88,7 @@ export async function completeBookingLifecycle(
 
     const missingProofSteps = getMissingRequiredSopEvidenceLabels(booking.sopSteps, {
       hasPaymentCollection,
+      serviceName: booking.service.name,
     });
 
     let completedCountAfter = booking.user.loyaltyCompletedCount;

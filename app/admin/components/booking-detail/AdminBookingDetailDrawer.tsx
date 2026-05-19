@@ -518,6 +518,11 @@ export function AdminBookingDetailDrawer({
                 expectedAmount={booking.financials.finalAmount}
                 paymentCollection={booking.paymentCollection}
                 onRefresh={onRefreshBooking}
+                serviceName={booking.service.name}
+                petName={booking.pets[0]?.name ?? undefined}
+                breed={booking.pets[0]?.breed ?? undefined}
+                groomingNotes={booking.pets[0]?.groomingNotes ?? undefined}
+                stylingNotes={booking.pets[0]?.stylingNotes ?? undefined}
               />
 
               {/* Service + window */}

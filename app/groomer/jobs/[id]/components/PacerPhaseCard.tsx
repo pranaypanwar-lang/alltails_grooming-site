@@ -1,35 +1,7 @@
 "use client";
 
-import { Camera, CheckCircle2, ChevronDown, ChevronRight, Circle, Video } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
-
-function playAlarmBeep() {
-  try {
-    const ctx = new AudioContext();
-    const times = [0, 0.35];
-    for (const t of times) {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.value = 880;
-      osc.type = "sine";
-      gain.gain.setValueAtTime(0.35, ctx.currentTime + t);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.28);
-      osc.start(ctx.currentTime + t);
-      osc.stop(ctx.currentTime + t + 0.3);
-    }
-  } catch {
-    // Web Audio not available
-  }
-  try {
-    if (typeof navigator !== "undefined" && navigator.vibrate) {
-      navigator.vibrate([250, 80, 250]);
-    }
-  } catch {
-    // Vibration not available
-  }
-}
+import { Camera, CheckCircle2, ChevronDown, ChevronRight, Video } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import type { CoachingStep, PacerPhase } from "../../../../../lib/booking/pacerPhases";
 import type { GroomerBookingView } from "../../../../../lib/groomerPortal";
 import { SyncStatusBadge } from "./SyncStatusBadge";
@@ -56,230 +28,292 @@ type Props = {
   onRetrySync: () => void;
 };
 
-function formatTimer(seconds: number) {
-  const safe = Math.max(0, seconds);
-  const m = Math.floor(safe / 60);
-  const s = safe % 60;
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+function fmt(seconds: number) {
+  const s = Math.max(0, seconds);
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
 }
 
-function timerColorClass(secondsRemaining: number, totalSeconds: number): string {
-  if (secondsRemaining <= 0) return "bg-[#fef2f2] text-[#b91c1c] border-[#fecaca]";
-  if (secondsRemaining <= totalSeconds * 0.25) return "bg-[#fffbeb] text-[#b45309] border-[#fde68a]";
-  return "bg-[#f0fdf4] text-[#15803d] border-[#bbf7d0]";
+function playAlarmBeep() {
+  try {
+    const ctx = new AudioContext();
+    for (const t of [0, 0.35]) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 880;
+      osc.type = "sine";
+      gain.gain.setValueAtTime(0.35, ctx.currentTime + t);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.28);
+      osc.start(ctx.currentTime + t);
+      osc.stop(ctx.currentTime + t + 0.3);
+    }
+  } catch { /* ignore */ }
+  try { navigator.vibrate?.([250, 80, 250]); } catch { /* ignore */ }
 }
 
-function timerBarPercent(secondsRemaining: number, totalSeconds: number): number {
-  if (totalSeconds <= 0) return 0;
-  return Math.max(0, Math.min(100, (secondsRemaining / totalSeconds) * 100));
+function timerColor(rem: number, total: number) {
+  if (rem <= 0) return { num: "text-[#f87171]", bar: "bg-[#ef4444]", label: "text-[#f87171]/70" };
+  if (rem <= total * 0.25) return { num: "text-[#fb923c]", bar: "bg-[#f97316]", label: "text-[#fb923c]/70" };
+  return { num: "text-[#4ade80]", bar: "bg-[#22c55e]", label: "text-[#4ade80]/70" };
 }
 
-function timerBarColor(secondsRemaining: number, totalSeconds: number): string {
-  if (secondsRemaining <= 0) return "bg-[#ef4444]";
-  if (secondsRemaining <= totalSeconds * 0.25) return "bg-[#f59e0b]";
-  return "bg-[#16a34a]";
-}
+// Groomer guide — collapsible coaching step accordion inside the focus card
+function GuideAccordion({ steps, mode }: { steps: CoachingStep[]; mode: "simple" | "hindi" }) {
+  const [openKey, setOpenKey] = useState<string | null>(null);
 
-function CoachingStepCard({
-  step,
-  mode,
-}: {
-  step: CoachingStep;
-  mode: "simple" | "hindi";
-}) {
-  const [open, setOpen] = useState(false);
-  const label = mode === "simple" ? step.label : step.labelHindi;
-  const howTo = mode === "simple" ? step.howTo : step.howToHindi;
-  const avoid = mode === "simple" ? step.avoid : step.avoidHindi;
-  const doneSign = mode === "simple" ? step.doneSign : step.doneSignHindi;
-  const nervousNote = mode === "simple" ? step.nervousNote : step.nervousNoteHindi;
-  const flagNote = mode === "simple" ? step.flagNote : step.flagNoteHindi;
+  if (!steps.length) return null;
 
   return (
-    <div className="overflow-hidden rounded-[16px] border border-[#ebe5fb] bg-[#faf8ff]">
-      <button
-        type="button"
-        onClick={() => setOpen((prev) => !prev)}
-        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
-      >
-        <div className="min-w-0">
-          <div className="text-[13.5px] font-bold leading-[1.4] text-[#2a2346]">{label}</div>
-          <div className="mt-0.5 text-[11px] font-medium text-[#9ca3af]">{step.timeLabel}</div>
-        </div>
-        <ChevronDown
-          className={`h-4 w-4 shrink-0 text-[#6d5bd0] transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-        />
-      </button>
+    <div className="mt-4 space-y-1.5">
+      <div className="mb-2 flex items-center gap-2">
+        <div className="h-px flex-1 bg-white/10" />
+        <span className="text-[10px] font-black uppercase tracking-[0.14em] text-white/30">
+          {mode === "simple" ? "Grooming guide" : "ग्रूमिंग गाइड"}
+        </span>
+        <div className="h-px flex-1 bg-white/10" />
+      </div>
 
-      {open ? (
-        <div className="space-y-2.5 border-t border-[#ebe5fb] px-4 pb-4 pt-3">
-          <div className="rounded-[12px] border border-[#bbf7d0] bg-[#f0fdf4] px-3 py-2.5">
-            <div className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#15803d]">
-              {mode === "simple" ? "Kaise karein" : "कैसे करें"}
-            </div>
-            <div className="text-[13px] leading-[1.65] text-[#14532d]">{howTo}</div>
+      {steps.map((cs) => {
+        const isOpen = openKey === cs.key;
+        const label = mode === "simple" ? cs.label : cs.labelHindi;
+        const howTo = mode === "simple" ? cs.howTo : cs.howToHindi;
+        const avoid = mode === "simple" ? cs.avoid : cs.avoidHindi;
+        const doneSign = mode === "simple" ? cs.doneSign : cs.doneSignHindi;
+        const nervousNote = mode === "simple" ? cs.nervousNote : cs.nervousNoteHindi;
+
+        return (
+          <div
+            key={cs.key}
+            className="overflow-hidden rounded-[14px] border border-white/8 bg-white/5"
+          >
+            <button
+              type="button"
+              onClick={() => setOpenKey(isOpen ? null : cs.key)}
+              className="flex w-full items-center justify-between gap-3 px-3.5 py-3 text-left"
+            >
+              <div className="min-w-0">
+                <div className="text-[12.5px] font-bold text-white/70">{label}</div>
+                <div className="text-[10px] text-white/30">{cs.timeLabel}</div>
+              </div>
+              <ChevronDown
+                className={`h-3.5 w-3.5 shrink-0 text-white/30 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {isOpen ? (
+              <div className="space-y-2 border-t border-white/8 px-3.5 pb-3.5 pt-3">
+                <div className="rounded-[10px] bg-[#1a3a26] px-3 py-2.5">
+                  <div className="mb-1 text-[9px] font-black uppercase tracking-[0.14em] text-[#4ade80]/70">
+                    {mode === "simple" ? "Kaise karein" : "कैसे करें"}
+                  </div>
+                  <div className="text-[12px] leading-[1.65] text-[#86efac]">{howTo}</div>
+                </div>
+                {avoid ? (
+                  <div className="rounded-[10px] bg-[#3a1a1a] px-3 py-2.5">
+                    <div className="mb-1 text-[9px] font-black uppercase tracking-[0.14em] text-[#f87171]/70">
+                      {mode === "simple" ? "Mat karein" : "मत करें"}
+                    </div>
+                    <div className="text-[12px] leading-[1.65] text-[#fca5a5]">{avoid}</div>
+                  </div>
+                ) : null}
+                <div className="rounded-[10px] bg-[#1a2a3a] px-3 py-2.5">
+                  <div className="mb-1 text-[9px] font-black uppercase tracking-[0.14em] text-[#7dd3fc]/70">
+                    {mode === "simple" ? "Done sign" : "पूरा होने का संकेत"}
+                  </div>
+                  <div className="text-[12px] leading-[1.65] text-[#bae6fd]">{doneSign}</div>
+                </div>
+                {nervousNote ? (
+                  <div className="rounded-[10px] bg-[#2a2210] px-3 py-2.5">
+                    <div className="mb-1 text-[9px] font-black uppercase tracking-[0.14em] text-[#fcd34d]/70">
+                      {mode === "simple" ? "Nervous dog" : "Nervous dog"}
+                    </div>
+                    <div className="text-[12px] leading-[1.65] text-[#fde68a]">{nervousNote}</div>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
           </div>
-
-          {avoid ? (
-            <div className="rounded-[12px] border border-[#fecaca] bg-[#fef2f2] px-3 py-2.5">
-              <div className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#b91c1c]">
-                {mode === "simple" ? "Mat karein" : "मत करें"}
-              </div>
-              <div className="text-[13px] leading-[1.65] text-[#7f1d1d]">{avoid}</div>
-            </div>
-          ) : null}
-
-          <div className="rounded-[12px] border border-[#bfdbfe] bg-[#eff6ff] px-3 py-2.5">
-            <div className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#1d4ed8]">
-              {mode === "simple" ? "Done sign" : "पूरा होने का संकेत"}
-            </div>
-            <div className="text-[13px] leading-[1.65] text-[#1e3a8a]">{doneSign}</div>
-          </div>
-
-          {nervousNote ? (
-            <div className="rounded-[12px] border border-[#fde68a] bg-[#fffbeb] px-3 py-2.5">
-              <div className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#b45309]">
-                {mode === "simple" ? "Nervous dog ke liye" : "Nervous dog के लिए"}
-              </div>
-              <div className="text-[13px] leading-[1.65] text-[#78350f]">{nervousNote}</div>
-            </div>
-          ) : null}
-
-          {flagNote ? (
-            <div className="rounded-[12px] border border-[#fecdd3] bg-[#fff1f2] px-3 py-2.5">
-              <div className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#be123c]">
-                {mode === "simple" ? "Parent ko batao" : "पैरेंट को बताएं"}
-              </div>
-              <div className="text-[13px] leading-[1.65] text-[#881337]">{flagNote}</div>
-            </div>
-          ) : null}
-        </div>
-      ) : null}
+        );
+      })}
     </div>
   );
 }
 
-function PhaseProofRow({
+// The main focus card for one SOP step
+function StepFocusCard({
   step,
+  stepNumber,
+  totalSteps,
   mode,
   busy,
   syncState,
+  coachNote,
+  coachingSteps,
   onStepToggle,
   onVideoCapture,
   onPhotoCapture,
   onRetry,
 }: {
   step: SopStep;
+  stepNumber: number;
+  totalSteps: number;
   mode: "simple" | "hindi";
   busy: string | null;
   syncState?: StepSyncState;
+  coachNote: string | null;
+  coachingSteps: CoachingStep[];
   onStepToggle: () => void;
   onVideoCapture: () => void;
   onPhotoCapture: (file: File) => void;
   onRetry: () => void;
 }) {
-  const done = step.status === "completed";
   const label = mode === "simple" ? step.groomerLabel : step.groomerLabelHindi;
   const hint = mode === "simple" ? step.groomerHint : step.groomerHintHindi;
 
   return (
-    <div className={`rounded-[20px] border p-4 ${done ? "border-[#bbf7d0] bg-[#f0fdf4]" : "border-[#e5e7eb] bg-white"}`}>
-      <div className="flex items-start gap-3">
-        <div className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 ${done ? "border-[#16a34a] bg-[#16a34a] text-white" : "border-[#d1d5db] bg-white text-[#9ca3af]"}`}>
-          {done ? <CheckCircle2 className="h-3.5 w-3.5" /> : <Circle className="h-3.5 w-3.5" />}
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="text-[15px] font-bold text-[#1f1f2c]">{label}</div>
-            {syncState && (
-              <SyncStatusBadge
-                status={syncState.status}
-                pendingCount={syncState.pendingCount}
-                mode={mode}
-                onRetry={onRetry}
-              />
-            )}
+    <>
+      {/* Inject animation keyframe */}
+      <style>{`
+        @keyframes cardRise {
+          from { opacity: 0; transform: translateY(28px) scale(0.97); filter: blur(6px); }
+          to   { opacity: 1; transform: translateY(0)   scale(1);    filter: blur(0);   }
+        }
+        .step-focus-card { animation: cardRise 0.45s cubic-bezier(0.32, 0.72, 0, 1) both; }
+      `}</style>
+
+      <div className="step-focus-card rounded-[28px] border border-[#6d5bd0]/40 bg-white p-5 shadow-[0_0_0_1px_rgba(109,91,208,0.15),0_24px_64px_rgba(109,91,208,0.25),0_4px_16px_rgba(0,0,0,0.2)]">
+
+        {/* Step counter + sync */}
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#6d5bd0] text-[12px] font-black text-white">
+              {stepNumber}
+            </div>
+            <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#8a90a6]">
+              {mode === "simple" ? `of ${totalSteps}` : `/ ${totalSteps}`}
+            </span>
           </div>
-          {hint && !done ? (
-            <div className="mt-1 text-[13px] leading-[1.6] text-[#6b7280]">{hint}</div>
+          {syncState ? (
+            <SyncStatusBadge
+              status={syncState.status}
+              pendingCount={syncState.pendingCount}
+              mode={mode}
+              onRetry={onRetry}
+            />
+          ) : null}
+        </div>
+
+        {/* Step label */}
+        <div className="text-[26px] font-black leading-[1.1] tracking-[-0.03em] text-[#1f1f2c]">
+          {label}
+        </div>
+
+        {/* Hint */}
+        {hint ? (
+          <div className="mt-2.5 text-[13.5px] leading-[1.65] text-[#6b7280]">{hint}</div>
+        ) : null}
+
+        {/* Step-specific groomer note (from admin/ops input) — shown first, highest priority */}
+        {step.groomerNote ? (
+          <div className="mt-3.5 rounded-[16px] border border-[#c4b5fd] bg-[#f5f3ff] px-3.5 py-3">
+            <div className="mb-1 flex items-center gap-1.5">
+              <div className="text-[10px] font-black uppercase tracking-[0.12em] text-[#6d28d9]">
+                {mode === "simple" ? "Groomer note" : "ग्रूमर नोट"}
+              </div>
+            </div>
+            <div className="text-[13px] leading-[1.65] text-[#4c1d95]">{step.groomerNote}</div>
+          </div>
+        ) : null}
+
+        {/* Phase-level coach note (from pet temperament / grooming / styling data) */}
+        {coachNote ? (
+          <div className="mt-3 rounded-[16px] border border-[#fde68a] bg-[#fffbeb] px-3.5 py-3">
+            <div className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#b45309]">
+              {mode === "simple" ? "Pet note" : "पेट नोट"}
+            </div>
+            <div className="text-[13px] leading-[1.65] text-[#78350f]">{coachNote}</div>
+          </div>
+        ) : null}
+
+        {/* Action buttons */}
+        <div className="mt-5 flex flex-wrap gap-2.5">
+          {step.proofType === "manual" ? (
+            <button
+              type="button"
+              disabled={busy !== null}
+              onClick={onStepToggle}
+              className="flex h-[52px] flex-1 items-center justify-center gap-2 rounded-[16px] bg-[#16a34a] text-[15px] font-bold text-white shadow-[0_4px_16px_rgba(22,163,74,0.25)] disabled:opacity-50"
+            >
+              <CheckCircle2 className="h-5 w-5" />
+              {mode === "simple" ? "Ho Gaya" : "हो गया"}
+            </button>
           ) : null}
 
-          {!done && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {step.proofType === "manual" && (
-                <button
-                  type="button"
-                  disabled={busy !== null}
-                  onClick={onStepToggle}
-                  className="flex h-[48px] items-center gap-2 rounded-[14px] bg-[#16a34a] px-5 text-[14px] font-semibold text-white disabled:opacity-50"
-                >
-                  <CheckCircle2 className="h-4 w-4" />
-                  {mode === "simple" ? "Ho gaya" : "हो गया"}
-                </button>
-              )}
-              {step.proofType === "video" && (
-                <button
-                  type="button"
-                  disabled={busy !== null}
-                  onClick={onVideoCapture}
-                  className="flex h-[48px] items-center gap-2 rounded-[14px] bg-[#6d5bd0] px-5 text-[14px] font-semibold text-white disabled:opacity-50"
-                >
-                  <Video className="h-4 w-4" />
-                  {mode === "simple" ? "Video record karein" : "वीडियो रिकॉर्ड करें"}
-                </button>
-              )}
-              {step.proofType === "image" && (
-                <label className="flex h-[48px] cursor-pointer items-center gap-2 rounded-[14px] bg-[#6d5bd0] px-5 text-[14px] font-semibold text-white opacity-100">
-                  <Camera className="h-4 w-4" />
-                  {mode === "simple" ? "Photo lo" : "फोटो लो"}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    className="hidden"
-                    disabled={busy !== null}
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) onPhotoCapture(file);
-                      e.currentTarget.value = "";
-                    }}
-                  />
-                </label>
-              )}
-              {step.proofType === "mixed" && (
-                <>
-                  <label className="flex h-[48px] cursor-pointer items-center gap-2 rounded-[14px] bg-[#6d5bd0] px-5 text-[14px] font-semibold text-white">
-                    <Camera className="h-4 w-4" />
-                    {mode === "simple" ? "Photo" : "फोटो"}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      capture="environment"
-                      className="hidden"
-                      disabled={busy !== null}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) onPhotoCapture(file);
-                        e.currentTarget.value = "";
-                      }}
-                    />
-                  </label>
-                  <button
-                    type="button"
-                    disabled={busy !== null}
-                    onClick={onVideoCapture}
-                    className="flex h-[48px] items-center gap-2 rounded-[14px] border border-[#ddd1fb] bg-white px-5 text-[14px] font-semibold text-[#6d5bd0] disabled:opacity-50"
-                  >
-                    <Video className="h-4 w-4" />
-                    {mode === "simple" ? "Video" : "वीडियो"}
-                  </button>
-                </>
-              )}
-            </div>
-          )}
+          {(step.proofType === "image" || step.proofType === "mixed") ? (
+            <label className="flex h-[52px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-[16px] bg-[#6d5bd0] text-[15px] font-bold text-white shadow-[0_4px_16px_rgba(109,91,208,0.25)]">
+              <Camera className="h-5 w-5" />
+              {mode === "simple" ? "Photo Lo" : "फोटो लो"}
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                disabled={busy !== null}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) onPhotoCapture(file);
+                  e.currentTarget.value = "";
+                }}
+              />
+            </label>
+          ) : null}
+
+          {(step.proofType === "video" || step.proofType === "mixed") ? (
+            <button
+              type="button"
+              disabled={busy !== null}
+              onClick={onVideoCapture}
+              className={`flex h-[52px] items-center justify-center gap-2 rounded-[16px] text-[15px] font-bold text-white shadow-[0_4px_16px_rgba(109,91,208,0.2)] disabled:opacity-50 ${step.proofType === "mixed" ? "border border-[#ddd1fb] bg-white text-[#6d5bd0] shadow-none" : "flex-1 bg-[#6d5bd0]"}`}
+            >
+              <Video className="h-5 w-5" />
+              {step.proofType === "mixed"
+                ? (mode === "simple" ? "Video" : "वीडियो")
+                : (mode === "simple" ? "Video Record Karo" : "वीडियो रिकॉर्ड करो")}
+            </button>
+          ) : null}
         </div>
+
+        {/* Proofs uploaded (show if any) */}
+        {step.proofs.length > 0 ? (
+          <div className="mt-3 space-y-1.5">
+            {step.proofs.map((proof) => (
+              <a
+                key={proof.id}
+                href={proof.publicUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-between rounded-[12px] border border-[#ece5ff] bg-[#faf8ff] px-3 py-2.5 text-[12px] text-[#2a2346]"
+              >
+                <span className="truncate">{proof.originalName}</span>
+                <span className="ml-2 shrink-0 font-semibold text-[#6d5bd0]">
+                  {mode === "simple" ? "Kholo" : "खोलो"}
+                </span>
+              </a>
+            ))}
+          </div>
+        ) : null}
+
+        {/* Coaching steps guide (collapsible, dark theme inside white card) */}
+        {coachingSteps.length > 0 ? (
+          <div className="mt-4 rounded-[18px] bg-[#0e0c1a] p-3">
+            <GuideAccordion steps={coachingSteps} mode={mode} />
+          </div>
+        ) : null}
       </div>
-    </div>
+    </>
   );
 }
 
@@ -302,20 +336,11 @@ export function PacerPhaseCard({
   onRetrySync,
 }: Props) {
   const totalSeconds = phase.durationMinutes * 60;
-  const timerColor = timerColorClass(secondsRemaining, totalSeconds);
-  const barPercent = timerBarPercent(secondsRemaining, totalSeconds);
-  const barColor = timerBarColor(secondsRemaining, totalSeconds);
+  const colors = timerColor(secondsRemaining, totalSeconds);
+  const barPct = Math.max(0, Math.min(100, (secondsRemaining / totalSeconds) * 100));
 
-  const [minTimeWarning, setMinTimeWarning] = useState(false);
   const alarmFiredRef = useRef(false);
-
-  // Reset alarm and warning when phase changes
-  useEffect(() => {
-    alarmFiredRef.current = false;
-    setMinTimeWarning(false);
-  }, [phase.key]);
-
-  // Fire alarm at 120 seconds remaining (once per phase)
+  useEffect(() => { alarmFiredRef.current = false; }, [phase.key]);
   useEffect(() => {
     if (!alarmFiredRef.current && secondsRemaining <= 120 && secondsRemaining > 0) {
       alarmFiredRef.current = true;
@@ -323,30 +348,16 @@ export function PacerPhaseCard({
     }
   }, [secondsRemaining]);
 
-  const phaseSteps = phase.sopKeys
-    .map((key) => sopSteps.find((s) => s.key === key))
-    .filter(Boolean) as SopStep[];
+  // Min-time warning (oil phase)
+  const [minTimeWarning, setMinTimeWarning] = useState(false);
+  useEffect(() => { setMinTimeWarning(false); }, [phase.key]);
 
-  const allPhaseSopDone = phaseSteps.length === 0 || phaseSteps.every((s) => s.status === "completed");
-
-  // Oil phase: must complete at least 80% of time before advancing
   const minElapsedSeconds = phase.minTimePercent
     ? Math.floor(totalSeconds * (phase.minTimePercent / 100))
     : 0;
   const minTimeNotReached = phase.minTimePercent ? secondsElapsed < minElapsedSeconds : false;
-  const canAdvance = allPhaseSopDone && !minTimeNotReached;
 
-  const handleNextPhase = () => {
-    if (minTimeNotReached) {
-      setMinTimeWarning(true);
-      playAlarmBeep();
-      return;
-    }
-    setMinTimeWarning(false);
-    onNextPhase();
-  };
-
-  // Resolve coach note
+  // Resolve per-phase coach note (from pet data)
   let coachNote: string | null = null;
   if (phase.coachNoteSource === "groomingNotes") {
     coachNote = booking.pets[0]?.groomingNotes ?? null;
@@ -358,207 +369,232 @@ export function PacerPhaseCard({
       const map: Record<string, string> = {
         calm: mode === "simple" ? "Calm pet — go smooth and steady." : "शांत पेट — आराम से करें।",
         sweet_soul: mode === "simple" ? "Calm pet — go smooth and steady." : "शांत पेट — आराम से करें।",
-        wiggle_worrier: mode === "simple" ? "Anxious pet — befriend first, go slow." : "घबराया हुआ पेट — पहले दोस्ती करें, धीरे करें।",
-        anxious: mode === "simple" ? "Anxious pet — befriend first, go slow." : "घबराया हुआ पेट — पहले दोस्ती करें, धीरे करें।",
-        spicy_spark: mode === "simple" ? "Can bite — ask parent for muzzle help. Safety first." : "काट सकता है — पैरेंट से मज़ल लगवाएं। सुरक्षा पहले।",
-        can_bite: mode === "simple" ? "Can bite — ask parent for muzzle help. Safety first." : "काट सकता है — पैरेंट से मज़ल लगवाएं। सुरक्षा पहले।",
+        wiggle_worrier: mode === "simple" ? "Anxious pet — befriend first, go slow." : "घबराया हुआ पेट — पहले दोस्ती करें।",
+        anxious: mode === "simple" ? "Anxious pet — befriend first, go slow." : "घबराया हुआ पेट — पहले दोस्ती करें।",
+        spicy_spark: mode === "simple" ? "Can bite — ask parent for muzzle. Safety first." : "काट सकता है — पैरेंट से मज़ल लगवाएं।",
+        can_bite: mode === "simple" ? "Can bite — ask parent for muzzle. Safety first." : "काट सकता है — पैरेंट से मज़ल लगवाएं।",
       };
       coachNote = map[t.toLowerCase()] ?? null;
     }
   }
 
-  const stylePhotos = booking.pets[0]?.stylingReferenceUrls ?? [];
+  // Build ordered step list for this phase
+  const phaseSteps = phase.sopKeys
+    .map((key) => sopSteps.find((s) => s.key === key))
+    .filter(Boolean) as SopStep[];
 
-  const isPaymentPhase = phase.key === "payment_review";
+  const completedSteps = phaseSteps.filter((s) => s.status === "completed");
+  const pendingSteps = phaseSteps.filter((s) => s.status !== "completed");
+  const activeStep = pendingSteps[0] ?? null;
+  const nextStep = pendingSteps[1] ?? null;
+  const allPhaseSopDone = pendingSteps.length === 0;
+
+  // For phases with no SOP steps, show coaching guide directly
+  const isGuidanceOnlyPhase = phaseSteps.length === 0;
+
+  const handleNextPhase = () => {
+    if (minTimeNotReached) { setMinTimeWarning(true); playAlarmBeep(); return; }
+    setMinTimeWarning(false);
+    onNextPhase();
+  };
 
   return (
-    <div className="flex min-h-[calc(100dvh-80px)] flex-col rounded-[30px] border border-[#eadffd] bg-white shadow-[0_18px_48px_rgba(73,44,120,0.08)]">
-      {/* Phase header */}
-      <div className="rounded-t-[30px] bg-[linear-gradient(135deg,#1f1f2c_0%,#3b3465_100%)] p-5 text-white">
+    <div className="flex min-h-[calc(100dvh-56px)] flex-col">
+
+      {/* ── PHASE HEADER ─────────────────────────────────── */}
+      <div className="px-1 pb-3 pt-1">
         <div className="flex items-center justify-between gap-3">
-          <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-white/60">
-            {mode === "simple"
-              ? `Phase ${phaseIndex + 1} of ${totalPhases}`
-              : `चरण ${phaseIndex + 1} / ${totalPhases}`}
+          <div>
+            <div className="text-[10px] font-black uppercase tracking-[0.12em] text-white/30">
+              {mode === "simple"
+                ? `Phase ${phaseIndex + 1} of ${totalPhases}`
+                : `चरण ${phaseIndex + 1} / ${totalPhases}`}
+            </div>
+            <div className="mt-0.5 text-[20px] font-black tracking-[-0.03em] text-white">
+              {mode === "simple" ? phase.label : phase.labelHindi}
+            </div>
           </div>
-          <div className="flex gap-1">
+          {/* Phase progress dots */}
+          <div className="flex items-center gap-1.5">
             {Array.from({ length: totalPhases }).map((_, i) => (
               <div
                 key={i}
-                className={`h-1.5 w-6 rounded-full transition-colors ${
-                  i < phaseIndex ? "bg-[#16a34a]" : i === phaseIndex ? "bg-white" : "bg-white/25"
+                className={`rounded-full transition-all duration-300 ${
+                  i < phaseIndex
+                    ? "h-2 w-2 bg-[#4ade80]"
+                    : i === phaseIndex
+                    ? "h-2 w-4 bg-[#6d5bd0]"
+                    : "h-2 w-2 bg-white/15"
                 }`}
               />
             ))}
           </div>
         </div>
-        <div className="mt-3 text-[26px] font-black tracking-[-0.03em]">
-          {mode === "simple" ? phase.label : phase.labelHindi}
-        </div>
-        <div className="mt-1 text-[13px] text-white/70">
-          {mode === "simple"
-            ? `Target: ${phase.durationMinutes} min`
-            : `लक्ष्य: ${phase.durationMinutes} मिनट`}
-        </div>
+      </div>
 
-        {/* Timer */}
-        <div className={`mt-4 rounded-[20px] border p-4 ${timerColor}`}>
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <div className="text-[11px] font-bold uppercase tracking-[0.08em] opacity-70">
-                {secondsRemaining > 0
-                  ? (mode === "simple" ? "Time left" : "बचा समय")
-                  : (mode === "simple" ? "Over time" : "समय पार")}
-              </div>
-              <div className="mt-1 font-mono text-[36px] font-black tracking-[-0.04em]">
-                {formatTimer(Math.abs(secondsRemaining))}
-              </div>
+      {/* ── TIMER ─────────────────────────────────────────── */}
+      <div className="mb-4 rounded-[22px] border border-white/8 bg-white/5 px-4 py-3.5 backdrop-blur-sm">
+        <div className="flex items-end justify-between gap-3">
+          <div>
+            <div className={`text-[11px] font-bold uppercase tracking-[0.1em] ${colors.label}`}>
+              {secondsRemaining > 0
+                ? (mode === "simple" ? "Time left" : "बचा समय")
+                : (mode === "simple" ? "Over time" : "समय पार")}
             </div>
-            <div className="text-right text-[12px] opacity-70">
-              <div>{phase.durationMinutes} min</div>
-              <div>{mode === "simple" ? "budget" : "बजट"}</div>
+            <div className={`mt-0.5 font-mono text-[44px] font-black leading-none tracking-[-0.04em] ${colors.num}`}>
+              {fmt(Math.abs(secondsRemaining))}
             </div>
           </div>
-          {/* Progress bar */}
-          <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-black/10">
-            <div
-              className={`h-full rounded-full transition-all duration-1000 ${barColor}`}
-              style={{ width: `${barPercent}%` }}
-            />
+          <div className="text-right">
+            <div className="text-[11px] font-semibold text-white/25">
+              {mode === "simple" ? "Target" : "लक्ष्य"}
+            </div>
+            <div className="text-[18px] font-black text-white/40">{phase.durationMinutes}m</div>
           </div>
+        </div>
+        <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+          <div
+            className={`h-full rounded-full transition-all duration-1000 ${colors.bar}`}
+            style={{ width: `${barPct}%` }}
+          />
         </div>
       </div>
 
-      {/* Body */}
-      <div className="flex-1 overflow-y-auto p-4">
-
-        {/* Coach note */}
-        {(coachNote ?? phase.coachNoteHint) ? (
-          <div className="mb-4 rounded-[20px] border border-[#fde68a] bg-[#fffbeb] p-4">
-            <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#92400e]">
-              {mode === "simple" ? "Coach note" : "कोच नोट"}
-            </div>
-            <div className="mt-1.5 text-[14px] leading-[1.65] text-[#78350f]">
-              {coachNote ?? (mode === "simple" ? phase.coachNoteHint : phase.coachNoteHintHindi)}
-            </div>
-          </div>
-        ) : null}
-
-        {/* Style reference photos (only in style phases) */}
-        {phase.coachNoteSource === "stylingNotes" && stylePhotos.length > 0 ? (
-          <div className="mb-4">
-            <div className="mb-2 text-[12px] font-semibold text-[#4b5563]">
-              {mode === "simple" ? "Style reference" : "स्टाइल रेफरेंस"}
-            </div>
-            <div className="flex gap-2 overflow-x-auto pb-1">
-              {stylePhotos.map((url, i) => (
-                <a key={url} href={url} target="_blank" rel="noreferrer" className="shrink-0">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt={`Style ref ${i + 1}`} className="h-[88px] w-[88px] rounded-[16px] border border-[#ece5ff] object-cover" />
-                </a>
-              ))}
-            </div>
-          </div>
-        ) : null}
-
-        {/* Task checklist */}
-        <div className="mb-4 space-y-2">
-          <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">
-            {mode === "simple" ? "Is phase mein karna hai" : "इस चरण में करना है"}
-          </div>
-          {(mode === "simple" ? phase.tasks : phase.tasksHindi).map((task, i) => (
-            <div key={i} className="flex items-start gap-2.5 rounded-[14px] border border-[#f3f4f6] bg-[#f9fafb] px-3 py-2.5">
-              <div className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-[#6d5bd0]" />
-              <span className="text-[14px] leading-[1.5] text-[#374151]">{task}</span>
+      {/* ── COMPLETED STEPS CHIPS ─────────────────────────── */}
+      {completedSteps.length > 0 ? (
+        <div className="mb-3 flex flex-wrap gap-2">
+          {completedSteps.map((step) => (
+            <div
+              key={step.key}
+              className="flex items-center gap-1.5 rounded-full border border-[#4ade80]/20 bg-[#4ade80]/8 px-3 py-1.5"
+            >
+              <CheckCircle2 className="h-3.5 w-3.5 text-[#4ade80]" />
+              <span className="text-[12px] font-semibold text-[#4ade80]">
+                {mode === "simple" ? step.groomerLabel : step.groomerLabelHindi}
+              </span>
             </div>
           ))}
         </div>
+      ) : null}
 
-        {/* SOP proof steps for this phase */}
-        {phaseSteps.length > 0 && !isPaymentPhase ? (
-          <div className="mb-4 space-y-3">
-            <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">
-              {mode === "simple" ? "Proof required" : "प्रूफ ज़रूरी है"}
-            </div>
-            {phaseSteps.map((step) => (
-              <PhaseProofRow
-                key={step.key}
-                step={step}
-                mode={mode}
-                busy={busy}
-                syncState={stepSyncMap[step.key]}
-                onStepToggle={() => onStepToggle(step.key, step.status)}
-                onVideoCapture={() => onVideoCapture(step.key)}
-                onPhotoCapture={(file) => onPhotoCapture(step.key, file)}
-                onRetry={onRetrySync}
-              />
-            ))}
+      {/* ── ACTIVE STEP FOCUS CARD ────────────────────────── */}
+      {activeStep ? (
+        <StepFocusCard
+          key={activeStep.key}
+          step={activeStep}
+          stepNumber={completedSteps.length + 1}
+          totalSteps={phaseSteps.length}
+          mode={mode}
+          busy={busy}
+          syncState={stepSyncMap[activeStep.key]}
+          coachNote={coachNote}
+          coachingSteps={completedSteps.length === 0 ? phase.coachingSteps : []}
+          onStepToggle={() => onStepToggle(activeStep.key, activeStep.status)}
+          onVideoCapture={() => onVideoCapture(activeStep.key)}
+          onPhotoCapture={(file) => onPhotoCapture(activeStep.key, file)}
+          onRetry={onRetrySync}
+        />
+      ) : null}
+
+      {/* ── GUIDANCE-ONLY PHASE (no SOP steps) ───────────── */}
+      {isGuidanceOnlyPhase ? (
+        <div className="rounded-[28px] border border-[#6d5bd0]/30 bg-white p-5 shadow-[0_0_0_1px_rgba(109,91,208,0.12),0_24px_64px_rgba(109,91,208,0.2)]">
+          <div className="text-[22px] font-black tracking-[-0.03em] text-[#1f1f2c]">
+            {mode === "simple" ? phase.label : phase.labelHindi}
           </div>
-        ) : null}
-
-        {/* Grooming guide for this phase */}
-        {phase.coachingSteps.length > 0 ? (
-          <div>
-            <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">
-              {mode === "simple" ? "Grooming guide" : "ग्रूमिंग गाइड"}
+          {(coachNote ?? phase.coachNoteHint) ? (
+            <div className="mt-3 rounded-[16px] border border-[#fde68a] bg-[#fffbeb] px-3.5 py-3">
+              <div className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#b45309]">
+                {mode === "simple" ? "Note" : "नोट"}
+              </div>
+              <div className="text-[13px] leading-[1.65] text-[#78350f]">
+                {coachNote ?? (mode === "simple" ? phase.coachNoteHint : phase.coachNoteHintHindi)}
+              </div>
             </div>
-            <div className="space-y-2">
-              {phase.coachingSteps.map((cs) => (
-                <CoachingStepCard key={cs.key} step={cs} mode={mode} />
+          ) : null}
+          {phase.tasks.length > 0 ? (
+            <div className="mt-4 space-y-2">
+              <div className="text-[10px] font-black uppercase tracking-[0.12em] text-[#8a90a6]">
+                {mode === "simple" ? "Is phase mein karna hai" : "इस चरण में करना है"}
+              </div>
+              {(mode === "simple" ? phase.tasks : phase.tasksHindi).map((task, i) => (
+                <div key={i} className="flex items-start gap-2.5 rounded-[12px] border border-[#f3f4f6] bg-[#f9fafb] px-3 py-2.5">
+                  <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#6d5bd0]" />
+                  <span className="text-[13.5px] leading-[1.55] text-[#374151]">{task}</span>
+                </div>
               ))}
             </div>
-          </div>
-        ) : null}
-      </div>
+          ) : null}
+          {phase.coachingSteps.length > 0 ? (
+            <div className="mt-4 rounded-[18px] bg-[#0e0c1a] p-3">
+              <GuideAccordion steps={phase.coachingSteps} mode={mode} />
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
-      {/* Next phase CTA */}
-      <div className="border-t border-[#f3f4f6] p-4">
-        {/* SOP not done warning */}
-        {!allPhaseSopDone && phaseSteps.length > 0 ? (
-          <div className="mb-3 rounded-[14px] bg-[#fffbeb] px-4 py-2.5 text-[13px] text-[#92400e]">
+      {/* ── NEXT STEP GHOST PREVIEW ───────────────────────── */}
+      {nextStep && !allPhaseSopDone ? (
+        <div className="mt-3 rounded-[20px] border border-white/6 bg-white/4 px-4 py-3.5 opacity-50">
+          <div className="text-[10px] font-black uppercase tracking-[0.12em] text-white/40">
+            {mode === "simple" ? "Next" : "अगला"}
+          </div>
+          <div className="mt-1 text-[16px] font-bold text-white/50">
+            {mode === "simple" ? nextStep.groomerLabel : nextStep.groomerLabelHindi}
+          </div>
+        </div>
+      ) : null}
+
+      {/* ── MIN-TIME WARNING (oil phase) ─────────────────── */}
+      {minTimeWarning ? (
+        <div className="mt-3 rounded-[18px] border border-[#fde68a]/40 bg-[#fde68a]/8 px-4 py-3.5">
+          <div className="text-[14px] font-black text-[#fde68a]">
+            {mode === "simple" ? "⚠ Oil abhi kaam kar raha hai" : "⚠ ऑयल अभी काम कर रहा है"}
+          </div>
+          <div className="mt-1 text-[12px] leading-[1.6] text-[#fde68a]/70">
             {mode === "simple"
-              ? "Sab proof upload ho jaye — phir aage badh sakte ho."
-              : "सब प्रूफ अपलोड हो जाएं — फिर आगे बढ़ सकते हो।"}
+              ? `${Math.ceil((minElapsedSeconds - secondsElapsed) / 60)} min aur ruko — oil coat ko hydrate kar raha hai.`
+              : `${Math.ceil((minElapsedSeconds - secondsElapsed) / 60)} मिनट और रुको — ऑयल coat को hydrate कर रहा है।`}
           </div>
-        ) : null}
-
-        {/* Oil min-time warning */}
-        {minTimeWarning ? (
-          <div className="mb-3 rounded-[14px] border border-[#fde68a] bg-[#fffbeb] px-4 py-3">
-            <div className="text-[14px] font-black text-[#92400e]">
-              {mode === "simple" ? "⚠️ Oil abhi kaam kar raha hai" : "⚠️ ऑयल अभी काम कर रहा है"}
-            </div>
-            <div className="mt-1 text-[13px] leading-[1.6] text-[#78350f]">
-              {mode === "simple"
-                ? `Oil ko kam se kam ${Math.ceil(minElapsedSeconds / 60)} min tak rehna chahiye. Agar pehle shampoo karein to oil ka effect kam ho jaata hai aur coat ki quality gir jaati hai. ${Math.ceil((minElapsedSeconds - secondsElapsed) / 60)} min aur ruko.`
-                : `ऑयल को कम से कम ${Math.ceil(minElapsedSeconds / 60)} मिनट तक रहना चाहिए। अगर पहले शैम्पू करें तो ऑयल का असर कम हो जाता है। ${Math.ceil((minElapsedSeconds - secondsElapsed) / 60)} मिनट और रुकें।`}
-            </div>
-            <button
-              type="button"
-              onClick={() => setMinTimeWarning(false)}
-              className="mt-2 text-[12px] font-semibold text-[#92400e] underline underline-offset-2"
-            >
-              {mode === "simple" ? "Samajh gaya" : "समझ गया"}
-            </button>
-          </div>
-        ) : null}
-
-        {!isLastPhase ? (
           <button
             type="button"
-            onClick={handleNextPhase}
-            disabled={!allPhaseSopDone || busy !== null}
-            className="flex h-[56px] w-full items-center justify-center gap-2 rounded-[18px] bg-[#6d5bd0] text-[16px] font-semibold text-white disabled:opacity-40"
+            onClick={() => setMinTimeWarning(false)}
+            className="mt-2 text-[11px] font-semibold text-[#fde68a]/60 underline underline-offset-2"
           >
-            {mode === "simple" ? "Next phase" : "अगला चरण"}
-            <ChevronRight className="h-5 w-5" />
+            {mode === "simple" ? "Samajh gaya" : "समझ गया"}
           </button>
-        ) : (
-          <div className="rounded-[14px] bg-[#f0fdf4] px-4 py-3 text-center text-[14px] text-[#15803d]">
+        </div>
+      ) : null}
+
+      {/* ── SPACER ───────────────────────────────────────── */}
+      <div className="flex-1" />
+
+      {/* ── BOTTOM CTA ────────────────────────────────────── */}
+      <div className="pb-2 pt-4">
+        {!allPhaseSopDone && phaseSteps.length > 0 ? (
+          <div className="rounded-[14px] border border-[#fde68a]/20 bg-[#fde68a]/6 px-4 py-2.5 text-center text-[12px] text-[#fde68a]/60">
             {mode === "simple"
-              ? "Payment aur review ke baad booking complete karein."
-              : "पेमेंट और रिव्यू के बाद बुकिंग पूरी करें।"}
+              ? `${pendingSteps.length} step${pendingSteps.length > 1 ? "s" : ""} baaki — sab complete karo`
+              : `${pendingSteps.length} स्टेप बाकी — सब पूरे करो`}
           </div>
+        ) : (
+          !isLastPhase ? (
+            <button
+              type="button"
+              onClick={handleNextPhase}
+              disabled={(!allPhaseSopDone && phaseSteps.length > 0) || busy !== null}
+              className="flex h-[56px] w-full items-center justify-center gap-2 rounded-[20px] bg-[linear-gradient(135deg,#6d5bd0,#8b7be7)] text-[16px] font-black text-white shadow-[0_8px_24px_rgba(109,91,208,0.35)] disabled:opacity-40"
+            >
+              {mode === "simple" ? "Next Phase" : "अगला चरण"}
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          ) : (
+            <div className="rounded-[18px] border border-[#4ade80]/20 bg-[#4ade80]/8 px-4 py-3.5 text-center text-[13px] font-semibold text-[#4ade80]">
+              {mode === "simple"
+                ? "Payment aur review ke baad booking complete karein."
+                : "पेमेंट और रिव्यू के बाद बुकिंग पूरी करें।"}
+            </div>
+          )
         )}
       </div>
     </div>

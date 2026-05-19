@@ -5,7 +5,7 @@ import {
   COACHING_OIL,
   COACHING_BATH,
   COACHING_BATH_ESSENTIAL,
-  COACHING_COMPLETE_DRY_STYLE,
+  COACHING_COMPLETE_HAIRCUT_STYLE,
   COACHING_SIGNATURE_DRY,
   COACHING_SIGNATURE_HYGIENE_CUT,
   COACHING_ESSENTIAL_DRY,
@@ -14,6 +14,8 @@ import {
 } from "./pacerCoachingSteps";
 
 export type { CoachingStep };
+
+export type ServiceTier = "Essential" | "Signature" | "Complete";
 
 export type PacerPhase = {
   index: number;
@@ -28,9 +30,12 @@ export type PacerPhase = {
   coachNoteHint: string;
   coachNoteHintHindi: string;
   coachingSteps: CoachingStep[];
+  tier: ServiceTier;
   // Minimum % of phase time that must elapse before Next Phase is allowed
   minTimePercent?: number;
 };
+
+// ─── Complete Pampering — 7 phases, ~111 min ────────────────────────────────
 
 const PHASES_COMPLETE: PacerPhase[] = [
   {
@@ -58,67 +63,93 @@ const PHASES_COMPLETE: PacerPhase[] = [
     coachNoteHint: "Pehle temperament dekho — pet ko calm karo tabhi kaam shuru karo.",
     coachNoteHintHindi: "पहले टेम्परामेंट देखें — पेट को शांत करके ही काम शुरू करें।",
     coachingSteps: COACHING_ARRIVE_SETUP,
+    tier: "Complete",
   },
   {
     index: 1,
-    key: "pre_treatment",
+    key: "oil_massage",
     label: "Oil Massage",
     labelHindi: "ऑयल मसाज",
-    durationMinutes: 12,
+    durationMinutes: 10,
     tasks: [
-      "Dhire dhire oil massage karein (10-15 min)",
-      "Sir se pooch tak karein — poora body cover karein",
-      "Coat ki gaanth wali jagah par zyaada time do",
+      "Dhire dhire poore body par oil massage karein",
+      "Sir se pooch tak cover karein",
+      "Gaanth wali jagah par extra time do",
+      "Photo lo massage complete hone par",
     ],
     tasksHindi: [
-      "धीरे-धीरे ऑयल मसाज करें (10-15 मिनट)",
-      "सिर से पूंछ तक — पूरा बॉडी कवर करें",
-      "कोट की गांठ वाली जगह पर ज़्यादा समय दें",
+      "धीरे-धीरे पूरे बॉडी पर ऑयल मसाज करें",
+      "सिर से पूंछ तक cover करें",
+      "गांठ वाली जगह पर extra समय दें",
+      "मसाज पूरी होने पर फोटो लो",
     ],
-    sopKeys: [],
+    sopKeys: ["oil_massage_proof"],
     coachNoteSource: "groomingNotes",
     coachNoteHint: "Oil lagaane se pehle grooming notes mein skin sensitivity check karo.",
     coachNoteHintHindi: "ऑयल लगाने से पहले ग्रूमिंग नोट्स में स्किन सेंसिटिविटी देखें।",
     coachingSteps: COACHING_OIL,
-    minTimePercent: 80,
+    tier: "Complete",
+    minTimePercent: 90,
   },
   {
     index: 2,
     key: "bath",
-    label: "Bath",
-    labelHindi: "बाथ",
+    label: "Bath + Dental",
+    labelHindi: "बाथ + डेंटल",
     durationMinutes: 22,
     tasks: [
       "Shampoo aur conditioner lagaen — achhi tarah massage karein",
-      "Daant saaf karein",
+      "Daant saaf karein (pet toothpaste)",
       "Towel se achhi tarah dry karein",
     ],
     tasksHindi: [
       "शैम्पू और कंडीशनर लगाएं — अच्छी तरह मसाज करें",
-      "दांत साफ करें",
+      "दांत साफ करें (पेट टूथपेस्ट)",
       "तौलिए से अच्छी तरह सुखाएं",
     ],
-    sopKeys: ["bath_dry_proof"],
+    sopKeys: ["bath_dry_proof", "dental_proof"],
     coachNoteSource: "groomingNotes",
     coachNoteHint: "Shampoo restrictions ya skin issues grooming notes mein hain — zaroor check karo.",
     coachNoteHintHindi: "शैम्पू पाबंदियां या स्किन समस्याएं ग्रूमिंग नोट्स में हैं — ज़रूर देखें।",
     coachingSteps: COACHING_BATH,
+    tier: "Complete",
   },
   {
     index: 3,
-    key: "dry_style",
-    label: "Dry & Style",
-    labelHindi: "ड्राई और स्टाइल",
-    durationMinutes: 30,
+    key: "dry",
+    label: "Blow Dry",
+    labelHindi: "ब्लो ड्राई",
+    durationMinutes: 15,
     tasks: [
-      "Blow dry karein aur baal brush karein",
+      "Blow dry karein — low heat, low airspeed se shuru karo",
+      "Baal brush karein section by section",
+    ],
+    tasksHindi: [
+      "ब्लो ड्राई करें — low heat, low airspeed से शुरू करो",
+      "बाल ब्रश करें section by section",
+    ],
+    sopKeys: [],
+    coachNoteSource: null,
+    coachNoteHint: "",
+    coachNoteHintHindi: "",
+    coachingSteps: COACHING_SIGNATURE_DRY,
+    tier: "Complete",
+  },
+  {
+    index: 4,
+    key: "haircut_styling",
+    label: "Haircut & Styling",
+    labelHindi: "हेयरकट और स्टाइलिंग",
+    durationMinutes: 28,
+    tasks: [
+      "Hygiene haircut karein — panje, chehra, private parts",
       "Poore body ki hairstyling karein",
       "Panje par paw butter massage do",
       "Coat par serum lagaen",
       "Final combing aur hair setting karein",
     ],
     tasksHindi: [
-      "ब्लो ड्राई करें और बाल ब्रश करें",
+      "हाइजीन हेयरकट करें — पंजे, चेहरा, प्राइवेट पार्ट्स",
       "पूरे शरीर की हेयर स्टाइलिंग करें",
       "पंजे पर पॉ बटर मसाज दें",
       "कोट पर सीरम लगाएं",
@@ -128,13 +159,14 @@ const PHASES_COMPLETE: PacerPhase[] = [
     coachNoteSource: "stylingNotes",
     coachNoteHint: "Style reference photos aur cut instructions yahan hain — dekh ke hi karo.",
     coachNoteHintHindi: "स्टाइल रेफरेंस फोटो और कट के निर्देश यहाँ हैं — देखकर ही करें।",
-    coachingSteps: COACHING_COMPLETE_DRY_STYLE,
+    coachingSteps: COACHING_COMPLETE_HAIRCUT_STYLE,
+    tier: "Complete",
   },
   {
-    index: 4,
-    key: "finish",
-    label: "Finishing",
-    labelHindi: "फिनिशिंग",
+    index: 5,
+    key: "treatments_finish",
+    label: "Treatments & Finish",
+    labelHindi: "ट्रीटमेंट और फिनिश",
     durationMinutes: 18,
     tasks: [
       "Nails trim aur file karein",
@@ -150,14 +182,15 @@ const PHASES_COMPLETE: PacerPhase[] = [
       "फाइनल चेक — सिर से पूंछ तक",
       "वर्कस्टेशन पैक करें",
     ],
-    sopKeys: [],
+    sopKeys: ["nail_trim_proof", "ear_check_proof"],
     coachNoteSource: null,
     coachNoteHint: "",
     coachNoteHintHindi: "",
     coachingSteps: COACHING_FINISH,
+    tier: "Complete",
   },
   {
-    index: 5,
+    index: 6,
     key: "payment_review",
     label: "Payment & Review",
     labelHindi: "पेमेंट और रिव्यू",
@@ -177,8 +210,11 @@ const PHASES_COMPLETE: PacerPhase[] = [
     coachNoteHint: "",
     coachNoteHintHindi: "",
     coachingSteps: COACHING_PAYMENT,
+    tier: "Complete",
   },
 ];
+
+// ─── Signature Care — 6 phases, ~90 min ─────────────────────────────────────
 
 const PHASES_SIGNATURE: PacerPhase[] = [
   {
@@ -206,28 +242,30 @@ const PHASES_SIGNATURE: PacerPhase[] = [
     coachNoteHint: "Pehle temperament dekho — pet ko calm karo tabhi kaam shuru karo.",
     coachNoteHintHindi: "पहले टेम्परामेंट देखें — पेट को शांत करके ही काम शुरू करें।",
     coachingSteps: COACHING_ARRIVE_SETUP,
+    tier: "Signature",
   },
   {
     index: 1,
     key: "bath",
-    label: "Bath",
-    labelHindi: "बाथ",
-    durationMinutes: 20,
+    label: "Bath + Dental",
+    labelHindi: "बाथ + डेंटल",
+    durationMinutes: 22,
     tasks: [
       "Shampoo aur conditioner lagaen — achhi tarah massage karein",
-      "Daant saaf karein",
+      "Daant saaf karein (pet toothpaste)",
       "Towel se achhi tarah dry karein",
     ],
     tasksHindi: [
       "शैम्पू और कंडीशनर लगाएं — अच्छी तरह मसाज करें",
-      "दांत साफ करें",
+      "दांत साफ करें (पेट टूथपेस्ट)",
       "तौलिए से अच्छी तरह सुखाएं",
     ],
-    sopKeys: ["bath_dry_proof"],
+    sopKeys: ["bath_dry_proof", "dental_proof"],
     coachNoteSource: "groomingNotes",
     coachNoteHint: "Shampoo restrictions ya skin issues grooming notes mein hain — zaroor check karo.",
     coachNoteHintHindi: "शैम्पू पाबंदियां या स्किन समस्याएं ग्रूमिंग नोट्स में हैं — ज़रूर देखें।",
     coachingSteps: COACHING_BATH,
+    tier: "Signature",
   },
   {
     index: 2,
@@ -246,13 +284,14 @@ const PHASES_SIGNATURE: PacerPhase[] = [
     coachNoteHint: "",
     coachNoteHintHindi: "",
     coachingSteps: COACHING_SIGNATURE_DRY,
+    tier: "Signature",
   },
   {
     index: 3,
     key: "hygiene_cut",
     label: "Hygiene Haircut",
     labelHindi: "हाइजीन हेयरकट",
-    durationMinutes: 20,
+    durationMinutes: 22,
     tasks: [
       "Hygiene haircut karein — panje, chehra, private parts",
       "Final combing aur hair setting karein",
@@ -266,6 +305,7 @@ const PHASES_SIGNATURE: PacerPhase[] = [
     coachNoteHint: "Hygiene cut areas aur style notes yahan hain — dekh ke karo.",
     coachNoteHintHindi: "हाइजीन कट के एरिया और स्टाइल नोट्स यहाँ हैं — देखकर करें।",
     coachingSteps: COACHING_SIGNATURE_HYGIENE_CUT,
+    tier: "Signature",
   },
   {
     index: 4,
@@ -285,18 +325,19 @@ const PHASES_SIGNATURE: PacerPhase[] = [
       "फाइनल चेक — सिर से पूंछ तक",
       "वर्कस्टेशन पैक करें",
     ],
-    sopKeys: [],
+    sopKeys: ["nail_trim_proof", "ear_check_proof"],
     coachNoteSource: null,
     coachNoteHint: "",
     coachNoteHintHindi: "",
     coachingSteps: COACHING_FINISH,
+    tier: "Signature",
   },
   {
     index: 5,
     key: "payment_review",
     label: "Payment & Review",
     labelHindi: "पेमेंट और रिव्यू",
-    durationMinutes: 7,
+    durationMinutes: 8,
     tasks: [
       "Payment lo",
       "Customer ko Google Review QR dikhao aur scan karwao",
@@ -312,8 +353,11 @@ const PHASES_SIGNATURE: PacerPhase[] = [
     coachNoteHint: "",
     coachNoteHintHindi: "",
     coachingSteps: COACHING_PAYMENT,
+    tier: "Signature",
   },
 ];
+
+// ─── Essential Care — 5 phases, ~65 min ─────────────────────────────────────
 
 const PHASES_ESSENTIAL: PacerPhase[] = [
   {
@@ -341,13 +385,14 @@ const PHASES_ESSENTIAL: PacerPhase[] = [
     coachNoteHint: "Pehle temperament dekho — pet ko calm karo tabhi kaam shuru karo.",
     coachNoteHintHindi: "पहले टेम्परामेंट देखें — पेट को शांत करके ही काम शुरू करें।",
     coachingSteps: COACHING_ARRIVE_SETUP,
+    tier: "Essential",
   },
   {
     index: 1,
     key: "bath",
     label: "Bath",
     labelHindi: "बाथ",
-    durationMinutes: 20,
+    durationMinutes: 18,
     tasks: [
       "Shampoo aur conditioner lagaen — achhi tarah massage karein",
       "Towel se achhi tarah dry karein",
@@ -361,6 +406,7 @@ const PHASES_ESSENTIAL: PacerPhase[] = [
     coachNoteHint: "Shampoo restrictions ya skin issues grooming notes mein hain — zaroor check karo.",
     coachNoteHintHindi: "शैम्पू पाबंदियां या स्किन समस्याएं ग्रूमिंग नोट्स में हैं — ज़रूर देखें।",
     coachingSteps: COACHING_BATH_ESSENTIAL,
+    tier: "Essential",
   },
   {
     index: 2,
@@ -376,18 +422,19 @@ const PHASES_ESSENTIAL: PacerPhase[] = [
       "ब्लो ड्राई करें और बाल ब्रश करें",
       "फाइनल कॉम्बिंग और हेयर सेटिंग करें",
     ],
-    sopKeys: ["final_groom_proof"],
+    sopKeys: [],
     coachNoteSource: null,
     coachNoteHint: "",
     coachNoteHintHindi: "",
     coachingSteps: COACHING_ESSENTIAL_DRY,
+    tier: "Essential",
   },
   {
     index: 3,
     key: "finish",
     label: "Finishing",
     labelHindi: "फिनिशिंग",
-    durationMinutes: 10,
+    durationMinutes: 12,
     tasks: [
       "Nails trim aur file karein",
       "Kaan saaf karein",
@@ -400,18 +447,19 @@ const PHASES_ESSENTIAL: PacerPhase[] = [
       "फाइनल चेक — सिर से पूंछ तक",
       "वर्कस्टेशन पैक करें",
     ],
-    sopKeys: [],
+    sopKeys: ["nail_trim_proof", "ear_check_proof", "final_groom_proof"],
     coachNoteSource: null,
     coachNoteHint: "",
     coachNoteHintHindi: "",
     coachingSteps: COACHING_FINISH,
+    tier: "Essential",
   },
   {
     index: 4,
     key: "payment_review",
     label: "Payment & Review",
     labelHindi: "पेमेंट और रिव्यू",
-    durationMinutes: 7,
+    durationMinutes: 10,
     tasks: [
       "Payment lo",
       "Customer ko Google Review QR dikhao aur scan karwao",
@@ -427,6 +475,7 @@ const PHASES_ESSENTIAL: PacerPhase[] = [
     coachNoteHint: "",
     coachNoteHintHindi: "",
     coachingSteps: COACHING_PAYMENT,
+    tier: "Essential",
   },
 ];
 
@@ -435,6 +484,13 @@ export function getPacerPhases(serviceName: string): PacerPhase[] {
   if (lower.includes("complete") || lower.includes("pampering")) return PHASES_COMPLETE;
   if (lower.includes("signature")) return PHASES_SIGNATURE;
   return PHASES_ESSENTIAL;
+}
+
+export function getTierFromServiceName(serviceName: string): ServiceTier {
+  const lower = serviceName.toLowerCase();
+  if (lower.includes("complete") || lower.includes("pampering")) return "Complete";
+  if (lower.includes("signature")) return "Signature";
+  return "Essential";
 }
 
 export function getTotalPacerMinutes(serviceName: string): number {

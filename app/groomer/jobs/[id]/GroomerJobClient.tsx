@@ -21,9 +21,13 @@ import type { GroomerBookingView } from "../../../../lib/groomerPortal";
 import { deriveActionMoment, deriveJobFlowPsychology, resolvePsychologyText } from "../../../../lib/groomerPsychology";
 import { getPacerPhases } from "../../../../lib/booking/pacerPhases";
 import { useOfflineQueue } from "./hooks/useOfflineQueue";
+import { useSessionState } from "./hooks/useSessionState";
 import { FuelApprovalSheet } from "./components/FuelApprovalSheet";
 import { PacerPhaseCard } from "./components/PacerPhaseCard";
 import { PaymentPhaseCard } from "./components/PaymentPhaseCard";
+import { LandingView } from "./components/LandingView";
+import { SessionStartModal } from "./components/SessionStartModal";
+import { SOPListReview } from "./components/SOPListReview";
 
 type LanguageMode = "simple" | "hindi";
 
@@ -777,9 +781,11 @@ function StepCard({
 export function GroomerJobClient({
   initialBooking,
   token,
+  isPreview = false,
 }: {
   initialBooking: GroomerBookingView;
   token?: string;
+  isPreview?: boolean;
 }) {
   const [booking, setBooking] = useState(initialBooking);
   const [busy, setBusy] = useState<string | null>(null);
@@ -815,6 +821,7 @@ export function GroomerJobClient({
   const [recordedVideoFile, setRecordedVideoFile] = useState<File | null>(null);
   const [now, setNow] = useState(() => Date.now());
   const [momentToast, setMomentToast] = useState<MomentToast>(null);
+  const [showSessionStartModal, setShowSessionStartModal] = useState(false);
   const liveVideoRef = useRef<HTMLVideoElement | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -823,6 +830,15 @@ export function GroomerJobClient({
   const tokenQuery = token ? `?token=${encodeURIComponent(token)}` : "";
 
   const { stepSyncMap, queueUpload, runSync } = useOfflineQueue(booking.id, tokenQuery);
+  const { sessionState, isHydrated, initializeSession, updateStatus, completeStep, clearSession } = useSessionState(booking.id);
+
+  // Initialize session when first arriving
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (sessionState) return;
+    if (booking.dispatchState !== "started") return;
+    initializeSession();
+  }, [isHydrated, sessionState, booking.dispatchState, initializeSession]);
 
   // Pacer state — activate once groomer has arrived (fuel confirmed)
   const pacerStorageKey = `pacer-phase-${booking.id}`;
@@ -834,9 +850,14 @@ export function GroomerJobClient({
       return saved ? parseInt(saved, 10) || 0 : 0;
     } catch { return 0; }
   });
-  const [pacerPhaseStartAt, setPacerPhaseStartAt] = useState<number | null>(
-    booking.dispatchState === "started" ? Date.now() : null
-  );
+  const pacerPhaseStartKey = `pacer-phase-start-${booking.id}`;
+  const [pacerPhaseStartAt, setPacerPhaseStartAt] = useState<number | null>(() => {
+    if (booking.dispatchState !== "started") return null;
+    try {
+      const saved = localStorage.getItem(`pacer-phase-start-${booking.id}`);
+      return saved ? parseInt(saved, 10) : Date.now();
+    } catch { return Date.now(); }
+  });
   const [showFuelSheet, setShowFuelSheet] = useState(false);
   const [arrivedGps, setArrivedGps] = useState<{ lat: number; lng: number } | null>(null);
 
@@ -857,6 +878,12 @@ export function GroomerJobClient({
     if (!pacerMode) return;
     try { localStorage.setItem(pacerStorageKey, String(currentPhaseIndex)); } catch { /* ignore */ }
   }, [currentPhaseIndex, pacerMode, pacerStorageKey]);
+
+  // Persist phase start time so the timer continues after phone close/reopen
+  useEffect(() => {
+    if (!pacerMode || pacerPhaseStartAt === null) return;
+    try { localStorage.setItem(pacerPhaseStartKey, String(pacerPhaseStartAt)); } catch { /* ignore */ }
+  }, [pacerPhaseStartAt, pacerMode, pacerPhaseStartKey]);
 
   useEffect(() => {
     if (!isRecordingVideo) return;
@@ -1117,6 +1144,10 @@ export function GroomerJobClient({
   };
 
   const runAction = async (key: string, action: () => Promise<void>) => {
+    if (isPreview) {
+      setModalError("Preview mode — yahan click se kuch nahi hoga. Real booking par hi kaam karega.");
+      return;
+    }
     setBusy(key);
     try {
       await action();
@@ -1266,6 +1297,274 @@ export function GroomerJobClient({
     });
   };
 
+  // Shared overlay elements used across all views
+  const fuelSheetOverlay = showFuelSheet ? (
+    <FuelApprovalSheet
+      mode={languageMode}
+      bookingId={booking.id}
+      tokenQuery={tokenQuery}
+      enRouteLat={booking.enRouteLat}
+      enRouteLng={booking.enRouteLng}
+      arrivedLat={arrivedGps?.lat ?? null}
+      arrivedLng={arrivedGps?.lng ?? null}
+      onConfirmed={async () => {
+        setShowFuelSheet(false);
+        await refresh();
+        setPacerMode(true);
+        setPacerPhaseStartAt(Date.now());
+        setCurrentPhaseIndex(0);
+        try { localStorage.removeItem(pacerStorageKey); } catch { /* ignore */ }
+      }}
+      onError={(msg) => {
+        setShowFuelSheet(false);
+        setModalError(msg);
+      }}
+    />
+  ) : null;
+
+  const errorOverlay = modalError ? (
+    <ErrorModal message={modalError} onClose={() => setModalError("")} mode={languageMode} />
+  ) : null;
+
+  const videoOverlay = activeVideoStepKey ? (
+    <LiveVideoRecorderModal
+      mode={languageMode}
+      busy={busy !== null}
+      elapsedSeconds={recordingSeconds}
+      isRecording={isRecordingVideo}
+      hasRecordedFile={!!recordedVideoFile}
+      videoRef={liveVideoRef}
+      onStart={() => {
+        try { startLiveRecording(); } catch (error) {
+          setModalError(error instanceof Error ? error.message : "Recording start nahi hui.");
+        }
+      }}
+      onStop={stopLiveRecording}
+      onUseRecording={() => {
+        if (!activeVideoStepKey || !recordedVideoFile) return;
+        void runAction(activeVideoStepKey, async () => {
+          await uploadOrQueue(activeVideoStepKey, recordedVideoFile, { skipClientValidation: true });
+          closeLiveVideoRecorder();
+        });
+      }}
+      onRetake={() => void retakeLiveRecording()}
+      onClose={closeLiveVideoRecorder}
+    />
+  ) : null;
+
+  const rewardOverlay = rewardModal ? (
+    <RewardModal
+      rewards={rewardModal.rewards}
+      summary={rewardModal.summary}
+      onClose={() => setRewardModal(null)}
+      mode={languageMode}
+    />
+  ) : null;
+
+  const toastOverlay = momentToast ? (
+    <div className="fixed inset-x-0 bottom-4 z-[310] mx-auto w-[calc(100%-24px)] max-w-md">
+      <div className={`rounded-[24px] border px-4 py-4 shadow-[0_18px_40px_rgba(20,14,35,0.16)] ${
+        momentToast.tone === "celebrate" ? "border-[#f8e2b7] bg-[#fff9eb]"
+          : momentToast.tone === "warning" ? "border-[#f8d0d6] bg-[#fff3f5]"
+          : momentToast.tone === "focus" ? "border-[#ddd1fb] bg-[#f7f3ff]"
+          : "border-[#dbeafe] bg-[#eff6ff]"
+      }`}>
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div className="text-[16px] font-black tracking-[-0.02em] text-[#241f38]">{momentToast.title}</div>
+            <div className="mt-1 text-[13px] leading-[1.7] text-[#5f5871]">{momentToast.detail}</div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setMomentToast(null)}
+            className="rounded-full border border-[#ddd1fb] bg-white px-2.5 py-1 text-[11px] font-semibold text-[#6d5bd0]"
+          >
+            {languageMode === "simple" ? "Close" : "बंद"}
+          </button>
+        </div>
+      </div>
+    </div>
+  ) : null;
+
+  // Language toggle button used in pacer and fallback views
+  const langToggle = (
+    <button
+      type="button"
+      onClick={() => setLanguageMode((prev) => (prev === "simple" ? "hindi" : "simple"))}
+      className="absolute right-4 top-4 z-10 rounded-[14px] border border-white/20 bg-white/10 px-3 py-1.5 text-[12px] font-semibold text-white/70"
+    >
+      {languageMode === "simple" ? "हिंदी" : "Simple"}
+    </button>
+  );
+
+  // ── VIEW 1: Pacer mode — full screen, nothing else visible ──
+  if (pacerMode) {
+    return (
+      <div className="relative min-h-screen bg-[#0e0c22] px-3 py-3">
+        {langToggle}
+        <div className="mx-auto max-w-xl space-y-3 pt-2">
+          {isLastPacerPhase ? (
+            <PaymentPhaseCard
+              mode={languageMode}
+              booking={booking}
+              busy={busy}
+              onSave={async (collectionMode, amount, notes, image, applyServiceAmountChange) => {
+                await executeSavePayment(collectionMode, amount, notes, image, applyServiceAmountChange);
+                await refresh();
+              }}
+              onComplete={() => void runAction("complete", async () => {
+                const res = await fetch(`/api/groomer/bookings/${booking.id}/complete${tokenQuery}`, { method: "POST" });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) throw new Error(data?.error ?? "Booking complete nahi ho paayi.");
+                setRewardModal({
+                  rewards: data?.rewardsDelta ?? [],
+                  summary: data?.rewardSummary ? {
+                    teamMember: data.rewardSummary.teamMember,
+                    totalXpAwarded: data.rewardSummary.totalXpAwarded,
+                    totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded,
+                    prestigeCredits: data.rewardSummary.gamification?.prestigeCredits,
+                  } : null,
+                });
+                openMomentToast({
+                  action: "complete",
+                  xpAwarded: Array.isArray(data?.rewardsDelta)
+                    ? data.rewardsDelta.reduce((sum: number, r: { xpAwarded?: number }) => sum + Number(r?.xpAwarded ?? 0), 0) : 0,
+                  rewardCreditsAwarded: Array.isArray(data?.rewardsDelta)
+                    ? data.rewardsDelta.reduce((sum: number, r: { rewardPointsAwarded?: number }) => sum + Number(r?.rewardPointsAwarded ?? 0), 0) : 0,
+                  prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits,
+                });
+              })}
+            />
+          ) : (
+            <PacerPhaseCard
+              mode={languageMode}
+              phase={currentPhase}
+              phaseIndex={safePhaseIndex}
+              totalPhases={pacerPhases.length}
+              secondsRemaining={phaseSecondsRemaining}
+              secondsElapsed={phaseSecondsElapsed}
+              booking={booking}
+              sopSteps={booking.sopSteps}
+              busy={busy}
+              stepSyncMap={stepSyncMap}
+              isLastPhase={isLastPacerPhase}
+              onNextPhase={() => {
+                setCurrentPhaseIndex((prev) => Math.min(prev + 1, pacerPhases.length - 1));
+                setPacerPhaseStartAt(Date.now());
+              }}
+              onStepToggle={(stepKey, currentStatus) => void runAction(stepKey, () =>
+                postJson(`/api/groomer/bookings/${booking.id}/sop/step`, {
+                  stepKey,
+                  status: currentStatus === "completed" ? "pending" : "completed",
+                })
+              )}
+              onVideoCapture={(stepKey) => void openLiveVideoRecorder(stepKey).catch((error: unknown) => {
+                setModalError(error instanceof Error ? error.message : "Camera khul nahi paaya.");
+              })}
+              onPhotoCapture={(stepKey, file) => void runAction(stepKey, () => uploadOrQueue(stepKey, file))}
+              onRetrySync={() => void runSync()}
+            />
+          )}
+
+          <button
+            type="button"
+            onClick={() => { setPacerMode(false); }}
+            className="w-full rounded-[20px] border border-white/10 bg-white/5 px-4 py-3 text-[13px] font-semibold text-white/40"
+          >
+            {languageMode === "simple" ? "Puri checklist dekhein" : "पूरी चेकलिस्ट देखें"}
+          </button>
+        </div>
+
+        {fuelSheetOverlay}
+        {errorOverlay}
+        {videoOverlay}
+        {rewardOverlay}
+        {toastOverlay}
+      </div>
+    );
+  }
+
+  // ── VIEW 2: Pre-arrival landing — full screen, one focus ──
+  if (booking.dispatchState !== "started") {
+    return (
+      <>
+        <LandingView
+          booking={booking}
+          mode={languageMode}
+          dispatchState={booking.dispatchState}
+          now={now}
+          isPreview={isPreview}
+          onNikalGaye={() => void runAction("en_route", async () => {
+            let gpsLat: number | null = null;
+            let gpsLng: number | null = null;
+            await new Promise<void>((resolve) => {
+              navigator.geolocation.getCurrentPosition(
+                (pos) => { gpsLat = pos.coords.latitude; gpsLng = pos.coords.longitude; resolve(); },
+                () => resolve(),
+                { timeout: 5000, maximumAge: 30000 }
+              );
+            });
+            const data = await postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, {
+              dispatchState: "en_route",
+              lat: gpsLat,
+              lng: gpsLng,
+            });
+            if (data?.rewardsDelta?.length) {
+              setRewardModal({
+                rewards: data.rewardsDelta,
+                summary: data.rewardSummary ? {
+                  teamMember: data.rewardSummary.teamMember,
+                  totalXpAwarded: data.rewardSummary.totalXpAwarded,
+                  totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded,
+                  prestigeCredits: data.rewardSummary.gamification?.prestigeCredits,
+                } : null,
+              });
+            }
+            openMomentToast({
+              action: "en_route",
+              xpAwarded: Array.isArray(data?.rewardsDelta)
+                ? data.rewardsDelta.reduce((sum: number, reward: { xpAwarded?: number }) => sum + Number(reward?.xpAwarded ?? 0), 0) : 0,
+              rewardCreditsAwarded: Array.isArray(data?.rewardsDelta)
+                ? data.rewardsDelta.reduce((sum: number, reward: { rewardPointsAwarded?: number }) => sum + Number(reward?.rewardPointsAwarded ?? 0), 0) : 0,
+              prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits,
+            });
+          })}
+          onPahunchGaye={() => {
+            if (isPreview) {
+              setPacerMode(true);
+              setPacerPhaseStartAt(Date.now());
+              setCurrentPhaseIndex(0);
+              return;
+            }
+            setShowSessionStartModal(true);
+          }}
+        />
+
+        {showSessionStartModal ? (
+          <SessionStartModal
+            booking={booking}
+            mode={languageMode}
+            onStart={() => {
+              setShowSessionStartModal(false);
+              navigator.geolocation.getCurrentPosition(
+                (pos) => { setArrivedGps({ lat: pos.coords.latitude, lng: pos.coords.longitude }); setShowFuelSheet(true); },
+                () => { setArrivedGps(null); setShowFuelSheet(true); },
+                { timeout: 8000, maximumAge: 0 }
+              );
+            }}
+            onBack={() => setShowSessionStartModal(false)}
+          />
+        ) : null}
+
+        {fuelSheetOverlay}
+        {errorOverlay}
+        {rewardOverlay}
+        {toastOverlay}
+      </>
+    );
+  }
+
+  // ── VIEW 3: Session active, pacer toggled off — full checklist fallback ──
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,#f8f5ff_0%,#efe9ff_100%)] px-3 py-3">
       <div className="mx-auto max-w-xl space-y-3">
@@ -1418,121 +1717,6 @@ export function GroomerJobClient({
             ) : null}
           </div>
 
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => void runAction("en_route", async () => {
-                let gpsLat: number | null = null;
-                let gpsLng: number | null = null;
-                await new Promise<void>((resolve) => {
-                  navigator.geolocation.getCurrentPosition(
-                    (pos) => { gpsLat = pos.coords.latitude; gpsLng = pos.coords.longitude; resolve(); },
-                    () => resolve(),
-                    { timeout: 5000, maximumAge: 30000 }
-                  );
-                });
-                const data = await postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, {
-                  dispatchState: "en_route",
-                  lat: gpsLat,
-                  lng: gpsLng,
-                });
-                if (data?.rewardsDelta?.length) {
-                  setRewardModal({
-                    rewards: data.rewardsDelta,
-                    summary: data.rewardSummary
-                      ? {
-                          teamMember: data.rewardSummary.teamMember,
-                          totalXpAwarded: data.rewardSummary.totalXpAwarded,
-                          totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded,
-                          prestigeCredits: data.rewardSummary.gamification?.prestigeCredits,
-                        }
-                      : null,
-                  });
-                }
-                openMomentToast({
-                  action: "en_route",
-                  xpAwarded: Array.isArray(data?.rewardsDelta)
-                    ? data.rewardsDelta.reduce((sum: number, reward: { xpAwarded?: number }) => sum + Number(reward?.xpAwarded ?? 0), 0)
-                    : 0,
-                  rewardCreditsAwarded: Array.isArray(data?.rewardsDelta)
-                    ? data.rewardsDelta.reduce((sum: number, reward: { rewardPointsAwarded?: number }) => sum + Number(reward?.rewardPointsAwarded ?? 0), 0)
-                    : 0,
-                  prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits,
-                });
-              })}
-              disabled={busy !== null || ["en_route", "started", "completed"].includes(booking.dispatchState)}
-              className="rounded-[18px] bg-[#6d5bd0] px-4 py-4 text-[15px] font-semibold text-white disabled:opacity-50"
-            >
-              {busy === "en_route"
-                ? languageMode === "simple" ? "Save ho raha hai..." : "सेव हो रहा है..."
-                : languageMode === "simple" ? "Nikal gaye" : "निकल गए"}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                if (["started", "completed"].includes(booking.dispatchState)) return;
-                navigator.geolocation.getCurrentPosition(
-                  (pos) => {
-                    setArrivedGps({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-                    setShowFuelSheet(true);
-                  },
-                  () => {
-                    setArrivedGps(null);
-                    setShowFuelSheet(true);
-                  },
-                  { timeout: 8000, maximumAge: 0 }
-                );
-              }}
-              disabled={busy !== null || ["started", "completed"].includes(booking.dispatchState)}
-              className="rounded-[18px] border border-[#d8cff8] bg-white px-4 py-4 text-[15px] font-semibold text-[#5b4bc2] disabled:opacity-50"
-            >
-              {languageMode === "simple" ? "Pahunch gaye" : "पहुँच गए"}
-            </button>
-          </div>
-
-          {(booking.availableTeamMembers?.length ?? 0) > 0 ? (
-            <div className="mt-3 rounded-[20px] border border-[#ebe5fb] bg-[#fcfbff] p-4">
-              <div className="text-[13px] font-semibold text-[#2a2346]">
-                {languageMode === "simple" ? "Apna naam confirm karein" : "अपना नाम कन्फर्म करें"}
-              </div>
-              <div className="mt-1 text-[12px] leading-[1.6] text-[#6b7280]">
-                {languageMode === "simple"
-                  ? "Rewards aur booking history sahi naam par jaane ke liye apna naam chuniyega."
-                  : "रिवॉर्ड और बुकिंग हिस्ट्री सही नाम पर जाने के लिए अपना नाम चुनिए।"}
-              </div>
-              <div className="mt-3 flex gap-2">
-                <select
-                  value={selectedMemberId}
-                  onChange={(event) => setSelectedMemberId(event.target.value)}
-                  className="h-[46px] min-w-0 flex-1 rounded-[14px] border border-[#ddd1fb] px-4 text-[13px] outline-none"
-                >
-                  <option value="">{languageMode === "simple" ? "Naam chuniye" : "नाम चुनिए"}</option>
-                  {(booking.availableTeamMembers ?? []).map((member) => (
-                    <option key={member.id} value={member.id}>
-                      {member.name} · {member.currentRank}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="button"
-                  onClick={() => void runAction("claim_member", claimGroomerIdentity)}
-                  disabled={busy !== null || !selectedMemberId || booking.groomerMember?.id === selectedMemberId}
-                  className="rounded-[14px] bg-[#2a2346] px-4 py-2 text-[13px] font-semibold text-white disabled:opacity-50"
-                >
-                  {busy === "claim_member"
-                    ? languageMode === "simple" ? "Save..." : "सेव..."
-                    : languageMode === "simple" ? "Confirm" : "कन्फर्म"}
-                </button>
-              </div>
-              {booking.groomerMember ? (
-                <div className="mt-3 rounded-[14px] bg-white px-3 py-3 text-[12px] text-[#4b5563]">
-                  {languageMode === "simple"
-                    ? `Current: ${booking.groomerMember.name} · ${booking.groomerMember.currentRank} · ${booking.groomerMember.currentXp} XP`
-                    : `अभी: ${booking.groomerMember.name} · ${booking.groomerMember.currentRank} · ${booking.groomerMember.currentXp} एक्सपी`}
-                </div>
-              ) : null}
-            </div>
-          ) : null}
 
           {booking.groomerMember ? (
             <Link
@@ -2105,105 +2289,11 @@ export function GroomerJobClient({
         )}
       </div>
 
-      {showFuelSheet ? (
-        <FuelApprovalSheet
-          mode={languageMode}
-          bookingId={booking.id}
-          tokenQuery={tokenQuery}
-          enRouteLat={booking.enRouteLat}
-          enRouteLng={booking.enRouteLng}
-          arrivedLat={arrivedGps?.lat ?? null}
-          arrivedLng={arrivedGps?.lng ?? null}
-          onConfirmed={async () => {
-            setShowFuelSheet(false);
-            await refresh();
-            setPacerMode(true);
-            setPacerPhaseStartAt((prev) => prev ?? Date.now());
-            setCurrentPhaseIndex(0);
-          }}
-          onError={(msg) => {
-            setShowFuelSheet(false);
-            setModalError(msg);
-          }}
-        />
-      ) : null}
-
-      {modalError ? (
-        <ErrorModal
-          message={modalError}
-          onClose={() => setModalError("")}
-          mode={languageMode}
-        />
-      ) : null}
-
-      {activeVideoStepKey ? (
-        <LiveVideoRecorderModal
-          mode={languageMode}
-          busy={busy !== null}
-          elapsedSeconds={recordingSeconds}
-          isRecording={isRecordingVideo}
-          hasRecordedFile={!!recordedVideoFile}
-          videoRef={liveVideoRef}
-          onStart={() => {
-            try {
-              startLiveRecording();
-            } catch (error) {
-              setModalError(error instanceof Error ? error.message : "Recording start nahi hui.");
-            }
-          }}
-          onStop={stopLiveRecording}
-          onUseRecording={() => {
-            if (!activeVideoStepKey || !recordedVideoFile) return;
-            void runAction(activeVideoStepKey, async () => {
-              await uploadOrQueue(activeVideoStepKey, recordedVideoFile, {
-                skipClientValidation: true,
-              });
-              closeLiveVideoRecorder();
-            });
-          }}
-          onRetake={() => void retakeLiveRecording()}
-          onClose={closeLiveVideoRecorder}
-        />
-      ) : null}
-
-      {rewardModal ? (
-        <RewardModal
-          rewards={rewardModal.rewards}
-          summary={rewardModal.summary}
-          onClose={() => setRewardModal(null)}
-          mode={languageMode}
-        />
-      ) : null}
-
-      {momentToast ? (
-        <div className="fixed inset-x-0 bottom-4 z-[310] mx-auto w-[calc(100%-24px)] max-w-md">
-          <div
-            className={`rounded-[24px] border px-4 py-4 shadow-[0_18px_40px_rgba(20,14,35,0.16)] ${
-              momentToast.tone === "celebrate"
-                ? "border-[#f8e2b7] bg-[#fff9eb]"
-                : momentToast.tone === "warning"
-                  ? "border-[#f8d0d6] bg-[#fff3f5]"
-                  : momentToast.tone === "focus"
-                    ? "border-[#ddd1fb] bg-[#f7f3ff]"
-                    : "border-[#dbeafe] bg-[#eff6ff]"
-            }`}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <div className="text-[16px] font-black tracking-[-0.02em] text-[#241f38]">{momentToast.title}</div>
-                <div className="mt-1 text-[13px] leading-[1.7] text-[#5f5871]">{momentToast.detail}</div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setMomentToast(null)}
-                className="rounded-full border border-[#ddd1fb] bg-white px-2.5 py-1 text-[11px] font-semibold text-[#6d5bd0]"
-              >
-                {languageMode === "simple" ? "Close" : "बंद"}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      {fuelSheetOverlay}
+      {errorOverlay}
+      {videoOverlay}
+      {rewardOverlay}
+      {toastOverlay}
     </div>
   );
 }

@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import type { AdminBookingPaymentCollection, AdminBookingSopStep } from "../../types";
-import { recordAdminBookingPaymentProof, updateAdminBookingSopStep, uploadAdminBookingSopProof } from "../../lib/api";
+import { recordAdminBookingPaymentProof, saveGroomerStepNote, updateAdminBookingSopStep, uploadAdminBookingSopProof } from "../../lib/api";
 import { useAdminToast } from "../common/AdminToastProvider";
+import { AdminGroomerNotesAI } from "./AdminGroomerNotesAI";
 
 function formatProofHint(proofType: AdminBookingSopStep["proofType"]) {
   if (proofType === "manual") return "Manual";
@@ -20,6 +21,12 @@ type Props = {
   expectedAmount: number;
   paymentCollection: AdminBookingPaymentCollection | null;
   onRefresh: () => Promise<void> | void;
+  // Optional: for AI groomer notes panel
+  serviceName?: string;
+  petName?: string;
+  breed?: string;
+  groomingNotes?: string;
+  stylingNotes?: string;
 };
 
 export function AdminBookingSopSection({
@@ -29,9 +36,17 @@ export function AdminBookingSopSection({
   expectedAmount,
   paymentCollection,
   onRefresh,
+  serviceName,
+  petName,
+  breed,
+  groomingNotes,
+  stylingNotes,
 }: Props) {
   const { showToast } = useAdminToast();
   const [busyStepKey, setBusyStepKey] = useState<string | null>(null);
+  const [noteDraftMap, setNoteDraftMap] = useState<Record<string, string>>({});
+  const [noteEditingKey, setNoteEditingKey] = useState<string | null>(null);
+  const [noteSavingKey, setNoteSavingKey] = useState<string | null>(null);
   const [paymentMode, setPaymentMode] = useState<"cash" | "online" | "waived">(paymentCollection?.collectionMode ?? "cash");
   const [paymentAmount, setPaymentAmount] = useState(
     paymentCollection ? String(paymentCollection.collectedAmount) : String(expectedAmount)
@@ -46,6 +61,21 @@ export function AdminBookingSopSection({
     setPaymentNotes(paymentCollection?.notes ?? "");
     setApplyServiceAmountChange(paymentCollection?.serviceAmountUpdated ?? false);
   }, [expectedAmount, paymentCollection]);
+
+  const handleSaveNote = async (stepKey: string) => {
+    const note = noteDraftMap[stepKey] ?? "";
+    try {
+      setNoteSavingKey(stepKey);
+      await saveGroomerStepNote(bookingId, stepKey, note);
+      showToast(note.trim() ? "Groomer note saved." : "Groomer note cleared.", true);
+      await onRefresh();
+      setNoteEditingKey(null);
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Failed to save note.", false);
+    } finally {
+      setNoteSavingKey(null);
+    }
+  };
 
   const handleStatusUpdate = async (stepKey: string, status: "pending" | "completed") => {
     try {
@@ -114,6 +144,20 @@ export function AdminBookingSopSection({
       <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">
         Service SOP
       </div>
+
+      {/* AI Groomer Notes panel — only when pet context available */}
+      {serviceName ? (
+        <AdminGroomerNotesAI
+          bookingId={bookingId}
+          serviceName={serviceName}
+          petName={petName ?? ""}
+          breed={breed ?? ""}
+          groomingNotes={groomingNotes ?? ""}
+          stylingNotes={stylingNotes ?? ""}
+          steps={steps}
+          onApplied={onRefresh}
+        />
+      ) : null}
 
       <div className="space-y-3">
         {steps.map((step) => {
@@ -212,9 +256,57 @@ export function AdminBookingSopSection({
                 </div>
               </div>
 
-              {step.notes ? (
-                <p className="mt-2 text-[12px] text-[#4b5563]">{step.notes}</p>
-              ) : null}
+              {/* Groomer note — inline editable */}
+              <div className="mt-3">
+                {noteEditingKey === step.key ? (
+                  <div className="rounded-[10px] border border-[#c4b5fd] bg-[#faf8ff] p-2.5">
+                    <textarea
+                      value={noteDraftMap[step.key] ?? step.notes ?? ""}
+                      onChange={(e) => setNoteDraftMap((prev) => ({ ...prev, [step.key]: e.target.value }))}
+                      rows={2}
+                      autoFocus
+                      placeholder="Groomer note for this step (shown on groomer's phone during session)"
+                      className="w-full resize-none rounded-[8px] bg-white border border-[#e5e7eb] px-2.5 py-2 text-[12px] leading-[1.55] text-[#2a2346] outline-none focus:border-[#6d5bd0]"
+                    />
+                    <div className="mt-2 flex gap-2">
+                      <button
+                        type="button"
+                        disabled={noteSavingKey === step.key}
+                        onClick={() => void handleSaveNote(step.key)}
+                        className="rounded-[8px] bg-[#6d5bd0] px-3 py-1.5 text-[11px] font-semibold text-white disabled:opacity-50"
+                      >
+                        {noteSavingKey === step.key ? "Saving…" : "Save note"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setNoteEditingKey(null)}
+                        className="rounded-[8px] border border-[#e5e7eb] px-3 py-1.5 text-[11px] font-semibold text-[#6b7280]"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : step.notes ? (
+                  <div className="flex items-start justify-between gap-2 rounded-[10px] border border-[#c4b5fd]/40 bg-[#f5f3ff] px-3 py-2">
+                    <p className="text-[12px] leading-[1.55] text-[#4c1d95]">{step.notes}</p>
+                    <button
+                      type="button"
+                      onClick={() => { setNoteEditingKey(step.key); setNoteDraftMap((prev) => ({ ...prev, [step.key]: step.notes ?? "" })); }}
+                      className="shrink-0 text-[11px] font-semibold text-[#6d5bd0] underline underline-offset-2"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => { setNoteEditingKey(step.key); setNoteDraftMap((prev) => ({ ...prev, [step.key]: "" })); }}
+                    className="text-[11px] font-semibold text-[#9ca3af] underline underline-offset-2 hover:text-[#6d5bd0]"
+                  >
+                    + Add groomer note
+                  </button>
+                )}
+              </div>
 
               {isPaymentProofStep ? (
                 <div className="mt-3 rounded-[12px] border border-[#ece5ff] bg-white p-3">

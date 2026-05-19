@@ -530,6 +530,20 @@ export async function updateAdminBookingSopStep(
   return data;
 }
 
+export async function saveGroomerStepNote(
+  bookingId: string,
+  stepKey: string,
+  note: string
+): Promise<void> {
+  const res = await fetch(`/api/admin/bookings/${bookingId}/sop/step`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ stepKey, notes: note }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(getApiErrorMessage(data, "Failed to save groomer note"));
+}
+
 export async function uploadAdminBookingSopProof(
   bookingId: string,
   payload: { stepKey: string; file: File }

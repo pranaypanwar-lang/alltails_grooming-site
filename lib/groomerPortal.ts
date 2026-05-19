@@ -1,5 +1,5 @@
 import type { Prisma, PrismaClient } from "./generated/prisma";
-import { BOOKING_SOP_STEPS } from "./booking/sop";
+import { getSopStepsForService } from "./booking/sop";
 import { getAddressReadinessSummary } from "./booking/addressCapture";
 import { getBookingWindowDisplay } from "./booking/window";
 import { getBookingRewardSummary, getGamificationSnapshot } from "./groomerRewards";
@@ -158,7 +158,7 @@ export async function serializeGroomerBooking(prisma: DbClient, booking: Groomer
           }
         : null,
     },
-    sopSteps: BOOKING_SOP_STEPS.map((definition) => {
+    sopSteps: getSopStepsForService(booking.service.name).map((definition) => {
       const step = booking.sopSteps.find((item) => item.stepKey === definition.key);
       return {
         key: definition.key,
@@ -171,6 +171,7 @@ export async function serializeGroomerBooking(prisma: DbClient, booking: Groomer
         requiredForCompletion: definition.requiredForCompletion,
         status: step?.status === "completed" ? "completed" : "pending",
         completedAt: step?.completedAt?.toISOString() ?? null,
+        groomerNote: step?.notes ?? null,
         proofs: (step?.proofs ?? []).map((proof) => ({
           id: proof.id,
           publicUrl: proof.publicUrl,

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { adminPrisma } from "../../../api/admin/_lib/bookingAdmin";
 import { verifyGroomerAccessToken } from "../../../../lib/groomerAccess";
 import { getGroomerSessionMember } from "../../../../lib/auth/groomerSession";
+import { hasAdminSession } from "../../../../lib/auth/adminSession";
 import { fetchGroomerBooking, serializeGroomerBooking } from "../../../../lib/groomerPortal";
 import { GroomerJobClient } from "./GroomerJobClient";
 
@@ -19,6 +20,7 @@ export default async function GroomerJobPage({
 
   const verified = verifyGroomerAccessToken(token ?? null, id);
   const sessionMember = await getGroomerSessionMember();
+  const adminAllowed = await hasAdminSession();
 
   const booking = await fetchGroomerBooking(adminPrisma, id);
   if (!booking) {
@@ -30,7 +32,7 @@ export default async function GroomerJobPage({
     (booking.groomerMemberId === sessionMember.id ||
       (!booking.groomerMemberId && booking.assignedTeamId === sessionMember.teamId));
 
-  if (!verified && !sessionAllowed) {
+  if (!verified && !sessionAllowed && !adminAllowed) {
     return (
       <div className="min-h-screen bg-[#f8f6ff] px-4 py-10">
         <div className="mx-auto max-w-md rounded-[28px] border border-[#ece5ff] bg-white p-6 shadow-[0_18px_48px_rgba(73,44,120,0.08)]">

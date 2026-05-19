@@ -387,6 +387,15 @@ export const COACHING_COMPLETE_DRY_STYLE: CoachingStep[] = [
   _finalCombing,
 ];
 
+// Used for the separate Haircut & Styling phase in Complete (blow dry is its own phase before this)
+export const COACHING_COMPLETE_HAIRCUT_STYLE: CoachingStep[] = [
+  _hygieneCut,
+  _fullBodyStyling,
+  _pawButter,
+  _serum,
+  _finalCombing,
+];
+
 export const COACHING_SIGNATURE_DRY: CoachingStep[] = [_blowDry];
 
 export const COACHING_SIGNATURE_HYGIENE_CUT: CoachingStep[] = [

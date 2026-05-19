@@ -5,11 +5,17 @@ export type BookingSopStepKey =
   | "pet_settled"
   | "sanitization_proof"
   | "pre_groom_video"
+  | "oil_massage_proof"
   | "bath_dry_proof"
+  | "dental_proof"
   | "hairstyle_approval"
+  | "nail_trim_proof"
+  | "ear_check_proof"
   | "final_groom_proof"
   | "payment_proof"
   | "review_proof";
+
+export type ServiceTier = "Essential" | "Signature" | "Complete";
 
 export type BookingSopStepDefinition = {
   key: BookingSopStepKey;
@@ -20,6 +26,7 @@ export type BookingSopStepDefinition = {
   groomerHintHindi?: string;
   proofType: "manual" | "image" | "video" | "mixed";
   requiredForCompletion: boolean;
+  tiers: ServiceTier[];
 };
 
 export type BookingSopEvidenceStep = {
@@ -38,6 +45,7 @@ export const BOOKING_SOP_STEPS: BookingSopStepDefinition[] = [
     groomerHintHindi: "घर के लिए निकलते ही इसे दबाइए, कस्टमर को अपडेट चला जाएगा।",
     proofType: "manual",
     requiredForCompletion: true,
+    tiers: ["Essential", "Signature", "Complete"],
   },
   {
     key: "arrived",
@@ -48,6 +56,7 @@ export const BOOKING_SOP_STEPS: BookingSopStepDefinition[] = [
     groomerHintHindi: "लोकेशन पर पहुँचते ही या काम शुरू करते ही इसे दबाइए।",
     proofType: "manual",
     requiredForCompletion: true,
+    tiers: ["Essential", "Signature", "Complete"],
   },
   {
     key: "dress_check_selfie",
@@ -58,6 +67,7 @@ export const BOOKING_SOP_STEPS: BookingSopStepDefinition[] = [
     groomerHintHindi: "पहुँचते ही — ग्रूमर और हेल्पर दोनों यूनिफॉर्म में साथ सेल्फी लें।",
     proofType: "image",
     requiredForCompletion: true,
+    tiers: ["Essential", "Signature", "Complete"],
   },
   {
     key: "pet_settled",
@@ -68,6 +78,7 @@ export const BOOKING_SOP_STEPS: BookingSopStepDefinition[] = [
     groomerHintHindi: "पेट पैरेंट से मिलें, पेट को प्यार से सेटल करें — जल्दी नहीं।",
     proofType: "manual",
     requiredForCompletion: true,
+    tiers: ["Essential", "Signature", "Complete"],
   },
   {
     key: "sanitization_proof",
@@ -78,6 +89,7 @@ export const BOOKING_SOP_STEPS: BookingSopStepDefinition[] = [
     groomerHintHindi: "टेबल, कंघे, कैंची — सब साफ करें। 10-15 सेकंड का वीडियो लें।",
     proofType: "video",
     requiredForCompletion: true,
+    tiers: ["Essential", "Signature", "Complete"],
   },
   {
     key: "pre_groom_video",
@@ -88,6 +100,18 @@ export const BOOKING_SOP_STEPS: BookingSopStepDefinition[] = [
     groomerHintHindi: "काम शुरू करने से पहले पेट का पूरा कोट और लुक साफ दिखाना है।",
     proofType: "video",
     requiredForCompletion: true,
+    tiers: ["Essential", "Signature", "Complete"],
+  },
+  {
+    key: "oil_massage_proof",
+    label: "Oil massage photo",
+    groomerLabel: "Oil massage proof",
+    groomerLabelHindi: "ऑयल मसाज प्रूफ",
+    groomerHint: "Oil lagaate waqt ya baad mein ek photo lo — poora body cover dikhna chahiye.",
+    groomerHintHindi: "ऑयल लगाते वक्त या बाद में एक फोटो लो — पूरा बॉडी कवर दिखना चाहिए।",
+    proofType: "image",
+    requiredForCompletion: true,
+    tiers: ["Complete"],
   },
   {
     key: "bath_dry_proof",
@@ -98,6 +122,18 @@ export const BOOKING_SOP_STEPS: BookingSopStepDefinition[] = [
     groomerHintHindi: "शैम्पू + कंडीशनर के बाद तौलिया ड्राई → ब्लो ड्राई। पेट साफ और ड्राई दिखना चाहिए।",
     proofType: "mixed",
     requiredForCompletion: true,
+    tiers: ["Essential", "Signature", "Complete"],
+  },
+  {
+    key: "dental_proof",
+    label: "Dental hygiene photo",
+    groomerLabel: "Daant saaf ka proof",
+    groomerLabelHindi: "दांत साफ का प्रूफ",
+    groomerHint: "Pet toothpaste se dono taraf ke daant brush karo. Ek close-up photo lo.",
+    groomerHintHindi: "पेट टूथपेस्ट से दोनों तरफ के दांत ब्रश करो। एक क्लोज़-अप फोटो लो।",
+    proofType: "image",
+    requiredForCompletion: true,
+    tiers: ["Signature", "Complete"],
   },
   {
     key: "hairstyle_approval",
@@ -108,16 +144,40 @@ export const BOOKING_SOP_STEPS: BookingSopStepDefinition[] = [
     groomerHintHindi: "स्टाइलिंग नोट्स और रेफरेंस फोटो के मुताबिक कट करें। फोटो में साफ दिखना चाहिए।",
     proofType: "image",
     requiredForCompletion: true,
+    tiers: ["Signature", "Complete"],
+  },
+  {
+    key: "nail_trim_proof",
+    label: "Nail trim photo",
+    groomerLabel: "Nails trim ka proof",
+    groomerLabelHindi: "नेल्स ट्रिम का प्रूफ",
+    groomerHint: "Nails trim aur file karo. Paws ki ek clear photo lo.",
+    groomerHintHindi: "नेल्स ट्रिम और फाइल करो। पंजों की एक साफ फोटो लो।",
+    proofType: "image",
+    requiredForCompletion: true,
+    tiers: ["Essential", "Signature", "Complete"],
+  },
+  {
+    key: "ear_check_proof",
+    label: "Ear cleaning photo",
+    groomerLabel: "Kaan saaf ka proof",
+    groomerLabelHindi: "कान साफ का प्रूफ",
+    groomerHint: "Ear cleaner se dono kaan saaf karo. Ek photo lo jisme kaan saaf dike.",
+    groomerHintHindi: "ईयर क्लीनर से दोनों कान साफ करो। एक फोटो लो जिसमें कान साफ दिखे।",
+    proofType: "image",
+    requiredForCompletion: true,
+    tiers: ["Essential", "Signature", "Complete"],
   },
   {
     key: "final_groom_proof",
     label: "Final grooming video",
     groomerLabel: "Final look video",
     groomerLabelHindi: "फाइनल लुक वीडियो",
-    groomerHint: "Nails, ears, perfume sab ho jaye — phir 10-15 sec ka final video lein.",
-    groomerHintHindi: "नेल्स, कान, परफ्यूम सब हो जाए — फिर 10-15 सेकंड का फाइनल वीडियो लें।",
+    groomerHint: "Sab kuch ho jaye — phir 10-15 sec ka final video lein.",
+    groomerHintHindi: "सब कुछ हो जाए — फिर 10-15 सेकंड का फाइनल वीडियो लें।",
     proofType: "video",
     requiredForCompletion: true,
+    tiers: ["Essential", "Signature", "Complete"],
   },
   {
     key: "payment_proof",
@@ -128,6 +188,7 @@ export const BOOKING_SOP_STEPS: BookingSopStepDefinition[] = [
     groomerHintHindi: "कैश लिया तो फोटो लो। ऑनलाइन हुआ तो स्क्रीनशॉट लो। दोनों ज़रूरी हैं।",
     proofType: "mixed",
     requiredForCompletion: true,
+    tiers: ["Essential", "Signature", "Complete"],
   },
   {
     key: "review_proof",
@@ -138,6 +199,7 @@ export const BOOKING_SOP_STEPS: BookingSopStepDefinition[] = [
     groomerHintHindi: "QR दिखाओ, कस्टमर स्कैन करे और रिव्यू लिखे — स्क्रीनशॉट यहाँ जोड़ें।",
     proofType: "image",
     requiredForCompletion: false,
+    tiers: ["Essential", "Signature", "Complete"],
   },
 ];
 
@@ -151,9 +213,25 @@ export function getBookingSopStepDefinition(stepKey: BookingSopStepKey) {
   return BOOKING_SOP_STEPS.find((step) => step.key === stepKey) ?? null;
 }
 
-export function getMissingRequiredSopLabels(completedKeys: Iterable<string>) {
+export function getTierFromServiceName(serviceName: string): ServiceTier {
+  const lower = serviceName.toLowerCase();
+  if (lower.includes("complete") || lower.includes("pampering")) return "Complete";
+  if (lower.includes("signature")) return "Signature";
+  return "Essential";
+}
+
+export function getSopStepsForService(serviceName: string): BookingSopStepDefinition[] {
+  const tier = getTierFromServiceName(serviceName);
+  return BOOKING_SOP_STEPS.filter((step) => step.tiers.includes(tier));
+}
+
+export function getMissingRequiredSopLabels(
+  completedKeys: Iterable<string>,
+  serviceName?: string
+) {
   const completedSet = new Set(completedKeys);
-  return BOOKING_SOP_STEPS
+  const steps = serviceName ? getSopStepsForService(serviceName) : BOOKING_SOP_STEPS;
+  return steps
     .filter((step) => step.requiredForCompletion && !completedSet.has(step.key))
     .map((step) => step.label);
 }
@@ -175,9 +253,12 @@ export function hasRequiredSopEvidence(
 
 export function countRequiredSopEvidenceCompleted(
   steps: BookingSopEvidenceStep[],
-  options?: { hasPaymentCollection?: boolean }
+  options?: { hasPaymentCollection?: boolean; serviceName?: string }
 ) {
-  return BOOKING_SOP_STEPS.filter((definition) => {
+  const definitions = options?.serviceName
+    ? getSopStepsForService(options.serviceName)
+    : BOOKING_SOP_STEPS;
+  return definitions.filter((definition) => {
     if (!definition.requiredForCompletion || definition.proofType === "manual") return false;
     const step = steps.find((item) => item.stepKey === definition.key);
     return hasRequiredSopEvidence(definition, step, options);
@@ -186,9 +267,12 @@ export function countRequiredSopEvidenceCompleted(
 
 export function getMissingRequiredSopEvidenceLabels(
   steps: BookingSopEvidenceStep[],
-  options?: { hasPaymentCollection?: boolean }
+  options?: { hasPaymentCollection?: boolean; serviceName?: string }
 ) {
-  return BOOKING_SOP_STEPS
+  const definitions = options?.serviceName
+    ? getSopStepsForService(options.serviceName)
+    : BOOKING_SOP_STEPS;
+  return definitions
     .filter((definition) => definition.requiredForCompletion && definition.proofType !== "manual")
     .filter((definition) => {
       const step = steps.find((item) => item.stepKey === definition.key);
