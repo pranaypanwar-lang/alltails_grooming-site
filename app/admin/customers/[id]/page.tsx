@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchAdminCustomerDetail } from "../../lib/api";
-import type { AdminCustomerDetail } from "../../types";
+import type { AdminCustomerDetail, AdminCustomerDetailMessage } from "../../types";
 import { AdminPageHeader } from "../../components/common/AdminPageHeader";
 import { AdminSummaryBar } from "../../components/common/AdminSummaryBar";
+import { useAdminToast } from "../../components/common/AdminToastProvider";
 import { isLongCoatBreed, shouldSuggestUpgrade } from "../../../../lib/upsell/detectUpsell";
 
 function formatCurrency(value: number) {
@@ -33,6 +34,130 @@ function toneClass(tone: "default" | "warning" | "success" | "danger") {
   if (tone === "warning") return "bg-[#fff8eb] text-[#b45309]";
   if (tone === "success") return "bg-[#effaf3] text-[#15803d]";
   return "bg-[#eef2ff] text-[#4338ca]";
+}
+
+function dateDividerLabel(value: string | null) {
+  if (!value) return "Unknown";
+  const date = new Date(value);
+  const today = new Date();
+  const yesterday = new Date(Date.now() - 86400000);
+  if (date.toDateString() === today.toDateString()) return "Today";
+  if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
+  return date.toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
+}
+
+function statusMeta(status: string) {
+  if (status === "failed") return { icon: "✗", cls: "text-[#dc2626]" };
+  if (status === "delivered") return { icon: "✓✓", cls: "text-[#2563eb]" };
+  if (status === "sent") return { icon: "✓", cls: "text-[#6b7280]" };
+  if (status === "queued") return { icon: "…", cls: "text-[#b45309]" };
+  return { icon: "•", cls: "text-[#9ca3af]" };
+}
+
+function MessageThread({
+  messages,
+  composeText,
+  composeChannel,
+  isSending,
+  onComposeTextChange,
+  onComposeChannelChange,
+  onSend,
+}: {
+  messages: AdminCustomerDetailMessage[];
+  composeText: string;
+  composeChannel: "whatsapp" | "sms";
+  isSending: boolean;
+  onComposeTextChange: (value: string) => void;
+  onComposeChannelChange: (value: "whatsapp" | "sms") => void;
+  onSend: () => void;
+}) {
+  let lastDate = "";
+
+  return (
+    <div className="mt-3 overflow-hidden rounded-[18px] border border-[#f0ecfa] bg-[#fbfaff]">
+      <div className="max-h-[420px] space-y-4 overflow-y-auto px-3 py-4">
+        {messages.length === 0 ? (
+          <div className="text-[13px] text-[#8a90a6]">No message history.</div>
+        ) : (
+          messages.map((message) => {
+            const at = message.sentAt ?? message.preparedAt;
+            const label = dateDividerLabel(at);
+            const showDivider = label !== lastDate;
+            lastDate = label;
+            const isInbound = message.messageType.startsWith("inbound") || message.messageType === "customer_reply";
+            const status = statusMeta(message.status);
+            const isWhatsApp = message.channel.toLowerCase().includes("whatsapp");
+
+            return (
+              <div key={message.id}>
+                {showDivider ? (
+                  <div className="mb-3 flex justify-center">
+                    <span className="rounded-full border border-[#ece5ff] bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">
+                      {label}
+                    </span>
+                  </div>
+                ) : null}
+                <div className={`flex ${isInbound ? "justify-start" : "justify-end"}`}>
+                  <div className={`flex max-w-[86%] flex-col ${isInbound ? "items-start" : "items-end"}`}>
+                    <div
+                      className={`relative px-3.5 py-2.5 text-[12px] leading-[1.5] shadow-sm ${
+                        isInbound
+                          ? "rounded-[18px] rounded-tl-[4px] bg-[#f3f4f6] text-[#1f1f2c]"
+                          : "rounded-[18px] rounded-tr-[4px] bg-[#6d5bd0] text-white"
+                      }`}
+                    >
+                      <span
+                        className={`absolute -top-1.5 ${isInbound ? "-left-1.5" : "-right-1.5"} h-3.5 w-3.5 rounded-full border-2 border-white ${
+                          isWhatsApp ? "bg-[#25d366]" : "bg-[#9ca3af]"
+                        }`}
+                        title={message.channel}
+                      />
+                      <div className="text-[11px] font-black uppercase tracking-[0.08em] opacity-80">
+                        {message.messageType.replace(/_/g, " ")}
+                      </div>
+                      <div className="mt-1 whitespace-pre-wrap">{message.content}</div>
+                    </div>
+                    <div className={`mt-1 text-[10px] ${isInbound ? "text-left" : "text-right"} text-[#8a90a6]`}>
+                      {formatDate(at)}
+                      <span className={`ml-2 font-semibold ${status.cls}`}>
+                        {status.icon} {message.status}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+      <div className="border-t border-[#f0ecfa] bg-white p-3">
+        <div className="flex gap-2">
+          <select
+            value={composeChannel}
+            onChange={(event) => onComposeChannelChange(event.target.value === "sms" ? "sms" : "whatsapp")}
+            className="h-10 rounded-[12px] border border-[#ddd1fb] bg-white px-3 text-[12px] font-semibold text-[#2a2346]"
+          >
+            <option value="whatsapp">WhatsApp</option>
+            <option value="sms">SMS</option>
+          </select>
+          <input
+            value={composeText}
+            onChange={(event) => onComposeTextChange(event.target.value)}
+            placeholder="Write a message"
+            className="h-10 min-w-0 flex-1 rounded-[12px] border border-[#ddd1fb] px-3 text-[13px] outline-none focus:border-[#6d5bd0]"
+          />
+          <button
+            type="button"
+            disabled={isSending || !composeText.trim()}
+            onClick={onSend}
+            className="h-10 rounded-[12px] bg-[#6d5bd0] px-4 text-[12px] font-semibold text-white hover:bg-[#5b4ab5] disabled:opacity-50"
+          >
+            {isSending ? "Sending…" : "Send"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function UpsellOpportunityCard({ data }: { data: AdminCustomerDetail }) {
@@ -140,11 +265,15 @@ function NextBestAction({ data }: { data: AdminCustomerDetail }) {
 
 export default function AdminCustomerDetailPage() {
   const params = useParams<{ id: string }>();
+  const { showToast } = useAdminToast();
   const customerId = typeof params?.id === "string" ? params.id : "";
   const [data, setData] = useState<AdminCustomerDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState("");
+  const [composeText, setComposeText] = useState("");
+  const [composeChannel, setComposeChannel] = useState<"whatsapp" | "sms">("whatsapp");
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
 
   const load = useCallback(async (silent = false) => {
     if (!customerId) return;
@@ -165,6 +294,89 @@ export default function AdminCustomerDetailPage() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  const orderedMessages = useMemo(
+    () =>
+      [...(data?.communications ?? [])].sort(
+        (a, b) =>
+          new Date(a.sentAt ?? a.preparedAt).getTime() -
+          new Date(b.sentAt ?? b.preparedAt).getTime()
+      ),
+    [data?.communications]
+  );
+
+  const sendInlineMessage = useCallback(async () => {
+    const content = composeText.trim();
+    if (!customerId || !content) return;
+    const tempMessage: AdminCustomerDetailMessage = {
+      id: `optimistic-${Date.now()}`,
+      bookingId: data?.bookingHistory[0]?.id ?? "",
+      messageType: "admin_custom",
+      channel: composeChannel,
+      status: "queued",
+      recipient: data?.customer.phoneFull ?? "",
+      preparedAt: new Date().toISOString(),
+      sentAt: null,
+      content,
+    };
+    setData((prev) =>
+      prev
+        ? {
+            ...prev,
+            communications: [tempMessage, ...prev.communications],
+          }
+        : prev
+    );
+    setComposeText("");
+    setIsSendingMessage(true);
+    try {
+      const res = await fetch(`/api/admin/customers/${customerId}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ channel: composeChannel, content }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body?.error ?? "Failed to send message");
+      setData((prev) =>
+        prev
+          ? {
+              ...prev,
+              communications: prev.communications.map((message) =>
+                message.id === tempMessage.id ? body.message : message
+              ),
+            }
+          : prev
+      );
+      showToast(
+        body?.message?.status === "failed"
+          ? "Message failed before provider handoff."
+          : body?.message?.status === "sent"
+          ? "Message sent."
+          : body?.dispatchResult
+            ? "Message handed to provider."
+            : composeChannel === "sms"
+              ? "SMS message queued."
+              : "Message queued. WhatsApp provider is not configured.",
+        body?.message?.status !== "failed"
+      );
+    } catch (sendError) {
+      setData((prev) =>
+        prev
+          ? {
+              ...prev,
+              communications: prev.communications.map((message) =>
+                message.id === tempMessage.id
+                  ? { ...message, status: "failed" }
+                  : message
+              ),
+            }
+          : prev
+      );
+      showToast(sendError instanceof Error ? sendError.message : "Failed to send message", false);
+    } finally {
+      setIsSendingMessage(false);
+    }
+  }, [composeChannel, composeText, customerId, data?.bookingHistory, data?.customer.phoneFull, showToast]);
 
   if (isLoading) {
     return <div className="p-8 text-[14px] text-[#7c8499]">Loading customer 360…</div>;
@@ -425,31 +637,15 @@ export default function AdminCustomerDetailPage() {
 
                 <div>
                   <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#8a90a6]">Message thread</div>
-                  <div className="mt-3 space-y-2">
-                    {data.communications.length === 0 ? (
-                      <div className="text-[13px] text-[#8a90a6]">No message history.</div>
-                    ) : (
-                      data.communications.slice(0, 8).map((message) => {
-                        const statusIcon = message.status === "sent" ? "✓" : message.status === "failed" ? "✗" : "…";
-                        const statusColor = message.status === "sent" ? "text-[#15803d]" : message.status === "failed" ? "text-[#dc2626]" : "text-[#9ca3af]";
-                        return (
-                          <div key={message.id} className="flex flex-col items-end gap-0.5">
-                            <div className="max-w-[90%] rounded-[14px] rounded-tr-[4px] bg-[#6d5bd0] px-3 py-2.5">
-                              <div className="text-[12px] font-semibold text-white">
-                                {message.messageType.replace(/_/g, " ")}
-                              </div>
-                              <div className="mt-0.5 text-[11px] text-white/70">
-                                {message.channel.toUpperCase()}
-                              </div>
-                            </div>
-                            <div className={`text-[10px] ${statusColor}`}>
-                              {statusIcon} {message.status} · {formatDate(message.sentAt ?? message.preparedAt)}
-                            </div>
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
+                  <MessageThread
+                    messages={orderedMessages}
+                    composeText={composeText}
+                    composeChannel={composeChannel}
+                    isSending={isSendingMessage}
+                    onComposeTextChange={setComposeText}
+                    onComposeChannelChange={setComposeChannel}
+                    onSend={() => void sendInlineMessage()}
+                  />
                 </div>
               </div>
             </section>

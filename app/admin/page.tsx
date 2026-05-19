@@ -8,6 +8,7 @@ import { AdminSummaryCard } from "./components/common/AdminSummaryCard";
 import { AdminSignalFeed } from "./components/dashboard/AdminSignalFeed";
 import { AdminDailyTimeline } from "./components/dashboard/AdminDailyTimeline";
 import { AdminCashPositionTable } from "./components/dashboard/AdminCashPositionTable";
+import { AdminRevenueTracker } from "./components/dashboard/AdminRevenueTracker";
 import type { DashboardResponse } from "./types/dashboard";
 
 const QUICK_LINKS = [
@@ -80,6 +81,11 @@ export default function AdminDashboard() {
             {error}
           </div>
         )}
+
+        {/* Revenue Tracker — always mounted, self-fetching */}
+        <div className="mt-6">
+          <AdminRevenueTracker />
+        </div>
 
         {/* Main grid */}
         {data && (

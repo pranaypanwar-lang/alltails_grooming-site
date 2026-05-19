@@ -57,7 +57,7 @@ function DispatchCard({
 
   return (
     <div
-      className={`rounded-[18px] border bg-white shadow-[0_12px_24px_rgba(73,44,120,0.05)] transition-shadow hover:shadow-[0_16px_32px_rgba(73,44,120,0.1)] ${
+      className={`group rounded-[18px] border bg-white shadow-[0_12px_24px_rgba(73,44,120,0.05)] transition-shadow hover:shadow-[0_16px_32px_rgba(73,44,120,0.1)] ${
         card.urgency.issueFlag ? "border-[#f7d7d7]" : card.urgency.sameDay ? "border-[#fde7b0]" : "border-[#ece5ff]"
       } ${isSelected ? "ring-2 ring-[#6d5bd0] ring-offset-2 ring-offset-[#f7f7fb]" : ""}`}
     >
@@ -125,6 +125,53 @@ function DispatchCard({
         </div>
       </button>
 
+      <div className="flex md:hidden border-t border-[#f0ecfa] bg-[#fbfaff] px-3.5 py-2.5 md:translate-y-1 md:opacity-0 md:transition-all md:duration-150 md:group-hover:flex md:group-hover:translate-y-0 md:group-hover:opacity-100 flex-wrap items-center gap-2">
+        {(card.dispatchState === "unassigned" || card.dispatchState === "assigned") && (
+          <button
+            type="button"
+            onClick={() =>
+              onActionClick(
+                card.availableActions.includes("reassign_groomer")
+                  ? "reassign_groomer"
+                  : card.availableActions.includes("assign_groomer")
+                    ? "assign_groomer"
+                    : card.availableActions.includes("reassign_team")
+                      ? "reassign_team"
+                      : "assign_team"
+              )
+            }
+            className="rounded-[10px] border border-[#ddd1fb] bg-white px-3 py-1.5 text-[11px] font-semibold text-[#6d5bd0] hover:bg-[#f6f4fd] transition-colors"
+          >
+            Assign
+          </button>
+        )}
+        {card.dispatchState === "assigned" && (
+          <button
+            type="button"
+            onClick={() => onActionClick("mark_en_route")}
+            className="rounded-[10px] border border-[#fde7b0] bg-white px-3 py-1.5 text-[11px] font-semibold text-[#b45309] hover:bg-[#fff8eb] transition-colors"
+          >
+            En Route
+          </button>
+        )}
+        {card.availableActions.includes("send_same_day_alert") && (
+          <button
+            type="button"
+            onClick={() => onActionClick("send_same_day_alert")}
+            className="rounded-[10px] border border-[#fecaca] bg-white px-3 py-1.5 text-[11px] font-semibold text-[#be123c] hover:bg-[#fff1f2] transition-colors"
+          >
+            Alert
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={() => onActionClick("open_details")}
+          className="ml-auto rounded-[10px] bg-[#6d5bd0] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#5b4ab5] transition-colors"
+        >
+          View →
+        </button>
+      </div>
+
       {/* Footer */}
       <div className="border-t border-[#f0ecfa] px-3.5 py-2.5 flex flex-wrap items-center gap-2">
         {canSelect && (
@@ -137,55 +184,6 @@ function DispatchCard({
             />
             Select
           </label>
-        )}
-
-        <button
-          type="button"
-          onClick={() => onActionClick("open_details")}
-          className="rounded-[10px] border border-[#ddd1fb] px-3 py-1.5 text-[11px] font-semibold text-[#6d5bd0] hover:bg-[#f6f4fd] transition-colors"
-        >
-          Details
-        </button>
-
-        {/* Promoted quick-actions: most common dispatch operations */}
-        {(card.availableActions.includes("assign_team") || card.availableActions.includes("reassign_team")) && (
-          <button
-            type="button"
-            onClick={() => onActionClick(card.availableActions.includes("reassign_team") ? "reassign_team" : "assign_team")}
-            className="rounded-[10px] border border-[#ddd1fb] bg-[#f6f4fd] px-3 py-1.5 text-[11px] font-semibold text-[#6d5bd0] hover:bg-[#ede9fe] transition-colors"
-          >
-            Assign
-          </button>
-        )}
-
-        {card.availableActions.includes("mark_en_route") && (
-          <button
-            type="button"
-            onClick={() => onActionClick("mark_en_route")}
-            className="rounded-[10px] border border-[#fde7b0] bg-[#fffaf0] px-3 py-1.5 text-[11px] font-semibold text-[#b45309] hover:bg-[#fff8eb] transition-colors"
-          >
-            En Route
-          </button>
-        )}
-
-        {card.status === "confirmed" && card.urgency.sameDay && (
-          <button
-            type="button"
-            onClick={() => onActionClick("send_same_day_alert")}
-            className="rounded-[10px] border border-[#fde7b0] bg-[#fffaf0] px-3 py-1.5 text-[11px] font-semibold text-[#b45309] hover:bg-[#fff8eb] transition-colors"
-          >
-            Alert
-          </button>
-        )}
-
-        {card.availableActions.includes("mark_completed") && (
-          <button
-            type="button"
-            onClick={() => onActionClick("mark_completed")}
-            className="rounded-[10px] bg-[#6d5bd0] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#5b4ab5] transition-colors"
-          >
-            Complete
-          </button>
         )}
 
         <div className="relative ml-auto" ref={menuRef}>

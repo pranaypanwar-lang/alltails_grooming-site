@@ -33,6 +33,12 @@ export async function completeBookingLifecycle(
   return prisma.$transaction(async (tx) => {
     await ensureBookingSopSteps(tx, bookingId);
 
+    // Auto-complete dispatch tracking steps — groomer may not have tapped "Nikal Gaye"
+    await tx.bookingSopStep.updateMany({
+      where: { bookingId, stepKey: { in: ["en_route", "arrived"] }, status: "pending" },
+      data: { status: "completed", completedAt: new Date(), completedBy: "system" },
+    });
+
     const booking = await tx.booking.findUnique({
       where: { id: bookingId },
       include: { user: true, service: true, slots: true, sopSteps: true },

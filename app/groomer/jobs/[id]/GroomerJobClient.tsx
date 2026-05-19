@@ -977,7 +977,7 @@ export function GroomerJobClient({
   // Completion popup logic
   const allSopDone = useMemo(() => {
     const required = booking.sopSteps.filter(
-      (s) => !["payment_proof", "review_proof"].includes(s.key) && s.requiredForCompletion
+      (s) => !["payment_proof", "review_proof", "en_route", "arrived"].includes(s.key) && s.requiredForCompletion
     );
     return required.every((s) => s.status === "completed" || s.status === "skipped");
   }, [booking.sopSteps]);

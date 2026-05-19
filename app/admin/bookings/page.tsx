@@ -187,6 +187,8 @@ export default function AdminBookingsPage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkLoading, setBulkLoading] = useState(false);
+  const [bulkAssignState, setBulkAssignState] = useState<{ selectedTeamId: string } | null>(null);
+  const [bulkCompleteConfirmOpen, setBulkCompleteConfirmOpen] = useState(false);
   const { showToast } = useAdminToast();
 
   const handleSelectToggle = (id: string) => {
@@ -227,6 +229,36 @@ export default function AdminBookingsPage() {
         : `${succeeded} reminder${succeeded !== 1 ? "s" : ""} prepared`,
       failed === 0
     );
+    void load(filters, page, true);
+  };
+
+  const handleBulkAssign = async () => {
+    if (!bulkAssignState?.selectedTeamId || selectedIds.size === 0) return;
+    setBulkLoading(true);
+    const ids = Array.from(selectedIds);
+    const results = await Promise.allSettled(
+      ids.map((bookingId) => assignAdminBookingTeam(bookingId, bulkAssignState.selectedTeamId))
+    );
+    const succeeded = results.filter((r) => r.status === "fulfilled").length;
+    const failed = results.filter((r) => r.status === "rejected").length;
+    setBulkLoading(false);
+    setBulkAssignState(null);
+    setSelectedIds(new Set());
+    showToast(`${succeeded} assigned, ${failed} failed`, failed === 0);
+    void load(filters, page, true);
+  };
+
+  const handleBulkComplete = async () => {
+    if (selectedIds.size === 0) return;
+    setBulkLoading(true);
+    const ids = Array.from(selectedIds);
+    const results = await Promise.allSettled(ids.map((bookingId) => completeAdminBooking(bookingId)));
+    const succeeded = results.filter((r) => r.status === "fulfilled").length;
+    const failed = results.filter((r) => r.status === "rejected").length;
+    setBulkLoading(false);
+    setBulkCompleteConfirmOpen(false);
+    setSelectedIds(new Set());
+    showToast(`${succeeded} completed, ${failed} failed`, failed === 0);
     void load(filters, page, true);
   };
 
@@ -788,6 +820,22 @@ export default function AdminBookingsPage() {
             </button>
             <button
               type="button"
+              disabled={bulkLoading}
+              onClick={() => setBulkAssignState({ selectedTeamId: "" })}
+              className="rounded-[10px] border border-[#ddd1fb] bg-white px-3 py-1.5 text-[12px] font-semibold text-[#6d5bd0] hover:bg-[#f6f4fd] disabled:opacity-50 transition-colors"
+            >
+              Assign to team →
+            </button>
+            <button
+              type="button"
+              disabled={bulkLoading}
+              onClick={() => setBulkCompleteConfirmOpen(true)}
+              className="rounded-[10px] border border-[#bbf7d0] bg-white px-3 py-1.5 text-[12px] font-semibold text-[#15803d] hover:bg-[#f0fdf4] disabled:opacity-50 transition-colors"
+            >
+              Mark completed
+            </button>
+            <button
+              type="button"
               onClick={() => setSelectedIds(new Set())}
               className="ml-auto rounded-[10px] border border-[#ddd1fb] px-3 py-1.5 text-[12px] font-semibold text-[#7c8499] hover:bg-white transition-colors"
             >
@@ -843,6 +891,18 @@ export default function AdminBookingsPage() {
         />
       )}
 
+      {bulkCompleteConfirmOpen && (
+        <ConfirmModal
+          title={`Mark ${selectedIds.size} booking${selectedIds.size === 1 ? "" : "s"} completed?`}
+          description="This will complete every selected booking and update loyalty counts where applicable."
+          confirmLabel="Mark completed"
+          confirmCls="bg-[#6d5bd0] text-white hover:bg-[#5b4ab5]"
+          onConfirm={() => void handleBulkComplete()}
+          onClose={() => setBulkCompleteConfirmOpen(false)}
+          loading={bulkLoading}
+        />
+      )}
+
       <AdminActionConfirmModal
         {...sameDayAlertConfirm.modalProps}
         onSubmit={() => void submitSameDayAlert()}
@@ -857,6 +917,17 @@ export default function AdminBookingsPage() {
         onClose={() => setAssignState(null)}
         onSelect={(teamId) => setAssignState((prev) => (prev ? { ...prev, selectedTeamId: teamId } : prev))}
         onSubmit={() => void submitAssignTeam()}
+      />
+
+      <AdminTeamAssignModal
+        isOpen={!!bulkAssignState}
+        bookingLabel={`${selectedIds.size} selected booking${selectedIds.size === 1 ? "" : "s"}`}
+        teams={teams}
+        selectedTeamId={bulkAssignState?.selectedTeamId ?? ""}
+        isSubmitting={bulkLoading}
+        onClose={() => setBulkAssignState(null)}
+        onSelect={(teamId) => setBulkAssignState((prev) => (prev ? { ...prev, selectedTeamId: teamId } : prev))}
+        onSubmit={() => void handleBulkAssign()}
       />
 
       <AdminGroomerAssignModal
