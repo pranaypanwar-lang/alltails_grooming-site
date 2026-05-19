@@ -41,7 +41,7 @@ export async function POST(
           completedBy: status === "completed" ? "groomer" : null,
         },
       });
-    });
+    }, { timeout: 15000 });
 
     await logBookingEvent({
       bookingId,
