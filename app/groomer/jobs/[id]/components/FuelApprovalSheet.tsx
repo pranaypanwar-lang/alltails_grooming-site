@@ -14,8 +14,8 @@ type Props = {
   tokenQuery: string;
   enRouteLat: number | null;
   enRouteLng: number | null;
-  arrivedLat: number;
-  arrivedLng: number;
+  arrivedLat: number | null;
+  arrivedLng: number | null;
   onConfirmed: () => void;
   onError: (msg: string) => void;
 };
@@ -34,9 +34,10 @@ export function FuelApprovalSheet({
   const [distanceInput, setDistanceInput] = useState("");
   const [busy, setBusy] = useState(false);
 
+  const gpsAvailable = arrivedLat !== null && arrivedLng !== null;
   const estimatedKm =
-    enRouteLat !== null && enRouteLng !== null
-      ? clientHaversineKm(enRouteLat, enRouteLng, arrivedLat, arrivedLng)
+    gpsAvailable && enRouteLat !== null && enRouteLng !== null
+      ? clientHaversineKm(enRouteLat, enRouteLng, arrivedLat!, arrivedLng!)
       : 0;
 
   useEffect(() => {
@@ -60,9 +61,10 @@ export function FuelApprovalSheet({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          arrivedLat,
-          arrivedLng,
+          arrivedLat: arrivedLat ?? 0,
+          arrivedLng: arrivedLng ?? 0,
           approvedDistanceKm: parsedKm,
+          gpsUnavailable: !gpsAvailable,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -95,6 +97,18 @@ export function FuelApprovalSheet({
             </div>
           </div>
         </div>
+
+        {/* GPS unavailable warning */}
+        {!gpsAvailable && (
+          <div className="mt-4 flex items-start gap-2 rounded-[14px] border border-[#fde68a] bg-[#fffbeb] p-3 text-[13px] text-[#92400e]">
+            <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>
+              {mode === "simple"
+                ? "GPS nahi mila — manually distance likhein. GPS data save nahi hoga."
+                : "GPS नहीं मिला — मैन्युअली दूरी लिखें। GPS डेटा सेव नहीं होगा।"}
+            </span>
+          </div>
+        )}
 
         {/* Distance row */}
         <div className="mt-5 rounded-[22px] border border-[#dbeafe] bg-[#eff6ff] p-4">

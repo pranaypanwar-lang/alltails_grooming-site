@@ -4,6 +4,7 @@ import { assertGroomerAccess } from "../../../_lib/assertGroomerAccess";
 import { queueTeamOnTheWayMessage } from "../../../../../../lib/customerMessaging/automation";
 import { processQueuedCustomerMessages } from "../../../../../../lib/customerMessaging/provider";
 import { awardGroomerXp, getBookingRewardSummary } from "../../../../../../lib/groomerRewards";
+import { ACTIVE_BOOKING_SLOT_WHERE } from "../../../../../../lib/slots/releaseBookingSlots";
 
 export const runtime = "nodejs";
 
@@ -30,7 +31,7 @@ export async function POST(
 
     const booking = await adminPrisma.booking.findUnique({
       where: { id: bookingId },
-      include: { user: true, slots: { include: { slot: true } } },
+      include: { user: true, slots: { where: ACTIVE_BOOKING_SLOT_WHERE, include: { slot: true } } },
     });
     if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     if (booking.status !== "confirmed") {

@@ -825,8 +825,15 @@ export function GroomerJobClient({
   const { stepSyncMap, queueUpload, runSync } = useOfflineQueue(booking.id, tokenQuery);
 
   // Pacer state — activate once groomer has arrived (fuel confirmed)
+  const pacerStorageKey = `pacer-phase-${booking.id}`;
   const [pacerMode, setPacerMode] = useState(booking.dispatchState === "started");
-  const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
+  const [currentPhaseIndex, setCurrentPhaseIndex] = useState(() => {
+    if (booking.dispatchState !== "started") return 0;
+    try {
+      const saved = localStorage.getItem(pacerStorageKey);
+      return saved ? parseInt(saved, 10) || 0 : 0;
+    } catch { return 0; }
+  });
   const [pacerPhaseStartAt, setPacerPhaseStartAt] = useState<number | null>(
     booking.dispatchState === "started" ? Date.now() : null
   );
@@ -844,6 +851,12 @@ export function GroomerJobClient({
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(timer);
   }, []);
+
+  // Persist pacer phase to localStorage so it survives page reloads mid-session
+  useEffect(() => {
+    if (!pacerMode) return;
+    try { localStorage.setItem(pacerStorageKey, String(currentPhaseIndex)); } catch { /* ignore */ }
+  }, [currentPhaseIndex, pacerMode, pacerStorageKey]);
 
   useEffect(() => {
     if (!isRecordingVideo) return;
@@ -1759,7 +1772,7 @@ export function GroomerJobClient({
             )}
             <button
               type="button"
-              onClick={() => setPacerMode(false)}
+              onClick={() => { setPacerMode(false); try { localStorage.removeItem(pacerStorageKey); } catch { /* ignore */ } }}
               className="w-full rounded-[20px] border border-[#ddd1fb] bg-white px-4 py-3 text-[13px] font-semibold text-[#6b7280]"
             >
               {languageMode === "simple" ? "View full checklist" : "पूरी चेकलिस्ट देखें"}
@@ -2099,8 +2112,8 @@ export function GroomerJobClient({
           tokenQuery={tokenQuery}
           enRouteLat={booking.enRouteLat}
           enRouteLng={booking.enRouteLng}
-          arrivedLat={arrivedGps?.lat ?? 0}
-          arrivedLng={arrivedGps?.lng ?? 0}
+          arrivedLat={arrivedGps?.lat ?? null}
+          arrivedLng={arrivedGps?.lng ?? null}
           onConfirmed={async () => {
             setShowFuelSheet(false);
             await refresh();

@@ -771,6 +771,7 @@ export async function awardCompletionRewards(prisma: DbClient, bookingId: string
         sopSteps: { include: { proofs: true } },
         service: true,
         user: { select: { id: true } },
+        assignedTeam: { select: { members: { where: { isActive: true }, select: { id: true, completedCount: true } } } },
       },
     });
     if (!booking?.groomerMemberId || !booking.groomerMember) {
@@ -960,6 +961,76 @@ export async function awardCompletionRewards(prisma: DbClient, bookingId: string
           metadata: { baseXpEarned, multiplier: 3 },
         });
         if (luckyGrant.reward) grants.push(luckyGrant.reward);
+      }
+    }
+
+    // Award helper members (all active team members who are not the lead groomer)
+    // They get ~70% XP for core completion events since they worked the job too.
+    const helperMembers = (booking.assignedTeam?.members ?? []).filter(
+      (m) => m.id !== booking.groomerMemberId
+    );
+    for (const helper of helperMembers) {
+      const helperCompletionGrant = await awardGroomerXp({
+        tx,
+        teamMemberId: helper.id,
+        bookingId,
+        eventType: "booking_completed",
+        summary: "Booking completed (team sahyogi)",
+        xpAwarded: 10,
+        rewardPointsAwarded: 6,
+        trustDelta: 1,
+        performanceDelta: 1,
+        statField: "completedCount",
+      });
+      if (helperCompletionGrant.reward) grants.push(helperCompletionGrant.reward);
+
+      if (requiredSteps.length > 0 && completedRequiredSteps.length === requiredSteps.length) {
+        const helperSopGrant = await awardGroomerXp({
+          tx,
+          teamMemberId: helper.id,
+          bookingId,
+          eventType: "full_sop_completion",
+          summary: "All SOP steps completed (team sahyogi)",
+          xpAwarded: 17,
+          rewardPointsAwarded: 11,
+          trustDelta: 1,
+          performanceDelta: 4,
+        });
+        if (helperSopGrant.reward) grants.push(helperSopGrant.reward);
+      }
+
+      if (firstSlot) {
+        const slaMinutes = getServiceSlaMinutes(booking.service.name);
+        const slaDeadline = new Date(firstSlot.startTime.getTime() + slaMinutes * 60 * 1000);
+        if (Date.now() <= slaDeadline.getTime()) {
+          const helperSlaGrant = await awardGroomerXp({
+            tx,
+            teamMemberId: helper.id,
+            bookingId,
+            eventType: "sla_completion",
+            summary: `Finished within SLA (team sahyogi)`,
+            xpAwarded: 8,
+            rewardPointsAwarded: 6,
+            trustDelta: 1,
+            performanceDelta: 3,
+          });
+          if (helperSlaGrant.reward) grants.push(helperSlaGrant.reward);
+        }
+      }
+
+      if (helper.completedCount + 1 === 1) {
+        const helperFirstGrant = await awardGroomerXp({
+          tx,
+          teamMemberId: helper.id,
+          bookingId,
+          eventType: "first_booking_ever",
+          summary: "Pehli booking complete — welcome bonus! 🎉",
+          xpAwarded: 200,
+          rewardPointsAwarded: 30,
+          trustDelta: 2,
+          performanceDelta: 5,
+        });
+        if (helperFirstGrant.reward) grants.push(helperFirstGrant.reward);
       }
     }
 

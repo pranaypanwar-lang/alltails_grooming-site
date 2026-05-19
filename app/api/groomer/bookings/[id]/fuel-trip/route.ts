@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminPrisma } from "../../../../admin/_lib/bookingAdmin";
+import { adminPrisma, ensureBookingSopSteps } from "../../../../admin/_lib/bookingAdmin";
 import { assertGroomerAccess } from "../../../_lib/assertGroomerAccess";
 import { calculateRoadDistanceKm, calculateFuelCost } from "../../../../../../lib/groomer/geoDistance";
 
@@ -50,6 +50,13 @@ export async function POST(
 
     if (!booking) {
       return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+    }
+
+    if (booking.status !== "confirmed") {
+      return NextResponse.json(
+        { error: "Only confirmed bookings can log a fuel trip" },
+        { status: 400 }
+      );
     }
 
     if (!booking.groomerMemberId || !booking.groomerMember) {
@@ -131,10 +138,17 @@ export async function POST(
           },
         });
 
-    // Save arrived GPS to booking
-    await adminPrisma.booking.update({
-      where: { id: bookingId },
-      data: { dispatchState: "started" },
+    // Mark booking as arrived and tick the 'arrived' SOP step atomically
+    await adminPrisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id: bookingId },
+        data: { dispatchState: "started" },
+      });
+      await ensureBookingSopSteps(tx, bookingId);
+      await tx.bookingSopStep.update({
+        where: { bookingId_stepKey: { bookingId, stepKey: "arrived" } },
+        data: { status: "completed", completedAt: new Date(), completedBy: "groomer" },
+      });
     });
 
     return NextResponse.json({
