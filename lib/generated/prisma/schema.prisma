@@ -926,3 +926,29 @@ model BookingSupportCase {
   @@index([bookingId, openedAt])
   @@index([category, status, priority])
 }
+
+// ─── Payment Monitoring ────────────────────────────────────────────────────────
+
+model PaymentAlertSent {
+  id        String   @id @default(uuid())
+  bookingId String
+  alertType String // "drop_off" | "settlement_failure"
+  sentAt    DateTime @default(now())
+
+  @@unique([bookingId, alertType])
+  @@index([sentAt])
+}
+
+// ─── Analytics Reports ────────────────────────────────────────────────────────
+
+model AnalysisReport {
+  id             String   @id @default(uuid())
+  type           String // "daily" | "weekly" | "monthly"
+  periodStart    DateTime
+  periodEnd      DateTime
+  markdown       String
+  sentToTelegram Boolean  @default(false)
+  generatedAt    DateTime @default(now())
+
+  @@index([type, generatedAt])
+}

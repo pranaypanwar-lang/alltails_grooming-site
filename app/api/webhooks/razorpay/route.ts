@@ -8,6 +8,7 @@ import {
 import { processQueuedCustomerMessages } from "../../../../lib/customerMessaging/provider";
 import { settleRazorpayBookingPayment } from "../../../../lib/payment/settleRazorpayBooking";
 import { sendNewBookingAdminAlert } from "../../../../lib/telegram/newBookingAlerts";
+import { sendAdminTelegramMessage } from "../../../../lib/telegram/send";
 
 export const runtime = "nodejs";
 
@@ -68,6 +69,44 @@ export async function POST(request: Request) {
 
     if (!payment?.id || !payment?.order_id) {
       return NextResponse.json({ success: true, ignored: "missing_payment_entity" });
+    }
+
+    // Handle payment failure — alert ops on Telegram for recovery
+    if (payment.status === "failed") {
+      const failedBooking = await adminPrisma.booking.findFirst({
+        where: { razorpayOrderId: String(payment.order_id) },
+        include: {
+          user: true,
+          service: true,
+          pets: { include: { pet: true } },
+          slots: {
+            take: 1,
+            orderBy: { slot: { startTime: "asc" } },
+            include: { slot: { include: { team: true } } },
+          },
+        },
+      });
+
+      if (failedBooking) {
+        const pet = failedBooking.pets[0]?.pet;
+        const slot = failedBooking.slots[0]?.slot;
+        const errorDesc = (payment.error_description ?? payment.error_code ?? "unknown reason").replace(/_/g, " ");
+        const lines = [
+          "Payment Failed",
+          "",
+          `Customer: ${failedBooking.user.name} · ${failedBooking.user.phone}`,
+          `Pet: ${pet ? `${pet.name ?? "Unnamed"} (${pet.breed})` : "No pet listed"}`,
+          `Service: ${failedBooking.service.name} · INR ${failedBooking.finalAmount}`,
+          `Slot: ${slot ? `${failedBooking.selectedDate ?? "TBD"} · ${slot.team?.name ?? "No team"}` : "TBD"}`,
+          `Reason: ${errorDesc}`,
+          `Razorpay ref: ${payment.id}`,
+          "",
+          `Call to recover? Admin: ${process.env.NEXT_PUBLIC_APP_URL?.trim() ?? ""}/admin/customers/${failedBooking.userId}`,
+        ];
+        await sendAdminTelegramMessage(lines.join("\n"), { parseMode: null }).catch(() => null);
+      }
+
+      return NextResponse.json({ success: true, handled: "payment_failed_alert" });
     }
 
     if (payment.status !== "captured" && payment.captured !== true) {

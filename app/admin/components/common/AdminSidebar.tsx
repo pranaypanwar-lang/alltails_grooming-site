@@ -13,6 +13,7 @@ import {
   Network,
   Wallet,
   LayoutGrid,
+  BarChart2,
   FileText,
   Megaphone,
   Tag,
@@ -45,6 +46,7 @@ const NAV_GROUPS = [
     items: [
       { href: "/admin/finance", label: "Finance", icon: Wallet },
       { href: "/admin/slots", label: "Slots", icon: LayoutGrid },
+      { href: "/admin/analytics", label: "Analytics", icon: BarChart2 },
     ],
   },
   {

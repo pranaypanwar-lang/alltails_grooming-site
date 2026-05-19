@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Loader2, Plus, Search, Sparkles, Trash2, Upload, X } from "lucide-react";
 import { getBreedSuggestions, normalizeBreedName } from "../../../../lib/pets/breeds";
+import { computeUpsellSignal } from "../../../../lib/upsell/detectUpsell";
 import {
   formatBookingWindowLabel,
   localIstDateTimeToUtc,
@@ -228,6 +229,15 @@ export default function AdminNewBookingPage() {
     pets.length > 0 &&
     pets.every((pet) => pet.breed.trim()) &&
     !submitLoading;
+
+  const upsellSignal = useMemo(() => {
+    const selectedService = meta?.services.find((s) => s.name === serviceName);
+    if (!selectedService || !pets.some((p) => p.breed.trim())) return null;
+    return computeUpsellSignal({
+      pets: pets.map((p) => ({ name: p.name, breed: p.breed })),
+      servicePrice: selectedService.price,
+    });
+  }, [meta, serviceName, pets]);
 
   const resetBookingState = () => {
     setCustomerSearch("");
@@ -1338,6 +1348,20 @@ export default function AdminNewBookingPage() {
                   </span>
                 </div>
               </div>
+
+              {upsellSignal ? (
+                <div className="mt-4 rounded-[14px] border border-[#fde68a] bg-[#fffbeb] px-3 py-3">
+                  <div className="text-[11px] font-bold uppercase tracking-[0.06em] text-[#92400e]">⚡ Upsell opportunity</div>
+                  <div className="mt-1 text-[12px] text-[#78350f]">{upsellSignal.message}</div>
+                  <button
+                    type="button"
+                    onClick={() => setServiceName(upsellSignal.upgradeServiceName)}
+                    className="mt-2 rounded-[10px] bg-[#d97706] px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-[#b45309] transition-colors"
+                  >
+                    Switch to {upsellSignal.upgradeServiceName} (₹{upsellSignal.upgradeServicePrice.toLocaleString("en-IN")}) →
+                  </button>
+                </div>
+              ) : null}
 
               <button
                 type="button"

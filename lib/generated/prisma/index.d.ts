@@ -223,6 +223,16 @@ export type BookingCustomerMessage = $Result.DefaultSelection<Prisma.$BookingCus
  * 
  */
 export type BookingSupportCase = $Result.DefaultSelection<Prisma.$BookingSupportCasePayload>
+/**
+ * Model PaymentAlertSent
+ * 
+ */
+export type PaymentAlertSent = $Result.DefaultSelection<Prisma.$PaymentAlertSentPayload>
+/**
+ * Model AnalysisReport
+ * 
+ */
+export type AnalysisReport = $Result.DefaultSelection<Prisma.$AnalysisReportPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -764,6 +774,26 @@ export class PrismaClient<
     * ```
     */
   get bookingSupportCase(): Prisma.BookingSupportCaseDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.paymentAlertSent`: Exposes CRUD operations for the **PaymentAlertSent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PaymentAlertSents
+    * const paymentAlertSents = await prisma.paymentAlertSent.findMany()
+    * ```
+    */
+  get paymentAlertSent(): Prisma.PaymentAlertSentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.analysisReport`: Exposes CRUD operations for the **AnalysisReport** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AnalysisReports
+    * const analysisReports = await prisma.analysisReport.findMany()
+    * ```
+    */
+  get analysisReport(): Prisma.AnalysisReportDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1239,7 +1269,9 @@ export namespace Prisma {
     RelayCallSession: 'RelayCallSession',
     DispatchAlert: 'DispatchAlert',
     BookingCustomerMessage: 'BookingCustomerMessage',
-    BookingSupportCase: 'BookingSupportCase'
+    BookingSupportCase: 'BookingSupportCase',
+    PaymentAlertSent: 'PaymentAlertSent',
+    AnalysisReport: 'AnalysisReport'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1255,7 +1287,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "pet" | "petAsset" | "service" | "coupon" | "couponRedemption" | "serviceArea" | "team" | "teamCoverageRule" | "teamCoverageArea" | "slot" | "booking" | "teamMember" | "groomerLedgerEntry" | "groomerCashDeposit" | "groomerExpense" | "groomerFuelTrip" | "groomerPayrollSnapshot" | "teamLeaderboardSnapshot" | "groomerRewardEvent" | "workforceLeaveRequest" | "workforceSalaryAdvanceRequest" | "workforceReferralRecord" | "trainingModule" | "workforceTrainingInterest" | "workforceRewardRedemptionRequest" | "trainingCompletion" | "blogPost" | "legalDocument" | "heroTestimonial" | "bookingEvent" | "bookingSopStep" | "bookingSopProof" | "bookingPaymentCollection" | "bookingPet" | "bookingSlot" | "bookingPetAsset" | "bookingDraftAsset" | "relayCallSession" | "dispatchAlert" | "bookingCustomerMessage" | "bookingSupportCase"
+      modelProps: "user" | "pet" | "petAsset" | "service" | "coupon" | "couponRedemption" | "serviceArea" | "team" | "teamCoverageRule" | "teamCoverageArea" | "slot" | "booking" | "teamMember" | "groomerLedgerEntry" | "groomerCashDeposit" | "groomerExpense" | "groomerFuelTrip" | "groomerPayrollSnapshot" | "teamLeaderboardSnapshot" | "groomerRewardEvent" | "workforceLeaveRequest" | "workforceSalaryAdvanceRequest" | "workforceReferralRecord" | "trainingModule" | "workforceTrainingInterest" | "workforceRewardRedemptionRequest" | "trainingCompletion" | "blogPost" | "legalDocument" | "heroTestimonial" | "bookingEvent" | "bookingSopStep" | "bookingSopProof" | "bookingPaymentCollection" | "bookingPet" | "bookingSlot" | "bookingPetAsset" | "bookingDraftAsset" | "relayCallSession" | "dispatchAlert" | "bookingCustomerMessage" | "bookingSupportCase" | "paymentAlertSent" | "analysisReport"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -4367,6 +4399,154 @@ export namespace Prisma {
           }
         }
       }
+      PaymentAlertSent: {
+        payload: Prisma.$PaymentAlertSentPayload<ExtArgs>
+        fields: Prisma.PaymentAlertSentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PaymentAlertSentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentAlertSentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PaymentAlertSentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentAlertSentPayload>
+          }
+          findFirst: {
+            args: Prisma.PaymentAlertSentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentAlertSentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PaymentAlertSentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentAlertSentPayload>
+          }
+          findMany: {
+            args: Prisma.PaymentAlertSentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentAlertSentPayload>[]
+          }
+          create: {
+            args: Prisma.PaymentAlertSentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentAlertSentPayload>
+          }
+          createMany: {
+            args: Prisma.PaymentAlertSentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PaymentAlertSentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentAlertSentPayload>[]
+          }
+          delete: {
+            args: Prisma.PaymentAlertSentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentAlertSentPayload>
+          }
+          update: {
+            args: Prisma.PaymentAlertSentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentAlertSentPayload>
+          }
+          deleteMany: {
+            args: Prisma.PaymentAlertSentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PaymentAlertSentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PaymentAlertSentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentAlertSentPayload>[]
+          }
+          upsert: {
+            args: Prisma.PaymentAlertSentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentAlertSentPayload>
+          }
+          aggregate: {
+            args: Prisma.PaymentAlertSentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePaymentAlertSent>
+          }
+          groupBy: {
+            args: Prisma.PaymentAlertSentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PaymentAlertSentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PaymentAlertSentCountArgs<ExtArgs>
+            result: $Utils.Optional<PaymentAlertSentCountAggregateOutputType> | number
+          }
+        }
+      }
+      AnalysisReport: {
+        payload: Prisma.$AnalysisReportPayload<ExtArgs>
+        fields: Prisma.AnalysisReportFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AnalysisReportFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisReportPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AnalysisReportFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisReportPayload>
+          }
+          findFirst: {
+            args: Prisma.AnalysisReportFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisReportPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AnalysisReportFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisReportPayload>
+          }
+          findMany: {
+            args: Prisma.AnalysisReportFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisReportPayload>[]
+          }
+          create: {
+            args: Prisma.AnalysisReportCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisReportPayload>
+          }
+          createMany: {
+            args: Prisma.AnalysisReportCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AnalysisReportCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisReportPayload>[]
+          }
+          delete: {
+            args: Prisma.AnalysisReportDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisReportPayload>
+          }
+          update: {
+            args: Prisma.AnalysisReportUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisReportPayload>
+          }
+          deleteMany: {
+            args: Prisma.AnalysisReportDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AnalysisReportUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AnalysisReportUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisReportPayload>[]
+          }
+          upsert: {
+            args: Prisma.AnalysisReportUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnalysisReportPayload>
+          }
+          aggregate: {
+            args: Prisma.AnalysisReportAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAnalysisReport>
+          }
+          groupBy: {
+            args: Prisma.AnalysisReportGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AnalysisReportGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AnalysisReportCountArgs<ExtArgs>
+            result: $Utils.Optional<AnalysisReportCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -4517,6 +4697,8 @@ export namespace Prisma {
     dispatchAlert?: DispatchAlertOmit
     bookingCustomerMessage?: BookingCustomerMessageOmit
     bookingSupportCase?: BookingSupportCaseOmit
+    paymentAlertSent?: PaymentAlertSentOmit
+    analysisReport?: AnalysisReportOmit
   }
 
   /* Types for Logging */
@@ -56185,6 +56367,2019 @@ export namespace Prisma {
 
 
   /**
+   * Model PaymentAlertSent
+   */
+
+  export type AggregatePaymentAlertSent = {
+    _count: PaymentAlertSentCountAggregateOutputType | null
+    _min: PaymentAlertSentMinAggregateOutputType | null
+    _max: PaymentAlertSentMaxAggregateOutputType | null
+  }
+
+  export type PaymentAlertSentMinAggregateOutputType = {
+    id: string | null
+    bookingId: string | null
+    alertType: string | null
+    sentAt: Date | null
+  }
+
+  export type PaymentAlertSentMaxAggregateOutputType = {
+    id: string | null
+    bookingId: string | null
+    alertType: string | null
+    sentAt: Date | null
+  }
+
+  export type PaymentAlertSentCountAggregateOutputType = {
+    id: number
+    bookingId: number
+    alertType: number
+    sentAt: number
+    _all: number
+  }
+
+
+  export type PaymentAlertSentMinAggregateInputType = {
+    id?: true
+    bookingId?: true
+    alertType?: true
+    sentAt?: true
+  }
+
+  export type PaymentAlertSentMaxAggregateInputType = {
+    id?: true
+    bookingId?: true
+    alertType?: true
+    sentAt?: true
+  }
+
+  export type PaymentAlertSentCountAggregateInputType = {
+    id?: true
+    bookingId?: true
+    alertType?: true
+    sentAt?: true
+    _all?: true
+  }
+
+  export type PaymentAlertSentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentAlertSent to aggregate.
+     */
+    where?: PaymentAlertSentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentAlertSents to fetch.
+     */
+    orderBy?: PaymentAlertSentOrderByWithRelationInput | PaymentAlertSentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PaymentAlertSentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentAlertSents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentAlertSents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PaymentAlertSents
+    **/
+    _count?: true | PaymentAlertSentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PaymentAlertSentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PaymentAlertSentMaxAggregateInputType
+  }
+
+  export type GetPaymentAlertSentAggregateType<T extends PaymentAlertSentAggregateArgs> = {
+        [P in keyof T & keyof AggregatePaymentAlertSent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePaymentAlertSent[P]>
+      : GetScalarType<T[P], AggregatePaymentAlertSent[P]>
+  }
+
+
+
+
+  export type PaymentAlertSentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentAlertSentWhereInput
+    orderBy?: PaymentAlertSentOrderByWithAggregationInput | PaymentAlertSentOrderByWithAggregationInput[]
+    by: PaymentAlertSentScalarFieldEnum[] | PaymentAlertSentScalarFieldEnum
+    having?: PaymentAlertSentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PaymentAlertSentCountAggregateInputType | true
+    _min?: PaymentAlertSentMinAggregateInputType
+    _max?: PaymentAlertSentMaxAggregateInputType
+  }
+
+  export type PaymentAlertSentGroupByOutputType = {
+    id: string
+    bookingId: string
+    alertType: string
+    sentAt: Date
+    _count: PaymentAlertSentCountAggregateOutputType | null
+    _min: PaymentAlertSentMinAggregateOutputType | null
+    _max: PaymentAlertSentMaxAggregateOutputType | null
+  }
+
+  type GetPaymentAlertSentGroupByPayload<T extends PaymentAlertSentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PaymentAlertSentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PaymentAlertSentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PaymentAlertSentGroupByOutputType[P]>
+            : GetScalarType<T[P], PaymentAlertSentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PaymentAlertSentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    bookingId?: boolean
+    alertType?: boolean
+    sentAt?: boolean
+  }, ExtArgs["result"]["paymentAlertSent"]>
+
+  export type PaymentAlertSentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    bookingId?: boolean
+    alertType?: boolean
+    sentAt?: boolean
+  }, ExtArgs["result"]["paymentAlertSent"]>
+
+  export type PaymentAlertSentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    bookingId?: boolean
+    alertType?: boolean
+    sentAt?: boolean
+  }, ExtArgs["result"]["paymentAlertSent"]>
+
+  export type PaymentAlertSentSelectScalar = {
+    id?: boolean
+    bookingId?: boolean
+    alertType?: boolean
+    sentAt?: boolean
+  }
+
+  export type PaymentAlertSentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bookingId" | "alertType" | "sentAt", ExtArgs["result"]["paymentAlertSent"]>
+
+  export type $PaymentAlertSentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PaymentAlertSent"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      bookingId: string
+      alertType: string
+      sentAt: Date
+    }, ExtArgs["result"]["paymentAlertSent"]>
+    composites: {}
+  }
+
+  type PaymentAlertSentGetPayload<S extends boolean | null | undefined | PaymentAlertSentDefaultArgs> = $Result.GetResult<Prisma.$PaymentAlertSentPayload, S>
+
+  type PaymentAlertSentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PaymentAlertSentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PaymentAlertSentCountAggregateInputType | true
+    }
+
+  export interface PaymentAlertSentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PaymentAlertSent'], meta: { name: 'PaymentAlertSent' } }
+    /**
+     * Find zero or one PaymentAlertSent that matches the filter.
+     * @param {PaymentAlertSentFindUniqueArgs} args - Arguments to find a PaymentAlertSent
+     * @example
+     * // Get one PaymentAlertSent
+     * const paymentAlertSent = await prisma.paymentAlertSent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PaymentAlertSentFindUniqueArgs>(args: SelectSubset<T, PaymentAlertSentFindUniqueArgs<ExtArgs>>): Prisma__PaymentAlertSentClient<$Result.GetResult<Prisma.$PaymentAlertSentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PaymentAlertSent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PaymentAlertSentFindUniqueOrThrowArgs} args - Arguments to find a PaymentAlertSent
+     * @example
+     * // Get one PaymentAlertSent
+     * const paymentAlertSent = await prisma.paymentAlertSent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PaymentAlertSentFindUniqueOrThrowArgs>(args: SelectSubset<T, PaymentAlertSentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PaymentAlertSentClient<$Result.GetResult<Prisma.$PaymentAlertSentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PaymentAlertSent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentAlertSentFindFirstArgs} args - Arguments to find a PaymentAlertSent
+     * @example
+     * // Get one PaymentAlertSent
+     * const paymentAlertSent = await prisma.paymentAlertSent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PaymentAlertSentFindFirstArgs>(args?: SelectSubset<T, PaymentAlertSentFindFirstArgs<ExtArgs>>): Prisma__PaymentAlertSentClient<$Result.GetResult<Prisma.$PaymentAlertSentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PaymentAlertSent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentAlertSentFindFirstOrThrowArgs} args - Arguments to find a PaymentAlertSent
+     * @example
+     * // Get one PaymentAlertSent
+     * const paymentAlertSent = await prisma.paymentAlertSent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PaymentAlertSentFindFirstOrThrowArgs>(args?: SelectSubset<T, PaymentAlertSentFindFirstOrThrowArgs<ExtArgs>>): Prisma__PaymentAlertSentClient<$Result.GetResult<Prisma.$PaymentAlertSentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PaymentAlertSents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentAlertSentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PaymentAlertSents
+     * const paymentAlertSents = await prisma.paymentAlertSent.findMany()
+     * 
+     * // Get first 10 PaymentAlertSents
+     * const paymentAlertSents = await prisma.paymentAlertSent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const paymentAlertSentWithIdOnly = await prisma.paymentAlertSent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PaymentAlertSentFindManyArgs>(args?: SelectSubset<T, PaymentAlertSentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentAlertSentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PaymentAlertSent.
+     * @param {PaymentAlertSentCreateArgs} args - Arguments to create a PaymentAlertSent.
+     * @example
+     * // Create one PaymentAlertSent
+     * const PaymentAlertSent = await prisma.paymentAlertSent.create({
+     *   data: {
+     *     // ... data to create a PaymentAlertSent
+     *   }
+     * })
+     * 
+     */
+    create<T extends PaymentAlertSentCreateArgs>(args: SelectSubset<T, PaymentAlertSentCreateArgs<ExtArgs>>): Prisma__PaymentAlertSentClient<$Result.GetResult<Prisma.$PaymentAlertSentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PaymentAlertSents.
+     * @param {PaymentAlertSentCreateManyArgs} args - Arguments to create many PaymentAlertSents.
+     * @example
+     * // Create many PaymentAlertSents
+     * const paymentAlertSent = await prisma.paymentAlertSent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PaymentAlertSentCreateManyArgs>(args?: SelectSubset<T, PaymentAlertSentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PaymentAlertSents and returns the data saved in the database.
+     * @param {PaymentAlertSentCreateManyAndReturnArgs} args - Arguments to create many PaymentAlertSents.
+     * @example
+     * // Create many PaymentAlertSents
+     * const paymentAlertSent = await prisma.paymentAlertSent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PaymentAlertSents and only return the `id`
+     * const paymentAlertSentWithIdOnly = await prisma.paymentAlertSent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PaymentAlertSentCreateManyAndReturnArgs>(args?: SelectSubset<T, PaymentAlertSentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentAlertSentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PaymentAlertSent.
+     * @param {PaymentAlertSentDeleteArgs} args - Arguments to delete one PaymentAlertSent.
+     * @example
+     * // Delete one PaymentAlertSent
+     * const PaymentAlertSent = await prisma.paymentAlertSent.delete({
+     *   where: {
+     *     // ... filter to delete one PaymentAlertSent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PaymentAlertSentDeleteArgs>(args: SelectSubset<T, PaymentAlertSentDeleteArgs<ExtArgs>>): Prisma__PaymentAlertSentClient<$Result.GetResult<Prisma.$PaymentAlertSentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PaymentAlertSent.
+     * @param {PaymentAlertSentUpdateArgs} args - Arguments to update one PaymentAlertSent.
+     * @example
+     * // Update one PaymentAlertSent
+     * const paymentAlertSent = await prisma.paymentAlertSent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PaymentAlertSentUpdateArgs>(args: SelectSubset<T, PaymentAlertSentUpdateArgs<ExtArgs>>): Prisma__PaymentAlertSentClient<$Result.GetResult<Prisma.$PaymentAlertSentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PaymentAlertSents.
+     * @param {PaymentAlertSentDeleteManyArgs} args - Arguments to filter PaymentAlertSents to delete.
+     * @example
+     * // Delete a few PaymentAlertSents
+     * const { count } = await prisma.paymentAlertSent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PaymentAlertSentDeleteManyArgs>(args?: SelectSubset<T, PaymentAlertSentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentAlertSents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentAlertSentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PaymentAlertSents
+     * const paymentAlertSent = await prisma.paymentAlertSent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PaymentAlertSentUpdateManyArgs>(args: SelectSubset<T, PaymentAlertSentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentAlertSents and returns the data updated in the database.
+     * @param {PaymentAlertSentUpdateManyAndReturnArgs} args - Arguments to update many PaymentAlertSents.
+     * @example
+     * // Update many PaymentAlertSents
+     * const paymentAlertSent = await prisma.paymentAlertSent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PaymentAlertSents and only return the `id`
+     * const paymentAlertSentWithIdOnly = await prisma.paymentAlertSent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PaymentAlertSentUpdateManyAndReturnArgs>(args: SelectSubset<T, PaymentAlertSentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentAlertSentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PaymentAlertSent.
+     * @param {PaymentAlertSentUpsertArgs} args - Arguments to update or create a PaymentAlertSent.
+     * @example
+     * // Update or create a PaymentAlertSent
+     * const paymentAlertSent = await prisma.paymentAlertSent.upsert({
+     *   create: {
+     *     // ... data to create a PaymentAlertSent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PaymentAlertSent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PaymentAlertSentUpsertArgs>(args: SelectSubset<T, PaymentAlertSentUpsertArgs<ExtArgs>>): Prisma__PaymentAlertSentClient<$Result.GetResult<Prisma.$PaymentAlertSentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PaymentAlertSents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentAlertSentCountArgs} args - Arguments to filter PaymentAlertSents to count.
+     * @example
+     * // Count the number of PaymentAlertSents
+     * const count = await prisma.paymentAlertSent.count({
+     *   where: {
+     *     // ... the filter for the PaymentAlertSents we want to count
+     *   }
+     * })
+    **/
+    count<T extends PaymentAlertSentCountArgs>(
+      args?: Subset<T, PaymentAlertSentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PaymentAlertSentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PaymentAlertSent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentAlertSentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PaymentAlertSentAggregateArgs>(args: Subset<T, PaymentAlertSentAggregateArgs>): Prisma.PrismaPromise<GetPaymentAlertSentAggregateType<T>>
+
+    /**
+     * Group by PaymentAlertSent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentAlertSentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PaymentAlertSentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PaymentAlertSentGroupByArgs['orderBy'] }
+        : { orderBy?: PaymentAlertSentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PaymentAlertSentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPaymentAlertSentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PaymentAlertSent model
+   */
+  readonly fields: PaymentAlertSentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PaymentAlertSent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PaymentAlertSentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PaymentAlertSent model
+   */
+  interface PaymentAlertSentFieldRefs {
+    readonly id: FieldRef<"PaymentAlertSent", 'String'>
+    readonly bookingId: FieldRef<"PaymentAlertSent", 'String'>
+    readonly alertType: FieldRef<"PaymentAlertSent", 'String'>
+    readonly sentAt: FieldRef<"PaymentAlertSent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PaymentAlertSent findUnique
+   */
+  export type PaymentAlertSentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentAlertSent
+     */
+    select?: PaymentAlertSentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentAlertSent
+     */
+    omit?: PaymentAlertSentOmit<ExtArgs> | null
+    /**
+     * Filter, which PaymentAlertSent to fetch.
+     */
+    where: PaymentAlertSentWhereUniqueInput
+  }
+
+  /**
+   * PaymentAlertSent findUniqueOrThrow
+   */
+  export type PaymentAlertSentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentAlertSent
+     */
+    select?: PaymentAlertSentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentAlertSent
+     */
+    omit?: PaymentAlertSentOmit<ExtArgs> | null
+    /**
+     * Filter, which PaymentAlertSent to fetch.
+     */
+    where: PaymentAlertSentWhereUniqueInput
+  }
+
+  /**
+   * PaymentAlertSent findFirst
+   */
+  export type PaymentAlertSentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentAlertSent
+     */
+    select?: PaymentAlertSentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentAlertSent
+     */
+    omit?: PaymentAlertSentOmit<ExtArgs> | null
+    /**
+     * Filter, which PaymentAlertSent to fetch.
+     */
+    where?: PaymentAlertSentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentAlertSents to fetch.
+     */
+    orderBy?: PaymentAlertSentOrderByWithRelationInput | PaymentAlertSentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentAlertSents.
+     */
+    cursor?: PaymentAlertSentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentAlertSents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentAlertSents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentAlertSents.
+     */
+    distinct?: PaymentAlertSentScalarFieldEnum | PaymentAlertSentScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentAlertSent findFirstOrThrow
+   */
+  export type PaymentAlertSentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentAlertSent
+     */
+    select?: PaymentAlertSentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentAlertSent
+     */
+    omit?: PaymentAlertSentOmit<ExtArgs> | null
+    /**
+     * Filter, which PaymentAlertSent to fetch.
+     */
+    where?: PaymentAlertSentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentAlertSents to fetch.
+     */
+    orderBy?: PaymentAlertSentOrderByWithRelationInput | PaymentAlertSentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentAlertSents.
+     */
+    cursor?: PaymentAlertSentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentAlertSents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentAlertSents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentAlertSents.
+     */
+    distinct?: PaymentAlertSentScalarFieldEnum | PaymentAlertSentScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentAlertSent findMany
+   */
+  export type PaymentAlertSentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentAlertSent
+     */
+    select?: PaymentAlertSentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentAlertSent
+     */
+    omit?: PaymentAlertSentOmit<ExtArgs> | null
+    /**
+     * Filter, which PaymentAlertSents to fetch.
+     */
+    where?: PaymentAlertSentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentAlertSents to fetch.
+     */
+    orderBy?: PaymentAlertSentOrderByWithRelationInput | PaymentAlertSentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PaymentAlertSents.
+     */
+    cursor?: PaymentAlertSentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentAlertSents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentAlertSents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentAlertSents.
+     */
+    distinct?: PaymentAlertSentScalarFieldEnum | PaymentAlertSentScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentAlertSent create
+   */
+  export type PaymentAlertSentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentAlertSent
+     */
+    select?: PaymentAlertSentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentAlertSent
+     */
+    omit?: PaymentAlertSentOmit<ExtArgs> | null
+    /**
+     * The data needed to create a PaymentAlertSent.
+     */
+    data: XOR<PaymentAlertSentCreateInput, PaymentAlertSentUncheckedCreateInput>
+  }
+
+  /**
+   * PaymentAlertSent createMany
+   */
+  export type PaymentAlertSentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PaymentAlertSents.
+     */
+    data: PaymentAlertSentCreateManyInput | PaymentAlertSentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PaymentAlertSent createManyAndReturn
+   */
+  export type PaymentAlertSentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentAlertSent
+     */
+    select?: PaymentAlertSentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentAlertSent
+     */
+    omit?: PaymentAlertSentOmit<ExtArgs> | null
+    /**
+     * The data used to create many PaymentAlertSents.
+     */
+    data: PaymentAlertSentCreateManyInput | PaymentAlertSentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PaymentAlertSent update
+   */
+  export type PaymentAlertSentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentAlertSent
+     */
+    select?: PaymentAlertSentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentAlertSent
+     */
+    omit?: PaymentAlertSentOmit<ExtArgs> | null
+    /**
+     * The data needed to update a PaymentAlertSent.
+     */
+    data: XOR<PaymentAlertSentUpdateInput, PaymentAlertSentUncheckedUpdateInput>
+    /**
+     * Choose, which PaymentAlertSent to update.
+     */
+    where: PaymentAlertSentWhereUniqueInput
+  }
+
+  /**
+   * PaymentAlertSent updateMany
+   */
+  export type PaymentAlertSentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PaymentAlertSents.
+     */
+    data: XOR<PaymentAlertSentUpdateManyMutationInput, PaymentAlertSentUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentAlertSents to update
+     */
+    where?: PaymentAlertSentWhereInput
+    /**
+     * Limit how many PaymentAlertSents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentAlertSent updateManyAndReturn
+   */
+  export type PaymentAlertSentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentAlertSent
+     */
+    select?: PaymentAlertSentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentAlertSent
+     */
+    omit?: PaymentAlertSentOmit<ExtArgs> | null
+    /**
+     * The data used to update PaymentAlertSents.
+     */
+    data: XOR<PaymentAlertSentUpdateManyMutationInput, PaymentAlertSentUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentAlertSents to update
+     */
+    where?: PaymentAlertSentWhereInput
+    /**
+     * Limit how many PaymentAlertSents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentAlertSent upsert
+   */
+  export type PaymentAlertSentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentAlertSent
+     */
+    select?: PaymentAlertSentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentAlertSent
+     */
+    omit?: PaymentAlertSentOmit<ExtArgs> | null
+    /**
+     * The filter to search for the PaymentAlertSent to update in case it exists.
+     */
+    where: PaymentAlertSentWhereUniqueInput
+    /**
+     * In case the PaymentAlertSent found by the `where` argument doesn't exist, create a new PaymentAlertSent with this data.
+     */
+    create: XOR<PaymentAlertSentCreateInput, PaymentAlertSentUncheckedCreateInput>
+    /**
+     * In case the PaymentAlertSent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PaymentAlertSentUpdateInput, PaymentAlertSentUncheckedUpdateInput>
+  }
+
+  /**
+   * PaymentAlertSent delete
+   */
+  export type PaymentAlertSentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentAlertSent
+     */
+    select?: PaymentAlertSentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentAlertSent
+     */
+    omit?: PaymentAlertSentOmit<ExtArgs> | null
+    /**
+     * Filter which PaymentAlertSent to delete.
+     */
+    where: PaymentAlertSentWhereUniqueInput
+  }
+
+  /**
+   * PaymentAlertSent deleteMany
+   */
+  export type PaymentAlertSentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentAlertSents to delete
+     */
+    where?: PaymentAlertSentWhereInput
+    /**
+     * Limit how many PaymentAlertSents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentAlertSent without action
+   */
+  export type PaymentAlertSentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentAlertSent
+     */
+    select?: PaymentAlertSentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentAlertSent
+     */
+    omit?: PaymentAlertSentOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AnalysisReport
+   */
+
+  export type AggregateAnalysisReport = {
+    _count: AnalysisReportCountAggregateOutputType | null
+    _min: AnalysisReportMinAggregateOutputType | null
+    _max: AnalysisReportMaxAggregateOutputType | null
+  }
+
+  export type AnalysisReportMinAggregateOutputType = {
+    id: string | null
+    type: string | null
+    periodStart: Date | null
+    periodEnd: Date | null
+    markdown: string | null
+    sentToTelegram: boolean | null
+    generatedAt: Date | null
+  }
+
+  export type AnalysisReportMaxAggregateOutputType = {
+    id: string | null
+    type: string | null
+    periodStart: Date | null
+    periodEnd: Date | null
+    markdown: string | null
+    sentToTelegram: boolean | null
+    generatedAt: Date | null
+  }
+
+  export type AnalysisReportCountAggregateOutputType = {
+    id: number
+    type: number
+    periodStart: number
+    periodEnd: number
+    markdown: number
+    sentToTelegram: number
+    generatedAt: number
+    _all: number
+  }
+
+
+  export type AnalysisReportMinAggregateInputType = {
+    id?: true
+    type?: true
+    periodStart?: true
+    periodEnd?: true
+    markdown?: true
+    sentToTelegram?: true
+    generatedAt?: true
+  }
+
+  export type AnalysisReportMaxAggregateInputType = {
+    id?: true
+    type?: true
+    periodStart?: true
+    periodEnd?: true
+    markdown?: true
+    sentToTelegram?: true
+    generatedAt?: true
+  }
+
+  export type AnalysisReportCountAggregateInputType = {
+    id?: true
+    type?: true
+    periodStart?: true
+    periodEnd?: true
+    markdown?: true
+    sentToTelegram?: true
+    generatedAt?: true
+    _all?: true
+  }
+
+  export type AnalysisReportAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AnalysisReport to aggregate.
+     */
+    where?: AnalysisReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnalysisReports to fetch.
+     */
+    orderBy?: AnalysisReportOrderByWithRelationInput | AnalysisReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AnalysisReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnalysisReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnalysisReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AnalysisReports
+    **/
+    _count?: true | AnalysisReportCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AnalysisReportMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AnalysisReportMaxAggregateInputType
+  }
+
+  export type GetAnalysisReportAggregateType<T extends AnalysisReportAggregateArgs> = {
+        [P in keyof T & keyof AggregateAnalysisReport]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAnalysisReport[P]>
+      : GetScalarType<T[P], AggregateAnalysisReport[P]>
+  }
+
+
+
+
+  export type AnalysisReportGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnalysisReportWhereInput
+    orderBy?: AnalysisReportOrderByWithAggregationInput | AnalysisReportOrderByWithAggregationInput[]
+    by: AnalysisReportScalarFieldEnum[] | AnalysisReportScalarFieldEnum
+    having?: AnalysisReportScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AnalysisReportCountAggregateInputType | true
+    _min?: AnalysisReportMinAggregateInputType
+    _max?: AnalysisReportMaxAggregateInputType
+  }
+
+  export type AnalysisReportGroupByOutputType = {
+    id: string
+    type: string
+    periodStart: Date
+    periodEnd: Date
+    markdown: string
+    sentToTelegram: boolean
+    generatedAt: Date
+    _count: AnalysisReportCountAggregateOutputType | null
+    _min: AnalysisReportMinAggregateOutputType | null
+    _max: AnalysisReportMaxAggregateOutputType | null
+  }
+
+  type GetAnalysisReportGroupByPayload<T extends AnalysisReportGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AnalysisReportGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AnalysisReportGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AnalysisReportGroupByOutputType[P]>
+            : GetScalarType<T[P], AnalysisReportGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AnalysisReportSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    markdown?: boolean
+    sentToTelegram?: boolean
+    generatedAt?: boolean
+  }, ExtArgs["result"]["analysisReport"]>
+
+  export type AnalysisReportSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    markdown?: boolean
+    sentToTelegram?: boolean
+    generatedAt?: boolean
+  }, ExtArgs["result"]["analysisReport"]>
+
+  export type AnalysisReportSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    markdown?: boolean
+    sentToTelegram?: boolean
+    generatedAt?: boolean
+  }, ExtArgs["result"]["analysisReport"]>
+
+  export type AnalysisReportSelectScalar = {
+    id?: boolean
+    type?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    markdown?: boolean
+    sentToTelegram?: boolean
+    generatedAt?: boolean
+  }
+
+  export type AnalysisReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "periodStart" | "periodEnd" | "markdown" | "sentToTelegram" | "generatedAt", ExtArgs["result"]["analysisReport"]>
+
+  export type $AnalysisReportPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AnalysisReport"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      type: string
+      periodStart: Date
+      periodEnd: Date
+      markdown: string
+      sentToTelegram: boolean
+      generatedAt: Date
+    }, ExtArgs["result"]["analysisReport"]>
+    composites: {}
+  }
+
+  type AnalysisReportGetPayload<S extends boolean | null | undefined | AnalysisReportDefaultArgs> = $Result.GetResult<Prisma.$AnalysisReportPayload, S>
+
+  type AnalysisReportCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AnalysisReportFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AnalysisReportCountAggregateInputType | true
+    }
+
+  export interface AnalysisReportDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AnalysisReport'], meta: { name: 'AnalysisReport' } }
+    /**
+     * Find zero or one AnalysisReport that matches the filter.
+     * @param {AnalysisReportFindUniqueArgs} args - Arguments to find a AnalysisReport
+     * @example
+     * // Get one AnalysisReport
+     * const analysisReport = await prisma.analysisReport.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AnalysisReportFindUniqueArgs>(args: SelectSubset<T, AnalysisReportFindUniqueArgs<ExtArgs>>): Prisma__AnalysisReportClient<$Result.GetResult<Prisma.$AnalysisReportPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AnalysisReport that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AnalysisReportFindUniqueOrThrowArgs} args - Arguments to find a AnalysisReport
+     * @example
+     * // Get one AnalysisReport
+     * const analysisReport = await prisma.analysisReport.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AnalysisReportFindUniqueOrThrowArgs>(args: SelectSubset<T, AnalysisReportFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AnalysisReportClient<$Result.GetResult<Prisma.$AnalysisReportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AnalysisReport that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisReportFindFirstArgs} args - Arguments to find a AnalysisReport
+     * @example
+     * // Get one AnalysisReport
+     * const analysisReport = await prisma.analysisReport.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AnalysisReportFindFirstArgs>(args?: SelectSubset<T, AnalysisReportFindFirstArgs<ExtArgs>>): Prisma__AnalysisReportClient<$Result.GetResult<Prisma.$AnalysisReportPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AnalysisReport that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisReportFindFirstOrThrowArgs} args - Arguments to find a AnalysisReport
+     * @example
+     * // Get one AnalysisReport
+     * const analysisReport = await prisma.analysisReport.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AnalysisReportFindFirstOrThrowArgs>(args?: SelectSubset<T, AnalysisReportFindFirstOrThrowArgs<ExtArgs>>): Prisma__AnalysisReportClient<$Result.GetResult<Prisma.$AnalysisReportPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AnalysisReports that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisReportFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AnalysisReports
+     * const analysisReports = await prisma.analysisReport.findMany()
+     * 
+     * // Get first 10 AnalysisReports
+     * const analysisReports = await prisma.analysisReport.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const analysisReportWithIdOnly = await prisma.analysisReport.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AnalysisReportFindManyArgs>(args?: SelectSubset<T, AnalysisReportFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AnalysisReport.
+     * @param {AnalysisReportCreateArgs} args - Arguments to create a AnalysisReport.
+     * @example
+     * // Create one AnalysisReport
+     * const AnalysisReport = await prisma.analysisReport.create({
+     *   data: {
+     *     // ... data to create a AnalysisReport
+     *   }
+     * })
+     * 
+     */
+    create<T extends AnalysisReportCreateArgs>(args: SelectSubset<T, AnalysisReportCreateArgs<ExtArgs>>): Prisma__AnalysisReportClient<$Result.GetResult<Prisma.$AnalysisReportPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AnalysisReports.
+     * @param {AnalysisReportCreateManyArgs} args - Arguments to create many AnalysisReports.
+     * @example
+     * // Create many AnalysisReports
+     * const analysisReport = await prisma.analysisReport.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AnalysisReportCreateManyArgs>(args?: SelectSubset<T, AnalysisReportCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AnalysisReports and returns the data saved in the database.
+     * @param {AnalysisReportCreateManyAndReturnArgs} args - Arguments to create many AnalysisReports.
+     * @example
+     * // Create many AnalysisReports
+     * const analysisReport = await prisma.analysisReport.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AnalysisReports and only return the `id`
+     * const analysisReportWithIdOnly = await prisma.analysisReport.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AnalysisReportCreateManyAndReturnArgs>(args?: SelectSubset<T, AnalysisReportCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisReportPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AnalysisReport.
+     * @param {AnalysisReportDeleteArgs} args - Arguments to delete one AnalysisReport.
+     * @example
+     * // Delete one AnalysisReport
+     * const AnalysisReport = await prisma.analysisReport.delete({
+     *   where: {
+     *     // ... filter to delete one AnalysisReport
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AnalysisReportDeleteArgs>(args: SelectSubset<T, AnalysisReportDeleteArgs<ExtArgs>>): Prisma__AnalysisReportClient<$Result.GetResult<Prisma.$AnalysisReportPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AnalysisReport.
+     * @param {AnalysisReportUpdateArgs} args - Arguments to update one AnalysisReport.
+     * @example
+     * // Update one AnalysisReport
+     * const analysisReport = await prisma.analysisReport.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AnalysisReportUpdateArgs>(args: SelectSubset<T, AnalysisReportUpdateArgs<ExtArgs>>): Prisma__AnalysisReportClient<$Result.GetResult<Prisma.$AnalysisReportPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AnalysisReports.
+     * @param {AnalysisReportDeleteManyArgs} args - Arguments to filter AnalysisReports to delete.
+     * @example
+     * // Delete a few AnalysisReports
+     * const { count } = await prisma.analysisReport.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AnalysisReportDeleteManyArgs>(args?: SelectSubset<T, AnalysisReportDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AnalysisReports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisReportUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AnalysisReports
+     * const analysisReport = await prisma.analysisReport.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AnalysisReportUpdateManyArgs>(args: SelectSubset<T, AnalysisReportUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AnalysisReports and returns the data updated in the database.
+     * @param {AnalysisReportUpdateManyAndReturnArgs} args - Arguments to update many AnalysisReports.
+     * @example
+     * // Update many AnalysisReports
+     * const analysisReport = await prisma.analysisReport.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AnalysisReports and only return the `id`
+     * const analysisReportWithIdOnly = await prisma.analysisReport.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AnalysisReportUpdateManyAndReturnArgs>(args: SelectSubset<T, AnalysisReportUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnalysisReportPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AnalysisReport.
+     * @param {AnalysisReportUpsertArgs} args - Arguments to update or create a AnalysisReport.
+     * @example
+     * // Update or create a AnalysisReport
+     * const analysisReport = await prisma.analysisReport.upsert({
+     *   create: {
+     *     // ... data to create a AnalysisReport
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AnalysisReport we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AnalysisReportUpsertArgs>(args: SelectSubset<T, AnalysisReportUpsertArgs<ExtArgs>>): Prisma__AnalysisReportClient<$Result.GetResult<Prisma.$AnalysisReportPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AnalysisReports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisReportCountArgs} args - Arguments to filter AnalysisReports to count.
+     * @example
+     * // Count the number of AnalysisReports
+     * const count = await prisma.analysisReport.count({
+     *   where: {
+     *     // ... the filter for the AnalysisReports we want to count
+     *   }
+     * })
+    **/
+    count<T extends AnalysisReportCountArgs>(
+      args?: Subset<T, AnalysisReportCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AnalysisReportCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AnalysisReport.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisReportAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AnalysisReportAggregateArgs>(args: Subset<T, AnalysisReportAggregateArgs>): Prisma.PrismaPromise<GetAnalysisReportAggregateType<T>>
+
+    /**
+     * Group by AnalysisReport.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnalysisReportGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AnalysisReportGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AnalysisReportGroupByArgs['orderBy'] }
+        : { orderBy?: AnalysisReportGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AnalysisReportGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAnalysisReportGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AnalysisReport model
+   */
+  readonly fields: AnalysisReportFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AnalysisReport.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AnalysisReportClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AnalysisReport model
+   */
+  interface AnalysisReportFieldRefs {
+    readonly id: FieldRef<"AnalysisReport", 'String'>
+    readonly type: FieldRef<"AnalysisReport", 'String'>
+    readonly periodStart: FieldRef<"AnalysisReport", 'DateTime'>
+    readonly periodEnd: FieldRef<"AnalysisReport", 'DateTime'>
+    readonly markdown: FieldRef<"AnalysisReport", 'String'>
+    readonly sentToTelegram: FieldRef<"AnalysisReport", 'Boolean'>
+    readonly generatedAt: FieldRef<"AnalysisReport", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AnalysisReport findUnique
+   */
+  export type AnalysisReportFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisReport
+     */
+    select?: AnalysisReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisReport
+     */
+    omit?: AnalysisReportOmit<ExtArgs> | null
+    /**
+     * Filter, which AnalysisReport to fetch.
+     */
+    where: AnalysisReportWhereUniqueInput
+  }
+
+  /**
+   * AnalysisReport findUniqueOrThrow
+   */
+  export type AnalysisReportFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisReport
+     */
+    select?: AnalysisReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisReport
+     */
+    omit?: AnalysisReportOmit<ExtArgs> | null
+    /**
+     * Filter, which AnalysisReport to fetch.
+     */
+    where: AnalysisReportWhereUniqueInput
+  }
+
+  /**
+   * AnalysisReport findFirst
+   */
+  export type AnalysisReportFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisReport
+     */
+    select?: AnalysisReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisReport
+     */
+    omit?: AnalysisReportOmit<ExtArgs> | null
+    /**
+     * Filter, which AnalysisReport to fetch.
+     */
+    where?: AnalysisReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnalysisReports to fetch.
+     */
+    orderBy?: AnalysisReportOrderByWithRelationInput | AnalysisReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AnalysisReports.
+     */
+    cursor?: AnalysisReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnalysisReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnalysisReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AnalysisReports.
+     */
+    distinct?: AnalysisReportScalarFieldEnum | AnalysisReportScalarFieldEnum[]
+  }
+
+  /**
+   * AnalysisReport findFirstOrThrow
+   */
+  export type AnalysisReportFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisReport
+     */
+    select?: AnalysisReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisReport
+     */
+    omit?: AnalysisReportOmit<ExtArgs> | null
+    /**
+     * Filter, which AnalysisReport to fetch.
+     */
+    where?: AnalysisReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnalysisReports to fetch.
+     */
+    orderBy?: AnalysisReportOrderByWithRelationInput | AnalysisReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AnalysisReports.
+     */
+    cursor?: AnalysisReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnalysisReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnalysisReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AnalysisReports.
+     */
+    distinct?: AnalysisReportScalarFieldEnum | AnalysisReportScalarFieldEnum[]
+  }
+
+  /**
+   * AnalysisReport findMany
+   */
+  export type AnalysisReportFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisReport
+     */
+    select?: AnalysisReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisReport
+     */
+    omit?: AnalysisReportOmit<ExtArgs> | null
+    /**
+     * Filter, which AnalysisReports to fetch.
+     */
+    where?: AnalysisReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnalysisReports to fetch.
+     */
+    orderBy?: AnalysisReportOrderByWithRelationInput | AnalysisReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AnalysisReports.
+     */
+    cursor?: AnalysisReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnalysisReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnalysisReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AnalysisReports.
+     */
+    distinct?: AnalysisReportScalarFieldEnum | AnalysisReportScalarFieldEnum[]
+  }
+
+  /**
+   * AnalysisReport create
+   */
+  export type AnalysisReportCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisReport
+     */
+    select?: AnalysisReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisReport
+     */
+    omit?: AnalysisReportOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AnalysisReport.
+     */
+    data: XOR<AnalysisReportCreateInput, AnalysisReportUncheckedCreateInput>
+  }
+
+  /**
+   * AnalysisReport createMany
+   */
+  export type AnalysisReportCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AnalysisReports.
+     */
+    data: AnalysisReportCreateManyInput | AnalysisReportCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AnalysisReport createManyAndReturn
+   */
+  export type AnalysisReportCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisReport
+     */
+    select?: AnalysisReportSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisReport
+     */
+    omit?: AnalysisReportOmit<ExtArgs> | null
+    /**
+     * The data used to create many AnalysisReports.
+     */
+    data: AnalysisReportCreateManyInput | AnalysisReportCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AnalysisReport update
+   */
+  export type AnalysisReportUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisReport
+     */
+    select?: AnalysisReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisReport
+     */
+    omit?: AnalysisReportOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AnalysisReport.
+     */
+    data: XOR<AnalysisReportUpdateInput, AnalysisReportUncheckedUpdateInput>
+    /**
+     * Choose, which AnalysisReport to update.
+     */
+    where: AnalysisReportWhereUniqueInput
+  }
+
+  /**
+   * AnalysisReport updateMany
+   */
+  export type AnalysisReportUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AnalysisReports.
+     */
+    data: XOR<AnalysisReportUpdateManyMutationInput, AnalysisReportUncheckedUpdateManyInput>
+    /**
+     * Filter which AnalysisReports to update
+     */
+    where?: AnalysisReportWhereInput
+    /**
+     * Limit how many AnalysisReports to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AnalysisReport updateManyAndReturn
+   */
+  export type AnalysisReportUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisReport
+     */
+    select?: AnalysisReportSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisReport
+     */
+    omit?: AnalysisReportOmit<ExtArgs> | null
+    /**
+     * The data used to update AnalysisReports.
+     */
+    data: XOR<AnalysisReportUpdateManyMutationInput, AnalysisReportUncheckedUpdateManyInput>
+    /**
+     * Filter which AnalysisReports to update
+     */
+    where?: AnalysisReportWhereInput
+    /**
+     * Limit how many AnalysisReports to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AnalysisReport upsert
+   */
+  export type AnalysisReportUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisReport
+     */
+    select?: AnalysisReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisReport
+     */
+    omit?: AnalysisReportOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AnalysisReport to update in case it exists.
+     */
+    where: AnalysisReportWhereUniqueInput
+    /**
+     * In case the AnalysisReport found by the `where` argument doesn't exist, create a new AnalysisReport with this data.
+     */
+    create: XOR<AnalysisReportCreateInput, AnalysisReportUncheckedCreateInput>
+    /**
+     * In case the AnalysisReport was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AnalysisReportUpdateInput, AnalysisReportUncheckedUpdateInput>
+  }
+
+  /**
+   * AnalysisReport delete
+   */
+  export type AnalysisReportDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisReport
+     */
+    select?: AnalysisReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisReport
+     */
+    omit?: AnalysisReportOmit<ExtArgs> | null
+    /**
+     * Filter which AnalysisReport to delete.
+     */
+    where: AnalysisReportWhereUniqueInput
+  }
+
+  /**
+   * AnalysisReport deleteMany
+   */
+  export type AnalysisReportDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AnalysisReports to delete
+     */
+    where?: AnalysisReportWhereInput
+    /**
+     * Limit how many AnalysisReports to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AnalysisReport without action
+   */
+  export type AnalysisReportDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnalysisReport
+     */
+    select?: AnalysisReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnalysisReport
+     */
+    omit?: AnalysisReportOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -56961,6 +59156,29 @@ export namespace Prisma {
   };
 
   export type BookingSupportCaseScalarFieldEnum = (typeof BookingSupportCaseScalarFieldEnum)[keyof typeof BookingSupportCaseScalarFieldEnum]
+
+
+  export const PaymentAlertSentScalarFieldEnum: {
+    id: 'id',
+    bookingId: 'bookingId',
+    alertType: 'alertType',
+    sentAt: 'sentAt'
+  };
+
+  export type PaymentAlertSentScalarFieldEnum = (typeof PaymentAlertSentScalarFieldEnum)[keyof typeof PaymentAlertSentScalarFieldEnum]
+
+
+  export const AnalysisReportScalarFieldEnum: {
+    id: 'id',
+    type: 'type',
+    periodStart: 'periodStart',
+    periodEnd: 'periodEnd',
+    markdown: 'markdown',
+    sentToTelegram: 'sentToTelegram',
+    generatedAt: 'generatedAt'
+  };
+
+  export type AnalysisReportScalarFieldEnum = (typeof AnalysisReportScalarFieldEnum)[keyof typeof AnalysisReportScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -61105,6 +63323,116 @@ export namespace Prisma {
     resolvedAt?: DateTimeNullableWithAggregatesFilter<"BookingSupportCase"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"BookingSupportCase"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"BookingSupportCase"> | Date | string
+  }
+
+  export type PaymentAlertSentWhereInput = {
+    AND?: PaymentAlertSentWhereInput | PaymentAlertSentWhereInput[]
+    OR?: PaymentAlertSentWhereInput[]
+    NOT?: PaymentAlertSentWhereInput | PaymentAlertSentWhereInput[]
+    id?: StringFilter<"PaymentAlertSent"> | string
+    bookingId?: StringFilter<"PaymentAlertSent"> | string
+    alertType?: StringFilter<"PaymentAlertSent"> | string
+    sentAt?: DateTimeFilter<"PaymentAlertSent"> | Date | string
+  }
+
+  export type PaymentAlertSentOrderByWithRelationInput = {
+    id?: SortOrder
+    bookingId?: SortOrder
+    alertType?: SortOrder
+    sentAt?: SortOrder
+  }
+
+  export type PaymentAlertSentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    bookingId_alertType?: PaymentAlertSentBookingIdAlertTypeCompoundUniqueInput
+    AND?: PaymentAlertSentWhereInput | PaymentAlertSentWhereInput[]
+    OR?: PaymentAlertSentWhereInput[]
+    NOT?: PaymentAlertSentWhereInput | PaymentAlertSentWhereInput[]
+    bookingId?: StringFilter<"PaymentAlertSent"> | string
+    alertType?: StringFilter<"PaymentAlertSent"> | string
+    sentAt?: DateTimeFilter<"PaymentAlertSent"> | Date | string
+  }, "id" | "bookingId_alertType">
+
+  export type PaymentAlertSentOrderByWithAggregationInput = {
+    id?: SortOrder
+    bookingId?: SortOrder
+    alertType?: SortOrder
+    sentAt?: SortOrder
+    _count?: PaymentAlertSentCountOrderByAggregateInput
+    _max?: PaymentAlertSentMaxOrderByAggregateInput
+    _min?: PaymentAlertSentMinOrderByAggregateInput
+  }
+
+  export type PaymentAlertSentScalarWhereWithAggregatesInput = {
+    AND?: PaymentAlertSentScalarWhereWithAggregatesInput | PaymentAlertSentScalarWhereWithAggregatesInput[]
+    OR?: PaymentAlertSentScalarWhereWithAggregatesInput[]
+    NOT?: PaymentAlertSentScalarWhereWithAggregatesInput | PaymentAlertSentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PaymentAlertSent"> | string
+    bookingId?: StringWithAggregatesFilter<"PaymentAlertSent"> | string
+    alertType?: StringWithAggregatesFilter<"PaymentAlertSent"> | string
+    sentAt?: DateTimeWithAggregatesFilter<"PaymentAlertSent"> | Date | string
+  }
+
+  export type AnalysisReportWhereInput = {
+    AND?: AnalysisReportWhereInput | AnalysisReportWhereInput[]
+    OR?: AnalysisReportWhereInput[]
+    NOT?: AnalysisReportWhereInput | AnalysisReportWhereInput[]
+    id?: StringFilter<"AnalysisReport"> | string
+    type?: StringFilter<"AnalysisReport"> | string
+    periodStart?: DateTimeFilter<"AnalysisReport"> | Date | string
+    periodEnd?: DateTimeFilter<"AnalysisReport"> | Date | string
+    markdown?: StringFilter<"AnalysisReport"> | string
+    sentToTelegram?: BoolFilter<"AnalysisReport"> | boolean
+    generatedAt?: DateTimeFilter<"AnalysisReport"> | Date | string
+  }
+
+  export type AnalysisReportOrderByWithRelationInput = {
+    id?: SortOrder
+    type?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    markdown?: SortOrder
+    sentToTelegram?: SortOrder
+    generatedAt?: SortOrder
+  }
+
+  export type AnalysisReportWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AnalysisReportWhereInput | AnalysisReportWhereInput[]
+    OR?: AnalysisReportWhereInput[]
+    NOT?: AnalysisReportWhereInput | AnalysisReportWhereInput[]
+    type?: StringFilter<"AnalysisReport"> | string
+    periodStart?: DateTimeFilter<"AnalysisReport"> | Date | string
+    periodEnd?: DateTimeFilter<"AnalysisReport"> | Date | string
+    markdown?: StringFilter<"AnalysisReport"> | string
+    sentToTelegram?: BoolFilter<"AnalysisReport"> | boolean
+    generatedAt?: DateTimeFilter<"AnalysisReport"> | Date | string
+  }, "id">
+
+  export type AnalysisReportOrderByWithAggregationInput = {
+    id?: SortOrder
+    type?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    markdown?: SortOrder
+    sentToTelegram?: SortOrder
+    generatedAt?: SortOrder
+    _count?: AnalysisReportCountOrderByAggregateInput
+    _max?: AnalysisReportMaxOrderByAggregateInput
+    _min?: AnalysisReportMinOrderByAggregateInput
+  }
+
+  export type AnalysisReportScalarWhereWithAggregatesInput = {
+    AND?: AnalysisReportScalarWhereWithAggregatesInput | AnalysisReportScalarWhereWithAggregatesInput[]
+    OR?: AnalysisReportScalarWhereWithAggregatesInput[]
+    NOT?: AnalysisReportScalarWhereWithAggregatesInput | AnalysisReportScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AnalysisReport"> | string
+    type?: StringWithAggregatesFilter<"AnalysisReport"> | string
+    periodStart?: DateTimeWithAggregatesFilter<"AnalysisReport"> | Date | string
+    periodEnd?: DateTimeWithAggregatesFilter<"AnalysisReport"> | Date | string
+    markdown?: StringWithAggregatesFilter<"AnalysisReport"> | string
+    sentToTelegram?: BoolWithAggregatesFilter<"AnalysisReport"> | boolean
+    generatedAt?: DateTimeWithAggregatesFilter<"AnalysisReport"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -65727,6 +68055,125 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PaymentAlertSentCreateInput = {
+    id?: string
+    bookingId: string
+    alertType: string
+    sentAt?: Date | string
+  }
+
+  export type PaymentAlertSentUncheckedCreateInput = {
+    id?: string
+    bookingId: string
+    alertType: string
+    sentAt?: Date | string
+  }
+
+  export type PaymentAlertSentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bookingId?: StringFieldUpdateOperationsInput | string
+    alertType?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentAlertSentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bookingId?: StringFieldUpdateOperationsInput | string
+    alertType?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentAlertSentCreateManyInput = {
+    id?: string
+    bookingId: string
+    alertType: string
+    sentAt?: Date | string
+  }
+
+  export type PaymentAlertSentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bookingId?: StringFieldUpdateOperationsInput | string
+    alertType?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentAlertSentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bookingId?: StringFieldUpdateOperationsInput | string
+    alertType?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisReportCreateInput = {
+    id?: string
+    type: string
+    periodStart: Date | string
+    periodEnd: Date | string
+    markdown: string
+    sentToTelegram?: boolean
+    generatedAt?: Date | string
+  }
+
+  export type AnalysisReportUncheckedCreateInput = {
+    id?: string
+    type: string
+    periodStart: Date | string
+    periodEnd: Date | string
+    markdown: string
+    sentToTelegram?: boolean
+    generatedAt?: Date | string
+  }
+
+  export type AnalysisReportUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    markdown?: StringFieldUpdateOperationsInput | string
+    sentToTelegram?: BoolFieldUpdateOperationsInput | boolean
+    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisReportUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    markdown?: StringFieldUpdateOperationsInput | string
+    sentToTelegram?: BoolFieldUpdateOperationsInput | boolean
+    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisReportCreateManyInput = {
+    id?: string
+    type: string
+    periodStart: Date | string
+    periodEnd: Date | string
+    markdown: string
+    sentToTelegram?: boolean
+    generatedAt?: Date | string
+  }
+
+  export type AnalysisReportUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    markdown?: StringFieldUpdateOperationsInput | string
+    sentToTelegram?: BoolFieldUpdateOperationsInput | boolean
+    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnalysisReportUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    markdown?: StringFieldUpdateOperationsInput | string
+    sentToTelegram?: BoolFieldUpdateOperationsInput | boolean
+    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -68633,6 +71080,62 @@ export namespace Prisma {
     resolvedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type PaymentAlertSentBookingIdAlertTypeCompoundUniqueInput = {
+    bookingId: string
+    alertType: string
+  }
+
+  export type PaymentAlertSentCountOrderByAggregateInput = {
+    id?: SortOrder
+    bookingId?: SortOrder
+    alertType?: SortOrder
+    sentAt?: SortOrder
+  }
+
+  export type PaymentAlertSentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    bookingId?: SortOrder
+    alertType?: SortOrder
+    sentAt?: SortOrder
+  }
+
+  export type PaymentAlertSentMinOrderByAggregateInput = {
+    id?: SortOrder
+    bookingId?: SortOrder
+    alertType?: SortOrder
+    sentAt?: SortOrder
+  }
+
+  export type AnalysisReportCountOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    markdown?: SortOrder
+    sentToTelegram?: SortOrder
+    generatedAt?: SortOrder
+  }
+
+  export type AnalysisReportMaxOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    markdown?: SortOrder
+    sentToTelegram?: SortOrder
+    generatedAt?: SortOrder
+  }
+
+  export type AnalysisReportMinOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    markdown?: SortOrder
+    sentToTelegram?: SortOrder
+    generatedAt?: SortOrder
   }
 
   export type BookingCreateNestedManyWithoutUserInput = {

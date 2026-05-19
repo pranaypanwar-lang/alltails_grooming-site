@@ -7,6 +7,7 @@ import { fetchAdminCustomerDetail } from "../../lib/api";
 import type { AdminCustomerDetail } from "../../types";
 import { AdminPageHeader } from "../../components/common/AdminPageHeader";
 import { AdminSummaryBar } from "../../components/common/AdminSummaryBar";
+import { isLongCoatBreed, shouldSuggestUpgrade } from "../../../../lib/upsell/detectUpsell";
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-IN", {
@@ -32,6 +33,40 @@ function toneClass(tone: "default" | "warning" | "success" | "danger") {
   if (tone === "warning") return "bg-[#fff8eb] text-[#b45309]";
   if (tone === "success") return "bg-[#effaf3] text-[#15803d]";
   return "bg-[#eef2ff] text-[#4338ca]";
+}
+
+function UpsellOpportunityCard({ data }: { data: AdminCustomerDetail }) {
+  const longCoatPets = data.pets.filter((p) => isLongCoatBreed(p.breed));
+  if (longCoatPets.length === 0) return null;
+
+  // Find most recent booking with a low-tier package
+  const recentLowTierBooking = data.bookingHistory.find(
+    (b) => b.status === "completed" && shouldSuggestUpgrade(b.finalAmount)
+  );
+  if (!recentLowTierBooking) return null;
+
+  const petLabel =
+    longCoatPets.length === 1
+      ? `${longCoatPets[0].name ?? longCoatPets[0].breed} (${longCoatPets[0].breed})`
+      : `${longCoatPets.length} long-coat pets`;
+
+  return (
+    <section className="rounded-[22px] border border-[#fef3c7] bg-[#fffbeb] p-4 shadow-[0_14px_34px_rgba(73,44,120,0.05)]">
+      <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#92400e]">⚡ Upsell opportunity</div>
+      <div className="mt-2 text-[14px] font-semibold text-[#78350f]">
+        {petLabel} on {recentLowTierBooking.serviceName}
+      </div>
+      <div className="mt-1 text-[12px] text-[#92400e]">
+        Long-coat breeds benefit from Complete Pampering — coat conditioning and full trim included.
+      </div>
+      <div className="mt-3 flex items-center gap-2">
+        <span className="text-[12px] text-[#78350f] line-through">
+          ₹{recentLowTierBooking.finalAmount.toLocaleString("en-IN")}
+        </span>
+        <span className="rounded-full bg-[#fef9c3] px-2 py-0.5 text-[12px] font-bold text-[#78350f]">→ ₹1,799</span>
+      </div>
+    </section>
+  );
 }
 
 function NextBestAction({ data }: { data: AdminCustomerDetail }) {
@@ -307,6 +342,8 @@ export default function AdminCustomerDetailPage() {
           </div>
 
           <div className="space-y-5">
+            {/* Upsell opportunity card */}
+            <UpsellOpportunityCard data={data} />
             {/* Next best action card */}
             <NextBestAction data={data} />
 

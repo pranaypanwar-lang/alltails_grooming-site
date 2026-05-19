@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { adminPrisma } from "../_lib/bookingAdmin";
 import { assertAdminSession } from "../_lib/assertAdmin";
 import { calculateCashHeld } from "../../../../lib/finance/groomerLedger";
+import { isLongCoatBreed, shouldSuggestUpgrade } from "../../../../lib/upsell/detectUpsell";
 import type { DashboardSignal, DashboardResponse } from "../../../admin/types/dashboard";
 
 export const runtime = "nodejs";
@@ -26,6 +27,7 @@ export async function GET() {
     issueBookings,
     incompleteSopBookings,
     groomersWithCash,
+    todayUpsellBookings,
   ] = await Promise.all([
     // Today's bookings for pulse + timeline
     adminPrisma.booking.findMany({
@@ -115,6 +117,20 @@ export async function GET() {
       },
       orderBy: { name: "asc" },
     }),
+
+    // Today's confirmed bookings with long-coat breeds on low-tier packages
+    adminPrisma.booking.findMany({
+      where: {
+        selectedDate: todayStr,
+        status: "confirmed",
+      },
+      select: {
+        id: true,
+        service: { select: { price: true, name: true } },
+        pets: { select: { pet: { select: { name: true, breed: true } } } },
+        user: { select: { name: true } },
+      },
+    }),
   ]);
 
   // Pulse stats
@@ -201,6 +217,23 @@ export async function GET() {
       title: `${incompleteSopBookings.length} completed booking${incompleteSopBookings.length > 1 ? "s" : ""} with incomplete SOP`,
       description: "SOP checklist not fully ticked off for today's completed bookings",
       href: `/admin/qa`,
+    });
+  }
+
+  // Upsell signals: long-coat breeds on low-tier packages today
+  const upsellBookings = todayUpsellBookings.filter((b) => {
+    if (!shouldSuggestUpgrade(b.service.price)) return false;
+    return b.pets.some((bp) => isLongCoatBreed(bp.pet.breed));
+  });
+  if (upsellBookings.length > 0) {
+    const example = upsellBookings[0];
+    const longCoatPet = example.pets.find((bp) => isLongCoatBreed(bp.pet.breed));
+    signals.push({
+      id: "upsell-opportunity",
+      tone: "default",
+      title: `${upsellBookings.length} upsell opportunit${upsellBookings.length > 1 ? "ies" : "y"} today`,
+      description: `e.g. ${example.user.name}'s ${longCoatPet?.pet.breed ?? "long-coat pet"} on ${example.service.name} — Complete Pampering would serve them better`,
+      href: `/admin/bookings`,
     });
   }
 
