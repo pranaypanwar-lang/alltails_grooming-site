@@ -18,6 +18,7 @@ import {
   Wind,
 } from "lucide-react";
 import type { GroomerBookingView } from "../../../../lib/groomerPortal";
+import { resolveNote } from "../../../../lib/noteUtils";
 import { deriveActionMoment, deriveJobFlowPsychology, resolvePsychologyText } from "../../../../lib/groomerPsychology";
 import { getPacerPhases } from "../../../../lib/booking/pacerPhases";
 import { useOfflineQueue } from "./hooks/useOfflineQueue";
@@ -1883,17 +1884,17 @@ export function GroomerJobClient({
                 </div>
               ) : null}
 
-              {cleanedNotes ? (
+              {resolveNote(cleanedNotes, languageMode) ? (
                 <div className="mt-3 rounded-[18px] border border-[#d9e7fb] bg-[#f4f8ff] px-4 py-3 text-[14px] leading-[1.7] text-[#23415a]">
                   <div className="font-semibold text-[#23415a]">{languageMode === "simple" ? "Grooming notes" : "ग्रूमिंग नोट्स"}</div>
-                  <div className="mt-1">{cleanedNotes}</div>
+                  <div className="mt-1">{resolveNote(cleanedNotes, languageMode)}</div>
                 </div>
               ) : null}
 
-              {pet.stylingNotes ? (
+              {resolveNote(pet.stylingNotes, languageMode) ? (
                 <div className="mt-3 rounded-[18px] border border-[#f1dfff] bg-[#fcf7ff] px-4 py-3 text-[14px] leading-[1.7] text-[#5b3a76]">
                   <div className="font-semibold text-[#5b3a76]">{languageMode === "simple" ? "Style / look" : "स्टाइल / लुक"}</div>
-                  <div className="mt-1">{pet.stylingNotes}</div>
+                  <div className="mt-1">{resolveNote(pet.stylingNotes, languageMode)}</div>
                 </div>
               ) : null}
 

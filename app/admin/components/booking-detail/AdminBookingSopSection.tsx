@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { joinBilingualNote, splitBilingualNote } from "../../../../lib/noteUtils";
 import Image from "next/image";
 import type { AdminBookingPaymentCollection, AdminBookingSopStep } from "../../types";
 import { recordAdminBookingPaymentProof, saveGroomerStepNote, updateAdminBookingSopStep, uploadAdminBookingSopProof } from "../../lib/api";
@@ -45,6 +46,7 @@ export function AdminBookingSopSection({
   const { showToast } = useAdminToast();
   const [busyStepKey, setBusyStepKey] = useState<string | null>(null);
   const [noteDraftMap, setNoteDraftMap] = useState<Record<string, string>>({});
+  const [bilingualDraftMap, setBilingualDraftMap] = useState<Record<string, { en: string; hi: string }>>({});
   const [noteEditingKey, setNoteEditingKey] = useState<string | null>(null);
   const [noteSavingKey, setNoteSavingKey] = useState<string | null>(null);
   const [paymentMode, setPaymentMode] = useState<"cash" | "online" | "waived">(paymentCollection?.collectionMode ?? "cash");
@@ -63,7 +65,8 @@ export function AdminBookingSopSection({
   }, [expectedAmount, paymentCollection]);
 
   const handleSaveNote = async (stepKey: string) => {
-    const note = noteDraftMap[stepKey] ?? "";
+    const bil = bilingualDraftMap[stepKey];
+    const note = bil ? joinBilingualNote(bil.en, bil.hi) : (noteDraftMap[stepKey] ?? "");
     try {
       setNoteSavingKey(stepKey);
       await saveGroomerStepNote(bookingId, stepKey, note);
@@ -256,19 +259,32 @@ export function AdminBookingSopSection({
                 </div>
               </div>
 
-              {/* Groomer note — inline editable */}
+              {/* Groomer note — bilingual inline editor */}
               <div className="mt-3">
                 {noteEditingKey === step.key ? (
-                  <div className="rounded-[10px] border border-[#c4b5fd] bg-[#faf8ff] p-2.5">
-                    <textarea
-                      value={noteDraftMap[step.key] ?? step.notes ?? ""}
-                      onChange={(e) => setNoteDraftMap((prev) => ({ ...prev, [step.key]: e.target.value }))}
-                      rows={2}
-                      autoFocus
-                      placeholder="Groomer note for this step (shown on groomer's phone during session)"
-                      className="w-full resize-none rounded-[8px] bg-white border border-[#e5e7eb] px-2.5 py-2 text-[12px] leading-[1.55] text-[#2a2346] outline-none focus:border-[#6d5bd0]"
-                    />
-                    <div className="mt-2 flex gap-2">
+                  <div className="rounded-[10px] border border-[#c4b5fd] bg-[#faf8ff] p-2.5 space-y-2">
+                    <div>
+                      <div className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[#8a90a6]">English</div>
+                      <textarea
+                        value={bilingualDraftMap[step.key]?.en ?? ""}
+                        onChange={(e) => setBilingualDraftMap((prev) => ({ ...prev, [step.key]: { ...prev[step.key], en: e.target.value, hi: prev[step.key]?.hi ?? "" } }))}
+                        rows={2}
+                        autoFocus
+                        placeholder="Groomer note in English"
+                        className="w-full resize-none rounded-[8px] bg-white border border-[#e5e7eb] px-2.5 py-2 text-[12px] leading-[1.55] text-[#2a2346] outline-none focus:border-[#6d5bd0]"
+                      />
+                    </div>
+                    <div>
+                      <div className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[#8a90a6]">Hindi</div>
+                      <textarea
+                        value={bilingualDraftMap[step.key]?.hi ?? ""}
+                        onChange={(e) => setBilingualDraftMap((prev) => ({ ...prev, [step.key]: { ...prev[step.key], hi: e.target.value, en: prev[step.key]?.en ?? "" } }))}
+                        rows={2}
+                        placeholder="वही नोट हिंदी में (optional)"
+                        className="w-full resize-none rounded-[8px] bg-white border border-[#e5e7eb] px-2.5 py-2 text-[12px] leading-[1.55] text-[#2a2346] outline-none focus:border-[#6d5bd0]"
+                      />
+                    </div>
+                    <div className="flex gap-2">
                       <button
                         type="button"
                         disabled={noteSavingKey === step.key}
@@ -291,7 +307,11 @@ export function AdminBookingSopSection({
                     <p className="text-[12px] leading-[1.55] text-[#4c1d95]">{step.notes}</p>
                     <button
                       type="button"
-                      onClick={() => { setNoteEditingKey(step.key); setNoteDraftMap((prev) => ({ ...prev, [step.key]: step.notes ?? "" })); }}
+                      onClick={() => {
+                        const parts = splitBilingualNote(step.notes);
+                        setNoteEditingKey(step.key);
+                        setBilingualDraftMap((prev) => ({ ...prev, [step.key]: parts }));
+                      }}
                       className="shrink-0 text-[11px] font-semibold text-[#6d5bd0] underline underline-offset-2"
                     >
                       Edit
@@ -300,7 +320,10 @@ export function AdminBookingSopSection({
                 ) : (
                   <button
                     type="button"
-                    onClick={() => { setNoteEditingKey(step.key); setNoteDraftMap((prev) => ({ ...prev, [step.key]: "" })); }}
+                    onClick={() => {
+                      setNoteEditingKey(step.key);
+                      setBilingualDraftMap((prev) => ({ ...prev, [step.key]: { en: "", hi: "" } }));
+                    }}
                     className="text-[11px] font-semibold text-[#9ca3af] underline underline-offset-2 hover:text-[#6d5bd0]"
                   >
                     + Add groomer note

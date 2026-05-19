@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { saveGroomerStepNote } from "../../lib/api";
 import { useAdminToast } from "../common/AdminToastProvider";
+import { joinBilingualNote } from "../../../../lib/noteUtils";
 import type { AdminBookingSopStep } from "../../types";
 
 type Props = {
@@ -136,7 +137,7 @@ export function AdminGroomerNotesAI({
   const [copied, setCopied] = useState(false);
   const [pastedResponse, setPastedResponse] = useState("");
   const [parsed, setParsed] = useState<ParsedNote[] | null>(null);
-  const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const [drafts, setDrafts] = useState<Record<string, { en: string; hi: string }>>({});
   const [applying, setApplying] = useState(false);
 
   const nonPaymentSteps = steps.filter((s) => s.key !== "payment_proof" && s.key !== "review_proof");
@@ -165,15 +166,17 @@ export function AdminGroomerNotesAI({
       return;
     }
     setParsed(results);
-    const initialDrafts: Record<string, string> = {};
+    const initialDrafts: Record<string, { en: string; hi: string }> = {};
     for (const n of results) {
-      initialDrafts[n.key] = n.note;
+      initialDrafts[n.key] = { en: n.note, hi: "" };
     }
     setDrafts(initialDrafts);
   };
 
   const handleApplyAll = async () => {
-    const toSave = Object.entries(drafts).filter(([, note]) => note.trim() !== "");
+    const toSave = Object.entries(drafts)
+      .map(([key, bil]) => ({ key, note: joinBilingualNote(bil.en, bil.hi) }))
+      .filter(({ note }) => note.trim() !== "");
     if (!toSave.length) {
       showToast("No notes to apply.", false);
       return;
@@ -181,9 +184,9 @@ export function AdminGroomerNotesAI({
     setApplying(true);
     let saved = 0;
     let failed = 0;
-    for (const [key, note] of toSave) {
+    for (const { key, note } of toSave) {
       try {
-        await saveGroomerStepNote(bookingId, key, note.trim());
+        await saveGroomerStepNote(bookingId, key, note);
         saved++;
       } catch {
         failed++;
@@ -293,15 +296,29 @@ export function AdminGroomerNotesAI({
                 {parsed.map((n) => {
                   const step = nonPaymentSteps.find((s) => s.key === n.key);
                   if (!step) return null;
+                  const bil = drafts[n.key] ?? { en: n.note, hi: "" };
                   return (
-                    <div key={n.key} className="rounded-[12px] border border-[#ece5ff] bg-white p-3">
-                      <div className="mb-1.5 text-[12px] font-semibold text-[#2a2346]">{step.label}</div>
-                      <textarea
-                        value={drafts[n.key] ?? n.note}
-                        onChange={(e) => setDrafts((prev) => ({ ...prev, [n.key]: e.target.value }))}
-                        rows={2}
-                        className="w-full resize-none rounded-[8px] border border-[#e5e7eb] px-2.5 py-2 text-[12px] leading-[1.55] text-[#374151] outline-none focus:border-[#6d5bd0]"
-                      />
+                    <div key={n.key} className="rounded-[12px] border border-[#ece5ff] bg-white p-3 space-y-2">
+                      <div className="text-[12px] font-semibold text-[#2a2346]">{step.label}</div>
+                      <div>
+                        <div className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[#8a90a6]">English</div>
+                        <textarea
+                          value={bil.en}
+                          onChange={(e) => setDrafts((prev) => ({ ...prev, [n.key]: { ...prev[n.key] ?? { en: "", hi: "" }, en: e.target.value } }))}
+                          rows={2}
+                          className="w-full resize-none rounded-[8px] border border-[#e5e7eb] px-2.5 py-2 text-[12px] leading-[1.55] text-[#374151] outline-none focus:border-[#6d5bd0]"
+                        />
+                      </div>
+                      <div>
+                        <div className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[#8a90a6]">Hindi</div>
+                        <textarea
+                          value={bil.hi}
+                          onChange={(e) => setDrafts((prev) => ({ ...prev, [n.key]: { ...prev[n.key] ?? { en: "", hi: "" }, hi: e.target.value } }))}
+                          rows={2}
+                          placeholder="वही नोट हिंदी में (optional)"
+                          className="w-full resize-none rounded-[8px] border border-[#e5e7eb] px-2.5 py-2 text-[12px] leading-[1.55] text-[#374151] outline-none focus:border-[#6d5bd0]"
+                        />
+                      </div>
                     </div>
                   );
                 })}

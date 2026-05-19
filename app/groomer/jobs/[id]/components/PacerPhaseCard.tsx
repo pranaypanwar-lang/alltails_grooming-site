@@ -4,6 +4,7 @@ import { Camera, CheckCircle2, ChevronDown, ChevronRight, Video } from "lucide-r
 import { useEffect, useRef, useState } from "react";
 import type { CoachingStep, PacerPhase } from "../../../../../lib/booking/pacerPhases";
 import type { GroomerBookingView } from "../../../../../lib/groomerPortal";
+import { resolveNote } from "../../../../../lib/noteUtils";
 import { SyncStatusBadge } from "./SyncStatusBadge";
 import type { StepSyncState } from "../hooks/useOfflineQueue";
 
@@ -217,24 +218,24 @@ function StepFocusCard({
         ) : null}
 
         {/* Step-specific groomer note (from admin/ops input) — shown first, highest priority */}
-        {step.groomerNote ? (
+        {resolveNote(step.groomerNote, mode) ? (
           <div className="mt-3.5 rounded-[16px] border border-[#c4b5fd] bg-[#f5f3ff] px-3.5 py-3">
             <div className="mb-1 flex items-center gap-1.5">
               <div className="text-[10px] font-black uppercase tracking-[0.12em] text-[#6d28d9]">
                 {mode === "simple" ? "Groomer note" : "ग्रूमर नोट"}
               </div>
             </div>
-            <div className="text-[13px] leading-[1.65] text-[#4c1d95]">{step.groomerNote}</div>
+            <div className="text-[13px] leading-[1.65] text-[#4c1d95]">{resolveNote(step.groomerNote, mode)}</div>
           </div>
         ) : null}
 
         {/* Phase-level coach note (from pet temperament / grooming / styling data) */}
-        {coachNote ? (
+        {resolveNote(coachNote, mode) ? (
           <div className="mt-3 rounded-[16px] border border-[#fde68a] bg-[#fffbeb] px-3.5 py-3">
             <div className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#b45309]">
               {mode === "simple" ? "Pet note" : "पेट नोट"}
             </div>
-            <div className="text-[13px] leading-[1.65] text-[#78350f]">{coachNote}</div>
+            <div className="text-[13px] leading-[1.65] text-[#78350f]">{resolveNote(coachNote, mode)}</div>
           </div>
         ) : null}
 
@@ -502,13 +503,13 @@ export function PacerPhaseCard({
           <div className="text-[22px] font-black tracking-[-0.03em] text-[#1f1f2c]">
             {mode === "simple" ? phase.label : phase.labelHindi}
           </div>
-          {(coachNote ?? phase.coachNoteHint) ? (
+          {(resolveNote(coachNote, mode) ?? phase.coachNoteHint) ? (
             <div className="mt-3 rounded-[16px] border border-[#fde68a] bg-[#fffbeb] px-3.5 py-3">
               <div className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#b45309]">
                 {mode === "simple" ? "Note" : "नोट"}
               </div>
               <div className="text-[13px] leading-[1.65] text-[#78350f]">
-                {coachNote ?? (mode === "simple" ? phase.coachNoteHint : phase.coachNoteHintHindi)}
+                {resolveNote(coachNote, mode) ?? (mode === "simple" ? phase.coachNoteHint : phase.coachNoteHintHindi)}
               </div>
             </div>
           ) : null}
