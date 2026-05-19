@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { flushSync } from "react-dom";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -991,25 +992,34 @@ export function GroomerJobClient({
       );
     }
 
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode: { ideal: "environment" },
-        width: { ideal: 854, max: 1280 },
-        height: { ideal: 480, max: 720 },
-        frameRate: { ideal: 15, max: 20 },
-      },
-      audio: true,
-    });
+    // Try rear camera first; fall back to any camera (handles iOS & devices without environment cam)
+    let stream: MediaStream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: "environment" },
+          width: { ideal: 854, max: 1280 },
+          height: { ideal: 480, max: 720 },
+          frameRate: { ideal: 15, max: 20 },
+        },
+        audio: true,
+      });
+    } catch {
+      stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    }
     mediaStreamRef.current = stream;
 
     if (liveVideoRef.current) {
       liveVideoRef.current.srcObject = stream;
+      liveVideoRef.current.muted = true;
       await liveVideoRef.current.play().catch(() => undefined);
     }
   };
 
   const openLiveVideoRecorder = async (stepKey: string) => {
-    setActiveVideoStepKey(stepKey);
+    // flushSync forces the modal to mount synchronously so liveVideoRef.current
+    // is populated before setupLiveVideoPreview tries to attach the stream
+    flushSync(() => setActiveVideoStepKey(stepKey));
     try {
       await setupLiveVideoPreview();
     } catch (error) {
