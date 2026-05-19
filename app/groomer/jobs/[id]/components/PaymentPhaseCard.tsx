@@ -314,6 +314,18 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
         </div>
       ) : null}
 
+      {/* ── UPSELL INDICATOR ─────────────────────────────── */}
+      {!isWaived && !isFullyPrepaid && parsedAmount > 0 && Number.isFinite(parsedAmount) && parsedAmount > (booking.payment.finalAmount ?? 0) ? (
+        <div className="rounded-[16px] bg-[#f0fdf4] border border-[#bbf7d0] px-4 py-3">
+          <div className="text-[13px] font-black text-[#15803d]">
+            🎉 {mode === "simple" ? `Upsell! ₹${parsedAmount - (booking.payment.finalAmount ?? 0)} extra!` : `उत्कृष्ट! ₹${parsedAmount - (booking.payment.finalAmount ?? 0)} अतिरिक्त!`}
+          </div>
+          <div className="mt-0.5 text-[11px] text-[#166534]">
+            {mode === "simple" ? "Great job — you'll get bonus XP for this upsell!" : "शाबाश — इस upsell के लिए bonus XP मिलेगा!"}
+          </div>
+        </div>
+      ) : null}
+
       {/* ── ONLINE: QR + screenshot upload ───────────────── */}
       {collectionMode === "online" && !isFullyPrepaid ? (
         <div className="space-y-3">

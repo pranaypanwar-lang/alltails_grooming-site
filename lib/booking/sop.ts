@@ -6,6 +6,7 @@ export type BookingSopStepKey =
   | "sanitization_proof"
   | "pre_groom_video"
   | "oil_massage_proof"
+  | "shampoo_proof"
   | "bath_dry_proof"
   | "dental_proof"
   | "hairstyle_approval"
@@ -112,6 +113,17 @@ export const BOOKING_SOP_STEPS: BookingSopStepDefinition[] = [
     proofType: "image",
     requiredForCompletion: true,
     tiers: ["Complete"],
+  },
+  {
+    key: "shampoo_proof",
+    label: "Shampoo applied photo",
+    groomerLabel: "Shampoo lagane ke baad",
+    groomerLabelHindi: "शैम्पू लगाने के बाद",
+    groomerHint: "Shampoo poore body par lagane ke baad ek photo lo — coat fully lathered dikhni chahiye. Phir 10 min tak achhi tarah ragdo.",
+    groomerHintHindi: "शैम्पू पूरे बॉडी पर लगाने के बाद एक फोटो लो — कोट fully lathered दिखनी चाहिए। फिर 10 मिनट तक अच्छी तरह रगड़ो।",
+    proofType: "image",
+    requiredForCompletion: true,
+    tiers: ["Signature", "Complete"],
   },
   {
     key: "bath_dry_proof",

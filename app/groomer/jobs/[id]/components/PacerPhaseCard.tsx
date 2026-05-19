@@ -27,6 +27,7 @@ type Props = {
   onVideoCapture: (stepKey: string) => void;
   onPhotoCapture: (stepKey: string, file: File) => void;
   onRetrySync: () => void;
+  onSkip: (stepKey: string, reason: string) => void;
 };
 
 function fmt(seconds: number) {
@@ -157,6 +158,7 @@ function StepFocusCard({
   onVideoCapture,
   onPhotoCapture,
   onRetry,
+  onSkip,
 }: {
   step: SopStep;
   stepNumber: number;
@@ -170,7 +172,11 @@ function StepFocusCard({
   onVideoCapture: () => void;
   onPhotoCapture: (file: File) => void;
   onRetry: () => void;
+  onSkip: (reason: string) => void;
 }) {
+  const [showSkip, setShowSkip] = useState(false);
+  const [skipReason, setSkipReason] = useState("");
+
   const label = mode === "simple" ? step.groomerLabel : step.groomerLabelHindi;
   const hint = mode === "simple" ? step.groomerHint : step.groomerHintHindi;
 
@@ -277,7 +283,7 @@ function StepFocusCard({
               type="button"
               disabled={busy !== null}
               onClick={onVideoCapture}
-              className={`flex h-[52px] items-center justify-center gap-2 rounded-[16px] text-[15px] font-bold text-white shadow-[0_4px_16px_rgba(109,91,208,0.2)] disabled:opacity-50 ${step.proofType === "mixed" ? "border border-[#ddd1fb] bg-white text-[#6d5bd0] shadow-none" : "flex-1 bg-[#6d5bd0]"}`}
+              className={`flex h-[52px] items-center justify-center gap-2 rounded-[16px] text-[15px] font-bold disabled:opacity-50 ${step.proofType === "mixed" ? "border border-[#ddd1fb] bg-white text-[#6d5bd0] shadow-none px-4" : "flex-1 bg-[#6d5bd0] text-white shadow-[0_4px_16px_rgba(109,91,208,0.2)]"}`}
             >
               <Video className="h-5 w-5" />
               {step.proofType === "mixed"
@@ -313,6 +319,47 @@ function StepFocusCard({
             <GuideAccordion steps={coachingSteps} mode={mode} />
           </div>
         ) : null}
+
+        {/* Skip option */}
+        {!showSkip ? (
+          <button
+            type="button"
+            onClick={() => setShowSkip(true)}
+            className="mt-3 text-[11px] font-semibold text-white/25 underline underline-offset-2"
+          >
+            {mode === "simple" ? "Skip this step" : "यह स्टेप स्किप करें"}
+          </button>
+        ) : (
+          <div className="mt-3 rounded-[16px] border border-white/10 bg-white/5 p-3">
+            <div className="text-[12px] font-semibold text-white/60 mb-2">
+              {mode === "simple" ? "Reason for skipping:" : "स्किप करने का कारण:"}
+            </div>
+            <textarea
+              value={skipReason}
+              onChange={(e) => setSkipReason(e.target.value)}
+              rows={2}
+              placeholder={mode === "simple" ? "e.g. Customer refused, pet too anxious..." : "उदाहरण: कस्टमर ने मना किया, पेट बहुत घबराया हुआ था..."}
+              className="w-full resize-none rounded-[10px] bg-white/10 border border-white/15 px-3 py-2 text-[12px] text-white/80 outline-none placeholder:text-white/25"
+            />
+            <div className="mt-2 flex gap-2">
+              <button
+                type="button"
+                disabled={!skipReason.trim()}
+                onClick={() => { onSkip(skipReason.trim()); setShowSkip(false); setSkipReason(""); }}
+                className="flex-1 rounded-[10px] bg-[#dc2626] px-3 py-2 text-[12px] font-bold text-white disabled:opacity-40"
+              >
+                {mode === "simple" ? "Confirm skip" : "स्किप कन्फर्म करें"}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setShowSkip(false); setSkipReason(""); }}
+                className="rounded-[10px] border border-white/15 px-3 py-2 text-[12px] font-semibold text-white/50"
+              >
+                {mode === "simple" ? "Cancel" : "रद्द करें"}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
@@ -335,6 +382,7 @@ export function PacerPhaseCard({
   onVideoCapture,
   onPhotoCapture,
   onRetrySync,
+  onSkip,
 }: Props) {
   const totalSeconds = phase.durationMinutes * 60;
   const colors = timerColor(secondsRemaining, totalSeconds);
@@ -352,6 +400,17 @@ export function PacerPhaseCard({
   // Min-time warning (oil phase)
   const [minTimeWarning, setMinTimeWarning] = useState(false);
   useEffect(() => { setMinTimeWarning(false); }, [phase.key]);
+
+  // Rotating coaching tips for timed phases
+  const [tipIndex, setTipIndex] = useState(0);
+  useEffect(() => {
+    if (!phase.timedCoachingTips?.length) return;
+    const interval = setInterval(() => {
+      setTipIndex((prev) => (prev + 1) % (phase.timedCoachingTips?.length ?? 1));
+    }, 120_000); // rotate every 2 minutes
+    return () => clearInterval(interval);
+  }, [phase.timedCoachingTips?.length]);
+  useEffect(() => { setTipIndex(0); }, [phase.key]);
 
   const minElapsedSeconds = phase.minTimePercent
     ? Math.floor(totalSeconds * (phase.minTimePercent / 100))
@@ -480,21 +539,38 @@ export function PacerPhaseCard({
 
       {/* ── ACTIVE STEP FOCUS CARD ────────────────────────── */}
       {activeStep ? (
-        <StepFocusCard
-          key={activeStep.key}
-          step={activeStep}
-          stepNumber={completedSteps.length + 1}
-          totalSteps={phaseSteps.length}
-          mode={mode}
-          busy={busy}
-          syncState={stepSyncMap[activeStep.key]}
-          coachNote={coachNote}
-          coachingSteps={completedSteps.length === 0 ? phase.coachingSteps : []}
-          onStepToggle={() => onStepToggle(activeStep.key, activeStep.status)}
-          onVideoCapture={() => onVideoCapture(activeStep.key)}
-          onPhotoCapture={(file) => onPhotoCapture(activeStep.key, file)}
-          onRetry={onRetrySync}
-        />
+        <>
+          <StepFocusCard
+            key={activeStep.key}
+            step={activeStep}
+            stepNumber={completedSteps.length + 1}
+            totalSteps={phaseSteps.length}
+            mode={mode}
+            busy={busy}
+            syncState={stepSyncMap[activeStep.key]}
+            coachNote={coachNote}
+            coachingSteps={completedSteps.length === 0 ? phase.coachingSteps : []}
+            onStepToggle={() => onStepToggle(activeStep.key, activeStep.status)}
+            onVideoCapture={() => onVideoCapture(activeStep.key)}
+            onPhotoCapture={(file) => onPhotoCapture(activeStep.key, file)}
+            onRetry={onRetrySync}
+            onSkip={(reason) => onSkip(activeStep.key, reason)}
+          />
+          {/* ── TIMED COACHING TIPS (shampoo phase etc.) ────── */}
+          {phase.timedCoachingTips?.length && minTimeNotReached ? (
+            <div className="mt-3 rounded-[20px] bg-[#0a1f0f] border border-[#4ade80]/20 p-4">
+              <div className="text-[10px] font-black uppercase tracking-[0.14em] text-[#4ade80]/60 mb-2">
+                {mode === "simple" ? `Tip ${tipIndex + 1} / ${phase.timedCoachingTips.length}` : `टिप ${tipIndex + 1} / ${phase.timedCoachingTips.length}`}
+              </div>
+              <div className="text-[14px] leading-[1.65] text-[#86efac]">
+                {mode === "simple" ? phase.timedCoachingTips[tipIndex] : (phase.timedCoachingTipsHindi?.[tipIndex] ?? phase.timedCoachingTips[tipIndex])}
+              </div>
+              <div className="mt-2 text-[11px] text-[#4ade80]/40">
+                {mode === "simple" ? "Next tip auto-advances every 2 min" : "हर 2 मिनट में अगली टिप आएगी"}
+              </div>
+            </div>
+          ) : null}
+        </>
       ) : null}
 
       {/* ── GUIDANCE-ONLY PHASE (no SOP steps) ───────────── */}

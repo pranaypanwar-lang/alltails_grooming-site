@@ -18,11 +18,12 @@ export async function POST(
     const body = await request.json().catch(() => ({}));
     const stepKey = typeof body.stepKey === "string" ? body.stepKey.trim() : "";
     const status = typeof body.status === "string" ? body.status.trim() : "";
+    const skipReason = typeof body.skipReason === "string" ? body.skipReason.trim() : undefined;
 
     if (!isBookingSopStepKey(stepKey)) {
       return NextResponse.json({ error: "Invalid SOP step" }, { status: 400 });
     }
-    if (!["pending", "completed"].includes(status)) {
+    if (!["pending", "completed", "skipped"].includes(status)) {
       return NextResponse.json({ error: "Invalid SOP status" }, { status: 400 });
     }
 
@@ -36,9 +37,9 @@ export async function POST(
       await tx.bookingSopStep.update({
         where: { bookingId_stepKey: { bookingId, stepKey } },
         data: {
-          status: status as "pending" | "completed",
-          completedAt: status === "completed" ? new Date() : null,
-          completedBy: status === "completed" ? "groomer" : null,
+          status: status as "pending" | "completed" | "skipped",
+          completedAt: (status === "completed" || status === "skipped") ? new Date() : null,
+          completedBy: status === "completed" ? "groomer" : status === "skipped" ? "skipped" : null,
         },
       });
     }, { timeout: 15000 });
@@ -48,7 +49,7 @@ export async function POST(
       actor: "groomer",
       type: "sop_step_updated",
       summary: `${definition.label} marked ${status}`,
-      metadata: { stepKey, status, source: "groomer_portal" },
+      metadata: { stepKey, status, source: "groomer_portal", ...(skipReason ? { skipReason } : {}) },
     });
 
     return NextResponse.json({ success: true, bookingId, stepKey, status });

@@ -823,6 +823,7 @@ export function GroomerJobClient({
   const [now, setNow] = useState(() => Date.now());
   const [momentToast, setMomentToast] = useState<MomentToast>(null);
   const [showSessionStartModal, setShowSessionStartModal] = useState(false);
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
   const liveVideoRef = useRef<HTMLVideoElement | null>(null);
   // Holds a stream that arrived before the video element mounted; the callback ref drains it
   const pendingStreamRef = useRef<MediaStream | null>(null);
@@ -972,6 +973,22 @@ export function GroomerJobClient({
   });
   const psychologyMode = languageMode === "simple" ? "hinglish" : "hindi";
   const jobPsychologyTitle = resolvePsychologyText(jobPsychology.stateKey, psychologyMode);
+
+  // Completion popup logic
+  const allSopDone = useMemo(() => {
+    const required = booking.sopSteps.filter(
+      (s) => !["payment_proof", "review_proof"].includes(s.key) && s.requiredForCompletion
+    );
+    return required.every((s) => s.status === "completed" || s.status === "skipped");
+  }, [booking.sopSteps]);
+
+  const paymentSaved = !!booking.payment.collection;
+
+  useEffect(() => {
+    if (allSopDone && paymentSaved && booking.status !== "completed") {
+      setShowCompleteModal(true);
+    }
+  }, [allSopDone, paymentSaved, booking.status]);
 
   const cleanupLiveRecorder = () => {
     pendingStreamRef.current?.getTracks().forEach((track) => track.stop());
@@ -1489,6 +1506,13 @@ export function GroomerJobClient({
               })}
               onPhotoCapture={(stepKey, file) => void runAction(stepKey, () => uploadOrQueue(stepKey, file))}
               onRetrySync={() => void runSync()}
+              onSkip={(stepKey, reason) => void runAction(stepKey, () =>
+                postJson(`/api/groomer/bookings/${booking.id}/sop/step`, {
+                  stepKey,
+                  status: "skipped",
+                  skipReason: reason,
+                })
+              )}
             />
           )}
 
@@ -1503,6 +1527,47 @@ export function GroomerJobClient({
 
         {fuelSheetOverlay}
         {errorOverlay}
+        {showCompleteModal && booking.status !== "completed" ? (
+          <div className="fixed inset-0 z-[300] flex items-end justify-center bg-black/60 px-4 pb-8">
+            <div className="w-full max-w-sm rounded-[28px] bg-white p-6 shadow-2xl">
+              <div className="text-center">
+                <div className="text-[40px]">🎉</div>
+                <div className="mt-2 text-[20px] font-black text-[#1f1f2c]">
+                  {languageMode === "simple" ? "Sab ho gaya!" : "सब हो गया!"}
+                </div>
+                <div className="mt-1 text-[14px] text-[#6b7280]">
+                  {languageMode === "simple"
+                    ? "SOP complete hai aur payment save ho gayi. Booking complete karein."
+                    : "SOP पूरा है और पेमेंट सेव हो गई। बुकिंग पूरी करें।"}
+                </div>
+              </div>
+              <button
+                type="button"
+                disabled={busy !== null}
+                onClick={() => {
+                  setShowCompleteModal(false);
+                  void runAction("complete", async () => {
+                    const res = await fetch(`/api/groomer/bookings/${booking.id}/complete${tokenQuery}`, { method: "POST" });
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok) throw new Error(data?.error ?? "Booking complete nahi ho paayi.");
+                    setRewardModal({ rewards: data?.rewardsDelta ?? [], summary: data?.rewardSummary ? { teamMember: data.rewardSummary.teamMember, totalXpAwarded: data.rewardSummary.totalXpAwarded, totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded, prestigeCredits: data.rewardSummary.gamification?.prestigeCredits } : null });
+                    openMomentToast({ action: "complete", xpAwarded: Array.isArray(data?.rewardsDelta) ? data.rewardsDelta.reduce((sum: number, r: { xpAwarded?: number }) => sum + Number(r?.xpAwarded ?? 0), 0) : 0, rewardCreditsAwarded: Array.isArray(data?.rewardsDelta) ? data.rewardsDelta.reduce((sum: number, r: { rewardPointsAwarded?: number }) => sum + Number(r?.rewardPointsAwarded ?? 0), 0) : 0, prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits });
+                  });
+                }}
+                className="mt-5 flex h-[56px] w-full items-center justify-center gap-2 rounded-[20px] bg-[#6d5bd0] text-[16px] font-black text-white shadow-[0_8px_24px_rgba(109,91,208,0.35)] disabled:opacity-50"
+              >
+                ✓ {languageMode === "simple" ? "Booking complete karein" : "बुकिंग पूरी करें"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowCompleteModal(false)}
+                className="mt-3 w-full text-center text-[13px] font-semibold text-[#9ca3af]"
+              >
+                {languageMode === "simple" ? "Baad mein karunga" : "बाद में करूंगा"}
+              </button>
+            </div>
+          </div>
+        ) : null}
         {videoOverlay}
         {rewardOverlay}
         {toastOverlay}
@@ -1978,6 +2043,13 @@ export function GroomerJobClient({
                 })}
                 onPhotoCapture={(stepKey, file) => void runAction(stepKey, () => uploadOrQueue(stepKey, file))}
                 onRetrySync={() => void runSync()}
+                onSkip={(stepKey, reason) => void runAction(stepKey, () =>
+                  postJson(`/api/groomer/bookings/${booking.id}/sop/step`, {
+                    stepKey,
+                    status: "skipped",
+                    skipReason: reason,
+                  })
+                )}
               />
             )}
             <button

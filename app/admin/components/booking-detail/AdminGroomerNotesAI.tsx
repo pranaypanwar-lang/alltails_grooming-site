@@ -54,71 +54,23 @@ function buildPrompt(params: {
   const nonPaymentSteps = steps.filter((s) => s.key !== "payment_proof" && s.key !== "review_proof");
 
   const stepList = nonPaymentSteps
-    .map((s) => `  [${s.key}] — ${s.label}`)
+    .map((s) => `[${s.key}] ${s.label}`)
     .join("\n");
 
-  const temperamentNote = temperament
-    ? `- Temperament: ${temperament}`
-    : "- Temperament: Not specified";
+  return `PET: ${petName || "Unknown"} | BREED: ${breed || "Unknown"} | SERVICE: ${serviceName}
+TEMPERAMENT: ${temperament || "Not specified"}
+GROOMING NOTES: ${groomingNotes || "None"}
+STYLING NOTES: ${stylingNotes || "None"}
 
-  return `You are a senior pet grooming operations expert at All Tails, a premium in-home dog grooming service in India.
-
-Your task: Generate precise, actionable per-step groomer notes for an upcoming grooming session. These notes will appear directly on the groomer's phone during the session — keep them short, specific, and direct.
-
-─────────────────────────────
-PET & SESSION DETAILS
-─────────────────────────────
-- Pet name: ${petName || "Not specified"}
-- Breed: ${breed || "Not specified"}
-- Service: ${serviceName}
-${temperamentNote}
-- Pet parent's grooming notes: ${groomingNotes || "None provided"}
-- Pet parent's styling notes: ${stylingNotes || "None provided"}
-
-─────────────────────────────
-SOP STEPS FOR THIS SESSION
-─────────────────────────────
+SOP STEPS (generate one groomer note per step key):
 ${stepList}
 
-─────────────────────────────
-INSTRUCTIONS
-─────────────────────────────
-For each step key, write a groomer note that:
-1. Is specific to THAT step only — do not repeat the same advice across multiple steps
-2. Combines the pet parent's wishes with professional grooming best practices
-3. Is written directly to the groomer ("Use...", "Be careful...", "Check for...")
-4. Is 1–3 sentences maximum — the groomer reads this on a phone mid-session
-5. Addresses breed-specific grooming considerations where relevant
-6. Flags any safety concerns clearly (biting tendency, skin sensitivity, anxiety triggers)
-7. If no relevant instruction applies to a step, write exactly: NO_NOTE
-
-─────────────────────────────
-REQUIRED OUTPUT FORMAT
-─────────────────────────────
-Return ONLY the following format — no headers, no explanation, no markdown, nothing else:
-
+OUTPUT FORMAT — return only this, nothing else:
 [step_key]
 Note text or NO_NOTE
 
 [step_key]
-Note text or NO_NOTE
-
-...one block per step, in the same order as listed above.
-
-─────────────────────────────
-EXAMPLE OUTPUT (for reference only — do not copy)
-─────────────────────────────
-[pet_settled]
-Bruno is a wiggle worrier — sit on the floor with him for 2–3 minutes before touching. Let him sniff your hands first.
-
-[oil_massage_proof]
-NO_NOTE
-
-[bath_dry_proof]
-Use oatmeal shampoo only — owner confirmed regular shampoo caused a rash last time. Rinse thoroughly around belly and groin where mats tend to form.
-─────────────────────────────
-
-Now generate notes for the session above.`;
+Note text or NO_NOTE`;
 }
 
 export function AdminGroomerNotesAI({

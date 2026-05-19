@@ -33,6 +33,9 @@ export type PacerPhase = {
   tier: ServiceTier;
   // Minimum % of phase time that must elapse before Next Phase is allowed
   minTimePercent?: number;
+  // Rotating tips shown during minTime wait
+  timedCoachingTips?: string[];
+  timedCoachingTipsHindi?: string[];
 };
 
 // ─── Complete Pampering — 7 phases, ~111 min ────────────────────────────────
@@ -93,17 +96,57 @@ const PHASES_COMPLETE: PacerPhase[] = [
   },
   {
     index: 2,
-    key: "bath",
-    label: "Bath + Dental",
-    labelHindi: "बाथ + डेंटल",
-    durationMinutes: 22,
+    key: "shampoo",
+    label: "Shampoo",
+    labelHindi: "शैम्पू",
+    durationMinutes: 10,
     tasks: [
-      "Shampoo aur conditioner lagaen — achhi tarah massage karein",
+      "Shampoo poore body par lagaen",
+      "Achhi tarah ragdein — 10 min minimum",
+      "Coat fully lathered karein",
+      "Photo lo — coat lathered dikhni chahiye",
+    ],
+    tasksHindi: [
+      "शैम्पू पूरे बॉडी पर लगाएं",
+      "अच्छी तरह रगड़ें — कम से कम 10 मिनट",
+      "कोट पूरी तरह lathered करें",
+      "फोटो लो — कोट lathered दिखनी चाहिए",
+    ],
+    sopKeys: ["shampoo_proof"],
+    coachNoteSource: "groomingNotes",
+    coachNoteHint: "Shampoo restrictions ya skin sensitivity grooming notes mein check karo pehle.",
+    coachNoteHintHindi: "शैम्पू की पाबंदियां या स्किन सेंसिटिविटी ग्रूमिंग नोट्स में पहले देखें।",
+    coachingSteps: [],
+    tier: "Complete",
+    minTimePercent: 80,
+    timedCoachingTips: [
+      "Jab shampoo laga liya — sabse pehle behind the ears, armpits aur belly thoroughly ragdo. Yahan knots sabse zyada hote hain.",
+      "Ab neck aur chest area pe focus karo. Coat ki direction mein haath ferao taaki roots tak shampoo pahunche.",
+      "Tail base aur private parts — ye hygiene areas hain, carefully clean karo. Gentle pressure use karo.",
+      "Legs aur paws ke beech fingers daalo, inter-digital spaces clean karo. Yahan infection ka risk rehta hai.",
+      "Ek last full-body press karo — puri coat lathered honi chahiye. Rinse ke liye taiyaar ho jaao.",
+    ],
+    timedCoachingTipsHindi: [
+      "शैम्पू लगाने के बाद — ears के पीछे, armpits और belly पर अच्छी तरह रगड़ो। यहाँ knots सबसे ज़्यादा होती हैं।",
+      "अब neck और chest area पर focus करो। कोट की direction में हाथ फेरो ताकि roots तक शैम्पू पहुँचे।",
+      "Tail base और private parts — hygiene areas हैं, carefully clean करो। Gentle pressure use करो।",
+      "Legs और paws के बीच fingers डालो, inter-digital spaces clean करो। यहाँ infection का risk रहता है।",
+      "एक last full-body press करो — पूरी coat lathered होनी चाहिए। Rinse के लिए तैयार हो जाओ।",
+    ],
+  },
+  {
+    index: 3,
+    key: "bath",
+    label: "Rinse + Dry + Dental",
+    labelHindi: "रिंस + ड्राई + डेंटल",
+    durationMinutes: 18,
+    tasks: [
+      "Shampoo achhi tarah rinse karein",
       "Daant saaf karein (pet toothpaste)",
       "Towel se achhi tarah dry karein",
     ],
     tasksHindi: [
-      "शैम्पू और कंडीशनर लगाएं — अच्छी तरह मसाज करें",
+      "शैम्पू अच्छी तरह rinse करें",
       "दांत साफ करें (पेट टूथपेस्ट)",
       "तौलिए से अच्छी तरह सुखाएं",
     ],
@@ -115,7 +158,7 @@ const PHASES_COMPLETE: PacerPhase[] = [
     tier: "Complete",
   },
   {
-    index: 3,
+    index: 4,
     key: "dry",
     label: "Blow Dry",
     labelHindi: "ब्लो ड्राई",
@@ -136,7 +179,7 @@ const PHASES_COMPLETE: PacerPhase[] = [
     tier: "Complete",
   },
   {
-    index: 4,
+    index: 5,
     key: "haircut_styling",
     label: "Haircut & Styling",
     labelHindi: "हेयरकट और स्टाइलिंग",
@@ -163,7 +206,7 @@ const PHASES_COMPLETE: PacerPhase[] = [
     tier: "Complete",
   },
   {
-    index: 5,
+    index: 6,
     key: "treatments_finish",
     label: "Treatments & Finish",
     labelHindi: "ट्रीटमेंट और फिनिश",
@@ -190,7 +233,7 @@ const PHASES_COMPLETE: PacerPhase[] = [
     tier: "Complete",
   },
   {
-    index: 6,
+    index: 7,
     key: "payment_review",
     label: "Payment & Review",
     labelHindi: "पेमेंट और रिव्यू",
@@ -246,17 +289,57 @@ const PHASES_SIGNATURE: PacerPhase[] = [
   },
   {
     index: 1,
-    key: "bath",
-    label: "Bath + Dental",
-    labelHindi: "बाथ + डेंटल",
-    durationMinutes: 22,
+    key: "shampoo",
+    label: "Shampoo",
+    labelHindi: "शैम्पू",
+    durationMinutes: 10,
     tasks: [
-      "Shampoo aur conditioner lagaen — achhi tarah massage karein",
+      "Shampoo poore body par lagaen",
+      "Achhi tarah ragdein — 10 min minimum",
+      "Coat fully lathered karein",
+      "Photo lo — coat lathered dikhni chahiye",
+    ],
+    tasksHindi: [
+      "शैम्पू पूरे बॉडी पर लगाएं",
+      "अच्छी तरह रगड़ें — कम से कम 10 मिनट",
+      "कोट पूरी तरह lathered करें",
+      "फोटो लो — कोट lathered दिखनी चाहिए",
+    ],
+    sopKeys: ["shampoo_proof"],
+    coachNoteSource: "groomingNotes",
+    coachNoteHint: "Shampoo restrictions ya skin sensitivity grooming notes mein check karo pehle.",
+    coachNoteHintHindi: "शैम्पू की पाबंदियां या स्किन सेंसिटिविटी ग्रूमिंग नोट्स में पहले देखें।",
+    coachingSteps: [],
+    tier: "Signature",
+    minTimePercent: 80,
+    timedCoachingTips: [
+      "Jab shampoo laga liya — sabse pehle behind the ears, armpits aur belly thoroughly ragdo. Yahan knots sabse zyada hote hain.",
+      "Ab neck aur chest area pe focus karo. Coat ki direction mein haath ferao taaki roots tak shampoo pahunche.",
+      "Tail base aur private parts — ye hygiene areas hain, carefully clean karo. Gentle pressure use karo.",
+      "Legs aur paws ke beech fingers daalo, inter-digital spaces clean karo. Yahan infection ka risk rehta hai.",
+      "Ek last full-body press karo — puri coat lathered honi chahiye. Rinse ke liye taiyaar ho jaao.",
+    ],
+    timedCoachingTipsHindi: [
+      "शैम्पू लगाने के बाद — ears के पीछे, armpits और belly पर अच्छी तरह रगड़ो। यहाँ knots सबसे ज़्यादा होती हैं।",
+      "अब neck और chest area पर focus करो। कोट की direction में हाथ फेरो ताकि roots तक शैम्पू पहुँचे।",
+      "Tail base और private parts — hygiene areas हैं, carefully clean करो। Gentle pressure use करो।",
+      "Legs और paws के बीच fingers डालो, inter-digital spaces clean करो। यहाँ infection का risk रहता है।",
+      "एक last full-body press करो — पूरी coat lathered होनी चाहिए। Rinse के लिए तैयार हो जाओ।",
+    ],
+  },
+  {
+    index: 2,
+    key: "bath",
+    label: "Rinse + Dry + Dental",
+    labelHindi: "रिंस + ड्राई + डेंटल",
+    durationMinutes: 18,
+    tasks: [
+      "Shampoo achhi tarah rinse karein",
       "Daant saaf karein (pet toothpaste)",
       "Towel se achhi tarah dry karein",
     ],
     tasksHindi: [
-      "शैम्पू और कंडीशनर लगाएं — अच्छी तरह मसाज करें",
+      "शैम्पू अच्छी तरह rinse करें",
       "दांत साफ करें (पेट टूथपेस्ट)",
       "तौलिए से अच्छी तरह सुखाएं",
     ],
@@ -268,7 +351,7 @@ const PHASES_SIGNATURE: PacerPhase[] = [
     tier: "Signature",
   },
   {
-    index: 2,
+    index: 3,
     key: "dry",
     label: "Blow Dry",
     labelHindi: "ब्लो ड्राई",
@@ -287,7 +370,7 @@ const PHASES_SIGNATURE: PacerPhase[] = [
     tier: "Signature",
   },
   {
-    index: 3,
+    index: 4,
     key: "hygiene_cut",
     label: "Hygiene Haircut",
     labelHindi: "हाइजीन हेयरकट",
@@ -308,7 +391,7 @@ const PHASES_SIGNATURE: PacerPhase[] = [
     tier: "Signature",
   },
   {
-    index: 4,
+    index: 5,
     key: "finish",
     label: "Finishing",
     labelHindi: "फिनिशिंग",
@@ -333,7 +416,7 @@ const PHASES_SIGNATURE: PacerPhase[] = [
     tier: "Signature",
   },
   {
-    index: 5,
+    index: 6,
     key: "payment_review",
     label: "Payment & Review",
     labelHindi: "पेमेंट और रिव्यू",
