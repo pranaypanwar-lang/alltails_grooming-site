@@ -253,16 +253,43 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
         </label>
       ) : null}
 
-      {/* Online: show QR button again */}
+      {/* Online: show QR button + screenshot upload */}
       {collectionMode === "online" ? (
-        <button
-          type="button"
-          onClick={() => setFullscreenQr("payment")}
-          className="flex h-[64px] w-full items-center justify-center gap-2 rounded-[22px] border-2 border-[#6d5bd0] bg-[#6d5bd0] text-[15px] font-semibold text-white"
-        >
-          <QrCode className="h-5 w-5" />
-          {mode === "simple" ? "Payment QR fullscreen" : "पेमेंट QR फुलस्क्रीन"}
-        </button>
+        <div className="space-y-3">
+          <button
+            type="button"
+            onClick={() => setFullscreenQr("payment")}
+            className="flex h-[64px] w-full items-center justify-center gap-2 rounded-[22px] border-2 border-[#6d5bd0] bg-[#6d5bd0] text-[15px] font-semibold text-white"
+          >
+            <QrCode className="h-5 w-5" />
+            {mode === "simple" ? "Payment QR fullscreen" : "पेमेंट QR फुलस्क्रीन"}
+          </button>
+          <label
+            className={[
+              "flex h-[64px] w-full cursor-pointer items-center justify-center gap-2 rounded-[22px] border-2 text-[15px] font-semibold",
+              image
+                ? "border-[#16a34a] bg-[#f0fdf4] text-[#15803d]"
+                : "border-dashed border-[#6d5bd0] bg-[#f5f3ff] text-[#6d5bd0]",
+              isBusy ? "opacity-50" : "",
+            ].join(" ")}
+          >
+            <Camera className="h-5 w-5" />
+            {image
+              ? (mode === "simple" ? `Screenshot ready: ${image.name.slice(0, 18)}` : "स्क्रीनशॉट तैयार")
+              : (mode === "simple" ? "Payment screenshot add karein" : "पेमेंट स्क्रीनशॉट जोड़ें")}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              disabled={isBusy}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file && file.size <= MAX_UPLOAD_BYTES) setImage(file);
+                e.currentTarget.value = "";
+              }}
+            />
+          </label>
+        </div>
       ) : null}
 
       {/* Google Review QR */}
