@@ -6,7 +6,7 @@ import { SeoPageShell } from "../components/seo/SeoPageShell";
 import { TrackedExternalLink } from "../components/analytics/TrackedExternalLink";
 import { BUSINESS_INFO, SITE_URL, whatsappHref } from "@/lib/seo/businessInfo";
 import { pageMetadata } from "@/lib/seo/metadata";
-import { breadcrumbSchema, professionalServiceSchema } from "@/lib/seo/schema";
+import { breadcrumbSchema } from "@/lib/seo/schema";
 
 export const metadata = pageMetadata({
   title: "About All Tails | At-Home Pet Grooming Across Delhi NCR, Tricity & Punjab",
@@ -144,7 +144,6 @@ export default function AboutPage() {
     <SeoPageShell>
       <JsonLd
         data={[
-          professionalServiceSchema(),
           organizationSchema,
           aboutPageSchema,
           breadcrumbs,

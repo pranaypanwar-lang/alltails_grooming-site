@@ -10,7 +10,6 @@ import { pageMetadata } from "@/lib/seo/metadata";
 import {
   breadcrumbSchema,
   faqPageSchema,
-  professionalServiceSchema,
   serviceSchema,
 } from "@/lib/seo/schema";
 
@@ -96,7 +95,6 @@ export default function DogGroomingAtHomePage() {
     <SeoPageShell>
       <JsonLd
         data={[
-          professionalServiceSchema(),
           serviceSchema(),
           dogGroomingServiceSchema,
           dogFaqSchema,

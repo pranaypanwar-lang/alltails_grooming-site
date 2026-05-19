@@ -9,10 +9,7 @@ import {
   whatsappHref,
 } from "@/lib/seo/businessInfo";
 import { pageMetadata } from "@/lib/seo/metadata";
-import {
-  breadcrumbSchema,
-  professionalServiceSchema,
-} from "@/lib/seo/schema";
+import { breadcrumbSchema } from "@/lib/seo/schema";
 
 export const metadata = pageMetadata({
   title: "Contact All Tails | Phone, WhatsApp, Hours",
@@ -29,7 +26,7 @@ export default function ContactPage() {
 
   return (
     <SeoPageShell>
-      <JsonLd data={[professionalServiceSchema(), breadcrumbs]} />
+      <JsonLd data={breadcrumbs} />
 
       <section className="mx-auto max-w-[960px] px-5 py-14 lg:px-8 lg:py-20">
         <div className="text-center">

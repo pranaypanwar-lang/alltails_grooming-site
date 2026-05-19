@@ -235,6 +235,20 @@ export function packageOfferCatalogSchema(packages: PackageOfferInput[]) {
     brand: { "@type": "Brand", name: BUSINESS_INFO.name },
     image: `${SITE_URL}/images/Banner.jpg`,
     url: `${SITE_URL}/packages`,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: BUSINESS_INFO.aggregateRating.ratingValue,
+      reviewCount: BUSINESS_INFO.aggregateRating.reviewCount,
+      bestRating: 5,
+      worstRating: 1,
+    },
+    review: {
+      "@type": "Review",
+      reviewRating: { "@type": "Rating", ratingValue: 5, bestRating: 5 },
+      author: { "@type": "Person", name: "Sheetal Suri" },
+      reviewBody:
+        "They were absolutely professional and very gentle with my Beagle. The groomer arrived on time, set up everything neatly, and my dog looked amazing. Will definitely book again.",
+    },
     ...(lowPrice !== undefined && highPrice !== undefined
       ? {
           offers: {
