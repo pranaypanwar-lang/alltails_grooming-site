@@ -3,17 +3,20 @@
 import { Camera, CheckCircle2, IndianRupee, QrCode } from "lucide-react";
 import { useState } from "react";
 import type { GroomerBookingView } from "../../../../../lib/groomerPortal";
+import { SLOT_BLOCK_DEPOSIT_AMOUNT } from "../../../../../lib/booking/constants";
 
 const GROOMER_PAYMENT_QR_URL = "/images/groomer/payment-qr.jpg";
 const GROOMER_GOOGLE_REVIEW_QR_URL = "/images/groomer/google-review-qr.png";
 const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+
+type CollectionMode = "cash" | "online" | "waived";
 
 type Props = {
   mode: "simple" | "hindi";
   booking: GroomerBookingView;
   busy: string | null;
   onSave: (
-    collectionMode: "cash" | "online" | "waived",
+    collectionMode: CollectionMode,
     amount: number,
     notes: string,
     image: File | null,
@@ -21,6 +24,30 @@ type Props = {
   ) => Promise<void>;
   onComplete: () => void;
 };
+
+// Derives what the customer already paid and what remains to collect
+function getPaymentContext(booking: GroomerBookingView) {
+  const { status, method, finalAmount } = booking.payment;
+  const total = finalAmount ?? 0;
+
+  if (status === "paid" || status === "covered_by_loyalty") {
+    return { prePaid: total, toCollect: 0, scenario: "paid_in_full" as const };
+  }
+  if (status === "deposit_paid") {
+    return {
+      prePaid: SLOT_BLOCK_DEPOSIT_AMOUNT,
+      toCollect: Math.max(0, total - SLOT_BLOCK_DEPOSIT_AMOUNT),
+      scenario: "deposit_paid" as const,
+    };
+  }
+  // pending_cash_collection, unpaid, or anything else → collect full
+  const isCashBooking = method === "cash" || status === "pending_cash_collection";
+  return {
+    prePaid: 0,
+    toCollect: total,
+    scenario: isCashBooking ? ("cash_collection" as const) : ("collect_full" as const),
+  };
+}
 
 function QrFullscreen({
   src,
@@ -50,7 +77,6 @@ function QrFullscreen({
         onClick={onClose}
         className="mt-8 rounded-full bg-white/10 px-6 py-3 text-[14px] font-semibold text-white"
       >
-        {/* Always use simple label since it's a close action */}
         ✓ Done
       </button>
     </div>
@@ -59,11 +85,21 @@ function QrFullscreen({
 
 export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Props) {
   const existingCollection = booking.payment.collection;
-  const defaultAmount = String(existingCollection?.collectedAmount ?? booking.payment.finalAmount ?? "");
+  const ctx = getPaymentContext(booking);
 
-  const [collectionMode, setCollectionMode] = useState<"cash" | "online" | "waived">(
-    (existingCollection?.collectionMode as "cash" | "online" | "waived") ?? "cash"
-  );
+  // If already saved, restore from record. Otherwise pre-fill smart defaults.
+  const defaultAmount = existingCollection
+    ? String(existingCollection.collectedAmount)
+    : String(ctx.toCollect);
+
+  const defaultMode: CollectionMode = (() => {
+    if (existingCollection) return existingCollection.collectionMode as CollectionMode;
+    if (ctx.scenario === "paid_in_full") return "waived";
+    if (ctx.scenario === "cash_collection") return "cash";
+    return "online"; // default to online for deposit_paid and collect_full
+  })();
+
+  const [collectionMode, setCollectionMode] = useState<CollectionMode>(defaultMode);
   const [amount, setAmount] = useState(defaultAmount);
   const [notes, setNotes] = useState(existingCollection?.notes ?? "");
   const [image, setImage] = useState<File | null>(null);
@@ -73,13 +109,14 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
   const [localBusy, setLocalBusy] = useState(false);
   const [error, setError] = useState("");
 
-  const expectedAmount = booking.payment.finalAmount;
   const parsedAmount = parseFloat(amount);
   const isWaived = collectionMode === "waived";
   const alreadySaved = !!existingCollection;
+  const isBusy = busy !== null || localBusy;
+  const isFullyPrepaid = ctx.scenario === "paid_in_full";
 
   const handleSave = async () => {
-    if (!Number.isFinite(parsedAmount) || parsedAmount < 0) {
+    if (!isWaived && (!Number.isFinite(parsedAmount) || parsedAmount < 0)) {
       setError(mode === "simple" ? "Valid amount daaliye." : "सही अमाउंट डालिए।");
       return;
     }
@@ -102,15 +139,13 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
     setError("");
     setLocalBusy(true);
     try {
-      await onSave(collectionMode, parsedAmount, notes, image, applyChange);
+      await onSave(collectionMode, isWaived ? 0 : parsedAmount, notes, image, applyChange);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Kuch galat ho gaya.");
     } finally {
       setLocalBusy(false);
     }
   };
-
-  const isBusy = busy !== null || localBusy;
 
   if (fullscreenQr === "payment") {
     return (
@@ -155,106 +190,132 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
         <h2 className="mt-1 text-[22px] font-black tracking-[-0.02em] text-[#1f1f2c]">
           {mode === "simple" ? "Payment aur review" : "पेमेंट और रिव्यू"}
         </h2>
-        <div className="mt-1 text-[13px] leading-[1.6] text-[#6b7280]">
-          {mode === "simple"
-            ? "Pehle payment lo, phir review, phir booking complete karein."
-            : "पहले पेमेंट लें, फिर रिव्यू, फिर बुकिंग पूरी करें।"}
-        </div>
       </div>
 
-      {/* Expected amount chip */}
-      {expectedAmount != null ? (
-        <div className="inline-flex items-center gap-2 rounded-full border border-[#dbeafe] bg-[#eff6ff] px-3 py-1.5">
-          <IndianRupee className="h-3.5 w-3.5 text-[#2563eb]" />
-          <span className="text-[13px] font-bold text-[#1d4ed8]">
-            {mode === "simple" ? `Expected: ₹${expectedAmount}` : `अपेक्षित: ₹${expectedAmount}`}
-          </span>
+      {/* ── PAYMENT STATUS BANNER ───────────────────────────── */}
+      {ctx.scenario === "paid_in_full" ? (
+        <div className="rounded-[20px] bg-[#f0fdf4] px-4 py-4 border border-[#bbf7d0]">
+          <div className="flex items-center gap-2 text-[#15803d]">
+            <CheckCircle2 className="h-5 w-5 shrink-0" />
+            <span className="text-[15px] font-black">
+              {mode === "simple" ? "Customer ne poori payment kar di!" : "कस्टमर ने पूरी पेमेंट कर दी!"}
+            </span>
+          </div>
+          <div className="mt-1.5 text-[13px] leading-[1.6] text-[#166534]">
+            {mode === "simple"
+              ? `₹${booking.payment.finalAmount} online pay ho gaya. Aaj kuch collect nahi karna.`
+              : `₹${booking.payment.finalAmount} ऑनलाइन पे हो चुका है। आज कुछ collect नहीं करना।`}
+          </div>
+        </div>
+      ) : ctx.scenario === "deposit_paid" ? (
+        <div className="rounded-[20px] bg-[#eff6ff] px-4 py-4 border border-[#bfdbfe]">
+          <div className="flex items-center gap-2 text-[#1d4ed8]">
+            <IndianRupee className="h-4.5 w-4.5 shrink-0" />
+            <span className="text-[15px] font-black">
+              {mode === "simple" ? `₹${SLOT_BLOCK_DEPOSIT_AMOUNT} advance mila tha` : `₹${SLOT_BLOCK_DEPOSIT_AMOUNT} एडवांस मिल चुका है`}
+            </span>
+          </div>
+          <div className="mt-1.5 text-[13px] leading-[1.6] text-[#1e40af]">
+            {mode === "simple"
+              ? `Customer ne booking ke waqt ₹${SLOT_BLOCK_DEPOSIT_AMOUNT} advance diya tha. Aaj ₹${ctx.toCollect} aur lene hain.`
+              : `कस्टमर ने बुकिंग के वक्त ₹${SLOT_BLOCK_DEPOSIT_AMOUNT} advance दिया था। आज ₹${ctx.toCollect} और लेने हैं।`}
+          </div>
+          <div className="mt-2.5 flex gap-2">
+            <div className="flex-1 rounded-[12px] bg-[#dbeafe] px-3 py-2 text-center">
+              <div className="text-[10px] font-bold uppercase tracking-wide text-[#3b82f6]">
+                {mode === "simple" ? "Already paid" : "पहले से"}
+              </div>
+              <div className="text-[16px] font-black text-[#1e40af]">₹{SLOT_BLOCK_DEPOSIT_AMOUNT}</div>
+            </div>
+            <div className="flex items-center text-[#93c5fd] font-black">+</div>
+            <div className="flex-1 rounded-[12px] bg-[#fef3c7] px-3 py-2 text-center">
+              <div className="text-[10px] font-bold uppercase tracking-wide text-[#d97706]">
+                {mode === "simple" ? "Collect karo" : "लेने हैं"}
+              </div>
+              <div className="text-[16px] font-black text-[#92400e]">₹{ctx.toCollect}</div>
+            </div>
+            <div className="flex items-center text-[#93c5fd] font-black">=</div>
+            <div className="flex-1 rounded-[12px] bg-[#ede9fe] px-3 py-2 text-center">
+              <div className="text-[10px] font-bold uppercase tracking-wide text-[#7c3aed]">
+                {mode === "simple" ? "Total" : "कुल"}
+              </div>
+              <div className="text-[16px] font-black text-[#4c1d95]">₹{booking.payment.finalAmount}</div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* Standard — collect full */
+        <div className="rounded-[20px] bg-[#faf8ff] px-4 py-3.5 border border-[#ebe5fb]">
+          <div className="flex items-center justify-between">
+            <span className="text-[13px] font-semibold text-[#6b7280]">
+              {mode === "simple" ? "Aaj collect karna hai" : "आज collect करना है"}
+            </span>
+            <span className="text-[20px] font-black text-[#1f1f2c]">₹{ctx.toCollect}</span>
+          </div>
+        </div>
+      )}
+
+      {/* ── PAYMENT MODE TOGGLE (hidden for fully pre-paid) ─ */}
+      {!isFullyPrepaid ? (
+        <div className="space-y-2">
+          <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">
+            {mode === "simple" ? "Payment mode" : "पेमेंट मोड"}
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {/* Online — primary */}
+            <button
+              type="button"
+              onClick={() => { setCollectionMode("online"); setFullscreenQr("payment"); }}
+              className={[
+                "flex h-[72px] flex-col items-center justify-center rounded-[22px] border-2 transition-all",
+                collectionMode === "online"
+                  ? "border-[#6d5bd0] bg-[#6d5bd0] text-white shadow-[0_6px_20px_rgba(109,91,208,0.35)]"
+                  : "border-[#ebe5fb] bg-[#fcfbff] text-[#5b4bc2]",
+              ].join(" ")}
+            >
+              <span className="text-[24px]">📱</span>
+              <span className="mt-0.5 text-[12px] font-black">{mode === "simple" ? "Online" : "ऑनलाइन"}</span>
+            </button>
+            {/* Cash — secondary */}
+            <button
+              type="button"
+              onClick={() => setCollectionMode("cash")}
+              className={[
+                "flex h-[72px] flex-col items-center justify-center rounded-[22px] border-2 transition-all",
+                collectionMode === "cash"
+                  ? "border-[#6d5bd0] bg-[#6d5bd0] text-white shadow-[0_6px_20px_rgba(109,91,208,0.35)]"
+                  : "border-[#ebe5fb] bg-[#fcfbff] text-[#5b4bc2]",
+              ].join(" ")}
+            >
+              <span className="text-[24px]">💵</span>
+              <span className="mt-0.5 text-[12px] font-black">{mode === "simple" ? "Cash" : "कैश"}</span>
+            </button>
+          </div>
         </div>
       ) : null}
 
-      {/* Payment mode — two big tap targets */}
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          onClick={() => setCollectionMode("cash")}
-          className={[
-            "flex h-[72px] flex-col items-center justify-center rounded-[22px] border-2 text-[15px] font-black transition-all",
-            collectionMode === "cash"
-              ? "border-[#6d5bd0] bg-[#6d5bd0] text-white shadow-[0_6px_20px_rgba(109,91,208,0.35)]"
-              : "border-[#ebe5fb] bg-[#fcfbff] text-[#5b4bc2]",
-          ].join(" ")}
-        >
-          <span className="text-[24px]">💵</span>
-          <span className="mt-0.5 text-[12px]">{mode === "simple" ? "Cash" : "कैश"}</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setCollectionMode("online");
-            setFullscreenQr("payment");
-          }}
-          className={[
-            "flex h-[72px] flex-col items-center justify-center rounded-[22px] border-2 text-[15px] font-black transition-all",
-            collectionMode === "online"
-              ? "border-[#6d5bd0] bg-[#6d5bd0] text-white shadow-[0_6px_20px_rgba(109,91,208,0.35)]"
-              : "border-[#ebe5fb] bg-[#fcfbff] text-[#5b4bc2]",
-          ].join(" ")}
-        >
-          <span className="text-[24px]">📱</span>
-          <span className="mt-0.5 text-[12px]">{mode === "simple" ? "Online" : "ऑनलाइन"}</span>
-        </button>
-      </div>
-
-      {/* Amount input — always visible */}
-      <div className="rounded-[22px] border border-[#ebe5fb] bg-[#fcfbff] p-4">
-        <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">
-          {mode === "simple" ? "Amount received" : "प्राप्त अमाउंट"}
+      {/* ── AMOUNT INPUT (hidden for fully pre-paid) ──────── */}
+      {!isFullyPrepaid ? (
+        <div className="rounded-[22px] border border-[#ebe5fb] bg-[#fcfbff] p-4">
+          <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a90a6]">
+            {mode === "simple" ? "Amount received" : "प्राप्त अमाउंट"}
+          </div>
+          <div className="mt-2 flex items-center gap-2">
+            <span className="text-[18px] font-black text-[#4b5563]">₹</span>
+            <input
+              type="number"
+              min="0"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="h-[52px] flex-1 rounded-[14px] border border-[#ddd1fb] bg-white px-4 text-[22px] font-black text-[#1f1f2c] outline-none focus:border-[#6d5bd0]"
+              placeholder="0"
+            />
+          </div>
         </div>
-        <div className="mt-2 flex items-center gap-2">
-          <span className="text-[18px] font-black text-[#4b5563]">₹</span>
-          <input
-            type="number"
-            min="0"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="h-[52px] flex-1 rounded-[14px] border border-[#ddd1fb] bg-white px-4 text-[22px] font-black text-[#1f1f2c] outline-none focus:border-[#6d5bd0]"
-            placeholder="0"
-          />
-        </div>
-      </div>
-
-      {/* Cash: photo capture */}
-      {collectionMode === "cash" && !isWaived ? (
-        <label
-          className={[
-            "flex h-[64px] w-full items-center justify-center gap-2 rounded-[22px] border-2 text-[15px] font-semibold",
-            image
-              ? "border-[#16a34a] bg-[#f0fdf4] text-[#15803d]"
-              : "border-[#6d5bd0] bg-[#6d5bd0] text-white",
-            isBusy ? "opacity-50" : "",
-          ].join(" ")}
-        >
-          <Camera className="h-5 w-5" />
-          {image
-            ? (mode === "simple" ? `Photo ready: ${image.name.slice(0, 20)}` : `फोटो तैयार`)
-            : (mode === "simple" ? "Cash photo kheecho" : "कैश फोटो खींचो")}
-          <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            className="hidden"
-            disabled={isBusy}
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file && file.size <= MAX_UPLOAD_BYTES) setImage(file);
-              e.currentTarget.value = "";
-            }}
-          />
-        </label>
       ) : null}
 
-      {/* Online: show QR button + screenshot upload */}
-      {collectionMode === "online" ? (
+      {/* ── ONLINE: QR + screenshot upload ───────────────── */}
+      {collectionMode === "online" && !isFullyPrepaid ? (
         <div className="space-y-3">
           <button
             type="button"
@@ -275,7 +336,7 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
           >
             <Camera className="h-5 w-5" />
             {image
-              ? (mode === "simple" ? `Screenshot ready: ${image.name.slice(0, 18)}` : "स्क्रीनशॉट तैयार")
+              ? (mode === "simple" ? `Screenshot ready ✓` : "स्क्रीनशॉट तैयार ✓")
               : (mode === "simple" ? "Payment screenshot add karein" : "पेमेंट स्क्रीनशॉट जोड़ें")}
             <input
               type="file"
@@ -292,7 +353,37 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
         </div>
       ) : null}
 
-      {/* Google Review QR */}
+      {/* ── CASH: camera capture ──────────────────────────── */}
+      {collectionMode === "cash" && !isFullyPrepaid ? (
+        <label
+          className={[
+            "flex h-[64px] w-full cursor-pointer items-center justify-center gap-2 rounded-[22px] border-2 text-[15px] font-semibold",
+            image
+              ? "border-[#16a34a] bg-[#f0fdf4] text-[#15803d]"
+              : "border-[#6d5bd0] bg-[#6d5bd0] text-white",
+            isBusy ? "opacity-50" : "",
+          ].join(" ")}
+        >
+          <Camera className="h-5 w-5" />
+          {image
+            ? (mode === "simple" ? "Cash photo ready ✓" : "कैश फोटो तैयार ✓")
+            : (mode === "simple" ? "Cash ki photo kheecho" : "कैश की फोटो खींचो")}
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            disabled={isBusy}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file && file.size <= MAX_UPLOAD_BYTES) setImage(file);
+              e.currentTarget.value = "";
+            }}
+          />
+        </label>
+      ) : null}
+
+      {/* ── GOOGLE REVIEW QR ─────────────────────────────── */}
       <button
         type="button"
         onClick={() => setFullscreenQr("review")}
@@ -302,7 +393,7 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
         {mode === "simple" ? "Google Review QR" : "गूगल रिव्यू QR"}
       </button>
 
-      {/* Service changed toggle */}
+      {/* ── SERVICE CHANGE ────────────────────────────────── */}
       {!showServiceChanged ? (
         <button
           type="button"
@@ -343,14 +434,14 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
         </div>
       )}
 
-      {/* Error */}
+      {/* ── ERROR ─────────────────────────────────────────── */}
       {error ? (
         <div className="rounded-[16px] bg-[#fff1f2] px-4 py-3 text-[13px] font-semibold text-[#be123c]">
           {error}
         </div>
       ) : null}
 
-      {/* Already saved confirmation */}
+      {/* ── ALREADY SAVED CONFIRMATION ────────────────────── */}
       {alreadySaved ? (
         <div className={`rounded-[18px] px-4 py-3 text-[14px] leading-[1.7] ${existingCollection!.mismatchFlag ? "bg-[#fff1f2] text-[#be123c]" : "bg-[#effaf3] text-[#15803d]"}`}>
           {existingCollection!.mismatchFlag
@@ -363,19 +454,21 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
         </div>
       ) : null}
 
-      {/* Save payment */}
-      <button
-        type="button"
-        onClick={() => void handleSave()}
-        disabled={isBusy}
-        className="flex h-[60px] w-full items-center justify-center gap-2 rounded-[22px] bg-[#149c6d] text-[16px] font-semibold text-white disabled:opacity-50"
-      >
-        {isBusy
-          ? (mode === "simple" ? "Save ho raha hai..." : "सेव हो रहा है...")
-          : (mode === "simple" ? "Payment save karein" : "पेमेंट सेव करें")}
-      </button>
+      {/* ── SAVE PAYMENT ──────────────────────────────────── */}
+      {!isFullyPrepaid ? (
+        <button
+          type="button"
+          onClick={() => void handleSave()}
+          disabled={isBusy}
+          className="flex h-[60px] w-full items-center justify-center gap-2 rounded-[22px] bg-[#149c6d] text-[16px] font-semibold text-white disabled:opacity-50"
+        >
+          {isBusy
+            ? (mode === "simple" ? "Save ho raha hai..." : "सेव हो रहा है...")
+            : (mode === "simple" ? "Payment save karein" : "पेमेंट सेव करें")}
+        </button>
+      ) : null}
 
-      {/* Complete booking */}
+      {/* ── COMPLETE BOOKING ──────────────────────────────── */}
       <button
         type="button"
         onClick={onComplete}
