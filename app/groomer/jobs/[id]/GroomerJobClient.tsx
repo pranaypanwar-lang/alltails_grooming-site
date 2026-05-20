@@ -23,7 +23,7 @@ import { deriveActionMoment, deriveJobFlowPsychology, resolvePsychologyText } fr
 import { getPacerPhases } from "../../../../lib/booking/pacerPhases";
 import { useOfflineQueue } from "./hooks/useOfflineQueue";
 import { useSessionState } from "./hooks/useSessionState";
-import { FuelApprovalSheet } from "./components/FuelApprovalSheet";
+import { clientHaversineKm } from "../../../../lib/groomer/geoDistance";
 import { PacerPhaseCard } from "./components/PacerPhaseCard";
 import { PaymentPhaseCard } from "./components/PaymentPhaseCard";
 import { LandingView } from "./components/LandingView";
@@ -872,8 +872,10 @@ export function GroomerJobClient({
       return saved ? parseInt(saved, 10) : Date.now();
     } catch { return Date.now(); }
   });
-  const [showFuelSheet, setShowFuelSheet] = useState(false);
+  // GPS captured in background during the session — used for fuel calc at completion
   const [arrivedGps, setArrivedGps] = useState<{ lat: number; lng: number } | null>(null);
+  // Fuel input state for the completion popup
+  const [fuelDistanceInput, setFuelDistanceInput] = useState("");
 
   useEffect(() => {
     setPaymentMode((booking.payment.collection?.collectionMode as "cash" | "online" | "waived") ?? "cash");
@@ -1341,29 +1343,15 @@ export function GroomerJobClient({
   };
 
   // Shared overlay elements used across all views
-  const fuelSheetOverlay = showFuelSheet ? (
-    <FuelApprovalSheet
-      mode={languageMode}
-      bookingId={booking.id}
-      tokenQuery={tokenQuery}
-      enRouteLat={booking.enRouteLat}
-      enRouteLng={booking.enRouteLng}
-      arrivedLat={arrivedGps?.lat ?? null}
-      arrivedLng={arrivedGps?.lng ?? null}
-      onConfirmed={async () => {
-        setShowFuelSheet(false);
-        await refresh();
-        setPacerMode(true);
-        setPacerPhaseStartAt(Date.now());
-        setCurrentPhaseIndex(0);
-        try { localStorage.removeItem(pacerStorageKey); } catch { /* ignore */ }
-      }}
-      onError={(msg) => {
-        setShowFuelSheet(false);
-        setModalError(msg);
-      }}
-    />
-  ) : null;
+  // Fuel calc helpers for completion popup
+  const enRouteKm = (arrivedGps && booking.enRouteLat && booking.enRouteLng)
+    ? clientHaversineKm(booking.enRouteLat, booking.enRouteLng, arrivedGps.lat, arrivedGps.lng)
+    : 0;
+  const FUEL_RATE_PER_LITRE = 97;
+  const FUEL_KM_PER_LITRE = 35;
+  const parsedFuelKm = parseFloat(fuelDistanceInput);
+  const validFuelKm = Number.isFinite(parsedFuelKm) && parsedFuelKm >= 0;
+  const fuelCostPreview = validFuelKm ? Math.round((parsedFuelKm / FUEL_KM_PER_LITRE) * FUEL_RATE_PER_LITRE) : 0;
 
   const errorOverlay = modalError ? (
     <ErrorModal message={modalError} onClose={() => setModalError("")} mode={languageMode} />
@@ -1525,28 +1513,89 @@ export function GroomerJobClient({
           </button>
         </div>
 
-        {fuelSheetOverlay}
+        {null /* fuel captured at completion */}
         {errorOverlay}
         {showCompleteModal && booking.status !== "completed" ? (
           <div className="fixed inset-0 z-[300] flex items-end justify-center bg-black/60 px-4 pb-8">
             <div className="w-full max-w-sm rounded-[28px] bg-white p-6 shadow-2xl">
+              {/* Header */}
               <div className="text-center">
-                <div className="text-[40px]">🎉</div>
-                <div className="mt-2 text-[20px] font-black text-[#1f1f2c]">
+                <div className="text-[36px]">🎉</div>
+                <div className="mt-1.5 text-[20px] font-black text-[#1f1f2c]">
                   {languageMode === "simple" ? "Sab ho gaya!" : "सब हो गया!"}
                 </div>
-                <div className="mt-1 text-[14px] text-[#6b7280]">
-                  {languageMode === "simple"
-                    ? "SOP complete hai aur payment save ho gayi. Booking complete karein."
-                    : "SOP पूरा है और पेमेंट सेव हो गई। बुकिंग पूरी करें।"}
+                <div className="mt-1 text-[13px] text-[#6b7280]">
+                  {languageMode === "simple" ? "Pehle fuel trip save karein, phir booking complete hogi." : "पहले फ्यूल ट्रिप सेव करें, फिर बुकिंग पूरी होगी।"}
                 </div>
               </div>
+
+              {/* Fuel distance input */}
+              <div className="mt-4 rounded-[20px] border border-[#dbeafe] bg-[#eff6ff] p-4">
+                <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#2563eb]">
+                  {languageMode === "simple" ? "Kitna distance aaye? (km)" : "कितनी दूरी आए? (किमी)"}
+                </div>
+                <div className="mt-2 flex items-center gap-3">
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    min="0"
+                    step="0.1"
+                    value={fuelDistanceInput}
+                    onChange={(e) => setFuelDistanceInput(e.target.value)}
+                    placeholder="0.0"
+                    className="h-[52px] w-[110px] rounded-[14px] border border-[#bfdbfe] bg-white px-4 text-center text-[22px] font-black text-[#1f1f2c] outline-none focus:border-[#2563eb]"
+                  />
+                  <div className="flex-1">
+                    {enRouteKm > 0 && !fuelDistanceInput ? (
+                      <button
+                        type="button"
+                        onClick={() => setFuelDistanceInput(enRouteKm.toFixed(1))}
+                        className="rounded-[10px] bg-[#dbeafe] px-3 py-1.5 text-[12px] font-bold text-[#2563eb]"
+                      >
+                        GPS: ~{enRouteKm.toFixed(1)} km →
+                      </button>
+                    ) : (
+                      <div className="text-[13px] text-[#6b7280]">
+                        {languageMode === "simple" ? "km sафar kiya" : "किमी सफर किया"}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {validFuelKm && fuelCostPreview > 0 ? (
+                  <div className="mt-3 flex items-center justify-between rounded-[12px] bg-white/70 px-3 py-2">
+                    <div className="text-[12px] text-[#4b5563]">
+                      {languageMode === "simple" ? "Fuel cost" : "फ्यूल कॉस्ट"}
+                    </div>
+                    <div className="text-[18px] font-black text-[#15803d]">₹{fuelCostPreview}</div>
+                  </div>
+                ) : null}
+                {!arrivedGps ? (
+                  <div className="mt-2 text-[11px] text-[#9ca3af]">
+                    {languageMode === "simple" ? "GPS nahi mila — khud distance likhein." : "GPS नहीं मिला — खुद दूरी लिखें।"}
+                  </div>
+                ) : null}
+              </div>
+
+              {/* Complete button */}
               <button
                 type="button"
-                disabled={busy !== null}
+                disabled={busy !== null || !validFuelKm}
                 onClick={() => {
                   setShowCompleteModal(false);
                   void runAction("complete", async () => {
+                    // Save fuel trip first
+                    const fuelRes = await fetch(`/api/groomer/bookings/${booking.id}/fuel-trip${tokenQuery}`, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        arrivedLat: arrivedGps?.lat ?? undefined,
+                        arrivedLng: arrivedGps?.lng ?? undefined,
+                        approvedDistanceKm: parsedFuelKm,
+                      }),
+                    });
+                    const fuelData = await fuelRes.json().catch(() => ({}));
+                    if (!fuelRes.ok) throw new Error(fuelData?.error ?? "Fuel trip save nahi ho paayi.");
+                    // Then complete the booking
                     const res = await fetch(`/api/groomer/bookings/${booking.id}/complete${tokenQuery}`, { method: "POST" });
                     const data = await res.json().catch(() => ({}));
                     if (!res.ok) throw new Error(data?.error ?? "Booking complete nahi ho paayi.");
@@ -1554,9 +1603,9 @@ export function GroomerJobClient({
                     openMomentToast({ action: "complete", xpAwarded: Array.isArray(data?.rewardsDelta) ? data.rewardsDelta.reduce((sum: number, r: { xpAwarded?: number }) => sum + Number(r?.xpAwarded ?? 0), 0) : 0, rewardCreditsAwarded: Array.isArray(data?.rewardsDelta) ? data.rewardsDelta.reduce((sum: number, r: { rewardPointsAwarded?: number }) => sum + Number(r?.rewardPointsAwarded ?? 0), 0) : 0, prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits });
                   });
                 }}
-                className="mt-5 flex h-[56px] w-full items-center justify-center gap-2 rounded-[20px] bg-[#6d5bd0] text-[16px] font-black text-white shadow-[0_8px_24px_rgba(109,91,208,0.35)] disabled:opacity-50"
+                className="mt-4 flex h-[56px] w-full items-center justify-center gap-2 rounded-[20px] bg-[#6d5bd0] text-[16px] font-black text-white shadow-[0_8px_24px_rgba(109,91,208,0.35)] disabled:opacity-50"
               >
-                ✓ {languageMode === "simple" ? "Booking complete karein" : "बुकिंग पूरी करें"}
+                ✓ {languageMode === "simple" ? "Save & Complete karein" : "सेव & पूरा करें"}
               </button>
               <button
                 type="button"
@@ -1637,22 +1686,32 @@ export function GroomerJobClient({
           <SessionStartModal
             booking={booking}
             mode={languageMode}
-            onStart={() => {
+            onStart={async () => {
               setShowSessionStartModal(false);
-              // Show the fuel sheet immediately — don't wait for GPS (hangs on Android/Realme)
-              setShowFuelSheet(true);
-              // GPS runs in background to pre-fill distance; if it fails, groomer enters manually
+              // Mark arrived immediately — no fuel gate
+              const data = await postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, {
+                dispatchState: "started",
+              });
+              await refresh();
+              setPacerMode(true);
+              setPacerPhaseStartAt(Date.now());
+              setCurrentPhaseIndex(0);
+              try { localStorage.removeItem(pacerStorageKey); } catch { /* ignore */ }
+              if (data?.rewardsDelta?.length) {
+                setRewardModal({ rewards: data.rewardsDelta, summary: data.rewardSummary ? { teamMember: data.rewardSummary.teamMember, totalXpAwarded: data.rewardSummary.totalXpAwarded, totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded, prestigeCredits: data.rewardSummary.gamification?.prestigeCredits } : null });
+              }
+              // GPS runs silently in background — will pre-fill fuel distance at completion
               navigator.geolocation.getCurrentPosition(
                 (pos) => { setArrivedGps({ lat: pos.coords.latitude, lng: pos.coords.longitude }); },
-                () => { /* GPS unavailable — sheet already showing, groomer enters distance manually */ },
-                { timeout: 10000, maximumAge: 30000, enableHighAccuracy: false }
+                () => { /* GPS unavailable — groomer enters distance manually at completion */ },
+                { timeout: 15000, maximumAge: 60000, enableHighAccuracy: false }
               );
             }}
             onBack={() => setShowSessionStartModal(false)}
           />
         ) : null}
 
-        {fuelSheetOverlay}
+        {null /* fuel captured at completion */}
         {errorOverlay}
         {rewardOverlay}
         {toastOverlay}
@@ -2392,7 +2451,6 @@ export function GroomerJobClient({
         )}
       </div>
 
-      {fuelSheetOverlay}
       {errorOverlay}
       {videoOverlay}
       {rewardOverlay}

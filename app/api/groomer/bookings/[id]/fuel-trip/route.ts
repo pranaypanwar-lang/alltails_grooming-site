@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminPrisma, ensureBookingSopSteps } from "../../../../admin/_lib/bookingAdmin";
+import { adminPrisma } from "../../../../admin/_lib/bookingAdmin";
 import { assertGroomerAccess } from "../../../_lib/assertGroomerAccess";
 import { calculateRoadDistanceKm, calculateFuelCost } from "../../../../../../lib/groomer/geoDistance";
 
@@ -28,14 +28,9 @@ export async function POST(
       approvedDistanceKm?: number;
     } = body;
 
-    if (
-      typeof arrivedLat !== "number" ||
-      typeof arrivedLng !== "number" ||
-      typeof approvedDistanceKm !== "number" ||
-      approvedDistanceKm < 0
-    ) {
+    if (typeof approvedDistanceKm !== "number" || approvedDistanceKm < 0) {
       return NextResponse.json(
-        { error: "arrivedLat, arrivedLng and approvedDistanceKm are required" },
+        { error: "approvedDistanceKm is required" },
         { status: 400 }
       );
     }
@@ -66,23 +61,25 @@ export async function POST(
       );
     }
 
-    // Use the groomer member's configured fuel rate (defaults to 95 if not set)
     const ratePerLitre = booking.groomerMember.fuelRatePerLitre ?? 95;
 
-    // fromLat/Lng: prefer server-stored enRoute coords; fall back to arrived coords
-    const fromLat = booking.enRouteLat ?? arrivedLat;
-    const fromLng = booking.enRouteLng ?? arrivedLng;
+    // GPS coords: use provided values, fall back to en_route coords stored at departure
+    const effectiveArrivedLat = typeof arrivedLat === "number" ? arrivedLat : (booking.enRouteLat ?? 0);
+    const effectiveArrivedLng = typeof arrivedLng === "number" ? arrivedLng : (booking.enRouteLng ?? 0);
+    const fromLat = booking.enRouteLat ?? effectiveArrivedLat;
+    const fromLng = booking.enRouteLng ?? effectiveArrivedLng;
+    const gpsUnavailable = typeof arrivedLat !== "number" || typeof arrivedLng !== "number";
 
-    // Get Maps API distance for audit record (best-effort, non-blocking)
+    // Maps API distance for audit record (best-effort, non-blocking)
     let mapsDistanceKm: number | null = null;
     let distanceSource = "manual";
     try {
-      if (booking.enRouteLat && booking.enRouteLng) {
+      if (booking.enRouteLat && booking.enRouteLng && !gpsUnavailable) {
         const result = await calculateRoadDistanceKm(
           booking.enRouteLat,
           booking.enRouteLng,
-          arrivedLat,
-          arrivedLng
+          effectiveArrivedLat,
+          effectiveArrivedLng
         );
         mapsDistanceKm = result.distanceKm;
         distanceSource = result.source;
@@ -97,7 +94,6 @@ export async function POST(
       KM_PER_LITRE
     );
 
-    // Upsert — one fuel trip per booking (unique constraint in schema)
     const existingTrip = booking.groomerFuelTrips?.[0];
 
     const fuelTrip = existingTrip
@@ -106,8 +102,8 @@ export async function POST(
           data: {
             fromLat,
             fromLng,
-            toLat: arrivedLat,
-            toLng: arrivedLng,
+            toLat: effectiveArrivedLat,
+            toLng: effectiveArrivedLng,
             distanceKm: approvedDistanceKm,
             originalDistanceKm: mapsDistanceKm ?? approvedDistanceKm,
             litres,
@@ -125,8 +121,8 @@ export async function POST(
             fromBookingId: bookingId,
             fromLat,
             fromLng,
-            toLat: arrivedLat,
-            toLng: arrivedLng,
+            toLat: effectiveArrivedLat,
+            toLng: effectiveArrivedLng,
             distanceKm: approvedDistanceKm,
             originalDistanceKm: mapsDistanceKm ?? approvedDistanceKm,
             roadMultiplier: 1.3,
@@ -137,19 +133,6 @@ export async function POST(
             isManuallyAdjusted: mapsDistanceKm !== null && Math.abs(approvedDistanceKm - mapsDistanceKm) > 0.5,
           },
         });
-
-    // Mark booking as arrived and tick the 'arrived' SOP step atomically
-    await adminPrisma.$transaction(async (tx) => {
-      await tx.booking.update({
-        where: { id: bookingId },
-        data: { dispatchState: "started" },
-      });
-      await ensureBookingSopSteps(tx, bookingId);
-      await tx.bookingSopStep.update({
-        where: { bookingId_stepKey: { bookingId, stepKey: "arrived" } },
-        data: { status: "completed", completedAt: new Date(), completedBy: "groomer" },
-      });
-    });
 
     return NextResponse.json({
       success: true,
