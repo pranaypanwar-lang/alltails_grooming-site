@@ -27,6 +27,14 @@
     {
       "path": "/api/admin/cron/analytics-digest",
       "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/admin/cron/weekly-reports",
+      "schedule": "0 4 * * 1"
+    },
+    {
+      "path": "/api/admin/cron/cash-mismatch-alerts",
+      "schedule": "*/30 * * * *"
     }
   ]
 }
