@@ -77,7 +77,10 @@ type GroomerTemperamentInfo = {
 };
 
 const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
-const MAX_IMAGE_DIMENSION = 1600;
+// Always compress images — most phone photos are 2–4MB uncompressed
+const MAX_IMAGE_DIMENSION = 1280;
+const COMPRESS_SKIP_BELOW_BYTES = 200 * 1024; // skip tiny images that don't need it
+const JPEG_QUALITY = 0.72;
 
 function fileExtension(file: File) {
   return file.name.split(".").pop()?.toLowerCase() ?? "";
@@ -94,8 +97,10 @@ function isVideoFile(file: File) {
 }
 
 async function compressImageForUpload(file: File) {
-  if (!isImageFile(file) || file.size <= MAX_UPLOAD_BYTES) return file;
+  if (!isImageFile(file)) return file;
   if (typeof document === "undefined") return file;
+  // Skip tiny files — compression overhead not worth it
+  if (file.size < COMPRESS_SKIP_BELOW_BYTES) return file;
 
   const objectUrl = URL.createObjectURL(file);
   try {
@@ -114,7 +119,8 @@ async function compressImageForUpload(file: File) {
     if (!context) return file;
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.72));
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", JPEG_QUALITY));
+    // Only use compressed version if it's actually smaller
     if (!blob || blob.size >= file.size) return file;
     return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
   } finally {
@@ -824,6 +830,8 @@ export function GroomerJobClient({
   const [momentToast, setMomentToast] = useState<MomentToast>(null);
   const [showSessionStartModal, setShowSessionStartModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
+  // Tracks steps marked done optimistically while upload is in flight
+  const [optimisticDoneSteps, setOptimisticDoneSteps] = useState<Set<string>>(new Set());
   const liveVideoRef = useRef<HTMLVideoElement | null>(null);
   // Holds a stream that arrived before the video element mounted; the callback ref drains it
   const pendingStreamRef = useRef<MediaStream | null>(null);
@@ -927,11 +935,22 @@ export function GroomerJobClient({
     };
   }, []);
 
-  const visibleChecklistSteps = useMemo(
-    () => booking.sopSteps.filter((step) => !["en_route", "arrived", "payment_proof"].includes(step.key)),
-    [booking.sopSteps]
+  // Merge optimistic upload state into sopSteps so cards reflect done instantly
+  const effectiveSopSteps = useMemo(
+    () =>
+      booking.sopSteps.map((step) =>
+        optimisticDoneSteps.has(step.key) && step.status !== "completed"
+          ? { ...step, status: "completed" as const }
+          : step
+      ),
+    [booking.sopSteps, optimisticDoneSteps]
   );
-  const paymentStep = booking.sopSteps.find((step) => step.key === "payment_proof") ?? null;
+
+  const visibleChecklistSteps = useMemo(
+    () => effectiveSopSteps.filter((step) => !["en_route", "arrived", "payment_proof"].includes(step.key)),
+    [effectiveSopSteps]
+  );
+  const paymentStep = effectiveSopSteps.find((step) => step.key === "payment_proof") ?? null;
   const petSettledStep = visibleChecklistSteps.find((step) => step.key === "pet_settled") ?? null;
   const mediaSteps = visibleChecklistSteps.filter((step) => step.key !== "pet_settled");
 
@@ -952,9 +971,9 @@ export function GroomerJobClient({
   const preArrivalSecondsRemaining = slaStartAt && !["started", "completed"].includes(booking.dispatchState)
     ? Math.round((slaStartAt - now) / 1000)
     : null;
-  const completedRequiredStepCount = booking.sopSteps.filter((step) => step.requiredForCompletion && step.status === "completed").length;
-  const totalRequiredStepCount = booking.sopSteps.filter((step) => step.requiredForCompletion).length;
-  const reviewCompleted = booking.sopSteps.find((step) => step.key === "review_proof")?.status === "completed";
+  const completedRequiredStepCount = effectiveSopSteps.filter((step) => step.requiredForCompletion && step.status === "completed").length;
+  const totalRequiredStepCount = effectiveSopSteps.filter((step) => step.requiredForCompletion).length;
+  const reviewCompleted = effectiveSopSteps.find((step) => step.key === "review_proof")?.status === "completed";
 
   const pacerPhases = useMemo(() => getPacerPhases(booking.service.name), [booking.service.name]);
   const safePhaseIndex = Math.min(currentPhaseIndex, pacerPhases.length - 1);
@@ -978,11 +997,11 @@ export function GroomerJobClient({
 
   // Completion popup logic
   const allSopDone = useMemo(() => {
-    const required = booking.sopSteps.filter(
+    const required = effectiveSopSteps.filter(
       (s) => !["payment_proof", "review_proof", "en_route", "arrived"].includes(s.key) && s.requiredForCompletion
     );
     return required.every((s) => s.status === "completed" || s.status === "skipped");
-  }, [booking.sopSteps]);
+  }, [effectiveSopSteps]);
 
   const paymentSaved = !!booking.payment.collection;
 
@@ -1219,26 +1238,17 @@ export function GroomerJobClient({
     return data;
   };
 
-  const uploadStepMedia = async (
-    stepKey: string,
-    file: File,
-    options?: { skipClientValidation?: boolean }
-  ) => {
-    const uploadFile = isImageFile(file) ? await compressImageForUpload(file) : file;
-    if (!options?.skipClientValidation || uploadFile.size > MAX_UPLOAD_BYTES) {
-      await validateCapture(uploadFile);
-    }
+  type UploadApiResponse = {
+    rewardsDelta?: Array<{ summary: string; xpAwarded: number; rewardPointsAwarded?: number }>;
+    rewardSummary?: {
+      teamMember: { name: string; currentXp: number; currentRank: string };
+      totalXpAwarded: number;
+      totalRewardPointsAwarded?: number;
+      gamification?: { prestigeCredits?: number };
+    } | null;
+  };
 
-    const formData = new FormData();
-    formData.set("stepKey", stepKey);
-    formData.set("file", uploadFile, uploadFile.name);
-
-    const res = await fetch(`/api/groomer/bookings/${booking.id}/sop/proof${tokenQuery}`, {
-      method: "POST",
-      body: formData,
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data?.error ?? "Upload nahi ho paaya.");
+  const handleUploadResponse = (stepKey: string, data: UploadApiResponse) => {
     if (data?.rewardsDelta?.length) {
       setRewardModal({
         rewards: data.rewardsDelta,
@@ -1252,12 +1262,8 @@ export function GroomerJobClient({
           : null,
       });
     }
-    const xpAwarded = Array.isArray(data?.rewardsDelta)
-      ? data.rewardsDelta.reduce((sum: number, reward: { xpAwarded?: number }) => sum + Number(reward?.xpAwarded ?? 0), 0)
-      : 0;
-    const rewardCreditsAwarded = Array.isArray(data?.rewardsDelta)
-      ? data.rewardsDelta.reduce((sum: number, reward: { rewardPointsAwarded?: number }) => sum + Number(reward?.rewardPointsAwarded ?? 0), 0)
-      : 0;
+    const xpAwarded = data?.rewardsDelta?.reduce((s, r) => s + Number(r?.xpAwarded ?? 0), 0) ?? 0;
+    const rewardCreditsAwarded = data?.rewardsDelta?.reduce((s, r) => s + Number(r?.rewardPointsAwarded ?? 0), 0) ?? 0;
     openMomentToast({
       action: "step_saved",
       stepKey,
@@ -1265,6 +1271,78 @@ export function GroomerJobClient({
       rewardCreditsAwarded,
       prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits,
     });
+  };
+
+  const uploadStepMedia = async (
+    stepKey: string,
+    file: File,
+    options?: { skipClientValidation?: boolean }
+  ) => {
+    const uploadFile = isImageFile(file) ? await compressImageForUpload(file) : file;
+    if (!options?.skipClientValidation || uploadFile.size > MAX_UPLOAD_BYTES) {
+      await validateCapture(uploadFile);
+    }
+
+    // Optimistic: mark step as done in local state immediately
+    setOptimisticDoneSteps((prev) => new Set(prev).add(stepKey));
+
+    try {
+      // Try presigned direct upload first (phone → storage, no Vercel proxy)
+      const mimeType = uploadFile.type || "image/jpeg";
+      const presignRes = await fetch(
+        `/api/groomer/bookings/${booking.id}/sop/proof/presign${tokenQuery}${tokenQuery ? "&" : "?"}stepKey=${encodeURIComponent(stepKey)}&mimeType=${encodeURIComponent(mimeType)}`
+      );
+
+      if (presignRes.ok) {
+        const { uploadUrl, storageKey, publicUrl } = await presignRes.json() as {
+          uploadUrl: string; storageKey: string; publicUrl: string;
+        };
+        // Upload directly to storage — bypasses Vercel
+        const putRes = await fetch(uploadUrl, {
+          method: "PUT",
+          body: uploadFile,
+          headers: { "Content-Type": mimeType },
+        });
+        if (!putRes.ok) throw new Error("Direct upload failed — will retry via server");
+
+        // Confirm the upload in DB
+        const confirmRes = await fetch(`/api/groomer/bookings/${booking.id}/sop/proof/confirm${tokenQuery}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            stepKey,
+            storageKey,
+            publicUrl,
+            mimeType,
+            fileSize: uploadFile.size,
+            originalName: file.name,
+          }),
+        });
+        const confirmData = await confirmRes.json().catch(() => ({}));
+        if (!confirmRes.ok) throw new Error((confirmData as { error?: string })?.error ?? "Upload confirm nahi ho paaya.");
+        handleUploadResponse(stepKey, confirmData as UploadApiResponse);
+        return;
+      }
+    } catch {
+      // Presigned upload failed — fall through to legacy server-side upload
+    }
+
+    // Fallback: legacy multipart upload through Vercel
+    const formData = new FormData();
+    formData.set("stepKey", stepKey);
+    formData.set("file", uploadFile, uploadFile.name);
+
+    const res = await fetch(`/api/groomer/bookings/${booking.id}/sop/proof${tokenQuery}`, {
+      method: "POST",
+      body: formData,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      // Revert optimistic update on failure
+      setOptimisticDoneSteps((prev) => { const next = new Set(prev); next.delete(stepKey); return next; });
+      throw new Error((data as { error?: string })?.error ?? "Upload nahi ho paaya.");
+    }
+    handleUploadResponse(stepKey, data as UploadApiResponse);
   };
 
   const uploadOrQueue = async (stepKey: string, file: File, options?: { skipClientValidation?: boolean }) => {
@@ -1554,7 +1632,7 @@ export function GroomerJobClient({
               secondsRemaining={phaseSecondsRemaining}
               secondsElapsed={phaseSecondsElapsed}
               booking={booking}
-              sopSteps={booking.sopSteps}
+              sopSteps={effectiveSopSteps}
               busy={busy}
               stepSyncMap={stepSyncMap}
               isLastPhase={isLastPacerPhase}
@@ -1571,7 +1649,7 @@ export function GroomerJobClient({
               onVideoCapture={(stepKey) => void openLiveVideoRecorder(stepKey).catch((error: unknown) => {
                 setModalError(error instanceof Error ? error.message : "Camera khul nahi paaya.");
               })}
-              onPhotoCapture={(stepKey, file) => void runAction(stepKey, () => uploadOrQueue(stepKey, file))}
+              onPhotoCapture={(stepKey, file) => void runAction(stepKey, () => uploadOrQueue(stepKey, file), { backgroundRefresh: true })}
               onRetrySync={() => void runSync()}
               onSkip={(stepKey, reason) => void runAction(stepKey, () =>
                 postJson(`/api/groomer/bookings/${booking.id}/sop/step`, {
@@ -2045,7 +2123,7 @@ export function GroomerJobClient({
                 secondsRemaining={phaseSecondsRemaining}
                 secondsElapsed={phaseSecondsElapsed}
                 booking={booking}
-                sopSteps={booking.sopSteps}
+                sopSteps={effectiveSopSteps}
                 busy={busy}
                 stepSyncMap={stepSyncMap}
                 isLastPhase={isLastPacerPhase}
@@ -2062,7 +2140,7 @@ export function GroomerJobClient({
                 onVideoCapture={(stepKey) => void openLiveVideoRecorder(stepKey).catch((error: unknown) => {
                   setModalError(error instanceof Error ? error.message : "Camera khul nahi paaya.");
                 })}
-                onPhotoCapture={(stepKey, file) => void runAction(stepKey, () => uploadOrQueue(stepKey, file))}
+                onPhotoCapture={(stepKey, file) => void runAction(stepKey, () => uploadOrQueue(stepKey, file), { backgroundRefresh: true })}
                 onRetrySync={() => void runSync()}
                 onSkip={(stepKey, reason) => void runAction(stepKey, () =>
                   postJson(`/api/groomer/bookings/${booking.id}/sop/step`, {
@@ -2184,7 +2262,7 @@ export function GroomerJobClient({
                       tone="primary"
                       icon={<Camera className="h-4 w-4" />}
                       disabled={busy !== null}
-                      onPick={(file) => void runAction(step.key, () => uploadStepMedia(step.key, file))}
+                      onPick={(file) => void runAction(step.key, () => uploadStepMedia(step.key, file), { backgroundRefresh: true })}
                     />
                   ) : null}
 
@@ -2197,7 +2275,7 @@ export function GroomerJobClient({
                         tone="primary"
                         icon={<Camera className="h-4 w-4" />}
                         disabled={busy !== null}
-                        onPick={(file) => void runAction(step.key, () => uploadStepMedia(step.key, file))}
+                        onPick={(file) => void runAction(step.key, () => uploadStepMedia(step.key, file), { backgroundRefresh: true })}
                       />
                       <ActionButton
                         label={languageMode === "simple" ? "Video banao" : "वीडियो बनाओ"}
