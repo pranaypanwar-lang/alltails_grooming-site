@@ -1353,6 +1353,102 @@ export function GroomerJobClient({
   const validFuelKm = Number.isFinite(parsedFuelKm) && parsedFuelKm >= 0;
   const fuelCostPreview = validFuelKm ? Math.round((parsedFuelKm / FUEL_KM_PER_LITRE) * FUEL_RATE_PER_LITRE) : 0;
 
+  const completeModal = showCompleteModal && booking.status !== "completed" ? (
+    <div className="fixed inset-0 z-[300] flex items-end justify-center bg-black/60 px-4 pb-8">
+      <div className="w-full max-w-sm rounded-[28px] bg-white p-6 shadow-2xl">
+        <div className="text-center">
+          <div className="text-[36px]">🎉</div>
+          <div className="mt-1.5 text-[20px] font-black text-[#1f1f2c]">
+            {languageMode === "simple" ? "Sab ho gaya!" : "सब हो गया!"}
+          </div>
+          <div className="mt-1 text-[13px] text-[#6b7280]">
+            {languageMode === "simple" ? "Pehle fuel trip save karein, phir booking complete hogi." : "पहले फ्यूल ट्रिप सेव करें, फिर बुकिंग पूरी होगी।"}
+          </div>
+        </div>
+        <div className="mt-4 rounded-[20px] border border-[#dbeafe] bg-[#eff6ff] p-4">
+          <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#2563eb]">
+            {languageMode === "simple" ? "Kitna distance aaye? (km)" : "कितनी दूरी आए? (किमी)"}
+          </div>
+          <div className="mt-2 flex items-center gap-3">
+            <input
+              type="number"
+              inputMode="decimal"
+              min="0"
+              step="0.1"
+              value={fuelDistanceInput}
+              onChange={(e) => setFuelDistanceInput(e.target.value)}
+              placeholder="0.0"
+              className="h-[52px] w-[110px] rounded-[14px] border border-[#bfdbfe] bg-white px-4 text-center text-[22px] font-black text-[#1f1f2c] outline-none focus:border-[#2563eb]"
+            />
+            <div className="flex-1">
+              {enRouteKm > 0 && !fuelDistanceInput ? (
+                <button
+                  type="button"
+                  onClick={() => setFuelDistanceInput(enRouteKm.toFixed(1))}
+                  className="rounded-[10px] bg-[#dbeafe] px-3 py-1.5 text-[12px] font-bold text-[#2563eb]"
+                >
+                  GPS: ~{enRouteKm.toFixed(1)} km →
+                </button>
+              ) : (
+                <div className="text-[13px] text-[#6b7280]">
+                  {languageMode === "simple" ? "km safar kiya" : "किमी सफर किया"}
+                </div>
+              )}
+            </div>
+          </div>
+          {validFuelKm && fuelCostPreview > 0 ? (
+            <div className="mt-3 flex items-center justify-between rounded-[12px] bg-white/70 px-3 py-2">
+              <div className="text-[12px] text-[#4b5563]">
+                {languageMode === "simple" ? "Fuel cost" : "फ्यूल कॉस्ट"}
+              </div>
+              <div className="text-[18px] font-black text-[#15803d]">₹{fuelCostPreview}</div>
+            </div>
+          ) : null}
+          {!arrivedGps ? (
+            <div className="mt-2 text-[11px] text-[#9ca3af]">
+              {languageMode === "simple" ? "GPS nahi mila — khud distance likhein." : "GPS नहीं मिला — खुद दूरी लिखें।"}
+            </div>
+          ) : null}
+        </div>
+        <button
+          type="button"
+          disabled={busy !== null || !validFuelKm}
+          onClick={() => {
+            setShowCompleteModal(false);
+            void runAction("complete", async () => {
+              const fuelRes = await fetch(`/api/groomer/bookings/${booking.id}/fuel-trip${tokenQuery}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  arrivedLat: arrivedGps?.lat ?? undefined,
+                  arrivedLng: arrivedGps?.lng ?? undefined,
+                  approvedDistanceKm: parsedFuelKm,
+                }),
+              });
+              const fuelData = await fuelRes.json().catch(() => ({}));
+              if (!fuelRes.ok) throw new Error(fuelData?.error ?? "Fuel trip save nahi ho paayi.");
+              const res = await fetch(`/api/groomer/bookings/${booking.id}/complete${tokenQuery}`, { method: "POST" });
+              const data = await res.json().catch(() => ({}));
+              if (!res.ok) throw new Error(data?.error ?? "Booking complete nahi ho paayi.");
+              setRewardModal({ rewards: data?.rewardsDelta ?? [], summary: data?.rewardSummary ? { teamMember: data.rewardSummary.teamMember, totalXpAwarded: data.rewardSummary.totalXpAwarded, totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded, prestigeCredits: data.rewardSummary.gamification?.prestigeCredits } : null });
+              openMomentToast({ action: "complete", xpAwarded: Array.isArray(data?.rewardsDelta) ? data.rewardsDelta.reduce((sum: number, r: { xpAwarded?: number }) => sum + Number(r?.xpAwarded ?? 0), 0) : 0, rewardCreditsAwarded: Array.isArray(data?.rewardsDelta) ? data.rewardsDelta.reduce((sum: number, r: { rewardPointsAwarded?: number }) => sum + Number(r?.rewardPointsAwarded ?? 0), 0) : 0, prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits });
+            });
+          }}
+          className="mt-4 flex h-[56px] w-full items-center justify-center gap-2 rounded-[20px] bg-[#6d5bd0] text-[16px] font-black text-white shadow-[0_8px_24px_rgba(109,91,208,0.35)] disabled:opacity-50"
+        >
+          ✓ {languageMode === "simple" ? "Save & Complete karein" : "सेव & पूरा करें"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowCompleteModal(false)}
+          className="mt-3 w-full text-center text-[13px] font-semibold text-[#9ca3af]"
+        >
+          {languageMode === "simple" ? "Baad mein karunga" : "बाद में करूंगा"}
+        </button>
+      </div>
+    </div>
+  ) : null;
+
   const errorOverlay = modalError ? (
     <ErrorModal message={modalError} onClose={() => setModalError("")} mode={languageMode} />
   ) : null;
@@ -1443,28 +1539,7 @@ export function GroomerJobClient({
                 await executeSavePayment(collectionMode, amount, notes, image, applyServiceAmountChange);
                 await refresh();
               }}
-              onComplete={() => void runAction("complete", async () => {
-                const res = await fetch(`/api/groomer/bookings/${booking.id}/complete${tokenQuery}`, { method: "POST" });
-                const data = await res.json().catch(() => ({}));
-                if (!res.ok) throw new Error(data?.error ?? "Booking complete nahi ho paayi.");
-                setRewardModal({
-                  rewards: data?.rewardsDelta ?? [],
-                  summary: data?.rewardSummary ? {
-                    teamMember: data.rewardSummary.teamMember,
-                    totalXpAwarded: data.rewardSummary.totalXpAwarded,
-                    totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded,
-                    prestigeCredits: data.rewardSummary.gamification?.prestigeCredits,
-                  } : null,
-                });
-                openMomentToast({
-                  action: "complete",
-                  xpAwarded: Array.isArray(data?.rewardsDelta)
-                    ? data.rewardsDelta.reduce((sum: number, r: { xpAwarded?: number }) => sum + Number(r?.xpAwarded ?? 0), 0) : 0,
-                  rewardCreditsAwarded: Array.isArray(data?.rewardsDelta)
-                    ? data.rewardsDelta.reduce((sum: number, r: { rewardPointsAwarded?: number }) => sum + Number(r?.rewardPointsAwarded ?? 0), 0) : 0,
-                  prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits,
-                });
-              })}
+              onComplete={() => setShowCompleteModal(true)}
             />
           ) : (
             <PacerPhaseCard
@@ -1513,110 +1588,8 @@ export function GroomerJobClient({
           </button>
         </div>
 
-        {null /* fuel captured at completion */}
+        {completeModal}
         {errorOverlay}
-        {showCompleteModal && booking.status !== "completed" ? (
-          <div className="fixed inset-0 z-[300] flex items-end justify-center bg-black/60 px-4 pb-8">
-            <div className="w-full max-w-sm rounded-[28px] bg-white p-6 shadow-2xl">
-              {/* Header */}
-              <div className="text-center">
-                <div className="text-[36px]">🎉</div>
-                <div className="mt-1.5 text-[20px] font-black text-[#1f1f2c]">
-                  {languageMode === "simple" ? "Sab ho gaya!" : "सब हो गया!"}
-                </div>
-                <div className="mt-1 text-[13px] text-[#6b7280]">
-                  {languageMode === "simple" ? "Pehle fuel trip save karein, phir booking complete hogi." : "पहले फ्यूल ट्रिप सेव करें, फिर बुकिंग पूरी होगी।"}
-                </div>
-              </div>
-
-              {/* Fuel distance input */}
-              <div className="mt-4 rounded-[20px] border border-[#dbeafe] bg-[#eff6ff] p-4">
-                <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#2563eb]">
-                  {languageMode === "simple" ? "Kitna distance aaye? (km)" : "कितनी दूरी आए? (किमी)"}
-                </div>
-                <div className="mt-2 flex items-center gap-3">
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    step="0.1"
-                    value={fuelDistanceInput}
-                    onChange={(e) => setFuelDistanceInput(e.target.value)}
-                    placeholder="0.0"
-                    className="h-[52px] w-[110px] rounded-[14px] border border-[#bfdbfe] bg-white px-4 text-center text-[22px] font-black text-[#1f1f2c] outline-none focus:border-[#2563eb]"
-                  />
-                  <div className="flex-1">
-                    {enRouteKm > 0 && !fuelDistanceInput ? (
-                      <button
-                        type="button"
-                        onClick={() => setFuelDistanceInput(enRouteKm.toFixed(1))}
-                        className="rounded-[10px] bg-[#dbeafe] px-3 py-1.5 text-[12px] font-bold text-[#2563eb]"
-                      >
-                        GPS: ~{enRouteKm.toFixed(1)} km →
-                      </button>
-                    ) : (
-                      <div className="text-[13px] text-[#6b7280]">
-                        {languageMode === "simple" ? "km sафar kiya" : "किमी सफर किया"}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                {validFuelKm && fuelCostPreview > 0 ? (
-                  <div className="mt-3 flex items-center justify-between rounded-[12px] bg-white/70 px-3 py-2">
-                    <div className="text-[12px] text-[#4b5563]">
-                      {languageMode === "simple" ? "Fuel cost" : "फ्यूल कॉस्ट"}
-                    </div>
-                    <div className="text-[18px] font-black text-[#15803d]">₹{fuelCostPreview}</div>
-                  </div>
-                ) : null}
-                {!arrivedGps ? (
-                  <div className="mt-2 text-[11px] text-[#9ca3af]">
-                    {languageMode === "simple" ? "GPS nahi mila — khud distance likhein." : "GPS नहीं मिला — खुद दूरी लिखें।"}
-                  </div>
-                ) : null}
-              </div>
-
-              {/* Complete button */}
-              <button
-                type="button"
-                disabled={busy !== null || !validFuelKm}
-                onClick={() => {
-                  setShowCompleteModal(false);
-                  void runAction("complete", async () => {
-                    // Save fuel trip first
-                    const fuelRes = await fetch(`/api/groomer/bookings/${booking.id}/fuel-trip${tokenQuery}`, {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        arrivedLat: arrivedGps?.lat ?? undefined,
-                        arrivedLng: arrivedGps?.lng ?? undefined,
-                        approvedDistanceKm: parsedFuelKm,
-                      }),
-                    });
-                    const fuelData = await fuelRes.json().catch(() => ({}));
-                    if (!fuelRes.ok) throw new Error(fuelData?.error ?? "Fuel trip save nahi ho paayi.");
-                    // Then complete the booking
-                    const res = await fetch(`/api/groomer/bookings/${booking.id}/complete${tokenQuery}`, { method: "POST" });
-                    const data = await res.json().catch(() => ({}));
-                    if (!res.ok) throw new Error(data?.error ?? "Booking complete nahi ho paayi.");
-                    setRewardModal({ rewards: data?.rewardsDelta ?? [], summary: data?.rewardSummary ? { teamMember: data.rewardSummary.teamMember, totalXpAwarded: data.rewardSummary.totalXpAwarded, totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded, prestigeCredits: data.rewardSummary.gamification?.prestigeCredits } : null });
-                    openMomentToast({ action: "complete", xpAwarded: Array.isArray(data?.rewardsDelta) ? data.rewardsDelta.reduce((sum: number, r: { xpAwarded?: number }) => sum + Number(r?.xpAwarded ?? 0), 0) : 0, rewardCreditsAwarded: Array.isArray(data?.rewardsDelta) ? data.rewardsDelta.reduce((sum: number, r: { rewardPointsAwarded?: number }) => sum + Number(r?.rewardPointsAwarded ?? 0), 0) : 0, prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits });
-                  });
-                }}
-                className="mt-4 flex h-[56px] w-full items-center justify-center gap-2 rounded-[20px] bg-[#6d5bd0] text-[16px] font-black text-white shadow-[0_8px_24px_rgba(109,91,208,0.35)] disabled:opacity-50"
-              >
-                ✓ {languageMode === "simple" ? "Save & Complete karein" : "सेव & पूरा करें"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowCompleteModal(false)}
-                className="mt-3 w-full text-center text-[13px] font-semibold text-[#9ca3af]"
-              >
-                {languageMode === "simple" ? "Baad mein karunga" : "बाद में करूंगा"}
-              </button>
-            </div>
-          </div>
-        ) : null}
         {videoOverlay}
         {rewardOverlay}
         {toastOverlay}
@@ -1686,9 +1659,8 @@ export function GroomerJobClient({
           <SessionStartModal
             booking={booking}
             mode={languageMode}
-            onStart={async () => {
+            onStart={() => void runAction("arrived", async () => {
               setShowSessionStartModal(false);
-              // Mark arrived immediately — no fuel gate
               const data = await postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, {
                 dispatchState: "started",
               });
@@ -1700,13 +1672,15 @@ export function GroomerJobClient({
               if (data?.rewardsDelta?.length) {
                 setRewardModal({ rewards: data.rewardsDelta, summary: data.rewardSummary ? { teamMember: data.rewardSummary.teamMember, totalXpAwarded: data.rewardSummary.totalXpAwarded, totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded, prestigeCredits: data.rewardSummary.gamification?.prestigeCredits } : null });
               }
-              // GPS runs silently in background — will pre-fill fuel distance at completion
-              navigator.geolocation.getCurrentPosition(
-                (pos) => { setArrivedGps({ lat: pos.coords.latitude, lng: pos.coords.longitude }); },
-                () => { /* GPS unavailable — groomer enters distance manually at completion */ },
-                { timeout: 15000, maximumAge: 60000, enableHighAccuracy: false }
-              );
-            }}
+              // GPS silently in background — pre-fills fuel distance at completion
+              if (typeof navigator !== "undefined" && navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                  (pos) => { setArrivedGps({ lat: pos.coords.latitude, lng: pos.coords.longitude }); },
+                  () => { /* unavailable — groomer enters manually at completion */ },
+                  { timeout: 15000, maximumAge: 60000, enableHighAccuracy: false }
+                );
+              }
+            })}
             onBack={() => setShowSessionStartModal(false)}
           />
         ) : null}
@@ -2054,30 +2028,7 @@ export function GroomerJobClient({
                   await executeSavePayment(collectionMode, amount, notes, image, applyServiceAmountChange);
                   await refresh();
                 }}
-                onComplete={() => void runAction("complete", async () => {
-                  const res = await fetch(`/api/groomer/bookings/${booking.id}/complete${tokenQuery}`, { method: "POST" });
-                  const data = await res.json().catch(() => ({}));
-                  if (!res.ok) throw new Error(data?.error ?? "Booking complete nahi ho paayi.");
-                  setRewardModal({
-                    rewards: data?.rewardsDelta ?? [],
-                    summary: data?.rewardSummary ? {
-                      teamMember: data.rewardSummary.teamMember,
-                      totalXpAwarded: data.rewardSummary.totalXpAwarded,
-                      totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded,
-                      prestigeCredits: data.rewardSummary.gamification?.prestigeCredits,
-                    } : null,
-                  });
-                  openMomentToast({
-                    action: "complete",
-                    xpAwarded: Array.isArray(data?.rewardsDelta)
-                      ? data.rewardsDelta.reduce((sum: number, r: { xpAwarded?: number }) => sum + Number(r?.xpAwarded ?? 0), 0)
-                      : 0,
-                    rewardCreditsAwarded: Array.isArray(data?.rewardsDelta)
-                      ? data.rewardsDelta.reduce((sum: number, r: { rewardPointsAwarded?: number }) => sum + Number(r?.rewardPointsAwarded ?? 0), 0)
-                      : 0,
-                    prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits,
-                  });
-                })}
+                onComplete={() => setShowCompleteModal(true)}
               />
             ) : (
               <PacerPhaseCard
@@ -2409,48 +2360,20 @@ export function GroomerJobClient({
 
           <button
             type="button"
-            onClick={() => void runAction("complete", async () => {
-              const res = await fetch(`/api/groomer/bookings/${booking.id}/complete${tokenQuery}`, {
-                method: "POST",
-              });
-              const data = await res.json().catch(() => ({}));
-              if (!res.ok) throw new Error(data?.error ?? "Booking complete nahi ho paayi.");
-              setRewardModal({
-                rewards: data?.rewardsDelta ?? [],
-                summary: data?.rewardSummary
-                  ? {
-                      teamMember: data.rewardSummary.teamMember,
-                      totalXpAwarded: data.rewardSummary.totalXpAwarded,
-                      totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded,
-                      prestigeCredits: data.rewardSummary.gamification?.prestigeCredits,
-                    }
-                  : null,
-              });
-              openMomentToast({
-                action: "complete",
-                xpAwarded: Array.isArray(data?.rewardsDelta)
-                  ? data.rewardsDelta.reduce((sum: number, reward: { xpAwarded?: number }) => sum + Number(reward?.xpAwarded ?? 0), 0)
-                  : 0,
-                rewardCreditsAwarded: Array.isArray(data?.rewardsDelta)
-                  ? data.rewardsDelta.reduce((sum: number, reward: { rewardPointsAwarded?: number }) => sum + Number(reward?.rewardPointsAwarded ?? 0), 0)
-                  : 0,
-                prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits,
-              });
-            })}
+            onClick={() => setShowCompleteModal(true)}
             disabled={busy !== null || booking.status === "completed"}
             className="mt-3 w-full rounded-[20px] bg-[#6d5bd0] px-4 py-4 text-[16px] font-semibold text-white disabled:opacity-50"
           >
-            {busy === "complete"
-              ? languageMode === "simple" ? "Complete ho raha hai..." : "पूरा हो रहा है..."
-              : booking.status === "completed"
-                ? languageMode === "simple" ? "Booking complete" : "बुकिंग पूरी"
-                : languageMode === "simple" ? "Booking complete karein" : "बुकिंग पूरी करें"}
+            {booking.status === "completed"
+              ? languageMode === "simple" ? "Booking complete" : "बुकिंग पूरी"
+              : languageMode === "simple" ? "Booking complete karein" : "बुकिंग पूरी करें"}
           </button>
         </div>
           </>
         )}
       </div>
 
+      {completeModal}
       {errorOverlay}
       {videoOverlay}
       {rewardOverlay}

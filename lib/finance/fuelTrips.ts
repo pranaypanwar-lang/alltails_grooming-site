@@ -114,40 +114,29 @@ export async function syncEstimatedFuelTripForBooking(
   const fuelCost = Math.round(litres * ratePerLitre);
   const calculatedAt = new Date();
 
-  const trip = await tx.groomerFuelTrip.upsert({
-    where: { bookingId: booking.id },
-    create: {
-      bookingId: booking.id,
-      groomerMemberId: booking.groomerMemberId,
-      fromType: origin.fromType,
-      fromBookingId: origin.fromBookingId,
-      fromLat: origin.fromLat,
-      fromLng: origin.fromLng,
-      toLat: booking.serviceLat,
-      toLng: booking.serviceLng,
-      distanceKm,
-      roadMultiplier: ROAD_MULTIPLIER,
-      litres,
-      ratePerLitre,
-      fuelCost,
-      calculatedAt,
-    },
-    update: {
-      groomerMemberId: booking.groomerMemberId,
-      fromType: origin.fromType,
-      fromBookingId: origin.fromBookingId,
-      fromLat: origin.fromLat,
-      fromLng: origin.fromLng,
-      toLat: booking.serviceLat,
-      toLng: booking.serviceLng,
-      distanceKm,
-      roadMultiplier: ROAD_MULTIPLIER,
-      litres,
-      ratePerLitre,
-      fuelCost,
-      calculatedAt,
-    },
-  });
+  // If the groomer already submitted a fuel trip, preserve it — only create if missing
+  const existingTrip = await tx.groomerFuelTrip.findUnique({ where: { bookingId: booking.id } });
+
+  const trip = existingTrip
+    ? existingTrip
+    : await tx.groomerFuelTrip.create({
+        data: {
+          bookingId: booking.id,
+          groomerMemberId: booking.groomerMemberId,
+          fromType: origin.fromType,
+          fromBookingId: origin.fromBookingId,
+          fromLat: origin.fromLat,
+          fromLng: origin.fromLng,
+          toLat: booking.serviceLat,
+          toLng: booking.serviceLng,
+          distanceKm,
+          roadMultiplier: ROAD_MULTIPLIER,
+          litres,
+          ratePerLitre,
+          fuelCost,
+          calculatedAt,
+        },
+      });
 
   await tx.groomerLedgerEntry.upsert({
     where: {
