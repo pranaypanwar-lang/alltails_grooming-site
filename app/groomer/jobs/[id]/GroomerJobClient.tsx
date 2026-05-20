@@ -1188,7 +1188,7 @@ export function GroomerJobClient({
     setSelectedMemberId(data.booking.groomerMember?.id ?? "");
   };
 
-  const runAction = async (key: string, action: () => Promise<void>) => {
+  const runAction = async (key: string, action: () => Promise<void>, opts?: { backgroundRefresh?: boolean }) => {
     if (isPreview) {
       setModalError("Preview mode — yahan click se kuch nahi hoga. Real booking par hi kaam karega.");
       return;
@@ -1196,7 +1196,11 @@ export function GroomerJobClient({
     setBusy(key);
     try {
       await action();
-      await refresh();
+      if (opts?.backgroundRefresh) {
+        void refresh(); // don't block busy-state on refresh
+      } else {
+        await refresh();
+      }
     } catch (actionError) {
       setModalError(actionError instanceof Error ? actionError.message : "Kuch galat ho gaya. Dobara try karein.");
     } finally {
@@ -1608,17 +1612,19 @@ export function GroomerJobClient({
           now={now}
           isPreview={isPreview}
           onNikalGaye={() => void runAction("en_route", async () => {
+            // Fire GPS and API call in parallel — don't block UI on GPS
             let gpsLat: number | null = null;
             let gpsLng: number | null = null;
-            // Hard 6s cap — geolocation can hang indefinitely on Android/Realme, never calling either callback
-            await new Promise<void>((resolve) => {
-              const fallback = setTimeout(resolve, 6000);
+            const gpsPromise = new Promise<void>((resolve) => {
+              const fallback = setTimeout(resolve, 3000);
               navigator.geolocation.getCurrentPosition(
                 (pos) => { gpsLat = pos.coords.latitude; gpsLng = pos.coords.longitude; clearTimeout(fallback); resolve(); },
                 () => { clearTimeout(fallback); resolve(); },
-                { timeout: 5000, maximumAge: 30000, enableHighAccuracy: false }
+                { timeout: 2500, maximumAge: 30000, enableHighAccuracy: false }
               );
             });
+            // Race: use GPS if it arrives within 3s, otherwise post immediately
+            await Promise.race([gpsPromise, new Promise<void>((r) => setTimeout(r, 500))]);
             const data = await postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, {
               dispatchState: "en_route",
               lat: gpsLat,
@@ -1660,18 +1666,12 @@ export function GroomerJobClient({
             booking={booking}
             mode={languageMode}
             onStart={() => void runAction("arrived", async () => {
+              // Optimistic: switch to pacer immediately — don't wait for API
               setShowSessionStartModal(false);
-              const data = await postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, {
-                dispatchState: "started",
-              });
-              await refresh();
               setPacerMode(true);
               setPacerPhaseStartAt(Date.now());
               setCurrentPhaseIndex(0);
               try { localStorage.removeItem(pacerStorageKey); } catch { /* ignore */ }
-              if (data?.rewardsDelta?.length) {
-                setRewardModal({ rewards: data.rewardsDelta, summary: data.rewardSummary ? { teamMember: data.rewardSummary.teamMember, totalXpAwarded: data.rewardSummary.totalXpAwarded, totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded, prestigeCredits: data.rewardSummary.gamification?.prestigeCredits } : null });
-              }
               // GPS silently in background — pre-fills fuel distance at completion
               if (typeof navigator !== "undefined" && navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
@@ -1680,7 +1680,13 @@ export function GroomerJobClient({
                   { timeout: 15000, maximumAge: 60000, enableHighAccuracy: false }
                 );
               }
-            })}
+              const data = await postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, {
+                dispatchState: "started",
+              });
+              if (data?.rewardsDelta?.length) {
+                setRewardModal({ rewards: data.rewardsDelta, summary: data.rewardSummary ? { teamMember: data.rewardSummary.teamMember, totalXpAwarded: data.rewardSummary.totalXpAwarded, totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded, prestigeCredits: data.rewardSummary.gamification?.prestigeCredits } : null });
+              }
+            }, { backgroundRefresh: true })}
             onBack={() => setShowSessionStartModal(false)}
           />
         ) : null}
