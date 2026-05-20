@@ -130,6 +130,16 @@ export async function completeBookingLifecycle(
       },
     });
 
+    if (booking.groomerMemberId) {
+      await tx.teamMember.update({
+        where: { id: booking.groomerMemberId },
+        data: {
+          completedCount: { increment: 1 },
+          lastCompletedAt: new Date(),
+        },
+      });
+    }
+
     await syncCashCollectionLedgerForBooking(tx, booking.id);
     await syncEstimatedFuelTripForBooking(tx, booking.id);
 
