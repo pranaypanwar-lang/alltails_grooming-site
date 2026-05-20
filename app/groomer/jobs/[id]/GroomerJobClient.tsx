@@ -11,9 +11,11 @@ import {
   Circle,
   Heart,
   IndianRupee,
+  Loader2,
   MapPinned,
   Scissors,
   ShieldAlert,
+  Upload,
   Video,
   Wind,
 } from "lucide-react";
@@ -832,6 +834,8 @@ export function GroomerJobClient({
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   // Tracks steps marked done optimistically while upload is in flight
   const [optimisticDoneSteps, setOptimisticDoneSteps] = useState<Set<string>>(new Set());
+  // Tracks which step uploads are currently in-flight (for the global saving indicator)
+  const [uploadingSteps, setUploadingSteps] = useState<Set<string>>(new Set());
   const liveVideoRef = useRef<HTMLVideoElement | null>(null);
   // Holds a stream that arrived before the video element mounted; the callback ref drains it
   const pendingStreamRef = useRef<MediaStream | null>(null);
@@ -1362,10 +1366,15 @@ export function GroomerJobClient({
       return;
     }
     setOptimisticDoneSteps((prev) => new Set(prev).add(stepKey));
+    setUploadingSteps((prev) => new Set(prev).add(stepKey));
     uploadOrQueue(stepKey, file)
-      .then(() => { void refresh(); })
+      .then(() => {
+        setUploadingSteps((prev) => { const s = new Set(prev); s.delete(stepKey); return s; });
+        void refresh();
+      })
       .catch((err) => {
         setOptimisticDoneSteps((prev) => { const s = new Set(prev); s.delete(stepKey); return s; });
+        setUploadingSteps((prev) => { const s = new Set(prev); s.delete(stepKey); return s; });
         setModalError(err instanceof Error ? err.message : "Upload fail ho gaya. Dobara try karein.");
       });
   };
@@ -1617,6 +1626,15 @@ export function GroomerJobClient({
     </button>
   );
 
+  const savingPill = uploadingSteps.size > 0 ? (
+    <div className="fixed bottom-6 left-1/2 z-[350] flex -translate-x-1/2 items-center gap-2 rounded-full bg-[#1f1f2c] px-5 py-2.5 shadow-xl">
+      <Loader2 className="h-4 w-4 animate-spin text-[#a78bfa]" />
+      <span className="text-[13px] font-semibold text-white">
+        {languageMode === "simple" ? "Saving..." : "सेव हो रहा है..."}
+      </span>
+    </div>
+  ) : null;
+
   // ── VIEW 1: Pacer mode — full screen, nothing else visible ──
   if (pacerMode) {
     return (
@@ -1681,6 +1699,7 @@ export function GroomerJobClient({
           </button>
         </div>
 
+        {savingPill}
         {completeModal}
         {errorOverlay}
         {videoOverlay}
@@ -1781,6 +1800,7 @@ export function GroomerJobClient({
         ) : null}
 
         {null /* fuel captured at completion */}
+        {savingPill}
         {errorOverlay}
         {rewardOverlay}
         {toastOverlay}
@@ -2468,6 +2488,7 @@ export function GroomerJobClient({
         )}
       </div>
 
+      {savingPill}
       {completeModal}
       {errorOverlay}
       {videoOverlay}

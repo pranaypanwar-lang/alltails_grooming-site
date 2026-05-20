@@ -115,7 +115,8 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
   const isBusy = busy !== null || localBusy;
   const isFullyPrepaid = ctx.scenario === "paid_in_full";
 
-  const handleSave = async () => {
+  const handleSave = async (imageOverride?: File | null) => {
+    const imageToUse = imageOverride !== undefined ? imageOverride : image;
     if (!isWaived && (!Number.isFinite(parsedAmount) || parsedAmount < 0)) {
       setError(mode === "simple" ? "Valid amount daaliye." : "सही अमाउंट डालिए।");
       return;
@@ -128,7 +129,7 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
       );
       return;
     }
-    if (!isWaived && !image && !alreadySaved) {
+    if (!isWaived && !imageToUse && !alreadySaved) {
       setError(
         mode === "simple"
           ? "Payment ki photo ya screenshot add karein."
@@ -139,7 +140,7 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
     setError("");
     setLocalBusy(true);
     try {
-      await onSave(collectionMode, isWaived ? 0 : parsedAmount, notes, image, applyChange);
+      await onSave(collectionMode, isWaived ? 0 : parsedAmount, notes, imageToUse, applyChange);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Kuch galat ho gaya.");
     } finally {
@@ -357,7 +358,10 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
               disabled={isBusy}
               onChange={(e) => {
                 const file = e.target.files?.[0];
-                if (file && file.size <= MAX_UPLOAD_BYTES) setImage(file);
+                if (file && file.size <= MAX_UPLOAD_BYTES) {
+                  setImage(file);
+                  void handleSave(file);
+                }
                 e.currentTarget.value = "";
               }}
             />
@@ -388,7 +392,10 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
             disabled={isBusy}
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file && file.size <= MAX_UPLOAD_BYTES) setImage(file);
+              if (file && file.size <= MAX_UPLOAD_BYTES) {
+                setImage(file);
+                void handleSave(file);
+              }
               e.currentTarget.value = "";
             }}
           />
@@ -466,18 +473,15 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
         </div>
       ) : null}
 
-      {/* ── SAVE PAYMENT ──────────────────────────────────── */}
-      {!isFullyPrepaid ? (
-        <button
-          type="button"
-          onClick={() => void handleSave()}
-          disabled={isBusy}
-          className="flex h-[60px] w-full items-center justify-center gap-2 rounded-[22px] bg-[#149c6d] text-[16px] font-semibold text-white disabled:opacity-50"
-        >
-          {isBusy
-            ? (mode === "simple" ? "Save ho raha hai..." : "सेव हो रहा है...")
-            : (mode === "simple" ? "Payment save karein" : "पेमेंट सेव करें")}
-        </button>
+      {/* ── SAVING INDICATOR ──────────────────────────────── */}
+      {localBusy ? (
+        <div className="flex items-center justify-center gap-2 rounded-[18px] bg-[#f0fdf4] px-4 py-3 text-[14px] font-semibold text-[#15803d]">
+          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+          </svg>
+          {mode === "simple" ? "Payment save ho rahi hai..." : "पेमेंट सेव हो रही है..."}
+        </div>
       ) : null}
 
       {/* ── COMPLETE BOOKING ──────────────────────────────── */}
