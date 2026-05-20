@@ -1283,9 +1283,6 @@ export function GroomerJobClient({
       await validateCapture(uploadFile);
     }
 
-    // Optimistic: mark step as done in local state immediately
-    setOptimisticDoneSteps((prev) => new Set(prev).add(stepKey));
-
     try {
       // Try presigned direct upload first (phone → storage, no Vercel proxy)
       const mimeType = uploadFile.type || "image/jpeg";
@@ -1355,6 +1352,22 @@ export function GroomerJobClient({
         throw err;
       }
     }
+  };
+
+  // Fire-and-forget upload: marks step done instantly, uploads in background.
+  // Groomer can move to next step without waiting. Reverts on error.
+  const uploadInBackground = (stepKey: string, file: File) => {
+    if (isPreview) {
+      setModalError("Preview mode — yahan click se kuch nahi hoga. Real booking par hi kaam karega.");
+      return;
+    }
+    setOptimisticDoneSteps((prev) => new Set(prev).add(stepKey));
+    uploadOrQueue(stepKey, file)
+      .then(() => { void refresh(); })
+      .catch((err) => {
+        setOptimisticDoneSteps((prev) => { const s = new Set(prev); s.delete(stepKey); return s; });
+        setModalError(err instanceof Error ? err.message : "Upload fail ho gaya. Dobara try karein.");
+      });
   };
 
   const executeSavePayment = async (
@@ -1551,10 +1564,8 @@ export function GroomerJobClient({
       onStop={stopLiveRecording}
       onUseRecording={() => {
         if (!activeVideoStepKey || !recordedVideoFile) return;
-        void runAction(activeVideoStepKey, async () => {
-          await uploadOrQueue(activeVideoStepKey, recordedVideoFile, { skipClientValidation: true });
-          closeLiveVideoRecorder();
-        });
+        closeLiveVideoRecorder();
+        uploadInBackground(activeVideoStepKey, recordedVideoFile);
       }}
       onRetake={() => void retakeLiveRecording()}
       onClose={closeLiveVideoRecorder}
@@ -1649,7 +1660,7 @@ export function GroomerJobClient({
               onVideoCapture={(stepKey) => void openLiveVideoRecorder(stepKey).catch((error: unknown) => {
                 setModalError(error instanceof Error ? error.message : "Camera khul nahi paaya.");
               })}
-              onPhotoCapture={(stepKey, file) => void runAction(stepKey, () => uploadOrQueue(stepKey, file), { backgroundRefresh: true })}
+              onPhotoCapture={(stepKey, file) => uploadInBackground(stepKey, file)}
               onRetrySync={() => void runSync()}
               onSkip={(stepKey, reason) => void runAction(stepKey, () =>
                 postJson(`/api/groomer/bookings/${booking.id}/sop/step`, {
@@ -2140,7 +2151,7 @@ export function GroomerJobClient({
                 onVideoCapture={(stepKey) => void openLiveVideoRecorder(stepKey).catch((error: unknown) => {
                   setModalError(error instanceof Error ? error.message : "Camera khul nahi paaya.");
                 })}
-                onPhotoCapture={(stepKey, file) => void runAction(stepKey, () => uploadOrQueue(stepKey, file), { backgroundRefresh: true })}
+                onPhotoCapture={(stepKey, file) => uploadInBackground(stepKey, file)}
                 onRetrySync={() => void runSync()}
                 onSkip={(stepKey, reason) => void runAction(stepKey, () =>
                   postJson(`/api/groomer/bookings/${booking.id}/sop/step`, {
@@ -2262,7 +2273,7 @@ export function GroomerJobClient({
                       tone="primary"
                       icon={<Camera className="h-4 w-4" />}
                       disabled={busy !== null}
-                      onPick={(file) => void runAction(step.key, () => uploadStepMedia(step.key, file), { backgroundRefresh: true })}
+                      onPick={(file) => uploadInBackground(step.key, file)}
                     />
                   ) : null}
 
@@ -2275,7 +2286,7 @@ export function GroomerJobClient({
                         tone="primary"
                         icon={<Camera className="h-4 w-4" />}
                         disabled={busy !== null}
-                        onPick={(file) => void runAction(step.key, () => uploadStepMedia(step.key, file), { backgroundRefresh: true })}
+                        onPick={(file) => uploadInBackground(step.key, file)}
                       />
                       <ActionButton
                         label={languageMode === "simple" ? "Video banao" : "वीडियो बनाओ"}
