@@ -31,6 +31,7 @@ import { PaymentPhaseCard } from "./components/PaymentPhaseCard";
 import { LandingView } from "./components/LandingView";
 import { SessionStartModal } from "./components/SessionStartModal";
 import { SOPListReview } from "./components/SOPListReview";
+import { BookingCompletionCelebration } from "./components/BookingCompletionCelebration";
 
 type LanguageMode = "simple" | "hindi";
 
@@ -836,6 +837,25 @@ export function GroomerJobClient({
   const [optimisticDoneSteps, setOptimisticDoneSteps] = useState<Set<string>>(new Set());
   // Optimistic dispatch state — set instantly on button press, server state takes over after refresh
   const [optimisticDispatchState, setOptimisticDispatchState] = useState<string | null>(null);
+  const [completionCelebration, setCompletionCelebration] = useState<{
+    totalXpAwarded: number;
+    rewardsDelta: Array<{ summary: string; xpAwarded: number; rewardPointsAwarded?: number }>;
+    rewardSummary: {
+      teamMember: { name: string; currentXp: number; currentRank: string; currentLevel: number };
+      gamification: {
+        nextRank: { label: string; xpRemaining: number } | null;
+        nextSalaryHike: { label: string; xpRemaining: number } | null;
+        progress: { rankProgressPercent: number };
+      };
+    } | null;
+    nextBooking: {
+      id: string;
+      serviceName: string;
+      petName: string | null;
+      petBreed: string | null;
+      windowLabel: string | null;
+    } | null;
+  } | null>(null);
   // Tracks which step uploads are currently in-flight (for the global saving indicator)
   const [uploadingSteps, setUploadingSteps] = useState<Set<string>>(new Set());
   const liveVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -1537,8 +1557,12 @@ export function GroomerJobClient({
               const res = await fetch(`/api/groomer/bookings/${booking.id}/complete${tokenQuery}`, { method: "POST" });
               const data = await res.json().catch(() => ({}));
               if (!res.ok) throw new Error(data?.error ?? "Booking complete nahi ho paayi.");
-              setRewardModal({ rewards: data?.rewardsDelta ?? [], summary: data?.rewardSummary ? { teamMember: data.rewardSummary.teamMember, totalXpAwarded: data.rewardSummary.totalXpAwarded, totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded, prestigeCredits: data.rewardSummary.gamification?.prestigeCredits } : null });
-              openMomentToast({ action: "complete", xpAwarded: Array.isArray(data?.rewardsDelta) ? data.rewardsDelta.reduce((sum: number, r: { xpAwarded?: number }) => sum + Number(r?.xpAwarded ?? 0), 0) : 0, rewardCreditsAwarded: Array.isArray(data?.rewardsDelta) ? data.rewardsDelta.reduce((sum: number, r: { rewardPointsAwarded?: number }) => sum + Number(r?.rewardPointsAwarded ?? 0), 0) : 0, prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits });
+              setCompletionCelebration({
+                totalXpAwarded: Array.isArray(data?.rewardsDelta) ? data.rewardsDelta.reduce((sum: number, r: { xpAwarded?: number }) => sum + Number(r?.xpAwarded ?? 0), 0) : 0,
+                rewardsDelta: data?.rewardsDelta ?? [],
+                rewardSummary: data?.rewardSummary ?? null,
+                nextBooking: data?.nextBooking ?? null,
+              });
             });
           }}
           className="mt-4 flex h-[56px] w-full items-center justify-center gap-2 rounded-[20px] bg-[#6d5bd0] text-[16px] font-black text-white shadow-[0_8px_24px_rgba(109,91,208,0.35)] disabled:opacity-50"
@@ -1628,6 +1652,27 @@ export function GroomerJobClient({
       {languageMode === "simple" ? "हिंदी" : "Simple"}
     </button>
   );
+
+  // ── Completion celebration — shown after booking completes ──
+  if (completionCelebration) {
+    return (
+      <BookingCompletionCelebration
+        mode={languageMode}
+        groomerName={completionCelebration.rewardSummary?.teamMember.name ?? booking.groomerMember?.name ?? "Groomer"}
+        totalXpAwarded={completionCelebration.totalXpAwarded}
+        currentXp={completionCelebration.rewardSummary?.teamMember.currentXp ?? 0}
+        currentRank={completionCelebration.rewardSummary?.teamMember.currentRank ?? ""}
+        currentLevel={completionCelebration.rewardSummary?.teamMember.currentLevel ?? 1}
+        rankProgressPercent={completionCelebration.rewardSummary?.gamification.progress.rankProgressPercent ?? 0}
+        nextRank={completionCelebration.rewardSummary?.gamification.nextRank ?? null}
+        nextSalaryHike={completionCelebration.rewardSummary?.gamification.nextSalaryHike ?? null}
+        rewardsDelta={completionCelebration.rewardsDelta}
+        nextBooking={completionCelebration.nextBooking}
+        token={token ?? ""}
+        onClose={() => setCompletionCelebration(null)}
+      />
+    );
+  }
 
   const savingPill = uploadingSteps.size > 0 ? (
     <div className="fixed bottom-6 left-1/2 z-[350] flex -translate-x-1/2 items-center gap-2 rounded-full bg-[#1f1f2c] px-5 py-2.5 shadow-xl">
