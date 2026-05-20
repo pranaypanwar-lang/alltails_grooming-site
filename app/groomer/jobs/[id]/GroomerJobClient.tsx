@@ -834,6 +834,8 @@ export function GroomerJobClient({
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   // Tracks steps marked done optimistically while upload is in flight
   const [optimisticDoneSteps, setOptimisticDoneSteps] = useState<Set<string>>(new Set());
+  // Optimistic dispatch state — set instantly on button press, server state takes over after refresh
+  const [optimisticDispatchState, setOptimisticDispatchState] = useState<string | null>(null);
   // Tracks which step uploads are currently in-flight (for the global saving indicator)
   const [uploadingSteps, setUploadingSteps] = useState<Set<string>>(new Set());
   const liveVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -1209,6 +1211,7 @@ export function GroomerJobClient({
     if (!res.ok) throw new Error(data?.error ?? "Booking refresh nahi ho paaya.");
     setBooking(data.booking);
     setSelectedMemberId(data.booking.groomerMember?.id ?? "");
+    setOptimisticDispatchState(null);
   };
 
   const runAction = async (key: string, action: () => Promise<void>, opts?: { backgroundRefresh?: boolean }) => {
@@ -1716,11 +1719,12 @@ export function GroomerJobClient({
         <LandingView
           booking={booking}
           mode={languageMode}
-          dispatchState={booking.dispatchState}
+          dispatchState={optimisticDispatchState ?? booking.dispatchState}
           now={now}
           isPreview={isPreview}
           onNikalGaye={() => void runAction("en_route", async () => {
-            // Fire GPS and API call in parallel — don't block UI on GPS
+            // Optimistic: switch UI to en_route instantly
+            setOptimisticDispatchState("en_route");
             let gpsLat: number | null = null;
             let gpsLng: number | null = null;
             const gpsPromise = new Promise<void>((resolve) => {
@@ -1731,7 +1735,7 @@ export function GroomerJobClient({
                 { timeout: 2500, maximumAge: 30000, enableHighAccuracy: false }
               );
             });
-            // Race: use GPS if it arrives within 3s, otherwise post immediately
+            // Race: use GPS if it arrives within 500ms, otherwise post immediately
             await Promise.race([gpsPromise, new Promise<void>((r) => setTimeout(r, 500))]);
             const data = await postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, {
               dispatchState: "en_route",
@@ -1757,7 +1761,7 @@ export function GroomerJobClient({
                 ? data.rewardsDelta.reduce((sum: number, reward: { rewardPointsAwarded?: number }) => sum + Number(reward?.rewardPointsAwarded ?? 0), 0) : 0,
               prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits,
             });
-          })}
+          }, { backgroundRefresh: true })}
           onPahunchGaye={() => {
             if (isPreview) {
               setPacerMode(true);
