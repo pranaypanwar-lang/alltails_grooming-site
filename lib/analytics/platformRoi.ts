@@ -1,4 +1,5 @@
 import type {
+  CampaignVerdict,
   PlatformCampaignRow,
   PlatformConnectionStatus,
   PlatformRoiSummary,
@@ -34,6 +35,63 @@ type GoogleAdsStreamChunk = {
 };
 
 const PERIOD_LABEL = "Trailing 30 days";
+
+function getCampaignVerdict(row: {
+  spend: number;
+  cpc: number;
+  ctr: number;
+  roas: number;
+  conversions: number;
+}): { verdict: CampaignVerdict; recommendation: string } {
+  if (row.spend === 0) {
+    return {
+      verdict: "monitor",
+      recommendation: "No spend recorded — campaign may be paused or not yet started.",
+    };
+  }
+
+  // Scale: ROAS is strong and conversions are happening
+  if (row.roas >= 2 && row.conversions >= 1) {
+    const rec =
+      row.spend < 5000
+        ? `ROAS ${row.roas.toFixed(1)}x on modest budget — increase daily spend to capture more demand while it's working.`
+        : `ROAS ${row.roas.toFixed(1)}x with healthy volume — test audience expansion or lookalikes to scale further.`;
+    return { verdict: "scale", recommendation: rec };
+  }
+
+  // Pause: spending significant money with very poor returns
+  if (
+    (row.spend > 2000 && row.roas < 0.8) ||
+    (row.spend > 5000 && row.conversions === 0)
+  ) {
+    const parts: string[] = [];
+    if (row.roas > 0 && row.roas < 0.8) parts.push(`ROAS is only ${row.roas.toFixed(1)}x`);
+    if (row.conversions === 0) parts.push("zero conversions tracked");
+    if (row.cpc > 40) parts.push(`CPC ₹${Math.round(row.cpc)} is high for this market`);
+    return {
+      verdict: "pause",
+      recommendation: `Pause and audit — ${parts.join(", ")}. Review creative, audience match, and landing page before resuming spend.`,
+    };
+  }
+
+  // Optimise: everything else with spend > 0
+  const tips: string[] = [];
+  if (row.cpc > 40)
+    tips.push(`reduce CPC from ₹${Math.round(row.cpc)} by tightening audience or testing new ad copy`);
+  if (row.ctr < 0.01)
+    tips.push("CTR under 1% — refresh creative or test a stronger headline offer");
+  if (row.roas > 0 && row.roas < 1.5)
+    tips.push("ROAS under 1.5x — align ad scheduling with peak booking hours (10am–2pm)");
+  if (tips.length === 0)
+    tips.push("Attribution may be partial — ensure UTM labels in booking links match this campaign name exactly");
+
+  const firstTip = tips[0].charAt(0).toUpperCase() + tips[0].slice(1);
+  const rest = tips.slice(1).map((t) => t.charAt(0).toUpperCase() + t.slice(1));
+  return {
+    verdict: "optimise",
+    recommendation: `${firstTip}.${rest.length > 0 ? " Also: " + rest.join(". ") + "." : ""}`,
+  };
+}
 
 function numberValue(value: unknown) {
   if (typeof value === "number") return Number.isFinite(value) ? value : 0;
@@ -96,7 +154,10 @@ function getMatchQuality(row: { spend: number; platformRevenue: number; internal
   return "weak" as const;
 }
 
-async function fetchMetaCampaigns(internalRevenueByCampaign: InternalCampaignRevenue) {
+async function fetchMetaCampaigns(
+  internalRevenueByCampaign: InternalCampaignRevenue,
+  datePreset = "last_30d"
+) {
   const accessToken =
     process.env.META_MARKETING_ACCESS_TOKEN?.trim() ||
     process.env.META_ADS_ACCESS_TOKEN?.trim() ||
@@ -118,7 +179,7 @@ async function fetchMetaCampaigns(internalRevenueByCampaign: InternalCampaignRev
   const params = new URLSearchParams({
     access_token: accessToken,
     level: "campaign",
-    date_preset: "last_30d",
+    date_preset: datePreset,
     limit: "100",
     fields: [
       "campaign_id",
@@ -158,6 +219,10 @@ async function fetchMetaCampaigns(internalRevenueByCampaign: InternalCampaignRev
       const conversions = getActionValue(row.actions, ["purchase", "lead", "complete_registration"]);
       const platformRevenue = getActionValue(row.action_values, ["purchase"]);
       const internalRevenue = getInternalRevenue(campaignName, internalRevenueByCampaign);
+      const cpc = numberValue(row.cpc) || rate(spend, clicks);
+      const ctr = numberValue(row.ctr) ? numberValue(row.ctr) / 100 : rate(clicks, impressions);
+      const roas = rate(platformRevenue || internalRevenue, spend);
+      const { verdict, recommendation } = getCampaignVerdict({ spend, cpc, ctr, roas, conversions });
       return {
         platform: "Meta" as const,
         campaignId: row.campaign_id || campaignName,
@@ -168,11 +233,13 @@ async function fetchMetaCampaigns(internalRevenueByCampaign: InternalCampaignRev
         conversions,
         platformRevenue,
         internalRevenue,
-        cpc: numberValue(row.cpc) || rate(spend, clicks),
+        cpc,
         cpm: numberValue(row.cpm) || rate(spend * 1000, impressions),
-        ctr: numberValue(row.ctr) ? numberValue(row.ctr) / 100 : rate(clicks, impressions),
-        roas: rate(platformRevenue || internalRevenue, spend),
+        ctr,
+        roas,
         matchQuality: getMatchQuality({ spend, platformRevenue, internalRevenue }),
+        verdict,
+        recommendation,
       };
     });
 
@@ -213,7 +280,10 @@ async function getGoogleAccessToken() {
   return payload.access_token as string;
 }
 
-async function fetchGoogleCampaigns(internalRevenueByCampaign: InternalCampaignRevenue) {
+async function fetchGoogleCampaigns(
+  internalRevenueByCampaign: InternalCampaignRevenue,
+  googleDuring = "LAST_30_DAYS"
+) {
   const developerToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN?.trim();
   const customerId = process.env.GOOGLE_ADS_CUSTOMER_ID?.replace(/-/g, "").trim();
 
@@ -247,7 +317,7 @@ async function fetchGoogleCampaigns(internalRevenueByCampaign: InternalCampaignR
         metrics.conversions,
         metrics.conversions_value
       FROM campaign
-      WHERE segments.date DURING LAST_30_DAYS
+      WHERE segments.date DURING ${googleDuring}
         AND campaign.status != 'REMOVED'
       ORDER BY metrics.cost_micros DESC
       LIMIT 100
@@ -288,6 +358,10 @@ async function fetchGoogleCampaigns(internalRevenueByCampaign: InternalCampaignR
         const conversions = numberValue(metrics.conversions);
         const platformRevenue = numberValue(metrics.conversionsValue);
         const internalRevenue = getInternalRevenue(campaignName, internalRevenueByCampaign);
+        const cpc = rate(spend, clicks);
+        const ctr = rate(clicks, impressions);
+        const roas = rate(platformRevenue || internalRevenue, spend);
+        const { verdict, recommendation } = getCampaignVerdict({ spend, cpc, ctr, roas, conversions });
         return {
           platform: "Google" as const,
           campaignId: row.campaign?.id || campaignName,
@@ -298,11 +372,13 @@ async function fetchGoogleCampaigns(internalRevenueByCampaign: InternalCampaignR
           conversions,
           platformRevenue,
           internalRevenue,
-          cpc: rate(spend, clicks),
+          cpc,
           cpm: rate(spend * 1000, impressions),
-          ctr: rate(clicks, impressions),
-          roas: rate(platformRevenue || internalRevenue, spend),
+          ctr,
+          roas,
           matchQuality: getMatchQuality({ spend, platformRevenue, internalRevenue }),
+          verdict,
+          recommendation,
         };
       });
 
@@ -318,10 +394,21 @@ async function fetchGoogleCampaigns(internalRevenueByCampaign: InternalCampaignR
   }
 }
 
-export async function getPlatformRoiSummary(internalRevenueByCampaign: InternalCampaignRevenue): Promise<PlatformRoiSummary> {
+const GOOGLE_DURING: Record<string, string> = {
+  today: "TODAY",
+  this_week_mon_today: "THIS_WEEK_MON_TODAY",
+  this_month: "THIS_MONTH",
+  last_30d: "LAST_30_DAYS",
+};
+
+export async function getPlatformRoiSummary(
+  internalRevenueByCampaign: InternalCampaignRevenue,
+  datePreset = "last_30d"
+): Promise<PlatformRoiSummary> {
+  const googleDuring = GOOGLE_DURING[datePreset] ?? "LAST_30_DAYS";
   const [metaResult, googleResult] = await Promise.all([
-    fetchMetaCampaigns(internalRevenueByCampaign),
-    fetchGoogleCampaigns(internalRevenueByCampaign),
+    fetchMetaCampaigns(internalRevenueByCampaign, datePreset),
+    fetchGoogleCampaigns(internalRevenueByCampaign, googleDuring),
   ]);
 
   const campaigns = [...metaResult.campaigns, ...googleResult.campaigns]

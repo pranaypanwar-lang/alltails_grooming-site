@@ -1,4 +1,18 @@
+export type AnalyticsPeriod = "today" | "week" | "month";
+
 export type AnalyticsResponse = {
+  periodMeta: {
+    period: AnalyticsPeriod;
+    label: string;
+    comparisonLabel: string;
+    bookingsCurrent: number;
+    bookingsPrevious: number;
+    gmvCurrent: number;
+    gmvPrevious: number;
+    newCustomersCurrent: number;
+    newCustomersPrevious: number;
+  };
+
   latestReport: {
     id: string;
     type: string;
@@ -122,6 +136,8 @@ export type PlatformConnectionStatus = {
   message: string;
 };
 
+export type CampaignVerdict = "scale" | "optimise" | "pause" | "monitor";
+
 export type PlatformCampaignRow = {
   platform: "Meta" | "Google";
   campaignId: string;
@@ -137,6 +153,8 @@ export type PlatformCampaignRow = {
   ctr: number;
   roas: number;
   matchQuality: "strong" | "partial" | "weak" | "unknown";
+  verdict: CampaignVerdict;
+  recommendation: string;
 };
 
 export type PlatformRoiSummary = {

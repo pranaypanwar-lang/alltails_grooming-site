@@ -1,9 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { adminPrisma } from "../_lib/bookingAdmin";
 import { assertAdminSession } from "../_lib/assertAdmin";
 import type {
   AnalyticsAction,
   AnalyticsBreakdownRow,
+  AnalyticsPeriod,
   AnalyticsPerformanceRow,
   AnalyticsResponse,
 } from "../../../admin/types/analytics";
@@ -247,11 +248,58 @@ function buildActionQueue(input: {
     .slice(0, 6);
 }
 
-export async function GET() {
+function getPeriodWindows(now: Date, period: AnalyticsPeriod) {
+  const weekStart = startOf(now, "week");
+  const monthStart = startOf(now, "month");
+
+  if (period === "today") {
+    const todayStart = startOf(now, "day");
+    const yesterdayStart = new Date(todayStart.getTime() - 86400000);
+    return {
+      currentStart: todayStart,
+      currentEnd: now,
+      prevStart: yesterdayStart,
+      prevEnd: todayStart,
+      label: "today",
+      comparisonLabel: "yesterday",
+      datePreset: "today",
+    };
+  }
+  if (period === "month") {
+    const prevMonthStart = new Date(monthStart);
+    prevMonthStart.setMonth(prevMonthStart.getMonth() - 1);
+    return {
+      currentStart: monthStart,
+      currentEnd: now,
+      prevStart: prevMonthStart,
+      prevEnd: monthStart,
+      label: "this month",
+      comparisonLabel: "last month",
+      datePreset: "this_month",
+    };
+  }
+  // week (default)
+  const lastWeekStart = new Date(weekStart.getTime() - 7 * 86400000);
+  return {
+    currentStart: weekStart,
+    currentEnd: now,
+    prevStart: lastWeekStart,
+    prevEnd: weekStart,
+    label: "this week",
+    comparisonLabel: "last week",
+    datePreset: "this_week_mon_today",
+  };
+}
+
+export async function GET(request: NextRequest) {
   const authErr = await assertAdminSession();
   if (authErr) return authErr;
 
+  const periodParam = (request.nextUrl.searchParams.get("period") ?? "week") as AnalyticsPeriod;
+  const period: AnalyticsPeriod = ["today", "week", "month"].includes(periodParam) ? periodParam : "week";
+
   const now = new Date();
+  const windows = getPeriodWindows(now, period);
   const weekStart = startOf(now, "week");
   const lastWeekStart = new Date(weekStart.getTime() - 7 * 86400000);
   const lastWeekEnd = weekStart;
@@ -279,6 +327,12 @@ export async function GET() {
     completedLast35Days,
     dispatchStats,
     sopStats,
+    periodBookingsCurrent,
+    periodBookingsPrevious,
+    periodGmvCurrent,
+    periodGmvPrevious,
+    periodNewUsersCurrent,
+    periodNewUsersPrevious,
   ] = await Promise.all([
     // Latest AI analysis report
     adminPrisma.analysisReport.findFirst({
@@ -372,6 +426,14 @@ export async function GET() {
       where: { booking: { status: "completed", selectedDate: { gte: monthStart.toISOString().slice(0, 10) } } },
       _count: { id: true },
     }),
+
+    // Period-aware metrics
+    adminPrisma.booking.count({ where: { createdAt: { gte: windows.currentStart, lte: windows.currentEnd }, status: { not: "expired" } } }),
+    adminPrisma.booking.count({ where: { createdAt: { gte: windows.prevStart, lt: windows.prevEnd }, status: { not: "expired" } } }),
+    adminPrisma.booking.aggregate({ where: { createdAt: { gte: windows.currentStart, lte: windows.currentEnd }, status: "confirmed", paymentStatus: "paid" }, _sum: { finalAmount: true } }),
+    adminPrisma.booking.aggregate({ where: { createdAt: { gte: windows.prevStart, lt: windows.prevEnd }, status: "confirmed", paymentStatus: "paid" }, _sum: { finalAmount: true } }),
+    adminPrisma.user.count({ where: { createdAt: { gte: windows.currentStart, lte: windows.currentEnd } } }),
+    adminPrisma.user.count({ where: { createdAt: { gte: windows.prevStart, lt: windows.prevEnd } } }),
   ]);
 
   // Conversion funnel
@@ -453,7 +515,7 @@ export async function GET() {
   for (const row of campaignMap.values()) {
     internalRevenueByCampaign.set(row.label.trim().toLowerCase(), row.revenue);
   }
-  const platformRoi = await getPlatformRoiSummary(internalRevenueByCampaign);
+  const platformRoi = await getPlatformRoiSummary(internalRevenueByCampaign, windows.datePreset);
 
   // Revenue
   const paidBookingsMonth = await adminPrisma.booking.findMany({
@@ -540,6 +602,17 @@ export async function GET() {
   ];
 
   const result: AnalyticsResponse = {
+    periodMeta: {
+      period,
+      label: windows.label,
+      comparisonLabel: windows.comparisonLabel,
+      bookingsCurrent: periodBookingsCurrent,
+      bookingsPrevious: periodBookingsPrevious,
+      gmvCurrent: periodGmvCurrent._sum.finalAmount ?? 0,
+      gmvPrevious: periodGmvPrevious._sum.finalAmount ?? 0,
+      newCustomersCurrent: periodNewUsersCurrent,
+      newCustomersPrevious: periodNewUsersPrevious,
+    },
     latestReport: latestReport
       ? {
           ...latestReport,
