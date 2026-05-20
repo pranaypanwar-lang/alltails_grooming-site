@@ -622,16 +622,22 @@ export function PacerPhaseCard({
         </div>
       ) : null}
 
-      {/* ── MIN-TIME WARNING (oil phase) ─────────────────── */}
+      {/* ── MIN-TIME WARNING ─────────────────────────────── */}
       {minTimeWarning ? (
         <div className="mt-3 rounded-[18px] border border-[#fde68a]/40 bg-[#fde68a]/8 px-4 py-3.5">
           <div className="text-[14px] font-black text-[#fde68a]">
-            {mode === "simple" ? "⚠ Oil abhi kaam kar raha hai" : "⚠ ऑयल अभी काम कर रहा है"}
+            {phase.key === "oil_massage"
+              ? (mode === "simple" ? "⚠ Oil abhi kaam kar raha hai" : "⚠ ऑयल अभी काम कर रहा है")
+              : (mode === "simple" ? "⚠ Shampoo abhi chhod mat" : "⚠ शैम्पू अभी छोड़ो मत")}
           </div>
           <div className="mt-1 text-[12px] leading-[1.6] text-[#fde68a]/70">
-            {mode === "simple"
-              ? `${Math.ceil((minElapsedSeconds - secondsElapsed) / 60)} min aur ruko — oil coat ko hydrate kar raha hai.`
-              : `${Math.ceil((minElapsedSeconds - secondsElapsed) / 60)} मिनट और रुको — ऑयल coat को hydrate कर रहा है।`}
+            {phase.key === "oil_massage"
+              ? (mode === "simple"
+                  ? `${Math.ceil((minElapsedSeconds - secondsElapsed) / 60)} min aur ruko — oil coat ko hydrate kar raha hai.`
+                  : `${Math.ceil((minElapsedSeconds - secondsElapsed) / 60)} मिनट और रुको — ऑयल coat को hydrate कर रहा है।`)
+              : (mode === "simple"
+                  ? `${Math.ceil((minElapsedSeconds - secondsElapsed) / 60)} min aur ruko — shampoo achhi tarah lag raha hai.`
+                  : `${Math.ceil((minElapsedSeconds - secondsElapsed) / 60)} मिनट और रुको — शैम्पू अच्छी तरह लग रहा है।`)}
           </div>
           <button
             type="button"
