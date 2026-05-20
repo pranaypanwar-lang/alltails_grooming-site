@@ -1588,11 +1588,13 @@ export function GroomerJobClient({
           onNikalGaye={() => void runAction("en_route", async () => {
             let gpsLat: number | null = null;
             let gpsLng: number | null = null;
+            // Hard 6s cap — geolocation can hang indefinitely on Android/Realme, never calling either callback
             await new Promise<void>((resolve) => {
+              const fallback = setTimeout(resolve, 6000);
               navigator.geolocation.getCurrentPosition(
-                (pos) => { gpsLat = pos.coords.latitude; gpsLng = pos.coords.longitude; resolve(); },
-                () => resolve(),
-                { timeout: 5000, maximumAge: 30000 }
+                (pos) => { gpsLat = pos.coords.latitude; gpsLng = pos.coords.longitude; clearTimeout(fallback); resolve(); },
+                () => { clearTimeout(fallback); resolve(); },
+                { timeout: 5000, maximumAge: 30000, enableHighAccuracy: false }
               );
             });
             const data = await postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, {
@@ -1637,10 +1639,13 @@ export function GroomerJobClient({
             mode={languageMode}
             onStart={() => {
               setShowSessionStartModal(false);
+              // Show the fuel sheet immediately — don't wait for GPS (hangs on Android/Realme)
+              setShowFuelSheet(true);
+              // GPS runs in background to pre-fill distance; if it fails, groomer enters manually
               navigator.geolocation.getCurrentPosition(
-                (pos) => { setArrivedGps({ lat: pos.coords.latitude, lng: pos.coords.longitude }); setShowFuelSheet(true); },
-                () => { setArrivedGps(null); setShowFuelSheet(true); },
-                { timeout: 8000, maximumAge: 0 }
+                (pos) => { setArrivedGps({ lat: pos.coords.latitude, lng: pos.coords.longitude }); },
+                () => { /* GPS unavailable — sheet already showing, groomer enters distance manually */ },
+                { timeout: 10000, maximumAge: 30000, enableHighAccuracy: false }
               );
             }}
             onBack={() => setShowSessionStartModal(false)}
