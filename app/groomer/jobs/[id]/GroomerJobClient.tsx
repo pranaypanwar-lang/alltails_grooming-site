@@ -877,7 +877,7 @@ export function GroomerJobClient({
   const recordingChunksRef = useRef<Blob[]>([]);
   const tokenQuery = token ? `?token=${encodeURIComponent(token)}` : "";
 
-  const { stepSyncMap, queueUpload, runSync } = useOfflineQueue(booking.id, tokenQuery);
+  const { stepSyncMap, queueUpload, queueAction, runSync } = useOfflineQueue(booking.id, tokenQuery);
   const { sessionState, isHydrated, initializeSession, updateStatus, completeStep, clearSession } = useSessionState(booking.id);
 
   // Initialize session when first arriving
@@ -1381,6 +1381,55 @@ export function GroomerJobClient({
     }
   };
 
+  // Optimistic toggle: marks step done/undone immediately, syncs in background.
+  // If offline, queues for later replay. Never blocks the UI.
+  const toggleStepOptimistic = (stepKey: string, currentStatus: string) => {
+    if (isPreview) {
+      setModalError("Preview mode — yahan click se kuch nahi hoga. Real booking par hi kaam karega.");
+      return;
+    }
+    const newStatus = currentStatus === "completed" ? "pending" : "completed";
+    if (newStatus === "completed") {
+      setOptimisticDoneSteps((prev) => new Set(prev).add(stepKey));
+    } else {
+      setOptimisticDoneSteps((prev) => { const s = new Set(prev); s.delete(stepKey); return s; });
+    }
+    postJson(`/api/groomer/bookings/${booking.id}/sop/step`, { stepKey, status: newStatus })
+      .then(() => { void refresh(); })
+      .catch(async (err) => {
+        if (!navigator.onLine) {
+          await queueAction(stepKey, { stepKey, status: newStatus }).catch(() => {});
+        } else {
+          // Revert optimistic change on hard failure
+          if (newStatus === "completed") {
+            setOptimisticDoneSteps((prev) => { const s = new Set(prev); s.delete(stepKey); return s; });
+          } else {
+            setOptimisticDoneSteps((prev) => new Set(prev).add(stepKey));
+          }
+          setModalError(err instanceof Error ? err.message : "Step save nahi ho paaya. Dobara try karein.");
+        }
+      });
+  };
+
+  // Optimistic skip: marks step skipped immediately, queues if offline.
+  const skipStepOptimistic = (stepKey: string, reason: string) => {
+    if (isPreview) {
+      setModalError("Preview mode — yahan click se kuch nahi hoga. Real booking par hi kaam karega.");
+      return;
+    }
+    setOptimisticDoneSteps((prev) => new Set(prev).add(stepKey));
+    postJson(`/api/groomer/bookings/${booking.id}/sop/step`, { stepKey, status: "skipped", skipReason: reason })
+      .then(() => { void refresh(); })
+      .catch(async (err) => {
+        if (!navigator.onLine) {
+          await queueAction(stepKey, { stepKey, status: "skipped", skipReason: reason }).catch(() => {});
+        } else {
+          setOptimisticDoneSteps((prev) => { const s = new Set(prev); s.delete(stepKey); return s; });
+          setModalError(err instanceof Error ? err.message : "Skip save nahi ho paaya. Dobara try karein.");
+        }
+      });
+  };
+
   // Fire-and-forget upload: marks step done instantly, uploads in background.
   // Groomer can move to next step without waiting. Reverts on error.
   const uploadInBackground = (stepKey: string, file: File) => {
@@ -1717,24 +1766,13 @@ export function GroomerJobClient({
                 setCurrentPhaseIndex((prev) => Math.min(prev + 1, pacerPhases.length - 1));
                 setPacerPhaseStartAt(Date.now());
               }}
-              onStepToggle={(stepKey, currentStatus) => void runAction(stepKey, () =>
-                postJson(`/api/groomer/bookings/${booking.id}/sop/step`, {
-                  stepKey,
-                  status: currentStatus === "completed" ? "pending" : "completed",
-                })
-              )}
+              onStepToggle={(stepKey, currentStatus) => toggleStepOptimistic(stepKey, currentStatus)}
               onVideoCapture={(stepKey) => void openLiveVideoRecorder(stepKey).catch((error: unknown) => {
                 setModalError(error instanceof Error ? error.message : "Camera khul nahi paaya.");
               })}
               onPhotoCapture={(stepKey, file) => uploadInBackground(stepKey, file)}
               onRetrySync={() => void runSync()}
-              onSkip={(stepKey, reason) => void runAction(stepKey, () =>
-                postJson(`/api/groomer/bookings/${booking.id}/sop/step`, {
-                  stepKey,
-                  status: "skipped",
-                  skipReason: reason,
-                })
-              )}
+              onSkip={(stepKey, reason) => skipStepOptimistic(stepKey, reason)}
             />
           )}
 
@@ -2211,24 +2249,13 @@ export function GroomerJobClient({
                   setCurrentPhaseIndex((prev) => Math.min(prev + 1, pacerPhases.length - 1));
                   setPacerPhaseStartAt(Date.now());
                 }}
-                onStepToggle={(stepKey, currentStatus) => void runAction(stepKey, () =>
-                  postJson(`/api/groomer/bookings/${booking.id}/sop/step`, {
-                    stepKey,
-                    status: currentStatus === "completed" ? "pending" : "completed",
-                  })
-                )}
+                onStepToggle={(stepKey, currentStatus) => toggleStepOptimistic(stepKey, currentStatus)}
                 onVideoCapture={(stepKey) => void openLiveVideoRecorder(stepKey).catch((error: unknown) => {
                   setModalError(error instanceof Error ? error.message : "Camera khul nahi paaya.");
                 })}
                 onPhotoCapture={(stepKey, file) => uploadInBackground(stepKey, file)}
                 onRetrySync={() => void runSync()}
-                onSkip={(stepKey, reason) => void runAction(stepKey, () =>
-                  postJson(`/api/groomer/bookings/${booking.id}/sop/step`, {
-                    stepKey,
-                    status: "skipped",
-                    skipReason: reason,
-                  })
-                )}
+                onSkip={(stepKey, reason) => skipStepOptimistic(stepKey, reason)}
               />
             )}
             <button
