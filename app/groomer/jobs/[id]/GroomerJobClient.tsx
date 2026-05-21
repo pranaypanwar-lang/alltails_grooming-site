@@ -1865,28 +1865,36 @@ export function GroomerJobClient({
           <SessionStartModal
             booking={booking}
             mode={languageMode}
-            onStart={() => void runAction("arrived", async () => {
-              // Optimistic: switch to pacer immediately — don't wait for API
+            onStart={() => {
+              if (isPreview) return;
+              // Switch to pacer immediately — no busy lock so PacerPhaseCard is interactive from frame 1
               setShowSessionStartModal(false);
               setPacerMode(true);
               setPacerPhaseStartAt(Date.now());
               setCurrentPhaseIndex(0);
               try { localStorage.removeItem(pacerStorageKey); } catch { /* ignore */ }
-              // GPS silently in background — pre-fills fuel distance at completion
+              // GPS in background — pre-fills fuel distance at completion
               if (typeof navigator !== "undefined" && navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                   (pos) => { setArrivedGps({ lat: pos.coords.latitude, lng: pos.coords.longitude }); },
-                  () => { /* unavailable — groomer enters manually at completion */ },
+                  () => { /* unavailable — groomer enters manually */ },
                   { timeout: 15000, maximumAge: 60000, enableHighAccuracy: false }
                 );
               }
-              const data = await postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, {
-                dispatchState: "started",
-              });
-              if (data?.rewardsDelta?.length) {
-                setRewardModal({ rewards: data.rewardsDelta, summary: data.rewardSummary ? { teamMember: data.rewardSummary.teamMember, totalXpAwarded: data.rewardSummary.totalXpAwarded, totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded, prestigeCredits: data.rewardSummary.gamification?.prestigeCredits } : null });
-              }
-            }, { backgroundRefresh: true })}
+              // API fires in background — never blocks the UI
+              postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, { dispatchState: "started" })
+                .then((data: Record<string, unknown>) => {
+                  if (Array.isArray(data?.rewardsDelta) && (data.rewardsDelta as unknown[]).length) {
+                    const rd = data.rewardsDelta as Array<{ summary: string; xpAwarded: number; rewardPointsAwarded?: number }>;
+                    const rs = data.rewardSummary as { teamMember: { name: string; currentXp: number; currentRank: string }; totalXpAwarded: number; totalRewardPointsAwarded?: number; gamification?: { prestigeCredits?: number } } | null;
+                    setRewardModal({ rewards: rd, summary: rs ? { teamMember: rs.teamMember, totalXpAwarded: rs.totalXpAwarded, totalRewardPointsAwarded: rs.totalRewardPointsAwarded, prestigeCredits: rs.gamification?.prestigeCredits } : null });
+                  }
+                  void refresh();
+                })
+                .catch((err: unknown) => {
+                  setModalError(err instanceof Error ? err.message : "Session start nahi ho paaya. Dobara try karein.");
+                });
+            }}
             onBack={() => setShowSessionStartModal(false)}
           />
         ) : null}
