@@ -1810,46 +1810,58 @@ export function GroomerJobClient({
           dispatchState={optimisticDispatchState ?? booking.dispatchState}
           now={now}
           isPreview={isPreview}
-          onNikalGaye={() => void runAction("en_route", async () => {
-            // Optimistic: switch UI to en_route instantly
-            setOptimisticDispatchState("en_route");
-            let gpsLat: number | null = null;
-            let gpsLng: number | null = null;
-            const gpsPromise = new Promise<void>((resolve) => {
-              const fallback = setTimeout(resolve, 3000);
-              navigator.geolocation.getCurrentPosition(
-                (pos) => { gpsLat = pos.coords.latitude; gpsLng = pos.coords.longitude; clearTimeout(fallback); resolve(); },
-                () => { clearTimeout(fallback); resolve(); },
-                { timeout: 2500, maximumAge: 30000, enableHighAccuracy: false }
-              );
-            });
-            // Race: use GPS if it arrives within 500ms, otherwise post immediately
-            await Promise.race([gpsPromise, new Promise<void>((r) => setTimeout(r, 500))]);
-            const data = await postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, {
-              dispatchState: "en_route",
-              lat: gpsLat,
-              lng: gpsLng,
-            });
-            if (data?.rewardsDelta?.length) {
-              setRewardModal({
-                rewards: data.rewardsDelta,
-                summary: data.rewardSummary ? {
-                  teamMember: data.rewardSummary.teamMember,
-                  totalXpAwarded: data.rewardSummary.totalXpAwarded,
-                  totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded,
-                  prestigeCredits: data.rewardSummary.gamification?.prestigeCredits,
-                } : null,
-              });
+          onNikalGaye={() => {
+            if (isPreview) {
+              setModalError("Preview mode — yahan click se kuch nahi hoga. Real booking par hi kaam karega.");
+              return;
             }
-            openMomentToast({
-              action: "en_route",
-              xpAwarded: Array.isArray(data?.rewardsDelta)
-                ? data.rewardsDelta.reduce((sum: number, reward: { xpAwarded?: number }) => sum + Number(reward?.xpAwarded ?? 0), 0) : 0,
-              rewardCreditsAwarded: Array.isArray(data?.rewardsDelta)
-                ? data.rewardsDelta.reduce((sum: number, reward: { rewardPointsAwarded?: number }) => sum + Number(reward?.rewardPointsAwarded ?? 0), 0) : 0,
-              prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits,
-            });
-          }, { backgroundRefresh: true })}
+            // Optimistic: switch UI to en_route instantly, no busy lock
+            setOptimisticDispatchState("en_route");
+            // GPS + API fire entirely in background — never blocks the UI
+            void (async () => {
+              let gpsLat: number | null = null;
+              let gpsLng: number | null = null;
+              const gpsPromise = new Promise<void>((resolve) => {
+                const fallback = setTimeout(resolve, 3000);
+                navigator.geolocation.getCurrentPosition(
+                  (pos) => { gpsLat = pos.coords.latitude; gpsLng = pos.coords.longitude; clearTimeout(fallback); resolve(); },
+                  () => { clearTimeout(fallback); resolve(); },
+                  { timeout: 2500, maximumAge: 30000, enableHighAccuracy: false }
+                );
+              });
+              await Promise.race([gpsPromise, new Promise<void>((r) => setTimeout(r, 500))]);
+              try {
+                const data = await postJson(`/api/groomer/bookings/${booking.id}/dispatch-state`, {
+                  dispatchState: "en_route",
+                  lat: gpsLat,
+                  lng: gpsLng,
+                });
+                if (data?.rewardsDelta?.length) {
+                  setRewardModal({
+                    rewards: data.rewardsDelta,
+                    summary: data.rewardSummary ? {
+                      teamMember: data.rewardSummary.teamMember,
+                      totalXpAwarded: data.rewardSummary.totalXpAwarded,
+                      totalRewardPointsAwarded: data.rewardSummary.totalRewardPointsAwarded,
+                      prestigeCredits: data.rewardSummary.gamification?.prestigeCredits,
+                    } : null,
+                  });
+                }
+                openMomentToast({
+                  action: "en_route",
+                  xpAwarded: Array.isArray(data?.rewardsDelta)
+                    ? data.rewardsDelta.reduce((sum: number, reward: { xpAwarded?: number }) => sum + Number(reward?.xpAwarded ?? 0), 0) : 0,
+                  rewardCreditsAwarded: Array.isArray(data?.rewardsDelta)
+                    ? data.rewardsDelta.reduce((sum: number, reward: { rewardPointsAwarded?: number }) => sum + Number(reward?.rewardPointsAwarded ?? 0), 0) : 0,
+                  prestigeCredits: data?.rewardSummary?.gamification?.prestigeCredits,
+                });
+                void refresh();
+              } catch (err) {
+                setOptimisticDispatchState(null);
+                setModalError(err instanceof Error ? err.message : "Nikal gaye update nahi ho paaya. Dobara try karein.");
+              }
+            })();
+          }}
           onPahunchGaye={() => {
             if (isPreview) {
               setPacerMode(true);
