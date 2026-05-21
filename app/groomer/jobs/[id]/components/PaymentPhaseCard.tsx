@@ -387,7 +387,6 @@ export function PaymentPhaseCard({ mode, booking, busy, onSave, onComplete }: Pr
           <input
             type="file"
             accept="image/*"
-            capture="environment"
             className="hidden"
             disabled={isBusy}
             onChange={(e) => {

@@ -266,7 +266,6 @@ function StepFocusCard({
               <input
                 type="file"
                 accept="image/*"
-                capture="environment"
                 className="hidden"
                 disabled={busy !== null}
                 onChange={(e) => {

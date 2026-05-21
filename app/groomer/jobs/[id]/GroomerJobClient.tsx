@@ -375,7 +375,6 @@ function MediaStrip({
 function CaptureButton({
   label,
   accept,
-  capture,
   disabled,
   tone = "default",
   icon,
@@ -383,7 +382,6 @@ function CaptureButton({
 }: {
   label: string;
   accept: string;
-  capture?: "environment";
   disabled: boolean;
   tone?: "default" | "primary";
   icon?: ReactNode;
@@ -404,7 +402,6 @@ function CaptureButton({
       <input
         type="file"
         accept={accept}
-        capture={capture}
         className="hidden"
         disabled={disabled}
         onChange={(event) => {
@@ -614,6 +611,7 @@ function LiveVideoRecorderModal({
   onStop,
   onUseRecording,
   onRetake,
+  onFlipCamera,
   onClose,
 }: {
   mode: LanguageMode;
@@ -626,6 +624,7 @@ function LiveVideoRecorderModal({
   onStop: () => void;
   onUseRecording: () => void;
   onRetake: () => void;
+  onFlipCamera: () => void;
   onClose: () => void;
 }) {
   return (
@@ -682,14 +681,25 @@ function LiveVideoRecorderModal({
 
         <div className="mt-4 flex flex-wrap gap-2">
           {!isRecording && !hasRecordedFile ? (
-            <button
-              type="button"
-              onClick={onStart}
-              disabled={busy}
-              className="flex-1 rounded-[16px] bg-[#6d5bd0] px-4 py-3 text-[14px] font-semibold text-white disabled:opacity-50"
-            >
-              {mode === "simple" ? "Start recording" : "रिकॉर्डिंग शुरू करें"}
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={onFlipCamera}
+                disabled={busy}
+                className="rounded-[16px] border border-[#ddd1fb] bg-white px-4 py-3 text-[14px] font-semibold text-[#5b4bc2] disabled:opacity-50"
+                title="Flip camera"
+              >
+                🔄
+              </button>
+              <button
+                type="button"
+                onClick={onStart}
+                disabled={busy}
+                className="flex-1 rounded-[16px] bg-[#6d5bd0] px-4 py-3 text-[14px] font-semibold text-white disabled:opacity-50"
+              >
+                {mode === "simple" ? "Start recording" : "रिकॉर्डिंग शुरू करें"}
+              </button>
+            </>
           ) : null}
 
           {isRecording ? (
@@ -834,6 +844,7 @@ export function GroomerJobClient({
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [isRecordingVideo, setIsRecordingVideo] = useState(false);
   const [recordedVideoFile, setRecordedVideoFile] = useState<File | null>(null);
+  const [videoFacingMode, setVideoFacingMode] = useState<"environment" | "user">("environment");
   const [now, setNow] = useState(() => Date.now());
   const [momentToast, setMomentToast] = useState<MomentToast>(null);
   const [showSessionStartModal, setShowSessionStartModal] = useState(false);
@@ -1075,12 +1086,12 @@ export function GroomerJobClient({
       );
     }
 
-    // Try rear camera first; fall back to any camera (handles iOS & devices without environment cam)
+    // Use current facing mode; fall back to any camera if the preferred one fails
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: { ideal: "environment" },
+          facingMode: { ideal: videoFacingMode },
           width: { ideal: 854, max: 1280 },
           height: { ideal: 480, max: 720 },
           frameRate: { ideal: 15, max: 20 },
@@ -1216,6 +1227,44 @@ export function GroomerJobClient({
       await setupLiveVideoPreview();
     } catch (error) {
       setModalError(error instanceof Error ? error.message : "Camera dobara nahi khul paaya.");
+    }
+  };
+
+  const flipLiveCamera = async () => {
+    const next = videoFacingMode === "environment" ? "user" : "environment";
+    setVideoFacingMode(next);
+    // Stop current stream and restart with new facing mode
+    mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
+    mediaStreamRef.current = null;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: next },
+          width: { ideal: 854, max: 1280 },
+          height: { ideal: 480, max: 720 },
+          frameRate: { ideal: 15, max: 20 },
+        },
+        audio: true,
+      });
+      mediaStreamRef.current = stream;
+      if (liveVideoRef.current) {
+        liveVideoRef.current.srcObject = stream;
+        liveVideoRef.current.muted = true;
+        await liveVideoRef.current.play().catch(() => undefined);
+      }
+    } catch {
+      // If flip fails, fall back to any camera
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        mediaStreamRef.current = stream;
+        if (liveVideoRef.current) {
+          liveVideoRef.current.srcObject = stream;
+          liveVideoRef.current.muted = true;
+          await liveVideoRef.current.play().catch(() => undefined);
+        }
+      } catch (err) {
+        setModalError(err instanceof Error ? err.message : "Camera flip nahi ho paaya.");
+      }
     }
   };
 
@@ -1658,6 +1707,7 @@ export function GroomerJobClient({
         uploadInBackground(activeVideoStepKey, recordedVideoFile);
       }}
       onRetake={() => void retakeLiveRecording()}
+      onFlipCamera={() => void flipLiveCamera()}
       onClose={closeLiveVideoRecorder}
     />
   ) : null;
@@ -2390,7 +2440,6 @@ export function GroomerJobClient({
                     <CaptureButton
                       label={languageMode === "simple" ? "Camera se photo" : "कैमरा से फोटो"}
                       accept="image/*"
-                      capture="environment"
                       tone="primary"
                       icon={<Camera className="h-4 w-4" />}
                       disabled={busy !== null}
@@ -2403,7 +2452,6 @@ export function GroomerJobClient({
                       <CaptureButton
                         label={languageMode === "simple" ? "Photo kheecho" : "फोटो खींचो"}
                         accept="image/*"
-                        capture="environment"
                         tone="primary"
                         icon={<Camera className="h-4 w-4" />}
                         disabled={busy !== null}
@@ -2522,7 +2570,6 @@ export function GroomerJobClient({
                   <CaptureButton
                     label={languageMode === "simple" ? "Camera se photo" : "कैमरा से फोटो"}
                     accept="image/*"
-                    capture="environment"
                     tone="primary"
                     icon={<Camera className="h-4 w-4" />}
                     disabled={busy !== null}
