@@ -301,8 +301,8 @@ async function validateCapture(file: File) {
     const duration = await getVideoDuration(file);
     // MediaRecorder WebM blobs (Android Chrome) return Infinity — trust the recorder's
     // own 30s timer instead. Only reject when we get a real finite duration over the cap.
-    if (Number.isFinite(duration) && duration > 31) {
-      throw new Error("Video 30 second se chhota rakhein.");
+    if (Number.isFinite(duration) && duration > 11) {
+      throw new Error("Video 10 second se chhota rakhein.");
     }
   }
 
@@ -677,7 +677,7 @@ function LiveVideoRecorderModal({
                   ? "Camera ready"
                   : "कैमरा तैयार है"}
           </span>
-          <span>{formatRecordingSeconds(elapsedSeconds)} / 00:30</span>
+          <span>{formatRecordingSeconds(elapsedSeconds)} / 00:10</span>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-2">
@@ -945,9 +945,9 @@ export function GroomerJobClient({
     const timer = window.setInterval(() => {
       setRecordingSeconds((prev) => {
         const next = prev + 1;
-        if (next >= 30) {
+        if (next >= 10) {
           mediaRecorderRef.current?.state === "recording" && mediaRecorderRef.current.stop();
-          return 30;
+          return 10;
         }
         return next;
       });
