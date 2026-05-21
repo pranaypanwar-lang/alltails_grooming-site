@@ -79,7 +79,10 @@ type GroomerTemperamentInfo = {
   Icon: typeof Heart;
 };
 
-const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+const MAX_IMAGE_UPLOAD_BYTES = 4 * 1024 * 1024;
+const MAX_VIDEO_UPLOAD_BYTES = 15 * 1024 * 1024;
+// Keep single alias for image guards that already reference this
+const MAX_UPLOAD_BYTES = MAX_IMAGE_UPLOAD_BYTES;
 // Always compress images — most phone photos are 2–4MB uncompressed
 const MAX_IMAGE_DIMENSION = 1280;
 const COMPRESS_SKIP_BELOW_BYTES = 200 * 1024; // skip tiny images that don't need it
@@ -296,8 +299,10 @@ async function getVideoDuration(file: File) {
 async function validateCapture(file: File) {
   if (isVideoFile(file)) {
     const duration = await getVideoDuration(file);
-    if (duration > 15.5) {
-      throw new Error("Video 10-15 second ke andar rakhein.");
+    // MediaRecorder WebM blobs (Android Chrome) return Infinity — trust the recorder's
+    // own 30s timer instead. Only reject when we get a real finite duration over the cap.
+    if (Number.isFinite(duration) && duration > 31) {
+      throw new Error("Video 30 second se chhota rakhein.");
     }
   }
 
@@ -305,8 +310,8 @@ async function validateCapture(file: File) {
     throw new Error("Photo upload ke liye heavy hai. Camera se ek fresh photo try karein.");
   }
 
-  if (isVideoFile(file) && file.size > MAX_UPLOAD_BYTES) {
-    throw new Error("Video heavy ho gaya. 10 second ka short video dobara record karein.");
+  if (isVideoFile(file) && file.size > MAX_VIDEO_UPLOAD_BYTES) {
+    throw new Error("Video heavy ho gaya. Thoda chhota video dobara record karein.");
   }
 }
 
@@ -672,7 +677,7 @@ function LiveVideoRecorderModal({
                   ? "Camera ready"
                   : "कैमरा तैयार है"}
           </span>
-          <span>{formatRecordingSeconds(elapsedSeconds)} / 00:15</span>
+          <span>{formatRecordingSeconds(elapsedSeconds)} / 00:30</span>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-2">
@@ -940,9 +945,9 @@ export function GroomerJobClient({
     const timer = window.setInterval(() => {
       setRecordingSeconds((prev) => {
         const next = prev + 1;
-        if (next >= 15) {
+        if (next >= 30) {
           mediaRecorderRef.current?.state === "recording" && mediaRecorderRef.current.stop();
-          return 15;
+          return 30;
         }
         return next;
       });

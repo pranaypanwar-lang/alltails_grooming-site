@@ -7,7 +7,7 @@ import { putBookingAsset } from "../../../../../../../lib/storage/putBookingAsse
 import { awardReviewReward } from "../../../../../../../lib/groomerRewards";
 
 export const runtime = "nodejs";
-const MAX_PROOF_UPLOAD_BYTES = 4 * 1024 * 1024;
+const MAX_PROOF_UPLOAD_BYTES = 15 * 1024 * 1024;
 
 function getExtension(fileName: string) {
   return fileName.split(".").pop()?.toLowerCase() || "";
@@ -74,7 +74,7 @@ export async function POST(
       return NextResponse.json({ error: "Only image or video uploads are allowed" }, { status: 400 });
     }
     if (file.size > MAX_PROOF_UPLOAD_BYTES) {
-      return NextResponse.json({ error: "Proof file must be under 4MB. Please retake a shorter video or lighter photo." }, { status: 400 });
+      return NextResponse.json({ error: "Proof file must be under 15MB. Please retake a shorter video or lighter photo." }, { status: 400 });
     }
 
     const extension = getExtension(file.name) || (isVideo ? "mp4" : "jpg");
